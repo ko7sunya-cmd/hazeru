@@ -1,0 +1,58 @@
+body {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    line-height: 1.8;
+    background-color: #fcfaf0; /* 少し紙っぽい色 */
+    color: #333;
+}
+p {
+    margin-bottom: 2em;
+}
+a {
+    color: #4a7d65; /* 落ち着いた緑色 */
+    text-decoration: none;
+}
+
+
+
+
+/* 全体のフォントと余白を整える */
+body {
+    font-family: sans-serif;
+    line-height: 1.8;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fcfaf0; /* 紙のような温かい白 */
+    color: #333;
+}
+
+/* タイトル用 */
+h1 {
+    font-size: 1.4em;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
+
+/* 本文用 */
+p {
+    margin-bottom: 2em;
+    text-indent: 1em;
+}
+
+/* リンクボタンの装飾 */
+.nav {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.nav a {
+    display: inline-block;
+    padding: 10px 25px;
+    background-color: #4a7d65;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
