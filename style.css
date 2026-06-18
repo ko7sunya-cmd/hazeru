@@ -28,3 +28,24 @@ h1 {
     border-bottom: 2px solid #b2dfdb;
     padding-bottom: 0.5rem;
 }
+
+
+
+/* メニューの装飾 */
+/* --- 修正：メニューをコンパクトにする --- */
+
+.site-menu {
+    margin: 10px 0 20px 0; /* 下の余白を少し詰めた */
+    padding: 5px; /* 中の余白を半分に詰めた */
+    background-color: #eee;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.site-menu a {
+    margin: 0 8px; /* リンク同士の間隔を少し詰めた */
+    color: #4a7d65;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9em; /* 文字サイズを少し小さくした（ここが重要！） */
+}
