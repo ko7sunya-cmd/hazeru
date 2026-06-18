@@ -1,0 +1,30 @@
+body {
+    /* 背景画像（積乱雲）を画面全体に固定 */
+    background-image: url('summer-clouds.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    background-color: #e0f7fa; /* ベースのシアン系 */
+    
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    line-height: 1.8;
+    color: #2c3e50;
+    font-family: sans-serif;
+}
+
+/* ここが「白背景のブロック」の設定 */
+.container {
+    background-color: rgba(255, 255, 255, 0.9); /* 白背景、少しだけ透過して雲の気配を残す */
+    padding: 2rem;
+    border-radius: 12px; /* 少し角を丸くして柔らかさを */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 浮き上がるような影 */
+}
+
+h1 {
+    font-size: 1.5rem;
+    color: #00796b; /* 深いシアンでタイトルを強調 */
+    border-bottom: 2px solid #b2dfdb;
+    padding-bottom: 0.5rem;
+}
