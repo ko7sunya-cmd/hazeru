@@ -1,25 +1,6 @@
-body {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    line-height: 1.8;
-    background-color: #fcfaf0; /* 少し紙っぽい色 */
-    color: #333;
-}
-p {
-    margin-bottom: 2em;
-}
-a {
-    color: #4a7d65; /* 落ち着いた緑色 */
-    text-decoration: none;
-}
-
-
-
-
 /* 全体のフォントと余白を整える */
 body {
-    font-family: sans-serif;
+    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
     line-height: 1.8;
     max-width: 600px;
     margin: 0 auto;
@@ -38,21 +19,35 @@ h1 {
 
 /* 本文用 */
 p {
-    margin-bottom: 2em;
-    text-indent: 1em;
+    margin-bottom: 0.8em; /* 行間(1.8)より小さく設定することで、程よい区切りができる */
+    text-indent: 0;
+}
+
+/* リンクボタンのコンテナ（横並び設定） */
+.nav {
+    margin-top: 50px;
+    display: flex;       /* 横並びにする */
+    gap: 10px;           /* ボタン同士の隙間 */
 }
 
 /* リンクボタンの装飾 */
-.nav {
-    margin-top: 50px;
-    text-align: center;
-}
-
 .nav a {
-    display: inline-block;
-    padding: 10px 25px;
-    background-color: #4a7d65;
+    flex: 1;             /* ボタンの幅を均等に分ける */
+    display: block;
+    padding: 15px 10px;
+    background-color: #4a7d65; /* 落ち着いた緑色 */
     color: #fff;
     text-decoration: none;
     border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+/* 著作権表示 */
+footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 0.8em;
+    color: #888;
 }
