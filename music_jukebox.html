@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ジュークボックス｜はぜるの作品</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 💡 プレイヤー専用のスタイリッシュ・ダークデザイン */
+        .jukebox-container {
+            background: linear-gradient(135deg, #13151c 0%, #1e2029 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 30px;
+            color: #e2e8f0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .player-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .player-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #38bdf8;
+            letter-spacing: 1px;
+        }
+        
+        /* 🎧 コントローラー部分 */
+        .controls-box {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .now-playing {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 500;
+            min-height: 1.2rem;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: #334155;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #38bdf8, #ec4899);
+            border-radius: 3px;
+            transition: width 0.1s linear;
+        }
+        
+        .time-box {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+        
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .main-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s, color 0.2s;
+        }
+        
+        .main-btn:hover {
+            color: #38bdf8;
+            transform: scale(1.1);
+        }
+        
+        #play-pause-btn {
+            font-size: 2.2rem;
+            color: #38bdf8;
+        }
+        
+        /* 📋 横並びボタン式プレイリスト */
+        .song-group {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .song-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .take-btn-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .track-item {
+            background: #242731;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            min-width: 60px;
+        }
+        
+        .track-item:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: #38bdf8;
+            color: #fff;
+        }
+        
+        .track-item.active {
+            background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+            border-color: #38bdf8;
+            color: #000;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <p class="site-title">はぜるの作品</p>
+            <h1>Suno AI ジュークボックス</h1>
+            <nav class="site-menu">
+                <a href="index.html">トップ</a> | 
+                <a href="about.html">About</a> | 
+                <a href="privacy.html">プライバシーポリシー</a>
+            </nav>
+        </header>
+        
+        <main>
+            <section class="intro">
+                <p>Suno AIで紡いだオリジナル楽曲のライブラリです。<br>
+                ボタンをタップして、各テイクの響きの違いをお楽しみください。</p>
+            </section>
+
+            <!-- 🎧 特製オーディオプレイヤーの本体 -->
+            <div class="jukebox-container">
+                <div class="player-header">
+                    <div class="player-title">🍉 CHAPTER 01: あの夏の聖域</div>
+                    <p style="font-size: 0.8rem; color: #64748b; margin: 4px 0 0 0;">切なくも疾走感のあるエモポップ・EDMフォルダ</p>
+                </div>
+                
+                <!-- 隠しオーディオタグ -->
+                <audio id="main-audio" src=""></audio>
+                
+                <!-- コントローラー表示パネル -->
+                <div class="controls-box">
+                    <div class="now-playing" id="now-playing-title">曲を選択してください</div>
+                    
+                    <div class="progress-container" id="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    
+                    <div class="time-box">
+                        <span id="current-time">0:00</span>
+                        <span id="total-duration">0:00</span>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="main-btn" id="prev-btn">⏮</button>
+                        <button class="main-btn" id="play-pause-btn">▶</button>
+                        <button class="main-btn" id="next-btn">⏭</button>
+                    </div>
+                </div>
+                
+                <!-- 📋 ボタン式プレイリスト -->
+                <div id="playlist">
+                    
+                    <!-- グループ1 -->
+                    <div class="song-group">
+                        <div class="song-title">✦ あの夏のサンクチュアリ</div>
+                        <div class="take-btn-container">
+                            <div class="track-item" data-src="music/sanctuary_01.mp3" data-name="あの夏のサンクチュアリ 01">01</div>
+                            <div class="track-item" data-src="music/sanctuary_02.mp3" data-name="あの夏のサンクチュアリ 02">02</div>
+                            <div class="track-item" data-src="music/sanctuary_03.mp3" data-name="あの夏のサンクチュアリ 03">03</div>
+                        </div>
+                    </div>
+
+                    <!-- グループ2 -->
+                    <div class="song-group">
+                        <div class="song-title">✦ 青の境界線</div>
+                        <div class="take-btn-container">
+                            <div class="track-item" data-src="music/blue_border_01.mp3" data-name="青の境界線 01">01</div>
+                            <div class="track-item" data-src="music/blue_border_02.mp3" data-name="青の境界線 02">02</div>
+                            <div class="track-item" data-src="music/blue_border_03.mp3" data-name="青の境界線 03">03</div>
+                            <div class="track-item" data-src="music/blue_border_04.mp3" data-name="青の境界線 04">04</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+        <footer style="margin-top: 50px; text-align: center; color: #777;">
+            <p>&copy; 2026 はぜる</p>
+        </footer>
+    </div>
+
+    <!-- 🛠 プレイヤーを動かすJavaScript -->
+    <script>
+        const audio = document.getElementById('main-audio');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const progressContainer = document.getElementById('progress-container');
+        const nowPlayingTitle = document.getElementById('now-playing-title');
+        const currentTimeEl = document.getElementById('current-time');
+        const totalDurationEl = document.getElementById('total-duration');
+        const tracks = document.getElementsByClassName('track-item');
+
+        let currentTrackIndex = 0;
+        let isPlaying = false;
+
+        function loadTrack(index) {
+            for (let i = 0; i < tracks.length; i++) {
+                tracks[i].classList.remove('active');
+            }
+            tracks[index].classList.add('active');
+            
+            const src = tracks[index].getAttribute('data-src');
+            const name = tracks[index].getAttribute('data-name');
+            
+            audio.src = src;
+            nowPlayingTitle.innerText = `🎵 ${name}`;
+            currentTrackIndex = index;
+        }
+
+        function togglePlay() {
+            if (audio.src === "" || audio.src.endsWith('/')) {
+                loadTrack(0);
+            }
+            
+            if (isPlaying) {
+                audio.pause();
+                playPauseBtn.innerText = '▶';
+            } else {
+                audio.play().catch(e => console.log("再生スタート"));
+                playPauseBtn.innerText = '⏸';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function formatTime(secs) {
+            let min = Math.floor(secs / 60);
+            let sec = Math.floor(secs % 60);
+            if (sec < 10) sec = `0${sec}`;
+            return `${min}:${sec}`;
+        }
+
+        audio.addEventListener('timeupdate', () => {
+            const { duration, currentTime } = audio;
+            if (duration) {
+                const progressPercent = (currentTime / duration) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+                currentTimeEl.innerText = formatTime(currentTime);
+                totalDurationEl.innerText = formatTime(duration);
+            }
+        });
+
+        progressContainer.addEventListener('click', (e) => {
+            const width = progressContainer.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audio.duration;
+            if (duration) {
+                audio.currentTime = (clickX / width) * duration;
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            let index = currentTrackIndex - 1;
+            if (index < 0) index = tracks.length - 1;
+            loadTrack(index);
+            isPlaying = false;
+            togglePlay();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            let index = currentTrackIndex + 1;
+            if (index >= tracks.length) index = 0;
+            loadTrack(index);
+            isPlaying = false;
+            togglePlay();
+        });
+
+        audio.addEventListener('ended', () => {
+            nextBtn.click();
+        });
+
+        for (let i = 0; i < tracks.length; i++) {
+            tracks[i].addEventListener('click', () => {
+                loadTrack(i);
+                isPlaying = false;
+                togglePlay();
+            });
+        }
+    </script>
+</body>
+</html>
