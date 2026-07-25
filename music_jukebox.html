@@ -4,15 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ジュークボックス｜はぜるの作品</title>
-    <link rel="stylesheet" href="style.css">
+
     <style>
-        /* 💡 プレイヤー専用のスタイリッシュ・ダークデザイン */
+        /* =========================================
+           🚨 外部style.cssのライトテーマ設定を強制上書き（ダークモード化）
+           ========================================= */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            min-height: 100vh;
+            transition: background 1.2s ease; /* 背景切り替えをじんわりスムーズに */
+        }
+
+        /* テーマ別：背景グラデーション */
+        body.theme-summer {
+            background: linear-gradient(180deg, #070913 0%, #12172b 60%, #251935 100%) !important;
+            color: #e2e8f0 !important;
+        }
+        body.theme-space {
+            background: linear-gradient(180deg, #020205 0%, #080c1b 60%, #031c2b 100%) !important;
+            color: #e2e8f0 !important;
+        }
+        body.theme-relax {
+            background: linear-gradient(180deg, #0d0d0f 0%, #18141c 65%, #241618 100%) !important;
+            color: #cbd5e1 !important;
+        }
+
+        /* ページ全体のコンテナ */
+        .container {
+            background: transparent !important;
+            box-shadow: none !important;
+            color: #e2e8f0 !important;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* ヘッダーのテキスト（スマホでもはみ出さないよう柔軟に） */
+        header h1 {
+            color: #ffffff !important;
+            font-size: calc(1.1rem + 1vw) !important; /* 画面幅に合わせて自動調整 */
+            font-weight: 700 !important;
+            letter-spacing: 2px !important;
+            margin-top: 8px !important;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .site-title {
+            color: #64748b !important;
+            font-size: 0.8rem !important;
+            text-transform: uppercase !important;
+            letter-spacing: 2.5px !important;
+        }
+
+        /* メニューバー */
+        .site-menu {
+            background: rgba(255, 255, 255, 0.03) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 30px !important;
+            padding: 8px 16px !important;
+            display: inline-block !important;
+            margin-top: 15px !important;
+            box-shadow: none !important;
+        }
+
+        .site-menu a {
+            color: #94a3b8 !important;
+            text-decoration: none !important;
+            font-size: 0.8rem !important;
+            font-weight: 500 !important;
+            transition: color 0.2s !important;
+            margin: 0 8px !important;
+        }
+
+        .site-menu a:hover {
+            color: #38bdf8 !important;
+        }
+
+        .intro p {
+            color: #94a3b8 !important;
+            font-size: 0.85rem !important;
+            line-height: 1.6 !important;
+        }
+
+        /* =========================================
+           🎵 ジュークボックス・プレイヤーの基本スタイル
+           ========================================= */
         .jukebox-container {
+            position: relative;
+            z-index: 10;
             background: linear-gradient(135deg, #13151c 0%, #1e2029 100%);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
             padding: 20px;
-            margin-top: 30px;
+            margin-top: 15px;
             color: #e2e8f0;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
@@ -24,13 +111,18 @@
         }
         
         .player-title {
-            font-size: 1.2rem;
+            font-size: 1rem !important; 
             font-weight: bold;
             color: #38bdf8;
-            letter-spacing: 1px;
+            letter-spacing: 1px !important;
+            line-height: 1.4 !important;
+            transition: color 0.5s ease;
         }
+
+        body.theme-space .player-title { color: #a78bfa; }
+        body.theme-relax .player-title { color: #f43f5e; }
         
-        /* 🎧 コントローラー部分 */
+        /* コントローラー部分 */
         .controls-box {
             background: rgba(0, 0, 0, 0.2);
             padding: 15px;
@@ -39,12 +131,13 @@
         }
         
         .now-playing {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #cbd5e1;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             text-align: center;
             font-weight: 500;
             min-height: 1.2rem;
+            letter-spacing: 1px;
         }
         
         .progress-container {
@@ -78,29 +171,73 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px;
+            gap: 22px;
         }
         
         .main-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e2e8f0;
+            font-size: 1.2rem;
             cursor: pointer;
-            transition: transform 0.2s, color 0.2s;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease, color 0.2s ease;
         }
         
         .main-btn:hover {
-            color: #38bdf8;
-            transform: scale(1.1);
+            color: #fff;
+            background: rgba(56, 189, 248, 0.14);
+            border-color: rgba(56, 189, 248, 0.5);
+            box-shadow: 0 4px 16px rgba(56, 189, 248, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+        .main-btn:active {
+            transform: scale(0.92);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4), inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+        body.theme-space .main-btn:hover {
+            background: rgba(167, 139, 250, 0.14);
+            border-color: rgba(167, 139, 250, 0.5);
+            box-shadow: 0 4px 16px rgba(167, 139, 250, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+        body.theme-relax .main-btn:hover {
+            background: rgba(244, 63, 94, 0.14);
+            border-color: rgba(244, 63, 94, 0.5);
+            box-shadow: 0 4px 16px rgba(244, 63, 94, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
         }
         
         #play-pause-btn {
-            font-size: 2.2rem;
-            color: #38bdf8;
+            width: 4rem;
+            height: 4rem;
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+            border: none;
+            color: #04121c;
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            transition: background 0.5s ease, box-shadow 0.5s ease, transform 0.15s ease, filter 0.2s ease;
+        }
+        #play-pause-btn:hover {
+            filter: brightness(1.08);
+            box-shadow: 0 8px 24px rgba(56, 189, 248, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+        #play-pause-btn:active {
+            transform: scale(0.94);
+        }
+        body.theme-space #play-pause-btn {
+            background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+            box-shadow: 0 6px 20px rgba(167, 139, 250, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        }
+        body.theme-relax #play-pause-btn {
+            background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
+            box-shadow: 0 6px 20px rgba(244, 63, 94, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
         }
         
-        /* 📋 横並びボタン式プレイリスト */
+        /* ボタン式プレイリスト */
         .song-group {
             background: rgba(255, 255, 255, 0.01);
             border: 1px solid rgba(255, 255, 255, 0.03);
@@ -110,13 +247,14 @@
         }
         
         .song-title {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: bold;
             color: #fff;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
             gap: 6px;
+            letter-spacing: 0.5px;
         }
         
         .take-btn-container {
@@ -144,6 +282,14 @@
             border-color: #38bdf8;
             color: #fff;
         }
+        body.theme-space .track-item:hover {
+            background: rgba(167, 139, 250, 0.1);
+            border-color: #a78bfa;
+        }
+        body.theme-relax .track-item:hover {
+            background: rgba(244, 63, 94, 0.1);
+            border-color: #f43f5e;
+        }
         
         .track-item.active {
             background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
@@ -151,17 +297,151 @@
             color: #000;
             box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
         }
+        body.theme-space .track-item.active {
+            background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+            border-color: #a78bfa;
+            box-shadow: 0 0 10px rgba(167, 139, 250, 0.4);
+        }
+        body.theme-relax .track-item.active {
+            background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
+            border-color: #f43f5e;
+            box-shadow: 0 0 10px rgba(244, 63, 94, 0.4);
+        }
+
+        /* =========================================
+           🎛 チャプター切り替えタブ
+           ========================================= */
+        .theme-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .theme-tab {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #94a3b8;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .theme-tab:hover {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .theme-tab.active {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #38bdf8;
+            color: #38bdf8;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+        }
+
+        body.theme-space .theme-tab.active {
+            border-color: #a78bfa;
+            color: #a78bfa;
+            box-shadow: 0 0 12px rgba(167, 139, 250, 0.2);
+        }
+        body.theme-relax .theme-tab.active {
+            border-color: #f43f5e;
+            color: #f43f5e;
+            box-shadow: 0 0 12px rgba(244, 63, 94, 0.2);
+        }
+
+        /* =========================================
+           ☀️ 背景大気エフェクト
+           ========================================= */
+        .summer-daydream {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+            background: radial-gradient(circle at 80% 0%, rgba(56, 189, 248, 0.03) 0%, transparent 70%);
+        }
+
+        .lens-flare {
+            position: absolute;
+            top: -15%;
+            right: -10%;
+            width: 70vw;
+            height: 70vw;
+            border-radius: 50%;
+            mix-blend-mode: screen;
+            transition: all 1.5s ease;
+            animation: flare-breathe 8s infinite alternate ease-in-out;
+        }
+
+        body.theme-summer .lens-flare { background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(56, 189, 248, 0.05) 40%, transparent 70%); }
+        body.theme-space .lens-flare { background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(139, 92, 246, 0.08) 40%, transparent 70%); top: 10%; right: 15%; }
+        body.theme-relax .lens-flare { background: radial-gradient(circle, rgba(255, 237, 213, 0.08) 0%, rgba(244, 63, 94, 0.03) 50%, transparent 80%); top: -5%; right: 20%; }
+
+        .light-ray {
+            position: absolute;
+            top: -20%;
+            height: 150vh;
+            mix-blend-mode: overlay;
+            transition: all 1.5s ease;
+        }
+
+        body.theme-summer .light-ray { transform: rotate(35deg); }
+        body.theme-space .light-ray { transform: rotate(15deg); }
+        body.theme-relax .light-ray { transform: rotate(0deg); top: 0; height: 100vh; }
+
+        .ray-1 { left: 15%; width: 12vw; animation: ray-shift 12s infinite alternate ease-in-out; }
+        body.theme-summer .ray-1 { background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%); }
+        body.theme-space .ray-1 { background: linear-gradient(90deg, transparent 0%, rgba(139, 92, 246, 0.06) 50%, transparent 100%); }
+        body.theme-relax .ray-1 { left: 20%; width: 25vw; background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.02) 50%, transparent 100%); }
+
+        .ray-2 { left: 35%; width: 6vw; animation: ray-shift 15s infinite alternate-reverse ease-in-out; }
+        body.theme-summer .ray-2 { background: linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.06) 50%, transparent 100%); }
+        body.theme-space .ray-2 { background: linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.04) 50%, transparent 100%); }
+        body.theme-relax .ray-2 { left: 55%; width: 15vw; background: linear-gradient(90deg, transparent 0%, rgba(244, 63, 94, 0.01) 50%, transparent 100%); }
+
+        .kagerou {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30%;
+            backdrop-filter: blur(1.5px);
+            transition: all 1.5s ease;
+            animation: kagerou-wave 3s infinite alternate ease-in-out;
+        }
+        body.theme-summer .kagerou { background: linear-gradient(to top, rgba(255, 255, 255, 0.01), transparent); backdrop-filter: blur(1.5px); opacity: 1; }
+        body.theme-space .kagerou { opacity: 0; }
+        body.theme-relax .kagerou { height: 15%; background: linear-gradient(to top, rgba(244, 63, 94, 0.02), transparent); backdrop-filter: blur(3px); opacity: 1; }
+
+        @keyframes flare-breathe { 0% { transform: scale(1) translate(0, 0); opacity: 0.6; } 100% { transform: scale(1.05) translate(-10px, 15px); opacity: 1; } }
+        @keyframes ray-shift { 0% { transform: rotate(inherit) translateX(0px); opacity: 0.5; } 100% { transform: rotate(inherit) translateX(40px); opacity: 1; } }
+        @keyframes kagerou-wave { 0% { transform: translateY(0); opacity: 0.5; } 100% { transform: translateY(-5px); opacity: 1; } }
     </style>
 </head>
-<body>
+<body class="theme-summer">
+    <!-- 背景エフェクト -->
+    <div class="summer-daydream">
+        <div class="lens-flare"></div>
+        <div class="light-ray ray-1"></div>
+        <div class="light-ray ray-2"></div>
+        <div class="kagerou"></div>
+    </div>
+
     <div class="container">
         <header>
             <p class="site-title">はぜるの作品</p>
             <h1>Suno AI ジュークボックス</h1>
             <nav class="site-menu">
-                <a href="index.html">トップ</a> | 
-                <a href="about.html">About</a> | 
-                <a href="privacy.html">プライバシーポリシー</a>
+                <a href="index.html">トップ</a>
             </nav>
         </header>
         
@@ -171,17 +451,22 @@
                 ボタンをタップして、各テイクの響きの違いをお楽しみください。</p>
             </section>
 
-            <!-- 🎧 特製オーディオプレイヤーの本体 -->
+            <!-- 🎛 チャプター切り替えタブ -->
+            <div class="theme-tabs">
+                <div class="theme-tab active" data-theme="summer">夏の聖域</div>
+                <div class="theme-tab" data-theme="space">星の鼓動</div>
+                <div class="theme-tab" data-theme="relax">日常の輪郭</div> <!-- 🌟 変更: 日常の輪郭 -->
+            </div>
+
+            <!-- 特製オーディオプレイヤー -->
             <div class="jukebox-container">
                 <div class="player-header">
-                    <div class="player-title">🍉 CHAPTER 01: あの夏の聖域</div>
-                    <p style="font-size: 0.8rem; color: #64748b; margin: 4px 0 0 0;">切なくも疾走感のあるエモポップ・EDMフォルダ</p>
+                    <div class="player-title">CHAPTER 01: あの夏の聖域</div>
+                    <p style="font-size: 0.8rem; color: #64748b; margin: 4px 0 0 0; transition: color 0.5s;">切なくも疾走感のあるエモポップ・EDMフォルダ</p>
                 </div>
                 
-                <!-- 隠しオーディオタグ -->
                 <audio id="main-audio" src=""></audio>
                 
-                <!-- コントローラー表示パネル -->
                 <div class="controls-box">
                     <div class="now-playing" id="now-playing-title">曲を選択してください</div>
                     
@@ -201,30 +486,105 @@
                     </div>
                 </div>
                 
-                <!-- 📋 ボタン式プレイリスト -->
+                <!-- ボタン式プレイリスト -->
                 <div id="playlist">
-                    
-                    <!-- グループ1 -->
-                    <div class="song-group">
-                        <div class="song-title">✦ あの夏のサンクチュアリ</div>
-                        <div class="take-btn-container">
-                            <div class="track-item" data-src="music/sanctuary_01.mp3" data-name="あの夏のサンクチュアリ 01">01</div>
-                            <div class="track-item" data-src="music/sanctuary_02.mp3" data-name="あの夏のサンクチュアリ 02">02</div>
-                            <div class="track-item" data-src="music/sanctuary_03.mp3" data-name="あの夏のサンクチュアリ 03">03</div>
+                    <!-- ☀️ CHAPTER 01: 夏の聖域 -->
+                    <div class="playlist-group" id="group-summer">
+                        <div class="song-group">
+                            <div class="song-title">あの夏のサンクチュアリ</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/sanctuary_01.mp3" data-name="あの夏のサンクチュアリ 01">01</div>
+                                <div class="track-item" data-src="music/sanctuary_02.mp3" data-name="あの夏のサンクチュアリ 02">02</div>
+                                <div class="track-item" data-src="music/sanctuary_03.mp3" data-name="あの夏のサンクチュアリ 03">03</div>
+                            </div>
+                        </div>
+                        <div class="song-group">
+                            <div class="song-title">青の境界線</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/blue_border_01.mp3" data-name="青の境界線 01">01</div>
+                                <div class="track-item" data-src="music/blue_border_02.mp3" data-name="青の境界線 02">02</div>
+                                <div class="track-item" data-src="music/blue_border_03.mp3" data-name="青の境界線 03">03</div>
+                                <div class="track-item" data-src="music/blue_border_04.mp3" data-name="青の境界線 04">04</div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- グループ2 -->
-                    <div class="song-group">
-                        <div class="song-title">✦ 青の境界線</div>
-                        <div class="take-btn-container">
-                            <div class="track-item" data-src="music/blue_border_01.mp3" data-name="青の境界線 01">01</div>
-                            <div class="track-item" data-src="music/blue_border_02.mp3" data-name="青の境界線 02">02</div>
-                            <div class="track-item" data-src="music/blue_border_03.mp3" data-name="青の境界線 03">03</div>
-                            <div class="track-item" data-src="music/blue_border_04.mp3" data-name="青の境界線 04">04</div>
+                    <!-- 🌌 CHAPTER 02: 星の鼓動 -->
+                    <div class="playlist-group" id="group-space" style="display: none;">
+                        <div class="song-group">
+                            <div class="song-title">Star Pulse</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/star_pulse_01.mp3" data-name="Star Pulse 01">01</div>
+                            </div>
+                        </div>
+
+                        <!-- 🌟 追加：Sunoでグッド（いいね）済みの楽曲
+                             ※タイトルはスクリーンショットから判読したもの。
+                             「Ripples in the Mirror」はSuno側の表示が途中で切れていたため
+                             推測です（"Ripples in the Mir..."）。実際のタイトルと違う場合は直してください。
+                             各曲、確認できた「いいね済み」テイクを1つずつ追加しています。 -->
+                        <div class="song-group">
+                            <div class="song-title">Shredder's Lullaby</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/shredders_lullaby_01.mp3" data-name="Shredder's Lullaby 01">01</div>
+                            </div>
+                        </div>
+                        <div class="song-group">
+                            <div class="song-title">Ripples in the Mirror</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/ripples_in_the_mirror_01.mp3" data-name="Ripples in the Mirror 01">01</div>
+                            </div>
+                        </div>
+                        <div class="song-group">
+                            <div class="song-title">Rain of Paint</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/rain_of_paint_01.mp3" data-name="Rain of Paint 01">01</div>
+                            </div>
+                        </div>
+                        <div class="song-group">
+                            <div class="song-title">Palette of Glitches</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/palette_of_glitches_01.mp3" data-name="Palette of Glitches 01">01</div>
+                            </div>
+                        </div>
+                        <div class="song-group">
+                            <div class="song-title">Silver Borderline</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/silver_borderline_01.mp3" data-name="Silver Borderline 01">01</div>
+                            </div>
                         </div>
                     </div>
 
+                    <!-- 🌸 CHAPTER 03: 日常の輪郭 -->
+                    <div class="playlist-group" id="group-relax" style="display: none;">
+                        <div class="song-group">
+                            <div class="song-title">耳かきの境界線</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/ear_border_01.mp3" data-name="耳かきの境界線 01">01</div>
+                            </div>
+                        </div>
+                        <div class="song-group">
+                            <div class="song-title">耳かきの神髄</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/ear_essence_01.mp3" data-name="耳かきの神髄 01">01</div>
+                            </div>
+                        </div>
+                        <!-- 🌟 追加: 湯気の境界 -->
+                        <div class="song-group">
+                            <div class="song-title">湯気の境界</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/yuge01.mp3" data-name="湯気の境界 01">01</div>
+                            </div>
+                        </div>
+                        <!-- 🪥 今後追加予定：歯磨きの曲（必要に応じて以下のコメントアウトを解除して使ってください）
+                        <div class="song-group">
+                            <div class="song-title">（歯磨き曲のタイトル）</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/toothbrush_01.mp3" data-name="歯磨き 01">01</div>
+                            </div>
+                        </div>
+                        -->
+                    </div>
                 </div>
             </div>
         </main>
@@ -234,7 +594,7 @@
         </footer>
     </div>
 
-    <!-- 🛠 プレイヤーを動かすJavaScript -->
+    <!-- プレイヤーを動かすJavaScript -->
     <script>
         const audio = document.getElementById('main-audio');
         const playPauseBtn = document.getElementById('play-pause-btn');
@@ -245,22 +605,32 @@
         const nowPlayingTitle = document.getElementById('now-playing-title');
         const currentTimeEl = document.getElementById('current-time');
         const totalDurationEl = document.getElementById('total-duration');
-        const tracks = document.getElementsByClassName('track-item');
 
+        let activeGroup = 'summer';
         let currentTrackIndex = 0;
         let isPlaying = false;
 
+        // 現在のテーマに所属するtrack-itemを取得
+        function getActiveTracks() {
+            const activeGroupEl = document.getElementById(`group-${activeGroup}`);
+            return Array.from(activeGroupEl.getElementsByClassName('track-item'));
+        }
+
         function loadTrack(index) {
-            for (let i = 0; i < tracks.length; i++) {
-                tracks[i].classList.remove('active');
-            }
+            const tracks = getActiveTracks();
+            if (tracks.length === 0) return;
+            
+            // 全てのアクティブクラスをリセット
+            document.querySelectorAll('.track-item').forEach(item => item.classList.remove('active'));
+            
+            // 現在のターゲットをアクティブ化
             tracks[index].classList.add('active');
             
             const src = tracks[index].getAttribute('data-src');
             const name = tracks[index].getAttribute('data-name');
             
             audio.src = src;
-            nowPlayingTitle.innerText = `🎵 ${name}`;
+            nowPlayingTitle.innerText = `PLAYING : ${name}`;
             currentTrackIndex = index;
         }
 
@@ -272,18 +642,21 @@
             if (isPlaying) {
                 audio.pause();
                 playPauseBtn.innerText = '▶';
+                isPlaying = false;
             } else {
-                audio.play().catch(e => console.log("再生スタート"));
-                playPauseBtn.innerText = '⏸';
+                audio.play()
+                    .then(() => {
+                        playPauseBtn.innerText = '⏸';
+                        isPlaying = true;
+                    })
+                    .catch(e => console.error("自動再生がブロックされたか、音声ファイルが見つかりません:", e));
             }
-            isPlaying = !isPlaying;
         }
 
         function formatTime(secs) {
             let min = Math.floor(secs / 60);
             let sec = Math.floor(secs % 60);
-            if (sec < 10) sec = `0${sec}`;
-            return `${min}:${sec}`;
+            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
         }
 
         audio.addEventListener('timeupdate', () => {
@@ -306,6 +679,7 @@
         });
 
         prevBtn.addEventListener('click', () => {
+            const tracks = getActiveTracks();
             let index = currentTrackIndex - 1;
             if (index < 0) index = tracks.length - 1;
             loadTrack(index);
@@ -314,6 +688,7 @@
         });
 
         nextBtn.addEventListener('click', () => {
+            const tracks = getActiveTracks();
             let index = currentTrackIndex + 1;
             if (index >= tracks.length) index = 0;
             loadTrack(index);
@@ -325,13 +700,66 @@
             nextBtn.click();
         });
 
-        for (let i = 0; i < tracks.length; i++) {
-            tracks[i].addEventListener('click', () => {
-                loadTrack(i);
+        // イベント委譲によるスマートな曲選択
+        document.getElementById('playlist').addEventListener('click', (e) => {
+            const track = e.target.closest('.track-item');
+            if (!track) return;
+
+            const tracks = getActiveTracks();
+            const index = tracks.indexOf(track);
+            
+            if (index !== -1) {
+                loadTrack(index);
                 isPlaying = false;
                 togglePlay();
+            }
+        });
+
+        // =========================================
+        // 🎛 テーマ＆プレイリスト切り替え
+        // =========================================
+        const tabs = document.querySelectorAll('.theme-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const theme = tab.getAttribute('data-theme');
+                if (theme === activeGroup) return;
+
+                // 1. タブの活性化
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // 2. グループ切り替え
+                document.querySelectorAll('.playlist-group').forEach(group => group.style.display = 'none');
+                document.getElementById(`group-${theme}`).style.display = 'block';
+
+                // 3. bodyテーマの切り替え
+                document.body.className = `theme-${theme}`;
+
+                // 4. タイトル＆サブタイトルの書き換え（日常の輪郭にアップデート）
+                const playerTitle = document.querySelector('.player-title');
+                const playerSub = document.querySelector('.player-header p');
+                if (theme === 'summer') {
+                    playerTitle.innerText = 'CHAPTER 01: あの夏の聖域';
+                    playerSub.innerText = '切なくも疾走感のあるエモポップ・EDMフォルダ';
+                    playerSub.style.color = '#64748b';
+                } else if (theme === 'space') {
+                    playerTitle.innerText = 'CHAPTER 02: 星の鼓動';
+                    playerSub.innerText = '無限の宇宙を漂うフューチャー・シンセテクノ';
+                    playerSub.style.color = '#8b5cf6';
+                } else if (theme === 'relax') {
+                    playerTitle.innerText = 'CHAPTER 03: 日常の輪郭'; // 🌟 変更：日常の輪郭
+                    playerSub.innerText = '耳かき、湯気、歯磨き。生活の隙間に溶けるプライベートASMR'; // 🌟 変更
+                    playerSub.style.color = '#f43f5e';
+                }
+
+                // 5. 変数を更新して新しいテーマの1曲目をロード
+                activeGroup = theme;
+                loadTrack(0);
+                if (isPlaying) {
+                    audio.play().catch(e => console.error("再生エラー:", e));
+                }
             });
-        }
+        });
     </script>
 </body>
 </html>

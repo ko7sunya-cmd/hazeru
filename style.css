@@ -1,18 +1,17 @@
 body {
     /* 背景画像（積乱雲）を画面全体に固定 */
-    background-image: url('summer-clouds.jpg');
+
+background-image: url('summer-clouds.PNG');
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
-    background-color: #e0f7fa; /* ベースのシアン系 */
-    
-    max-width: 600px;
-    margin: 0 auto;
+    background-color: #e0f7fa;
+    margin: 0;
     padding: 2rem 1rem;
     line-height: 1.8;
     color: #2c3e50;
     font-family: sans-serif;
-}
+    min-height: 100vh;
 
 /* ここが「白背景のブロック」の設定 */
 .container {
