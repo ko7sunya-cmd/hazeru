@@ -5,49 +5,117 @@ body {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #fcfaf0; /* 紙のような温かい白 */
+    background-color: #ffffff;
     color: #333;
 }
 
 /* タイトル用 */
 h1 {
     font-size: 1.4em;
-    border-bottom: 2px solid #ccc;
+    border-bottom: 2px solid #eee;
     padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+/* サブタイトル用 */
+.subtitle {
+    font-size: 0.9em;
+    color: #666;
     margin-bottom: 30px;
 }
 
-/* 本文用 */
-p {
-    margin-bottom: 0.8em; /* 行間(1.8)より小さく設定することで、程よい区切りができる */
-    text-indent: 0;
+/* 目次のリスト装飾 */
+main ul {
+    list-style: none;
+    padding: 0;
+}
+
+main li {
+    margin-bottom: 12px;
+}
+
+main li a {
+    display: block;
+    padding: 10px 12px;
+    background-color: #f8f9fa;
+    color: #0077aa;
+    text-decoration: none;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    font-size: 0.95em;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+main li a:hover {
+    background-color: #f0f4f8;
+    transform: translateX(4px);
+}
+
+/* 著作権・フッター表示 */
+footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+footer a {
+    color: #666;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
 }
 
 /* リンクボタンのコンテナ（横並び設定） */
 .nav {
     margin-top: 50px;
     display: flex;       /* 横並びにする */
-    gap: 10px;           /* ボタン同士の隙間 */
+    gap: 12px;           /* ボタン同士の隙間 */
 }
 
-/* リンクボタンの装飾 */
+/* リンクボタンの装飾（かすんだ白 ＋ スクロール連動ハイライト） */
 .nav a {
     flex: 1;             /* ボタンの幅を均等に分ける */
     display: block;
     padding: 15px 10px;
-    background-color: #4a7d65; /* 落ち着いた緑色 */
-    color: #fff;
+    
+    /* 1. かすんだ白（半透明＋ボカシでほんのり浮き出る質感） */
+    background-color: rgba(245, 245, 247, 0.85); 
+    color: #444;         /* 文字色は読みやすい濃いグレー */
     text-decoration: none;
-    border-radius: 5px;
+    border-radius: 8px;
+    border: 1px solid rgba(220, 220, 225, 0.8); /* さりげない枠線 */
     text-align: center;
     font-weight: bold;
     font-size: 0.9em;
+    
+    /* すりガラス風の質感（対応ブラウザ用） */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    
+    /* 2. 画面スクロールに合わせて光のハイライトが動く背景設定 */
+    background-image: linear-gradient(
+        135deg, 
+        rgba(255, 255, 255, 0) 0%, 
+        rgba(255, 255, 255, 0) 35%, 
+        rgba(255, 255, 255, 0.9) 50%, 
+        rgba(255, 255, 255, 0) 65%, 
+        rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 100% 300vh; /* スクロール領域全体に引き伸ばす */
+    background-attachment: fixed; /* 背景を画面に固定してスクロールでハイライト位置を動かす */
+    
+    /* 影とアニメーションのなめらかさ */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease, transform 0.2s ease;
 }
 
-/* 著作権表示 */
-footer {
-    margin-top: 40px;
-    text-align: center;
-    font-size: 0.8em;
-    color: #888;
+/* ホバー時の心地よいリアクション */
+.nav a:hover {
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #111;
+    border-color: #ccc;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px); /* 少し上に浮き上がる */
 }
