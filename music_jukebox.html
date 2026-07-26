@@ -653,6 +653,20 @@
             }
         }
 
+        // 🔧 修正ポイント：再生/一時停止ボタンにクリックイベントが未登録だったため追加
+        playPauseBtn.addEventListener('click', togglePlay);
+
+        // 🔧 修正ポイント：audioタグ自体のpause/play状態とボタン表示・isPlayingフラグを
+        //    常に同期させる（他の要因で再生/停止された場合にもボタン表示がズレないように）
+        audio.addEventListener('play', () => {
+            playPauseBtn.innerText = '⏸';
+            isPlaying = true;
+        });
+        audio.addEventListener('pause', () => {
+            playPauseBtn.innerText = '▶';
+            isPlaying = false;
+        });
+
         function formatTime(secs) {
             let min = Math.floor(secs / 60);
             let sec = Math.floor(secs % 60);
