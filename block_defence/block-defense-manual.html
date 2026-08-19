@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLOCK DEFENSE 説明書</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #070a12;
+    --panel: #0f1524;
+    --panel-2: #141c30;
+    --line: #212c47;
+    --cyan: #4dd9ff;
+    --magenta: #c04dff;
+    --amber: #ff9d4d;
+    --red: #ff4d6a;
+    --green: #4dffb0;
+    --yellow: #ffe14d;
+    --text: #e7ecf7;
+    --muted: #9aa7c4;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: radial-gradient(ellipse at 50% -10%, #10192e 0%, var(--bg) 60%);
+    color: var(--text);
+    font-family:'Rajdhani', sans-serif;
+    line-height:1.7;
+    padding: 24px 16px 80px;
+  }
+  h1,h2,h3,.brand{ font-family:'Orbitron', sans-serif; }
+
+  .wrap{ max-width: 760px; margin: 0 auto; }
+
+  .hero{ text-align:center; margin-bottom: 34px; }
+  .brand{
+    font-size: 30px;
+    letter-spacing:3px;
+    color: var(--cyan);
+    text-shadow: 0 0 18px rgba(77,217,255,.5);
+    margin: 0;
+  }
+  .brand span{ color: var(--magenta); text-shadow: 0 0 18px rgba(192,77,255,.5); }
+  .hero p{ color: var(--muted); font-size: 15px; margin-top: 8px; }
+
+  .card{
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding: 22px 24px;
+    margin-bottom: 20px;
+  }
+  .card h2{
+    color: var(--cyan);
+    font-size: 18px;
+    letter-spacing:1.5px;
+    margin: 0 0 14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .card h2 .no{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:26px; height:26px; border-radius:7px;
+    background: rgba(77,217,255,.12);
+    border:1px solid var(--line);
+    font-size:13px;
+  }
+  .card p{ margin: 0 0 10px; font-size: 15px; }
+  .card p:last-child{ margin-bottom:0; }
+  .muted{ color: var(--muted); font-size: 13.5px; }
+
+  .kbd-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:12px; }
+  @media (max-width:520px){ .kbd-grid{ grid-template-columns:1fr; } }
+  .kbd-item{
+    display:flex; align-items:center; gap:10px;
+    background: rgba(255,255,255,.03);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:9px 12px;
+  }
+  .kbd{
+    font-family:'Orbitron',sans-serif;
+    font-size:12px;
+    color: var(--cyan);
+    background: rgba(77,217,255,.1);
+    border:1px solid rgba(77,217,255,.35);
+    border-radius:6px;
+    padding:4px 8px;
+    min-width: 44px;
+    text-align:center;
+  }
+  .kbd-item span.desc{ font-size:14px; }
+
+  .flow{ display:flex; flex-direction:column; gap:10px; margin-top:6px; }
+  .flow-item{
+    display:flex; gap:12px; align-items:flex-start;
+    background: rgba(255,255,255,.03);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+  }
+  .flow-num{
+    font-family:'Orbitron',sans-serif;
+    color:var(--bg);
+    background: var(--cyan);
+    width:24px; height:24px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; flex-shrink:0; margin-top:1px;
+  }
+  .flow-item b{ display:block; font-size:14.5px; margin-bottom:2px; }
+  .flow-item span{ font-size:13.5px; color:var(--muted); }
+
+  table{ width:100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }
+  th,td{ text-align:left; padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th{ color: var(--muted); font-weight:600; font-size:12px; letter-spacing:1px; text-transform:uppercase; }
+  .tag{
+    display:inline-flex; align-items:center; justify-content:center;
+    width: 26px; height:26px; border-radius:6px;
+    font-family:'Orbitron',sans-serif; font-size:12px; font-weight:700;
+    color:#0a0e17;
+  }
+
+  .upg-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px; }
+  @media (max-width:520px){ .upg-grid{ grid-template-columns:1fr; } }
+  .upg-item{
+    background: rgba(255,255,255,.03);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:10px 12px;
+  }
+  .upg-item b{ font-size:13.5px; color: var(--text); display:block; margin-bottom:2px; }
+  .upg-item span{ font-size:12.5px; color: var(--muted); }
+
+  .enemy-row{ display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); }
+  .enemy-row:last-child{ border-bottom:none; }
+  .dot{ width:16px; height:16px; border-radius:50%; flex-shrink:0; }
+  .enemy-row b{ font-size:14.5px; }
+  .enemy-row span{ font-size:13px; color:var(--muted); display:block; }
+
+  .tips{ display:flex; flex-direction:column; gap:8px; margin-top:6px; }
+  .tips li{ font-size:14.5px; margin-left: 18px; }
+
+  .footer{ text-align:center; color: var(--muted); font-size:12.5px; margin-top: 30px; }
+
+  .lang-btn{
+    font-family:'Orbitron',sans-serif;
+    background: var(--panel-2);
+    border:1px solid var(--line);
+    color: var(--muted);
+    padding:8px 18px;
+    border-radius:20px;
+    cursor:pointer;
+    font-size:12px;
+    letter-spacing:1px;
+  }
+  .lang-btn.active{
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(77,217,255,.1);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <h1 class="brand">BLOCK <span>DEFENSE</span></h1>
+    <p id="heroSub">説明書 / 遊び方ガイド</p>
+    <div class="ctrl-row" style="display:flex; gap:10px; justify-content:center; margin-top:14px;">
+      <button class="lang-btn" id="langJaBtn">日本語</button>
+      <button class="lang-btn" id="langEnBtn">English</button>
+    </div>
+  </div>
+
+  <div id="ja-content">
+  <div class="card">
+    <h2><span class="no">1</span>ゲーム概要</h2>
+    <p>落ちてくるブロックを積み上げて<b>タワー</b>を作り、無限に押し寄せる敵から拠点を守る「落ちゲー × タワーディフェンス」です。</p>
+    <p class="muted">敵はどんどん強くなり、終わりはありません。どこまで生き残れるかに挑戦するゲームです。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">2</span>操作方法</h2>
+    <div class="kbd-grid">
+      <div class="kbd-item"><span class="kbd">←→</span><span class="desc">ブロックを左右に移動</span></div>
+      <div class="kbd-item"><span class="kbd">↑ / ⟳</span><span class="desc">ブロックを回転</span></div>
+      <div class="kbd-item"><span class="kbd">↓ / ▼</span><span class="desc">ソフトドロップ(押している間だけ高速落下)</span></div>
+      <div class="kbd-item"><span class="kbd">SPACE / ⤓</span><span class="desc">ハードドロップ(即座に着地)</span></div>
+      <div class="kbd-item"><span class="kbd">P / II</span><span class="desc">一時停止</span></div>
+      <div class="kbd-item"><span class="kbd">🔀</span><span class="desc">プレイヤーIDの再抽選</span></div>
+    </div>
+    <p class="muted" style="margin-top:12px;">スマホでは画面下の大きなボタン、PCではキーボードのどちらでも操作できます。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">3</span>基本ルール</h2>
+    <div class="flow">
+      <div class="flow-item">
+        <div class="flow-num">1</div>
+        <div><b>ブロックが着地するとタワーになる</b><span>置いた瞬間からそのブロックは自動で敵を攻撃するタワーに変わります。</span></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">2</div>
+        <div><b>敵は右から左へ歩いてくる</b><span>画面のレーン(横一列)ごとに、右端から拠点(画面左端)を目指して進んできます。</span></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">3</div>
+        <div><b>拠点に到達されるとHPが減る</b><span>拠点HPが0になるとゲームオーバーです。</span></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">4</div>
+        <div><b>横一列を埋めるとライン消去</b><span>そのレーンのタワーは消えてしまいますが、代わりに大きな経験値ボーナスがもらえます。守りとのトレードオフです。</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">4</span>タワー一覧(ブロックの形で性能が決まる)</h2>
+    <p class="muted">同じ場所に積んでも、ブロックの種類によってタワーの役割が変わります。</p>
+    <table>
+      <tr><th>形</th><th>名前</th><th>特徴</th></tr>
+      <tr><td><span class="tag" style="background:#4dd9ff;">I</span></td><td>狙撃機</td><td>射程が長く、火力も高い。攻撃間隔はやや遅め。</td></tr>
+      <tr><td><span class="tag" style="background:#ffe14d;">O</span></td><td>砲撃機</td><td>攻撃時に上下のレーンにも巻き込みダメージ(範囲攻撃)。</td></tr>
+      <tr><td><span class="tag" style="background:#c04dff;">T</span></td><td>連射機</td><td>一発は軽いが、非常に速い間隔で連射する。</td></tr>
+      <tr><td><span class="tag" style="background:#4dffb0;">S</span></td><td>氷結機</td><td>攻撃した敵の動きを一定時間遅くする。</td></tr>
+      <tr><td><span class="tag" style="background:#ff4d6a;">Z</span></td><td>重砲機</td><td>射程は短いが、単発火力は全タワー中トップクラス。</td></tr>
+      <tr><td><span class="tag" style="background:#4d7bff;">J</span></td><td>標準機</td><td>火力・射程・速度のバランス型。</td></tr>
+      <tr><td><span class="tag" style="background:#ff9d4d;">L</span></td><td>強化機</td><td>標準機よりわずかに全性能が高いバランス型。</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">5</span>レベルアップ & アップグレード</h2>
+    <p>敵を倒すと経験値がたまり、レベルアップします。レベルアップ時は<b>3択</b>からアップグレードを1つ選んで強化していきます。</p>
+    <div class="upg-grid">
+      <div class="upg-item"><b>攻撃力アップ</b><span>全タワーの攻撃力 +20%</span></div>
+      <div class="upg-item"><b>射程アップ</b><span>全タワーの射程 +1</span></div>
+      <div class="upg-item"><b>攻撃速度アップ</b><span>全タワーの攻撃間隔 -15%</span></div>
+      <div class="upg-item"><b>拠点強化</b><span>拠点の最大HP +30(全回復つき)</span></div>
+      <div class="upg-item"><b>減速フィールド</b><span>敵の移動速度 -8%(永続)</span></div>
+      <div class="upg-item"><b>経験値ブースト</b><span>獲得経験値 +15%</span></div>
+      <div class="upg-item"><b>応急修復</b><span>拠点HPを50回復</span></div>
+      <div class="upg-item"><b>降下加速</b><span>ソフトドロップの速度 +30%</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">6</span>敵の種類</h2>
+    <div class="enemy-row">
+      <div class="dot" style="background:#ff6a6a;"></div>
+      <div><b>通常タイプ</b><span>基本の敵。時間経過とともにHP・速度が上がっていきます。</span></div>
+    </div>
+    <div class="enemy-row">
+      <div class="dot" style="background:#ffe14d;"></div>
+      <div><b>高速タイプ</b><span>HPは低いが移動速度が速い。一定時間経過後から出現。</span></div>
+    </div>
+    <div class="enemy-row">
+      <div class="dot" style="background:#c04dff;"></div>
+      <div><b>重量タイプ</b><span>HPが高く移動は遅いが、拠点への攻撃力が大きい。より時間が経つと出現。</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">7</span>スコア & ランキング</h2>
+    <p>初回プレイ時に「するどいトラ4821」のようなプレイヤーIDが自動でつきます(自由入力はできません)。</p>
+    <p>ゲームオーバー時、自己ベストを更新していれば自動でランキングに送信されます。画面右上の 🏆 ボタンでいつでも上位ランキングを確認できます。</p>
+    <p class="muted">IDが気に入らない場合は 🔀 ボタンでいつでも再抽選できます(ただしランキング上の記録は新しいIDでの新規参加になります)。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">8</span>攻略のコツ</h2>
+    <ul class="tips">
+      <li>拠点に近いレーン(下の方)から優先的にタワーで固めると、HPを削られにくくなります。</li>
+      <li>I(狙撃機)は射程が長いので、少ない数でも広い範囲をカバーできます。</li>
+      <li>O(砲撃機)は敵が密集しやすいレーンの中心に置くと効果的です。</li>
+      <li>Z(重砲機)は火力は高いですが射程が短いので、囲まれると弱いです。周りを他のタワーで守りましょう。</li>
+      <li>ライン消去は経験値効率が良い反面、守りが一時的に薄くなります。敵が少ないタイミングを狙いましょう。</li>
+      <li>レベルアップの選択肢に迷ったら、序盤は「攻撃速度」か「射程」、終盤は「拠点強化」がおすすめです。</li>
+    </ul>
+  </div>
+
+  <div class="footer">BLOCK DEFENSE — 落ちゲー × 無限タワーディフェンス</div>
+  </div>
+
+  <div id="en-content" style="display:none;">
+  <div class="card">
+    <h2><span class="no">1</span>Overview</h2>
+    <p>Stack falling blocks into <b>towers</b> to defend your base against an endless wave of enemies — a mashup of a falling-block puzzle game and a tower defense.</p>
+    <p class="muted">Enemies keep getting stronger forever. There's no ending — the challenge is how long you can survive.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">2</span>Controls</h2>
+    <div class="kbd-grid">
+      <div class="kbd-item"><span class="kbd">←→</span><span class="desc">Move the block left/right</span></div>
+      <div class="kbd-item"><span class="kbd">↑ / ⟳</span><span class="desc">Rotate the block</span></div>
+      <div class="kbd-item"><span class="kbd">↓ / ▼</span><span class="desc">Soft drop (fast-fall while held)</span></div>
+      <div class="kbd-item"><span class="kbd">SPACE / ⤓</span><span class="desc">Hard drop (instant landing)</span></div>
+      <div class="kbd-item"><span class="kbd">P / II</span><span class="desc">Pause</span></div>
+      <div class="kbd-item"><span class="kbd">🔀</span><span class="desc">Reroll your player ID</span></div>
+    </div>
+    <p class="muted" style="margin-top:12px;">Works with on-screen buttons on mobile, or the keyboard on desktop.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">3</span>Basic Rules</h2>
+    <div class="flow">
+      <div class="flow-item">
+        <div class="flow-num">1</div>
+        <div><b>Landed blocks become towers</b><span>The moment a block settles, it turns into an auto-firing tower.</span></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">2</div>
+        <div><b>Enemies walk from right to left</b><span>In each lane (row), enemies march from the right edge toward your base on the left.</span></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">3</div>
+        <div><b>Reaching the base costs HP</b><span>When base HP hits 0, it's game over.</span></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">4</div>
+        <div><b>Fill a row to clear it</b><span>Towers in that row are lost, but you get a big XP bonus in return — a trade-off between offense and defense.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">4</span>Tower Types (determined by block shape)</h2>
+    <p class="muted">The same spot can hold very different towers depending on which block shape lands there.</p>
+    <table>
+      <tr><th>Shape</th><th>Name</th><th>Traits</th></tr>
+      <tr><td><span class="tag" style="background:#4dd9ff;">I</span></td><td>Sniper</td><td>Long range and high damage. Fires a bit slower.</td></tr>
+      <tr><td><span class="tag" style="background:#ffe14d;">O</span></td><td>Cannon</td><td>Splash damage that also hits the row above and below.</td></tr>
+      <tr><td><span class="tag" style="background:#c04dff;">T</span></td><td>Rapid</td><td>Light hits, but fires extremely fast.</td></tr>
+      <tr><td><span class="tag" style="background:#4dffb0;">S</span></td><td>Frost</td><td>Slows down whatever it hits for a short time.</td></tr>
+      <tr><td><span class="tag" style="background:#ff4d6a;">Z</span></td><td>Heavy</td><td>Short range, but the highest single-hit damage of any tower.</td></tr>
+      <tr><td><span class="tag" style="background:#4d7bff;">J</span></td><td>Standard</td><td>Balanced damage, range, and speed.</td></tr>
+      <tr><td><span class="tag" style="background:#ff9d4d;">L</span></td><td>Upgraded</td><td>Slightly better all-round than Standard.</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">5</span>Leveling Up & Upgrades</h2>
+    <p>Defeating enemies earns XP. On level-up, pick <b>one of three</b> upgrades to grow stronger.</p>
+    <div class="upg-grid">
+      <div class="upg-item"><b>Damage Up</b><span>+20% damage on all towers</span></div>
+      <div class="upg-item"><b>Range Up</b><span>+1 range on all towers</span></div>
+      <div class="upg-item"><b>Fire Rate Up</b><span>-15% attack cooldown</span></div>
+      <div class="upg-item"><b>Base Reinforce</b><span>+30 max base HP (full heal)</span></div>
+      <div class="upg-item"><b>Slow Field</b><span>-8% enemy speed (permanent)</span></div>
+      <div class="upg-item"><b>XP Boost</b><span>+15% XP gained</span></div>
+      <div class="upg-item"><b>Field Repair</b><span>Heal base by 50 HP</span></div>
+      <div class="upg-item"><b>Drop Boost</b><span>+30% soft drop speed</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">6</span>Enemy Types</h2>
+    <div class="enemy-row">
+      <div class="dot" style="background:#ff6a6a;"></div>
+      <div><b>Standard</b><span>The basic enemy. HP and speed rise as time goes on.</span></div>
+    </div>
+    <div class="enemy-row">
+      <div class="dot" style="background:#ffe14d;"></div>
+      <div><b>Fast</b><span>Low HP but moves quickly. Starts appearing after a while.</span></div>
+    </div>
+    <div class="enemy-row">
+      <div class="dot" style="background:#c04dff;"></div>
+      <div><b>Heavy</b><span>High HP, slow, but hits your base hard. Appears later on.</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">7</span>Score & Ranking</h2>
+    <p>On your first play, you're automatically given a player ID like "SwiftTiger4821" (free text entry isn't allowed).</p>
+    <p>When you beat your personal best, it's automatically submitted to the ranking. Tap the 🏆 button anytime to see the top scores.</p>
+    <p class="muted">Don't like your ID? Tap 🔀 to reroll anytime (note: this starts a new entry on the ranking).</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">8</span>Tips</h2>
+    <ul class="tips">
+      <li>Prioritize building towers in the lanes closest to your base — it keeps your HP from draining fast.</li>
+      <li>I (Sniper) has long range, so a few of them can cover a wide area.</li>
+      <li>O (Cannon) works best in the center of lanes where enemies tend to bunch up.</li>
+      <li>Z (Heavy) hits hard but has short range — it's weak if surrounded, so protect it with other towers.</li>
+      <li>Clearing lines is great for XP but temporarily weakens your defense. Time it for quiet moments.</li>
+      <li>Not sure which upgrade to pick? Early on, go for Fire Rate or Range; late game, Base Reinforce is a solid pick.</li>
+    </ul>
+  </div>
+
+  <div class="footer">BLOCK DEFENSE — Falling Blocks × Infinite Tower Defense</div>
+  </div>
+
+</div>
+
+<script>
+  const langJaBtn = document.getElementById('langJaBtn');
+  const langEnBtn = document.getElementById('langEnBtn');
+  const jaContent = document.getElementById('ja-content');
+  const enContent = document.getElementById('en-content');
+  const heroSub = document.getElementById('heroSub');
+
+  function setLang(lang){
+    localStorage.setItem('bd_lang', lang);
+    if(lang==='en'){
+      jaContent.style.display='none'; enContent.style.display='block';
+      heroSub.textContent = 'Manual / How to Play';
+      langEnBtn.classList.add('active'); langJaBtn.classList.remove('active');
+    } else {
+      enContent.style.display='none'; jaContent.style.display='block';
+      heroSub.textContent = '説明書 / 遊び方ガイド';
+      langJaBtn.classList.add('active'); langEnBtn.classList.remove('active');
+    }
+  }
+  langJaBtn.addEventListener('click', ()=>setLang('ja'));
+  langEnBtn.addEventListener('click', ()=>setLang('en'));
+  setLang(localStorage.getItem('bd_lang') || 'ja');
+</script>
+</body>
+</html>
