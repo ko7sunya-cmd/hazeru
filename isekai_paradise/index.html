@@ -2285,6 +2285,7 @@ function playBgm(src){
     bgm.src = src;
     bgm.currentTime = 0;
     bgm.volume = 0;
+    bgm.muted = bgmMuted; // iOS Safari対策: volumeが無視される環境でも確実にミュートを反映する
     bgm.play().then(()=>{ fadeBgmTo(bgmMuted ? 0 : BGM_VOLUME, 900); }).catch(()=>{ /* ユーザー操作待ち */ });
   };
   if(bgm.src && !bgm.paused){
@@ -2298,6 +2299,7 @@ function playBgm(src){
 muteBtn.addEventListener('click', ()=>{
   bgmMuted = !bgmMuted;
   muteBtn.textContent = bgmMuted ? '🔇' : '🔊';
+  bgm.muted = bgmMuted; // iOS Safari対策: volumeフェードだけだと無音にならない環境があるため、mutedを直接切り替える
   fadeBgmTo(bgmMuted ? 0 : BGM_VOLUME, 300);
   if(!bgmMuted && bgm.paused){ bgm.play().catch(()=>{}); }
 });
