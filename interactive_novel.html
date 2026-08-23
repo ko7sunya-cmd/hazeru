@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>インタラクティブノベル｜はぜるの作品</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 作品カードのスタイル（クリックしやすくする） */
+        .work-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .work-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .work-card h3 {
+            margin: 0 0 8px 0;
+            color: #ffb74d; /* タイトルを目立たせる色 */
+        }
+        .work-card p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #ccc;
+            line-height: 1.6;
+        }
+        .play-badge {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 4px 12px;
+            background: #ffb74d;
+            color: #111;
+            font-weight: bold;
+            font-size: 0.8em;
+            border-radius: 20px;
+        }
+
+        /* モーダル（ポップアップ）のスタイル */
+        .modal-overlay {
+            display: none; /* 初期状態は非表示 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ゲーム画面を囲むコンテナ */
+        .modal-content {
+            position: relative;
+            width: 100%;
+            max-width: 480px; /* スマホ画面風に横幅を制限（不要なら100%にしてください） */
+            height: 90vh; /* 画面の高さの90% */
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ゲームを読み込む枠組み */
+        .modal-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* 閉じるボタン (✖) */
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 36px;
+            height: 36px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            font-size: 20px;
+            line-height: 34px;
+            text-align: center;
+            cursor: pointer;
+            z-index: 10000;
+            user-select: none;
+            transition: background 0.2s;
+        }
+        .close-btn:hover {
+            background: rgba(255, 0, 0, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <p class="site-title">はぜるの作品</p>
+            <h1>インタラクティブノベル</h1>
+            <nav class="site-menu">
+                <a href="index.html">トップ</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="intro">
+                <p>BGMと共に物語が展開する、選択式のインタラクティブノベル。<br>
+                あなたの選択によって、ストーリーの行方と結末が変化します。</p>
+            </section>
+
+            <section class="work-list">
+                <h2>作品一覧</h2>
+
+                <!-- 🎴 作品カード（クリックするとポップアップが開く） -->
+                <div class="work-card" onclick="openGame('isekai_paradise/index.html')">
+                    <h3>異世界パラダイス幸福度クロニクル</h3>
+                    <p>現代日本の"良いとこ取り"の暮らしを、この世界に生きる少女たちへ。小さな親切が心を揺さぶるミニデモ作品。</p>
+                    <span class="play-badge">▶ プレイする</span>
+                </div>
+
+            </section>
+        </main>
+
+        <footer style="margin-top: 50px; text-align: center; color: #777;">
+            <p>&copy; 2026 はぜる</p>
+        </footer>
+    </div>
+
+    <!-- 🚀 ポップアップ表示用のエリア -->
+    <div id="gameModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeGame()">✕</div>
+            <iframe id="gameFrame" src=""></iframe>
+        </div>
+    </div>
+
+    <!-- ⚡ 開閉処理用のJavaScript -->
+    <script>
+        function openGame(url) {
+            const modal = document.getElementById('gameModal');
+            const iframe = document.getElementById('gameFrame');
+            iframe.src = url; // iframeにゲームのURLをセット
+            modal.style.display = 'flex'; // ポップアップを表示
+            document.body.style.overflow = 'hidden'; // 背景のスクロールを固定
+        }
+
+        function closeGame() {
+            const modal = document.getElementById('gameModal');
+            const iframe = document.getElementById('gameFrame');
+            iframe.src = ''; // 音が鳴り続けないようにURLを空にする
+            modal.style.display = 'none'; // ポップアップを非表示
+            document.body.style.overflow = 'auto'; // スクロール解除
+        }
+    </script>
+</body>
+</html>
