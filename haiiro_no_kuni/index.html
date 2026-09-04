@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>灰の国で、恋を知る</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#f3ecd8;
+    --paper:#fbf6ea;
+    --slum-a:#221f2b;
+    --slum-b:#2f2a35;
+    --paradise-a:#3a2350;
+    --paradise-b:#e8b04b;
+    --gold:#e8b04b;
+    --glow:#ffe3a3;
+    --rose:#e8879a;
+    --line: rgba(243,236,216,0.16);
+    --tier0-1:#1c1a24;
+    --tier0-2:#2a2531;
+    --tier1-1:#211f34;
+    --tier1-2:#3a2f4d;
+    --tier2-1:#2a2140;
+    --tier2-2:#5a3a5e;
+    --tier3-1:#3a2246;
+    --tier3-2:#8a4e5a;
+    --tier4-1:#4a2340;
+    --tier4-2:#e8b04b;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    color:var(--ink);
+    background: radial-gradient(circle at 20% 0%, var(--tier0-2), var(--tier0-1) 60%);
+    transition: background 1.4s ease;
+    overflow-x:hidden;
+    position:relative;
+  }
+  body[data-tier="1"]{background: radial-gradient(circle at 20% 0%, var(--tier1-2), var(--tier1-1) 60%);}
+  body[data-tier="2"]{background: radial-gradient(circle at 20% 0%, var(--tier2-2), var(--tier2-1) 60%);}
+  body[data-tier="3"]{background: radial-gradient(circle at 20% 0%, var(--tier3-2), var(--tier3-1) 60%);}
+  body[data-tier="4"]{background: radial-gradient(circle at 30% 0%, var(--tier4-2), var(--tier4-1) 55%);}
+
+  .stars{
+    position:fixed; inset:0; pointer-events:none; opacity:0.5;
+    background-image:
+      radial-gradient(1.5px 1.5px at 10% 20%, var(--ink), transparent),
+      radial-gradient(1.5px 1.5px at 80% 10%, var(--ink), transparent),
+      radial-gradient(1px 1px at 40% 60%, var(--ink), transparent),
+      radial-gradient(1.5px 1.5px at 70% 80%, var(--ink), transparent),
+      radial-gradient(1px 1px at 90% 50%, var(--ink), transparent),
+      radial-gradient(1px 1px at 25% 85%, var(--ink), transparent);
+    background-repeat:no-repeat;
+  }
+
+  .wrap{
+    max-width:720px; margin:0 auto; padding:32px 20px 80px;
+    position:relative; z-index:1;
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; letter-spacing:0.22em; text-transform:uppercase;
+    color:var(--gold); opacity:0.85; text-align:center; margin-bottom:6px;
+  }
+  h1.title{
+    font-family:'Shippori Mincho', serif;
+    font-weight:800;
+    font-size:clamp(26px,6vw,38px);
+    text-align:center; margin:0 0 6px;
+    letter-spacing:0.02em;
+    background: linear-gradient(90deg, var(--glow), var(--gold) 60%, var(--rose));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .lede{
+    text-align:center; font-size:13.5px; color:var(--ink); opacity:0.65;
+    margin:0 0 34px; line-height:1.7;
+  }
+
+  /* --- select screen --- */
+  .total-happiness{
+    text-align:center; font-family:'JetBrains Mono',monospace; font-size:13px;
+    color:var(--gold); opacity:0.85; letter-spacing:0.05em; margin-bottom:18px;
+  }
+  .char-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:520px){ .char-grid{grid-template-columns:1fr;} }
+  .char-card{
+    background:linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+    border:1px solid var(--line); border-radius:18px;
+    padding:22px 18px; text-align:center; cursor:pointer;
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .char-card:hover{ transform:translateY(-4px); border-color:var(--card-color,var(--gold)); box-shadow:0 10px 30px -12px var(--card-color,var(--gold)); }
+  }
+  .emblem{
+    width:78px; height:78px; margin:0 auto 14px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--glow-c,var(--glow)), var(--card-color,var(--gold)) 70%);
+    box-shadow:0 0 30px -6px var(--card-color,var(--gold));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Shippori Mincho',serif; font-weight:800; font-size:26px; color:#241522;
+  }
+  .char-card h3{ font-family:'Shippori Mincho',serif; font-size:19px; margin:0 0 4px; }
+  .char-card p{ font-size:12px; opacity:0.6; margin:0 0 14px; line-height:1.6;}
+  .char-progress{ font-family:'JetBrains Mono',monospace; font-size:11px; opacity:0.75; }
+
+  .char-card.locked{
+    opacity:0.55; cursor:default; filter:grayscale(0.6);
+  }
+  @media (hover:hover) and (pointer:fine){
+    .char-card.locked:hover{ transform:none; border-color:var(--line); box-shadow:none; }
+  }
+  .locked-emblem{
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.15), rgba(255,255,255,0.03) 70%);
+    box-shadow:none; color:var(--ink); opacity:0.7;
+  }
+
+  .reset-save-btn{
+    display:block; margin:28px auto 0; background:none; border:none;
+    color:var(--ink); opacity:0.4; font-size:11px; font-family:'Zen Kaku Gothic New',sans-serif;
+    text-decoration:underline; cursor:pointer;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .reset-save-btn:hover{ opacity:0.7; }
+  }
+
+  /* --- game screen --- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:18px; gap:12px;
+  }
+  .backbtn{
+    background:none; border:1px solid var(--line); color:var(--ink);
+    font-family:'Zen Kaku Gothic New',sans-serif; font-size:12px;
+    padding:8px 14px; border-radius:100px; cursor:pointer; opacity:0.75;
+    transition:opacity .2s, border-color .2s;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .backbtn:hover{ opacity:1; border-color:var(--gold); }
+  }
+
+  .who{ display:flex; align-items:center; gap:10px; }
+  .who .dot{ width:34px; height:34px; border-radius:50%; background:var(--card-color,var(--gold)); box-shadow:0 0 16px -2px var(--card-color,var(--gold)); flex:none; }
+  .who .name{ font-family:'Shippori Mincho',serif; font-weight:700; font-size:15px; }
+  .who .rank{ font-size:10.5px; opacity:0.6; font-family:'JetBrains Mono',monospace; letter-spacing:0.05em; }
+
+  .gauge-shell{
+    border:1px solid var(--line); border-radius:100px; height:12px;
+    overflow:hidden; background:rgba(0,0,0,0.25); margin-bottom:4px;
+  }
+  .gauge-fill{
+    height:100%; border-radius:100px;
+    background:linear-gradient(90deg, var(--rose), var(--gold), var(--glow));
+    width:0%; transition: width 1s cubic-bezier(.2,.9,.25,1);
+    box-shadow:0 0 12px 1px var(--gold);
+  }
+  .gauge-num{
+    text-align:right; font-family:'JetBrains Mono',monospace; font-size:11px; opacity:0.7;
+    margin-bottom:22px;
+  }
+
+  .scene{
+    position:relative;
+    border:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01));
+    border-radius:20px; padding:26px 24px 22px;
+    margin-bottom:18px;
+  }
+  .scene::before{
+    content:""; position:absolute; top:14px; left:14px; width:16px; height:16px;
+    border-top:2px solid var(--card-color,var(--gold)); border-left:2px solid var(--card-color,var(--gold));
+    opacity:0.7;
+  }
+  .scene::after{
+    content:""; position:absolute; bottom:14px; right:14px; width:16px; height:16px;
+    border-bottom:2px solid var(--card-color,var(--gold)); border-right:2px solid var(--card-color,var(--gold));
+    opacity:0.7;
+  }
+  .scene-label{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.15em;
+    text-transform:uppercase; color:var(--card-color,var(--gold)); margin-bottom:10px; opacity:0.85;
+  }
+  .scene-text{
+    font-size:15.5px; line-height:1.95; white-space:pre-wrap;
+  }
+
+  .choices{ display:flex; flex-direction:column; gap:10px; }
+  .choice-btn{
+    text-align:left; padding:15px 18px; border-radius:14px;
+    border:1px solid var(--line); background:rgba(255,255,255,0.03);
+    color:var(--ink); font-family:'Zen Kaku Gothic New',sans-serif; font-size:14px;
+    cursor:pointer; transition: border-color .2s, background .2s, transform .15s;
+    line-height:1.5;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .choice-btn:hover{ border-color:var(--card-color,var(--gold)); background:rgba(255,255,255,0.07); transform:translateX(2px); }
+  }
+  .choice-btn:active{ border-color:var(--card-color,var(--gold)); background:rgba(255,255,255,0.07); transform:scale(0.98) translateX(2px); }
+  .choice-btn .delta-hint{
+    display:block; margin-top:5px; font-family:'JetBrains Mono',monospace; font-size:10.5px; opacity:0.55;
+  }
+  .continue-btn{
+    margin-top:4px; align-self:flex-end;
+    background:linear-gradient(90deg, var(--gold), var(--rose));
+    color:#241522; border:none; padding:12px 22px; border-radius:100px;
+    font-weight:700; font-size:13px; cursor:pointer;
+    box-shadow:0 8px 20px -8px var(--gold);
+  }
+
+  /* --- popup burst --- */
+  .burst-layer{
+    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+    pointer-events:none; z-index:50;
+  }
+  .burst{
+    font-family:'JetBrains Mono',monospace; font-weight:700;
+    font-size:54px; color:var(--glow);
+    text-shadow:0 0 20px var(--gold), 0 0 50px var(--rose);
+    opacity:0; transform:scale(0.4);
+  }
+  .burst.play{ animation: burstpop 1.5s cubic-bezier(.2,1.4,.3,1) forwards; }
+  @keyframes burstpop{
+    0%{ opacity:0; transform:scale(0.3) translateY(20px);}
+    18%{ opacity:1; transform:scale(1.15) translateY(0);}
+    30%{ transform:scale(1);}
+    75%{ opacity:1; }
+    100%{ opacity:0; transform:scale(1) translateY(-30px);}
+  }
+  .rankup-banner{
+    position:fixed; left:0; right:0; top:26%; text-align:center; z-index:51;
+    pointer-events:none; opacity:0;
+  }
+  .rankup-banner.play{ animation: bannerslide 2.2s ease forwards; }
+  @keyframes bannerslide{
+    0%{ opacity:0; transform:translateY(-14px) scale(0.96);}
+    14%{ opacity:1; transform:translateY(0) scale(1);}
+    80%{ opacity:1;}
+    100%{ opacity:0; transform:translateY(-6px) scale(1);}
+  }
+  .rankup-banner .lbl{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    letter-spacing:0.2em; color:var(--glow); background:rgba(20,10,20,0.55);
+    border:1px solid var(--gold); padding:5px 14px; border-radius:100px; margin-bottom:10px;
+  }
+  .rankup-banner .big{
+    font-family:'Shippori Mincho',serif; font-weight:800; font-size:clamp(28px,7vw,44px);
+    background:linear-gradient(90deg, var(--glow), var(--gold), var(--rose));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 0 40px rgba(232,176,75,0.35);
+  }
+
+  /* --- ending --- */
+  .ending{
+    text-align:center; padding:40px 10px;
+  }
+  .ending h2{ font-family:'Shippori Mincho',serif; font-size:24px; margin-bottom:10px; }
+  .ending p{ font-size:14px; opacity:0.75; line-height:1.9; max-width:480px; margin:0 auto 22px; }
+  .ending .final-num{
+    font-family:'JetBrains Mono',monospace; font-size:40px; color:var(--gold); margin-bottom:6px;
+  }
+  #screen-ending.is-max .scene{
+    border-color: var(--card-color, var(--gold));
+    box-shadow:0 0 50px -14px var(--card-color, var(--gold)), inset 0 0 40px -20px var(--card-color, var(--gold));
+  }
+  #screen-ending.is-max #end-label{
+    color: var(--glow-c, var(--glow));
+    font-weight:700;
+    text-shadow:0 0 12px var(--card-color, var(--gold));
+  }
+  #screen-ending.is-max #end-title{
+    background: linear-gradient(90deg, var(--glow-c,var(--glow)), var(--card-color,var(--gold)));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  /* --- finale (epilogue collection) --- */
+  .finale-title{
+    font-family:'Shippori Mincho',serif; font-weight:800;
+    font-size:clamp(24px,6vw,32px); text-align:center; margin:2px 0 18px;
+    background: linear-gradient(90deg, #ffdf99, #ffc2d1, #bcdcff, #d9c2ff, #a8e8cf, #fff5d9);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .finale-intro{
+    text-align:center; font-size:14px; opacity:0.8; line-height:1.9;
+    max-width:520px; margin:0 auto 28px;
+  }
+  .finale-vignettes{
+    display:flex; flex-direction:column; gap:14px; margin-bottom:30px;
+  }
+  .finale-card{
+    border:1px solid var(--line); border-left:3px solid var(--vc, var(--gold));
+    border-radius:14px; padding:16px 18px;
+    background:linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+  }
+  .finale-card .fname{
+    font-family:'Shippori Mincho',serif; font-weight:700; font-size:14px;
+    color:var(--vc, var(--gold)); margin-bottom:6px;
+  }
+  .finale-card .ftext{
+    font-size:13.5px; line-height:1.85; opacity:0.85;
+  }
+  .finale-closing{
+    text-align:center; font-size:14px; line-height:2.1; opacity:0.85;
+    max-width:480px; margin:0 auto 26px; white-space:pre-wrap;
+  }
+
+  .hidden{ display:none !important; }
+
+  .mute-btn{
+    position:fixed; top:16px; right:16px; z-index:60;
+    width:42px; height:42px; border-radius:50%;
+    border:1px solid var(--line); background:rgba(20,15,25,0.55);
+    color:var(--ink); font-size:17px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter: blur(6px);
+    transition: border-color .2s, transform .15s;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .mute-btn:hover{ border-color:var(--gold); transform:scale(1.06); }
+  }
+
+  /* --- title screen --- */
+  #screen-title{
+    min-height:72vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    cursor:pointer;
+  }
+  #screen-title .lede{ max-width:420px; }
+  .tap-start{
+    margin-top:46px; display:flex; flex-direction:column;
+    align-items:center; gap:14px;
+  }
+  .tap-circle{
+    width:64px; height:64px; border-radius:50%;
+    border:1px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--glow); font-size:19px; padding-left:4px;
+    animation: pulseRing 2.2s ease-in-out infinite;
+  }
+  @keyframes pulseRing{
+    0%,100%{ box-shadow:0 0 0 0 rgba(232,176,75,0.35); transform:scale(1); }
+    50%{ box-shadow:0 0 0 16px rgba(232,176,75,0); transform:scale(1.06); }
+  }
+  .tap-label{
+    font-family:'JetBrains Mono',monospace; font-size:11px;
+    letter-spacing:0.3em; color:var(--gold); opacity:0.85;
+  }
+</style>
+</head>
+<body data-tier="0">
+<audio id="bgm" loop preload="auto"></audio>
+<button class="mute-btn" id="mute-btn" title="BGMのオン/オフ">🔊</button>
+<div class="stars"></div>
+<div class="wrap">
+
+  <!-- TITLE SCREEN -->
+  <div id="screen-title">
+    <div class="eyebrow">Ashen World Affection Chronicle</div>
+    <h1 class="title">灰の国で、恋を知る</h1>
+    <p class="lede">娯楽といえば、安酒場と賭場と、夜の色街くらいしかない殺伐とした国へ。<br>転生者である主人公が持ち込む、景色を見に行くこと、何気ない一日を二人で過ごすこと——そんな"当たり前"が、灰色だった誰かの明日を少しずつ照らしていく。</p>
+    <div class="tap-start" id="tap-start">
+      <div class="tap-circle">▶</div>
+      <div class="tap-label">TAP TO START</div>
+    </div>
+  </div>
+
+  <!-- SELECT SCREEN -->
+  <div id="screen-select" class="hidden">
+    <div class="eyebrow">Choose Your Story</div>
+    <div class="total-happiness" id="total-happiness">総幸福度: 0</div>
+    <div class="char-grid" id="char-grid"></div>
+    <button class="reset-save-btn" id="btn-reset-save">セーブデータをリセット</button>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="screen-game" class="hidden">
+    <div class="topbar">
+      <button class="backbtn" id="btn-back">← キャラクター選択に戻る</button>
+    </div>
+    <div class="who">
+      <div class="dot" id="who-dot"></div>
+      <div>
+        <div class="name" id="who-name"></div>
+        <div class="rank" id="who-rank"></div>
+      </div>
+    </div>
+    <div style="height:14px;"></div>
+    <div class="gauge-shell"><div class="gauge-fill" id="gauge-fill"></div></div>
+    <div class="gauge-num" id="gauge-num">幸福度 0</div>
+
+    <div class="scene">
+      <div class="scene-label" id="scene-label">SCENE</div>
+      <div class="scene-text" id="scene-text"></div>
+    </div>
+
+    <div class="choices" id="choices"></div>
+  </div>
+
+  <!-- ENDING SCREEN -->
+  <div id="screen-ending" class="hidden">
+    <div class="scene ending">
+      <div class="scene-label" id="end-label">EPILOGUE</div>
+      <h2 id="end-title"></h2>
+      <div class="final-num" id="end-num"></div>
+      <p id="end-text"></p>
+      <button class="continue-btn" id="btn-ending-back" style="float:none;">キャラクター選択に戻る</button>
+    </div>
+  </div>
+
+  <!-- FINALE SCREEN -->
+  <div id="screen-finale" class="hidden">
+    <div class="eyebrow">SPECIAL EPILOGUE COLLECTION</div>
+    <h2 class="finale-title">それからの日々</h2>
+    <p class="finale-intro" id="finale-intro"></p>
+    <div class="finale-vignettes" id="finale-vignettes"></div>
+    <p class="finale-closing" id="finale-closing"></p>
+    <button class="continue-btn" id="btn-finale-back" style="float:none;">キャラクター選択に戻る</button>
+  </div>
+
+</div>
+
+<div class="burst-layer">
+  <div class="burst" id="burst"></div>
+</div>
+<div class="rankup-banner" id="rankup-banner">
+  <div class="lbl">RANK UP</div>
+  <div class="big" id="rankup-text"></div>
+</div>
+
+<script>
+const RANKS = [
+  {min:0,   name:"警戒"},
+  {min:50,  name:"顔見知り"},
+  {min:100, name:"友達"},
+  {min:180, name:"親友"},
+  {min:250, name:"唯一無二の相棒"}
+];
+
+/*
+  ============================================================
+  DATA構造ガイド(このコメントブロックは実装に含めないこと)
+  ============================================================
+  各キャラは以下の形をとる:
+
+  charKey: {
+    name: "表示名",
+    subtitle: "1行の紹介文",
+    color: "#hexカラー",   glow: "#淡い色",  emblem: "漢字1文字",
+    tier: 1,  // 1=最初から解放 / 2以上=TIER_THRESHOLDSの値に到達で解放
+
+    event1: {                         // 全ルート共通の邂逅シーン
+      label: "SCENE 01 — 邂逅",
+      text: "状況описание...",
+      choices: [
+        { label:"選択肢A", delta:100, route:"A", result:"..." },
+        { label:"選択肢B", delta:75,  route:"B", result:"..." }
+      ]
+    },
+
+    routes: {
+      A: {
+        routeLabel: "ルートAの呼び名",
+        epilogueText: "幸福度MAXで到達する特別エンディング文",
+        events: [
+          { label:"SCENE 02 — ...", text:"...", choices:[
+              {label:"控えめな選択", delta:10, result:"..."},
+              {label:"踏み込む選択", delta:40, result:"..."}
+          ]},
+          // SCENE 03(15/55の2択)
+          // SCENE 04〜07: 春夏秋冬、3択(15/35/70)にすると読み応えが出る
+          // SCENE 08: 最後のシーン。final:true と endingText を必ず入れる
+          {
+            label:"SCENE 08 — これから", text:"...",
+            choices:[
+              {label:"控えめな選択", delta:20, result:"..."},
+              {label:"踏み込む選択", delta:85, result:"..."}
+            ],
+            final:true,
+            endingText:"幸福度が最大値に届かなかった場合のノーマルエンド文"
+          }
+        ]
+      },
+      B: { routeLabel:"ルートBの呼び名", epilogueText:"...", events: [ Aと同じ形で7シーン分続ける ] }
+    }
+  }
+
+  ポイント:
+  - event1のchoicesは必ず2つ、それぞれにroute:"A" / route:"B" を付ける
+  - 各ルートのeventsは7個(SCENE 02〜08)、最後だけ final:true + endingText
+  - deltaの目安: 邂逅=100/75前後、通常2択=10-15(控えめ)/40-60(踏み込む)、
+    季節3択=15(控えめ)/35(中間)/70(踏み込む)、最終=20(控えめ)/85(踏み込む)
+  - 好意度用語は「幸福度」で統一(このテンプレのUI文言も幸福度に合わせてある)
+  ============================================================
+*/
+
+const DATA = {
+  /* ============================================================
+     ロードマップ(未実装・tier解放システムのための予約枠)
+     tier1(最初から解放・6人): メリア/セラ/リナ/カイア/ロゼ/ヴェラ
+     tier2(2200到達で解放): 完了(フィーネ)
+     tier3(4200到達で解放): 完了(シャルロット)
+     tier4(6500到達で解放・本命ポジション): 完了(アリシア)
+     全9人実装完了。
+     ============================================================ */
+  meria: {
+    name:"メリア",
+    subtitle:"パン屋の一人娘",
+    color:"#c98a4b", glow:"#ffd9a0", emblem:"麦", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"転生してから知ったのは、この国に「娯楽」と呼べるものが安酒場と賭場と、夜の色街くらいしかないということだった。景色を見に行く、なんて発想自体が贅沢品扱いされる、そんな殺伐とした国。\n毎朝同じ時間に同じパンを焼き、同じ愛想笑いで客をさばく店先に、メリアはいた。手際は良いのに、目はどこか遠くを見ている。まるで、明日が今日と同じであることをとっくに諦めているような顔で。\n「はい、いつものね」\n名前も知らない常連客として扱われたまま、何度目かのパンを受け取った日、ふとその表情が気になった。",
+      choices:[
+        {label:"「たまには、外の景色でも見に行かないか」と誘ってみる", delta:100, route:"A",
+         result:"メリアの手が、一瞬止まった。\n「……冗談、よね?」\n笑い飛ばそうとした声が、途中で止まる。本気だと分かった瞬間の彼女の顔には、戸惑いより先に、隠しきれない驚きが浮かんでいた。"},
+        {label:"気負わず、まずは常連として通い続けることにする", delta:75, route:"B",
+         result:"特に何を言うでもなく、その日もいつも通りパンを買って帰った。ただ、店を出る間際にメリアがこちらをちらりと見ていたことには、しばらく気づかなかった。"}
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"灰色に差した光",
+        epilogueText:"「あの日、外に連れ出してくれなかったら」\n丘の上、二人で見下ろす国の灯りを眺めながらメリアが言う。「私、今でもパンを焼いて、愛想笑いして、それだけで一生終わってたと思う」\n「今は?」と聞くと、彼女はこちらを見て、初めて出会った日には見せなかった顔で笑った。\n「今は、明日が楽しみ。あなたと一緖なら、何でもないはずの一日が、ちゃんと特別になるから」\n殺伐とした国の片隅で、確かに一つ、灰色ではない明日が生まれていた。",
+        events:[
+          {
+            label:"SCENE 02 — 初めての寄り道",
+            text:"仕事終わり、メリアを連れて店の裏手にある小さな丘まで歩いた。国では珍しく、ただ夕焼けが綺麗なだけの場所。\n「こんなところ、何のために来るの」\n半信半疑な声だったが、足は止まらなかった。",
+            choices:[
+              {label:"「何のためでもない。ただ、綺麗だから見に来た」と答える", delta:10, result:"メリアは拍子抜けした顔をして、それから小さく笑った。「……変なの」そう言いながらも、しばらく景色から目を離さなかった。"},
+              {label:"「メリアに、綺麗なものを見せたかっただけだ」と正直に伝える", delta:40, result:"メリアは目を見開き、頬を赤らめて視線を逸らした。「……そういうこと、簡単に言わないでよ」声は上ずっていたが、逃げようとはしなかった。"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 二人だけの休日",
+            text:"珍しく店が休みの日、初めて「二人で何かをする」という時間ができた。何をするでもなく、市場を並んで歩くだけの時間。",
+            choices:[
+              {label:"特に予定を決めず、気の向くまま歩く", delta:15, result:"メリアは案外楽しそうに、道端の露店を一つ一つ覗いていった。「休みの日って、こんな使い方もあるんだ」呟いた声が、どこか軽かった。"},
+              {label:"「今日は、俺がメリアをどこへでも連れて行く」と言う", delta:55, result:"メリアは驚いた顔をしたあと、噴き出すように笑った。「大袈裟。……でも、悪くない」その日一日、彼女の足取りはずっと軽かった。"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・パン籠と野花",
+            text:"春、店の定休日に二人で郊外まで足を延ばした。野に咲く花を見て、メリアが初めて子供のような顔をした。",
+            choices:[
+              {label:"彼女が花を眺める時間を、黙って見守る", delta:15, result:"「こんな綺麗なもの、生まれて初めて見た気がする」呟いたメリアの横顔は、いつもの疲れた表情とは違って見えた。"},
+              {label:"花を一輪摘んで、彼女の髪に挿してみる", delta:35, result:"メリアは驚いて固まったあと、耳まで赤くなった。「……似合ってる、とは言わないでよ」先回りして釘を刺す声が、可愛らしかった。"},
+              {label:"「来年もこの時期、また一緒に来よう」と約束する", delta:70, result:"メリアは一瞬息を呑み、それから嬉しそうに頷いた。「……うん。約束、破ったら承知しないから」"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・祭りのない国で",
+            text:"夏、この国には祭りという文化がない。それでも二人で川辺に涼みに行き、即席の「夏らしい一日」を作った。",
+            choices:[
+              {label:"川辺で他愛もない話をして過ごす", delta:15, result:"メリアは水面に足をつけながら、珍しく饒舌にこれまでの日々のことを話してくれた。"},
+              {label:"「これが俺たちの夏祭りだ」とふざけて言う", delta:35, result:"メリアは声を上げて笑った。「何それ、二人だけの祭りって」笑いながらも、まんざらでもなさそうだった。"},
+              {label:"夕暮れの中、そっと肩を寄せて座る", delta:70, result:"メリアは一瞬身を固くしたが、すぐに力を抜いてもたれかかってきた。「……こういう時間、初めて」小さな声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・変わっていく毎日",
+            text:"秋、パン屋の店先でメリアが変わったと常連客に言われていた。愛想笑いではなく、本当に笑うようになったと。",
+            choices:[
+              {label:"「昔より、笑うようになったな」とさりげなく伝える", delta:15, result:"メリアは照れくさそうに頬をかいた。「……あなたのせいだからね」責めるような言い方だったが、目は柔らかかった。"},
+              {label:"「メリアが笑ってると、俺も嬉しい」と伝える", delta:35, result:"メリアは黙り込み、それから小さく「バカ」と呟いた。その声には、隠しきれない喜びが滲んでいた。"},
+              {label:"「これからも、メリアの笑った顔をずっと見ていたい」と伝える", delta:70, result:"メリアは目を潤ませ、慌てて顔を背けた。「……そんなの、ずるい言い方」震える声が、答えの代わりだった。"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・灯りを二人で",
+            text:"冬、色街の灯りだけが賑わうこの国の夜に、二人だけの静かな時間を作った。パン屋の裏口で、湯気の立つスープを分け合う。",
+            choices:[
+              {label:"何も言わず、温かい時間を共有する", delta:15, result:"メリアは湯気の向こうでそっと微笑んだ。「こういうの、ずっと欲しかったのかもしれない」"},
+              {label:"「この国で一番幸せな夜だ」と伝える", delta:35, result:"メリアは驚いた顔のあと、嬉しそうに肩を寄せてきた。「……私も、そう思う」"},
+              {label:"「来年の冬も、その先の冬も、隣にいてくれ」と伝える", delta:70, result:"メリアは長い沈黙のあと、涙ぐみながら頷いた。「……うん。ずっと、隣にいる」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、パン屋の店先に立つメリアの顔は、出会った頃とは別人のように明るくなっていた。閉店後、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらずそばにいる」とだけ伝える", delta:20, result:"メリアは小さく頷いた。「……うん、それで十分」穏やかな声だった。"},
+              {label:"「この国で、メリアと一緒に生きていきたい」と伝える", delta:85, result:"メリアは大粒の涙をこぼしながら、力いっぱい頷いた。「……こんな灰色の国が、こんなに眩しく見えるなんて、思わなかった」"}
+            ],
+            final:true,
+            endingText:"それからも、メリアはパンを焼き続けた。ただ、その手つきにはもう諦めの色はなく、明日を待ち望むような、確かな軽さが宿っていた。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"寄り添う灯り",
+        epilogueText:"「あなたが通ってくれなかったら」\n閉店後の店先、メリアがぽつりと言う。「私、多分ずっと同じ顔で笑い続けてたと思う。本物の笑い方も忘れたまま」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、あなたが来る時間だけ、ちゃんと自分でいられる気がする」\n派手な出来事は何もなかった。ただ、毎日同じ時間に交わす言葉の積み重ねが、灰色だった日々に、確かな温度を与えていた。",
+        events:[
+          {
+            label:"SCENE 02 — いつもの時間に",
+            text:"毎日同じ時間に店を訪れるうち、メリアの方から声をかけてくれるようになった。\n「今日も、いつもの?」\nそれだけのやり取りが、不思議と待ち遠しくなっていた。",
+            choices:[
+              {label:"「ああ、いつもの」と短く返す", delta:10, result:"メリアは小さく笑って、いつものパンを渡してくれた。それだけの時間が、確かに温かかった。"},
+              {label:"「メリアと話すのも、目当ての一つだ」と伝える", delta:40, result:"メリアは手を止め、少し驚いた顔をした。「……お世辞でも、嬉しい」小さな声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 少しの遠回り",
+            text:"帰り道が同じ方向だと知り、少しだけ一緒に歩くようになった。特別な会話はなくても、その時間は積み重なっていった。",
+            choices:[
+              {label:"急かさず、隣を歩くだけの時間を大事にする", delta:15, result:"メリアはそれが心地よかったのか、歩幅を合わせてくるようになった。言葉のない時間が、不思議と気まずくなかった。"},
+              {label:"「この時間、地味に楽しみにしてる」と伝える", delta:55, result:"メリアは驚いた顔をしたあと、俯いて小さく笑った。「……私も、実は」小さな告白だった。"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・遠回りの先に",
+            text:"春、いつもの帰り道を少し外れて、野花の咲く道を歩いた。メリアは足を止め、珍しく黙って花を眺めていた。",
+            choices:[
+              {label:"急かさず、彼女が満足するまで待つ", delta:15, result:"メリアは満足そうに息をついた。「こんな寄り道、初めてしたかも」"},
+              {label:"「綺麗だな」とだけ、隣で呟く", delta:35, result:"メリアはちらりとこちらを見て、また花に視線を戻した。「……うん」短い返事に、確かな共感があった。"},
+              {label:"「また、この時期に来よう」とそっと提案する", delta:70, result:"メリアは驚いた顔をしたあと、小さく頷いた。「……約束、だからね」声が少し震えていた。"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・静かな川辺で",
+            text:"夏、少し足を延ばして川辺まで歩いた。メリアは水面を眺めながら、珍しくぽつぽつと自分のことを話し始めた。",
+            choices:[
+              {label:"急かさず、最後まで静かに耳を傾ける", delta:15, result:"話し終えたメリアは、少し肩の力が抜けた様子だった。「……聞いてくれて、ありがとう」珍しく素直な言葉だった。"},
+              {label:"「話してくれて嬉しい」と静かに伝える", delta:35, result:"メリアは目を伏せ、小さく頷いた。「……こんな話、誰にもしたことなかったのに」"},
+              {label:"何も言わず、そっと隣に座る距離を詰める", delta:70, result:"メリアは一瞬身を固くしたが、やがて力を抜いて寄りかかってきた。「……もう少し、このままで」"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・変わっていく横顔",
+            text:"秋、メリアの表情が少しずつ柔らかくなっていることに、常連客たちも気づき始めていた。",
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"メリアはふと視線に気づき、照れたように目を逸らした。何も言わなくても、伝わるものがあった。"},
+              {label:"「最近、表情が柔らかくなった気がする」と伝える", delta:35, result:"メリアは頬を染め、「……あなたのせいかもね」とぽつりと呟いた。"},
+              {label:"「これからも、メリアの隣にいたい」と静かに伝える", delta:70, result:"メリアは長い沈黙のあと、消え入りそうな声で「……うん」と答えた。それだけで、十分な答えだった。"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・分け合う温もり",
+            text:"冬、色街の灯りが遠くに揺れる中、パン屋の裏口で温かいスープを分け合った。",
+            choices:[
+              {label:"黙って、温かい時間を共有する", delta:15, result:"メリアは湯気の向こうで小さく微笑んだ。「こういう時間、悪くないね」"},
+              {label:"「この時間が、一番好きだ」と伝える", delta:35, result:"メリアは驚いた顔のあと、嬉しそうに肩を寄せてきた。「……私も」小さな声だった。"},
+              {label:"「来年の冬も、隣で温めさせてくれ」と伝える", delta:70, result:"メリアは涙ぐみながら、小さく、けれど確かに頷いた。「……うん、隣にいる」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、メリアは以前よりずっと自然な顔で笑うようになっていた。閉店後、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、いつも通り隣にいる」とだけ伝える", delta:20, result:"メリアは小さく頷いた。「……うん、それでいい」穏やかな声だった。"},
+              {label:"「これからは、隣にいるだけじゃなく、一緒に生きていきたい」と伝える", delta:85, result:"メリアは長い沈黙のあと、静かに涙をこぼしながら頷いた。「……こんな灰色の毎日が、こんなに愛おしくなるなんてね」"}
+            ],
+            final:true,
+            endingText:"派手な変化は何もなかった。ただ、パン屋の店先に立つメリアの顔から、いつしか諦めの色が消えていた。それだけで、十分すぎるほどだった。"
+          }
+        ]
+      }
+    }
+  },
+  sera: {
+    name:"セラ",
+    subtitle:"宿屋の娘",
+    color:"#4a90a4", glow:"#a8e0e8", emblem:"灯", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"宿屋の帳場に立つセラは、いつも同じ調子で同じ言葉を客に返していた。\n「一泊、銀貨三枚です。朝食は付きません」\n事務的で、そつがなくて、そして誰の顔もろくに見ていない。旅人はここで一晩過ごし、翌朝には荷物をまとめてまた旅立っていく。数えきれないほどの「おはよう」と「さようなら」を繰り返すうち、セラはいつからか、客の顔を覚えることをやめていた。\n何日か連泊することになったある日、ふと気づいた。彼女が本当に誰かの目を見て話すことは、一度もなかったということに。",
+      choices:[
+        {label:"「毎日顔を合わせてるんだ、名前くらい覚えてくれ」と踏み込む", delta:100, route:"A",
+         result:"セラの手が、帳簿の上でぴたりと止まった。\n「……何、藪から棒に」\n目を合わせないまま返す声は素っ気なかったが、それはいつもの事務的な素っ気なさとは、少しだけ違って聞こえた。"},
+        {label:"急かさず、ただ毎朝同じ挨拶を欠かさないようにする", delta:75, route:"B",
+         result:"セラは特に反応も返さず、いつも通り帳場の仕事に戻った。ただ、その日の「いってらっしゃい」だけは、心なしか一拍遅れていた。"}
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"名前を呼ぶ距離",
+        epilogueText:"「私、ここで何百人の旅人を見送ってきたか分からない」\n宿の裏口、二人だけの時間にセラが言う。「みんな、必ずいなくなる。だから最初から、誰の名前も覚えないようにしてた」\n「今は?」と聞くと、彼女は初めて、まっすぐこちらの目を見て笑った。\n「今は、あなたの名前だけは、絶対に忘れないって決めてる」\n旅人ばかりを見送ってきた宿の灯りが、その夜だけは誰かを迎え入れるためだけに灯っているように見えた。",
+        events:[
+          {
+            label:"SCENE 02 — 名前を呼ぶ",
+            text:"翌朝、帳場に立つセラに、こちらから先に名乗った。\n「今更だけど、名前くらい呼び合わないか」\nセラは驚いた顔をしたあと、少し戸惑いながらもこちらの名を口にした。",
+            choices:[
+              {label:"「呼んでくれてありがとう」と軽く返す", delta:10, result:"セラは目を逸らしながらも、口元がわずかに緩んでいた。「……別に、大したことじゃない」"},
+              {label:"「これから毎朝、ちゃんと名前で呼び合おう」と提案する", delta:40, result:"セラは一瞬息を呑み、それから小さく頷いた。「……変な客。でも、悪くない」耳の先が、少し赤かった。"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 帳場の外で",
+            text:"連泊が長引く中、セラが帳場を抜け出せる短い休憩時間に、一緒に外へ出るようになった。宿の裏の井戸端で、他愛もない話をする。",
+            choices:[
+              {label:"急かさず、静かな時間を共有する", delta:15, result:"セラは井戸の縁に座り、珍しく肩の力を抜いていた。「こんな時間、久しぶりかも」"},
+              {label:"「セラの休憩時間、俺との時間にしてくれてありがとう」と伝える", delta:55, result:"セラは驚いた顔をしたあと、ふいと視線を逸らした。「……勝手に決めないでよ、そういうの」拒絶ではない声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・宿の裏庭で",
+            text:"春、宿の裏庭にひっそりと咲く花に気づいたのはセラの方だった。「こんなの、いつからあったんだろう」と呟く横顔は、いつになく柔らかかった。",
+            choices:[
+              {label:"「今まで気づかなかったんだな」と静かに返す", delta:15, result:"セラは少し照れたように「……見る余裕、なかったから」と呟いた。"},
+              {label:"花を一輪手折って、セラに差し出す", delta:35, result:"セラは驚いて固まったあと、ゆっくりと受け取った。「……こういうの、慣れてないんだけど」頬が赤らんでいた。"},
+              {label:"「来年も、この庭の花が咲く頃に会おう」と約束する", delta:70, result:"セラは目を見開き、それから小さく笑った。「……約束って、久しぶりにされた気がする」"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・旅人のいない夜",
+            text:"夏、珍しく客の少ない夜、セラと二人で宿の屋上から夜風にあたった。",
+            choices:[
+              {label:"何も言わず、隣に座って風を感じる", delta:15, result:"セラは目を閉じて、久しぶりに何も気にせず過ごす時間を味わっているようだった。"},
+              {label:"「こういう夜、たまにはいいな」と伝える", delta:35, result:"セラは小さく笑った。「……うん。悪くない」珍しく、素直な同意だった。"},
+              {label:"「セラといると、宿の夜が特別に感じる」と伝える", delta:70, result:"セラは息を呑み、それから顔を背けた。「……そういうこと、簡単に言うな」声が上ずっていた。"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・覚えている顔",
+            text:"秋、セラが「最近、客の顔を覚えるようになった」とぽつりと呟いた。長年やめていたことを、また少しずつ始めていた。",
+            choices:[
+              {label:"「良い変化だな」と静かに伝える", delta:15, result:"セラは照れくさそうに視線を逸らした。「……あなたのせいだと思う」責めるような口調だが、声は柔らかかった。"},
+              {label:"「セラが変わっていくのを見るの、嬉しい」と伝える", delta:35, result:"セラは黙り込み、それから小さく「バカ」と呟いた。喜びを隠しきれていない声だった。"},
+              {label:"「これからも、セラの変わっていく顔をずっと見ていたい」と伝える", delta:70, result:"セラは目を潤ませ、慌てて顔を背けた。「……そんなの、ずるい」震える声が答えだった。"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・帳場の灯りの下で",
+            text:"冬、閉め切った宿の帳場、灯り一つだけを残して二人で夜を過ごした。旅人のいない静かな夜だった。",
+            choices:[
+              {label:"何も言わず、静かな時間を共有する", delta:15, result:"セラは灯りの下でそっと微笑んだ。「こういう夜、悪くないね」"},
+              {label:"「この宿で一番好きな時間だ」と伝える", delta:35, result:"セラは驚いた顔のあと、嬉しそうに肩を寄せてきた。「……私も、そう思う」"},
+              {label:"「来年の冬も、その先も、この帳場でセラの隣にいたい」と伝える", delta:70, result:"セラは長い沈黙のあと、涙ぐみながら頷いた。「……うん。ずっと、隣にいて」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、セラは旅人一人一人の顔をきちんと覚えるようになっていた。閉店後、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"セラは小さく頷いた。「……うん、それで十分」穏やかな声だった。"},
+              {label:"「この宿で、セラと一緒に生きていきたい」と伝える", delta:85, result:"セラは大粒の涙をこぼしながら、力いっぱい頷いた。「……誰かを見送らなくていい夜が来るなんて、思わなかった」"}
+            ],
+            final:true,
+            endingText:"それからも、セラは帳場に立ち続けた。ただ、旅人を見送る顔にはもう諦めの色はなく、次に会う誰かを迎えるような、確かな温かさが宿っていた。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"急かさない灯り",
+        epilogueText:"「毎朝同じ時間に、あなたが顔を出してくれるから」\n帳場の奥、セラがぽつりと言う。「私、いつの間にか、また誰かを待つのが怖くなくなってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、朝が来るのが楽しみ。あなたが来る時間だから」\n派手な出来事は何もなかった。ただ、毎日同じ挨拶を交わす積み重ねが、見送ってばかりだった日々に、確かな温度を与えていた。",
+        events:[
+          {
+            label:"SCENE 02 — 変わらない挨拶",
+            text:"毎朝欠かさず交わす挨拶が、セラにとっても当たり前になっていた。\n「おはよう」\nそれだけのやり取りに、少しずつ体温が宿り始めていた。",
+            choices:[
+              {label:"「おはよう」と、いつも通り短く返す", delta:10, result:"セラは小さく頷いて、帳場の仕事に戻った。それだけの時間が、確かに温かかった。"},
+              {label:"「この挨拶、地味に楽しみにしてる」と伝える", delta:40, result:"セラは手を止め、少し驚いた顔をした。「……そんなの、私も」小さな声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 井戸端の時間",
+            text:"セラの短い休憩時間に、なんとなく一緒に過ごすのが習慣になっていた。特別な会話はなくても、その時間は積み重なっていった。",
+            choices:[
+              {label:"急かさず、隣にいるだけの時間を大事にする", delta:15, result:"セラはそれが心地よかったのか、自然と隣に座るようになっていた。言葉のない時間が、不思議と気まずくなかった。"},
+              {label:"「この時間、地味に大事にしてる」と伝える", delta:55, result:"セラは驚いた顔をしたあと、俯いて小さく笑った。「……私も、実は」小さな告白だった。"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・裏庭の変化",
+            text:"春、宿の裏庭に咲く花に、セラが自分から気づいて足を止めるようになっていた。",
+            choices:[
+              {label:"急かさず、彼女が満足するまで待つ", delta:15, result:"セラは満足そうに息をついた。「こんな時間、悪くないね」"},
+              {label:"「綺麗だな」とだけ、隣で呟く", delta:35, result:"セラはちらりとこちらを見て、また花に視線を戻した。「……うん」短い返事に、確かな共感があった。"},
+              {label:"「また、この時期に一緒に見よう」とそっと提案する", delta:70, result:"セラは驚いた顔をしたあと、小さく頷いた。「……約束、だからね」声が少し震えていた。"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・静かな屋上で",
+            text:"夏、客の少ない夜、屋上でセラが珍しくぽつぽつと自分のことを話し始めた。今まで誰にも話さなかった、旅人を見送り続けてきた日々のこと。",
+            choices:[
+              {label:"急かさず、最後まで静かに耳を傾ける", delta:15, result:"話し終えたセラは、少し肩の力が抜けた様子だった。「……聞いてくれて、ありがとう」珍しく素直な言葉だった。"},
+              {label:"「話してくれて嬉しい」と静かに伝える", delta:35, result:"セラは目を伏せ、小さく頷いた。「……こんな話、誰にもしたことなかったのに」"},
+              {label:"何も言わず、そっと隣に座る距離を詰める", delta:70, result:"セラは一瞬身を固くしたが、やがて力を抜いて寄りかかってきた。「……もう少し、このままで」"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・覚え始めた顔",
+            text:"秋、セラが客の顔を少しずつ覚えるようになっていることに、宿の常連たちも気づき始めていた。",
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"セラはふと視線に気づき、照れたように目を逸らした。何も言わなくても、伝わるものがあった。"},
+              {label:"「最近、変わったな」と伝える", delta:35, result:"セラは頬を染め、「……あなたのせいかもね」とぽつりと呟いた。"},
+              {label:"「これからも、セラの隣にいたい」と静かに伝える", delta:70, result:"セラは長い沈黙のあと、消え入りそうな声で「……うん」と答えた。それだけで、十分な答えだった。"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・分け合う灯り",
+            text:"冬、閉め切った帳場で、灯り一つだけを分け合って静かな夜を過ごした。",
+            choices:[
+              {label:"黙って、温かい時間を共有する", delta:15, result:"セラは灯りの下でそっと微笑んだ。「こういう時間、悪くないね」"},
+              {label:"「この時間が、一番好きだ」と伝える", delta:35, result:"セラは驚いた顔のあと、嬉しそうに肩を寄せてきた。「……私も」小さな声だった。"},
+              {label:"「来年の冬も、隣で灯りを分けてくれ」と伝える", delta:70, result:"セラは涙ぐみながら、小さく、けれど確かに頷いた。「……うん、隣にいる」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、セラは以前よりずっと自然な顔で客を見送るようになっていた。閉店後、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、いつも通り隣にいる」とだけ伝える", delta:20, result:"セラは小さく頷いた。「……うん、それでいい」穏やかな声だった。"},
+              {label:"「これからは、隣にいるだけじゃなく、一緒に生きていきたい」と伝える", delta:85, result:"セラは長い沈黙のあと、静かに涙をこぼしながら頷いた。「……誰かを待つのが、こんなに温かいことだったんだね」"}
+            ],
+            final:true,
+            endingText:"派手な変化は何もなかった。ただ、帳場に立つセラの顔から、いつしか諦めの色が消えていた。それだけで、十分すぎるほどだった。"
+          }
+        ]
+      }
+    }
+  },
+  rina: {
+    name:"リナ",
+    subtitle:"冒険者ギルドの受付嬢",
+    color:"#e0708a", glow:"#ffc2d1", emblem:"笑", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"冒険者ギルドの受付に立つリナは、いつも眩しいくらいの笑顔を絶やさなかった。\n「いってらっしゃい、気をつけてね!」\n危険度の高い依頼を受ける冒険者にも、彼女は変わらぬ調子でそう送り出す。誰からも好かれる、ギルドの太陽のような存在。\nだが、ある日その笑顔の作り方に気づいてしまった。目だけが、笑っていない。奥歯を噛みしめるように、ほんの一瞬だけ表情が抜け落ちる瞬間があることに。\n依頼から戻り、受付でリナの「おかえりなさい」を受け取った時、初めてその笑顔の裏側が気になった。",
+      choices:[
+        {label:"「その笑顔、無理してないか」と正面から聞いてみる", delta:100, route:"A",
+         result:"リナの表情が、一瞬で凍りついた。\n「……何のこと? いつも通りだよ」\n慌てて笑顔を作り直したが、その動揺は隠しきれていなかった。図星だった。"},
+        {label:"何も言わず、依頼から戻るたびに必ず顔を見せに行くようにする", delta:75, route:"B",
+         result:"リナは特に何を言うでもなく、いつも通り明るく「おかえりなさい」と迎えてくれた。ただ、その日の笑顔は、心なしかいつもより自然に見えた。"}
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"素顔を覗く距離",
+        epilogueText:"「昔、大事な人を見送って、そのまま帰ってこなかったことがあって」\nギルドの裏庭、二人だけの時間にリナが言う。「それから、ずっと笑ってた。悲しい顔したら、また誰か死んじゃう気がして」\n「今は?」と聞くと、彼女は初めて、作り物じゃない顔で笑った。\n「今は、あなたの前でだけ、素直な顔でいられる気がする」\nギルドの受付に立つ太陽のような笑顔の下に、初めて本物の温度が灯っていた。",
+        events:[
+          {
+            label:"SCENE 02 — 素顔の欠片",
+            text:"依頼の合間、リナが一人で受付の裏に座り込んでいるところに出くわした。\n「あ……見た?」\n慌てて笑顔を作り直そうとする彼女に、素の表情のままでいいと伝えた。",
+            choices:[
+              {label:"「無理に笑わなくていい」とだけ伝える", delta:10, result:"リナは戸惑った顔をしたあと、ゆっくりと肩の力を抜いた。「……こんな顔、誰にも見せたことないのに」"},
+              {label:"「その顔も、ちゃんと見せてほしい」と踏み込む", delta:40, result:"リナは目を見開き、それから小さく俯いた。「……ずるいよ、そんな言い方」声が震えていた。"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 閉館後のギルドで",
+            text:"閉館後、片付けを手伝うようになってから、リナと二人きりで過ごす時間が増えた。仮面を外した彼女は、思ったよりずっと不器用だった。",
+            choices:[
+              {label:"急かさず、彼女のペースに合わせる", delta:15, result:"リナは少しほっとした様子で、ぽつぽつと日常の愚痴をこぼすようになった。「こんな話、誰にもしたことなかった」"},
+              {label:"「リナの本当の顔、俺は嫌いじゃない」と伝える", delta:55, result:"リナは驚いた顔をしたあと、頬を赤らめて視線を逸らした。「……そういうこと、簡単に言わないでよ」"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・ギルドの裏庭で",
+            text:"春、ギルドの裏庭に咲く花を、リナが珍しく足を止めて眺めていた。「こんなの、いつからあったんだろう」",
+            choices:[
+              {label:"「今まで気づく余裕、なかったんだな」と静かに返す", delta:15, result:"リナは少し寂しそうに、けれど頷いた。「……うん、そうかも」"},
+              {label:"花を一輪摘んで、リナに差し出す", delta:35, result:"リナは驚いて固まったあと、嬉しそうに受け取った。「……こういうの、慣れてないんだけど」頬が赤らんでいた。"},
+              {label:"「来年も、この庭の花が咲く頃に会おう」と約束する", delta:70, result:"リナは目を見開き、それから泣きそうな顔で笑った。「……約束、絶対だからね」"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・依頼のない夜",
+            text:"夏、珍しく依頼の少ない夜、リナと二人でギルドの屋上から夜風にあたった。",
+            choices:[
+              {label:"何も言わず、隣に座って風を感じる", delta:15, result:"リナは目を閉じて、久しぶりに何も気にせず過ごす時間を味わっているようだった。"},
+              {label:"「こういう夜、たまにはいいな」と伝える", delta:35, result:"リナは小さく笑った。「……うん。悪くない」珍しく、飾らない同意だった。"},
+              {label:"「リナといると、こんな夜も特別に感じる」と伝える", delta:70, result:"リナは息を呑み、それから顔を背けた。「……そういうこと、簡単に言うな」声が上ずっていた。"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・本当の理由",
+            text:"秋、リナがぽつりと打ち明けた。かつて大事な人を見送ったまま帰ってこなかったこと。それ以来、笑顔で自分を守るようになったこと。",
+            choices:[
+              {label:"黙って、最後まで話を聞く", delta:15, result:"話し終えたリナは、少し肩の力が抜けた様子だった。「……聞いてくれて、ありがとう」珍しく素直な言葉だった。"},
+              {label:"「話してくれて嬉しい」とまっすぐ伝える", delta:35, result:"リナは目を伏せ、小さく頷いた。「……こんな話、誰にもしたことなかったのに」"},
+              {label:"「これからは、俺が必ず帰ってくる」と伝える", delta:70, result:"リナは目を潤ませ、慌てて顔を背けた。「……そんなの、簡単に言うな。信じたくなるだろ」震える声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・受付の灯りの下で",
+            text:"冬、閉め切ったギルドの受付、灯り一つだけを残して二人で夜を過ごした。依頼のない静かな夜だった。",
+            choices:[
+              {label:"何も言わず、静かな時間を共有する", delta:15, result:"リナは灯りの下でそっと微笑んだ。「こういう夜、悪くないね」"},
+              {label:"「このギルドで一番好きな時間だ」と伝える", delta:35, result:"リナは驚いた顔のあと、嬉しそうに肩を寄せてきた。「……私も、そう思う」"},
+              {label:"「来年の冬も、その先も、リナの隣にいたい」と伝える", delta:70, result:"リナは長い沈黙のあと、涙ぐみながら頷いた。「……うん。ずっと、隣にいて」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、リナの笑顔は作り物ではなく、自然なものに変わっていた。閉館後、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"リナは小さく頷いた。「……うん、それで十分」穏やかな声だった。"},
+              {label:"「このギルドで、リナと一緒に生きていきたい」と伝える", delta:85, result:"リナは大粒の涙をこぼしながら、力いっぱい頷いた。「……誰かを失うのが怖くなくなる日が来るなんて、思わなかった」"}
+            ],
+            final:true,
+            endingText:"それからも、リナは受付に立ち続けた。ただ、その笑顔にはもう無理をした跡はなく、本物の温かさだけが残っていた。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"そっと素顔に触れる",
+        epilogueText:"「毎回、必ず顔を見せに来てくれるから」\nギルドの奥、リナがぽつりと言う。「私、いつの間にか、また誰かの無事を心から願えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、あなたが帰ってくる時間だけ、素直な顔でいられる気がする」\n派手な出来事は何もなかった。ただ、毎回欠かさず交わす「おかえり」の積み重ねが、仮面の下に隠れていた顔を、少しずつ外に連れ出していた。",
+        events:[
+          {
+            label:"SCENE 02 — 変わらない出迎え",
+            text:"依頼から戻るたび、必ずリナの元へ顔を見せに行くのが習慣になっていた。\n「おかえりなさい」\nそれだけのやり取りに、少しずつ体温が宿り始めていた。",
+            choices:[
+              {label:"「ただいま」と、いつも通り短く返す", delta:10, result:"リナは小さく笑って、受付の仕事に戻った。それだけの時間が、確かに温かかった。"},
+              {label:"「この出迎え、地味に楽しみにしてる」と伝える", delta:40, result:"リナは手を止め、少し驚いた顔をした。「……そんなの、私も」小さな声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 裏庭の時間",
+            text:"リナの休憩時間に、なんとなく一緒に過ごすのが習慣になっていた。特別な会話はなくても、その時間は積み重なっていった。",
+            choices:[
+              {label:"急かさず、隣にいるだけの時間を大事にする", delta:15, result:"リナはそれが心地よかったのか、自然と隣に座るようになっていた。言葉のない時間が、不思議と気まずくなかった。"},
+              {label:"「この時間、地味に大事にしてる」と伝える", delta:55, result:"リナは驚いた顔をしたあと、俯いて小さく笑った。「……私も、実は」小さな告白だった。"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・裏庭の変化",
+            text:"春、ギルドの裏庭に咲く花に、リナが自分から気づいて足を止めるようになっていた。",
+            choices:[
+              {label:"急かさず、彼女が満足するまで待つ", delta:15, result:"リナは満足そうに息をついた。「こんな時間、悪くないね」"},
+              {label:"「綺麗だな」とだけ、隣で呟く", delta:35, result:"リナはちらりとこちらを見て、また花に視線を戻した。「……うん」短い返事に、確かな共感があった。"},
+              {label:"「また、この時期に一緒に見よう」とそっと提案する", delta:70, result:"リナは驚いた顔をしたあと、小さく頷いた。「……約束、だからね」声が少し震えていた。"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・静かな屋上で",
+            text:"夏、依頼の少ない夜、屋上でリナが珍しくぽつぽつと自分のことを話し始めた。今まで誰にも話さなかった、大事な人を失った日のこと。",
+            choices:[
+              {label:"急かさず、最後まで静かに耳を傾ける", delta:15, result:"話し終えたリナは、少し肩の力が抜けた様子だった。「……聞いてくれて、ありがとう」珍しく素直な言葉だった。"},
+              {label:"「話してくれて嬉しい」と静かに伝える", delta:35, result:"リナは目を伏せ、小さく頷いた。「……こんな話、誰にもしたことなかったのに」"},
+              {label:"何も言わず、そっと隣に座る距離を詰める", delta:70, result:"リナは一瞬身を固くしたが、やがて力を抜いて寄りかかってきた。「……もう少し、このままで」"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・戻り始めた表情",
+            text:"秋、リナの笑顔が少しずつ自然になっていることに、ギルドの仲間たちも気づき始めていた。",
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"リナはふと視線に気づき、照れたように目を逸らした。何も言わなくても、伝わるものがあった。"},
+              {label:"「最近、表情が柔らかくなった気がする」と伝える", delta:35, result:"リナは頬を染め、「……あなたのせいかもね」とぽつりと呟いた。"},
+              {label:"「これからも、リナの隣にいたい」と静かに伝える", delta:70, result:"リナは長い沈黙のあと、消え入りそうな声で「……うん」と答えた。それだけで、十分な答えだった。"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・分け合う灯り",
+            text:"冬、閉め切った受付で、灯り一つだけを分け合って静かな夜を過ごした。",
+            choices:[
+              {label:"黙って、温かい時間を共有する", delta:15, result:"リナは灯りの下でそっと微笑んだ。「こういう時間、悪くないね」"},
+              {label:"「この時間が、一番好きだ」と伝える", delta:35, result:"リナは驚いた顔のあと、嬉しそうに肩を寄せてきた。「……私も」小さな声だった。"},
+              {label:"「来年の冬も、隣で灯りを分けてくれ」と伝える", delta:70, result:"リナは涙ぐみながら、小さく、けれど確かに頷いた。「……うん、隣にいる」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、リナは以前よりずっと自然な顔で冒険者たちを送り出すようになっていた。閉館後、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、いつも通り隣にいる」とだけ伝える", delta:20, result:"リナは小さく頷いた。「……うん、それでいい」穏やかな声だった。"},
+              {label:"「これからは、隣にいるだけじゃなく、一緒に生きていきたい」と伝える", delta:85, result:"リナは長い沈黙のあと、静かに涙をこぼしながら頷いた。「……誰かの無事を願うのが、こんなに嬉しいことだったんだね」"}
+            ],
+            final:true,
+            endingText:"派手な変化は何もなかった。ただ、受付に立つリナの笑顔から、いつしか無理をした跡が消えていた。それだけで、十分すぎるほどだった。"
+          }
+        ]
+      }
+    }
+  },
+  kaia: {
+    name:"カイア",
+    subtitle:"冒険者",
+    color:"#b8452f", glow:"#ff9b73", emblem:"命", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"ギルドの依頼掲示板の前で、カイアは誰も受けたがらない討伐依頼を、迷いもなく引き受けようとしていた。単独で挑むには明らかに無謀な相手。\n「命がいくつあっても足りないぞ、それ」\n声をかけると、彼女はこちらを一瞥もせず答えた。\n「別に、失っても困る命じゃないから」\n実際、依頼から戻った彼女の体には、いつも新しい傷が増えていた。まるで、生き延びることにこだわりがないかのように。",
+      choices:[
+        {label:"「死ぬ気か」と、正面から怒って引き止める", delta:100, route:"A",
+         result:"カイアの足が、一瞬止まった。\n「……何、あんたに関係ないでしょ」\n睨み返す目には反発があったが、それは今まで誰にも向けられたことのない、戸惑いを孕んだ反発だった。"},
+        {label:"止めずに、次からその依頼に同行することにする", delta:75, route:"B",
+         result:"カイアは意外そうな顔をしたが、特に断りもせず「好きにすれば」とだけ返した。その日から、二人で依頼をこなす日々が始まった。"}
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"生きる理由を探す旅",
+        epilogueText:"「昔から、自分の命に価値なんてないと思ってた」\n拠点の焚き火の前、二人だけの時間にカイアが言う。「死んでも誰も困らないなら、危ない依頼を受けたって同じだって」\n「今は?」と聞くと、彼女は炎に照らされた顔で、初めて柔らかく笑った。\n「今は、生きて帰らなきゃいけない理由が、ちゃんとある」\n無謀な依頼ばかり選んでいた冒険者の傷が、少しずつ減っていった。",
+        events:[
+          {
+            label:"SCENE 02 — 怒った理由",
+            text:"あの日の言葉の続きを、カイアの方から聞いてきた。\n「なんで、あんなに怒ったの」\n真剣な目で見つめられ、正直に答えるしかなかった。",
+            choices:[
+              {label:"「危なっかしくて見てられなかっただけだ」と返す", delta:10, result:"カイアは少し拍子抜けした顔をしたあと、小さく笑った。「……変なやつ」"},
+              {label:"「カイアに、簡単に死んでほしくなかったんだ」と正直に伝える", delta:40, result:"カイアは言葉に詰まり、しばらく黙り込んだ。「……そんなこと言われたの、初めて」耳が赤くなっていた。"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 依頼の合間に",
+            text:"一緒に依頼をこなすようになってから、カイアの無謀さは少しずつ影を潜めていた。それでも時々、危険を顧みない選択をしようとする。",
+            choices:[
+              {label:"黙って、彼女の判断を尊重する", delta:15, result:"カイアはちらりとこちらを見て、それ以上無茶な選択をしなかった。だが、視線には確かな迷いがあった。"},
+              {label:"「無茶するなら、俺も一緒に危険を背負う」と伝える", delta:55, result:"カイアは驚いた顔をしたあと、諦めたようにため息をついた。「……あんたも大概、馬鹿だよね」声に、呆れより優しさが滲んでいた。"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・傷の癒える場所",
+            text:"春、依頼の帰りに寄った療養地で、カイアが自分の傷跡を珍しく気にする素振りを見せた。「こんなに増えたんだ、傷」",
+            choices:[
+              {label:"「その傷の分だけ、生き延びてきた証だ」と伝える", delta:15, result:"カイアは自分の腕を見下ろし、少し複雑な顔をした。「……そう考えたこと、なかった」"},
+              {label:"傷跡にそっと触れて、「これ以上増やすなよ」と伝える", delta:35, result:"カイアは驚いて身を固くしたあと、頬を赤らめた。「……心配性かよ」照れ隠しの声だった。"},
+              {label:"「来年もここに来て、傷が増えてないか二人で確かめよう」と約束する", delta:70, result:"カイアは目を見開き、それから小さく笑った。「……変な約束。でも、悪くない」"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・依頼のない休息日",
+            text:"夏、珍しく丸一日の休みが取れた。カイアは何をしていいか分からない様子で、落ち着かなさそうにしていた。",
+            choices:[
+              {label:"「何もしなくていい日だ」と伝えて、隣で休む", delta:15, result:"カイアは戸惑いながらも、少しずつ肩の力を抜いていった。「休むの、下手なんだよね、昔から」"},
+              {label:"「今日は依頼のことを何も考えなくていい」と伝える", delta:35, result:"カイアは小さく笑った。「……そんな日、初めてかも」珍しく穏やかな表情だった。"},
+              {label:"「カイアと過ごすだけの一日も、悪くないな」と伝える", delta:70, result:"カイアは息を呑み、それから顔を背けた。「……そういうこと、簡単に言うな」声が上ずっていた。"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・本当の理由",
+            text:"秋、カイアがぽつりと打ち明けた。自分の命に価値を感じられなかった理由。誰かに必要とされた記憶が、ずっとなかったこと。",
+            choices:[
+              {label:"黙って、最後まで話を聞く", delta:15, result:"話し終えたカイアは、少し肩の力が抜けた様子だった。「……聞いてくれて、ありがとう」珍しく素直な言葉だった。"},
+              {label:"「カイアは、俺にとって必要な存在だ」と伝える", delta:35, result:"カイアは目を伏せ、小さく震える声で「……本当に?」と聞き返した。「本当に」と返すと、彼女は初めて涙ぐんだ。"},
+              {label:"「これからは、俺がカイアの生きる理由になる」と伝える", delta:70, result:"カイアの目が見開かれ、次の瞬間伏せられた。「そんなこと、簡単に言うなよ……本気にするから」声は震えていたが、拒絶の響きはどこにもなかった。"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・焚き火の傍らで",
+            text:"冬、依頼の拠点で焚き火を囲みながら、二人だけの静かな時間を過ごした。カイアの傷は、この一年で目に見えて減っていた。",
+            choices:[
+              {label:"何も言わず、温かい時間を共有する", delta:15, result:"カイアは炎を見つめながらそっと微笑んだ。「こういう時間、悪くないね」"},
+              {label:"「この一年で、一番安心して見ていられる冬だ」と伝える", delta:35, result:"カイアは驚いた顔のあと、嬉しそうに肩を寄せてきた。「……私も、そう思う」"},
+              {label:"「来年の冬も、その先も、隣で無事を確かめさせてくれ」と伝える", delta:70, result:"カイアは長い沈黙のあと、涙ぐみながら頷いた。「……うん。ずっと、隣にいる」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、カイアは無謀な依頼を選ばなくなっていた。焚き火の前、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"カイアは小さく頷いた。「……うん、それで十分」穏やかな声だった。"},
+              {label:"「この命を、俺と一緒に生きるために使ってくれ」と伝える", delta:85, result:"カイアは大粒の涙をこぼしながら、力いっぱい頷いた。「……自分の命が、こんなに大事に思えるようになるなんて、思わなかった」"}
+            ],
+            final:true,
+            endingText:"それからも、カイアは依頼をこなし続けた。ただ、その戦い方にはもう投げやりな影はなく、必ず生きて帰るという確かな意志が宿っていた。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"隣で数える無事",
+        epilogueText:"「あんたが毎回、隣で無事を確かめてくれるから」\n拠点の焚き火の前、カイアがぽつりと言う。「私、いつの間にか、無事に帰ることにこだわるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、また明日もあんたと依頼をこなせるように、生き延びたいって思う」\n派手な出来事は何もなかった。ただ、隣で依頼をこなし続けた時間の積み重ねが、命を粗末にしていた冒険者に、確かな重みを与えていた。",
+        events:[
+          {
+            label:"SCENE 02 — 隣で見る景色",
+            text:"一緒に依頼をこなすうち、カイアの無謀な選択は少しずつ減っていった。\n「なんか、一人の時と違う」\nぽつりと呟いた言葉に、深い意味はなさそうだったが、確かな変化があった。",
+            choices:[
+              {label:"「そうか」とだけ、静かに返す", delta:10, result:"カイアは小さく頷いて、また前を向いた。それだけのやり取りに、確かな信頼が滲んでいた。"},
+              {label:"「一人より、二人の方が生き延びやすいだろ」と伝える", delta:40, result:"カイアは意外そうな顔をしたあと、小さく笑った。「……まあ、否定はしない」"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 数える傷",
+            text:"依頼のたび、カイアの傷を確かめるのが習慣になっていた。彼女は最初こそ煩わしそうにしていたが、次第に自分から見せるようになった。",
+            choices:[
+              {label:"急かさず、彼女のペースに合わせる", delta:15, result:"カイアは少しほっとした様子で、傷の手当てを任せるようになっていた。"},
+              {label:"「この傷、俺が見ておきたいから見せてくれ」と伝える", delta:55, result:"カイアは驚いた顔をしたあと、俯いて小さく笑った。「……過保護かよ」拒絶ではない声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・静かな療養地で",
+            text:"春、依頼の帰りに寄った療養地で、カイアが自分の傷跡を珍しく気にする素振りを見せた。",
+            choices:[
+              {label:"急かさず、彼女が話すのを待つ", delta:15, result:"カイアは少し経ってから、ぽつりと「昔は、傷なんて気にしなかったのに」と呟いた。"},
+              {label:"「傷が減ってきてる」とだけ、静かに伝える", delta:35, result:"カイアはちらりとこちらを見て、また傷跡に視線を戻した。「……うん」短い返事に、確かな実感があった。"},
+              {label:"「来年も、ここで傷の数を二人で確かめよう」とそっと提案する", delta:70, result:"カイアは驚いた顔をしたあと、小さく頷いた。「……約束、だからね」声が少し震えていた。"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・静かな休息日",
+            text:"夏、依頼の少ない日、カイアが珍しくぽつぽつと自分のことを話し始めた。誰にも必要とされなかった過去のこと。",
+            choices:[
+              {label:"急かさず、最後まで静かに耳を傾ける", delta:15, result:"話し終えたカイアは、少し肩の力が抜けた様子だった。「……聞いてくれて、ありがとう」珍しく素直な言葉だった。"},
+              {label:"「話してくれて嬉しい」と静かに伝える", delta:35, result:"カイアは目を伏せ、小さく頷いた。「……こんな話、誰にもしたことなかったのに」"},
+              {label:"何も言わず、そっと隣に座る距離を詰める", delta:70, result:"カイアは一瞬身を固くしたが、やがて力を抜いて寄りかかってきた。「……もう少し、このままで」"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・減っていく無謀さ",
+            text:"秋、カイアが無茶な依頼を選ばなくなっていることに、ギルドの仲間たちも気づき始めていた。",
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"カイアはふと視線に気づき、照れたように目を逸らした。何も言わなくても、伝わるものがあった。"},
+              {label:"「最近、無茶しなくなったな」と伝える", delta:35, result:"カイアは頬を染め、「……あんたのせいかもね」とぽつりと呟いた。"},
+              {label:"「これからも、カイアの隣で無事を確かめたい」と静かに伝える", delta:70, result:"カイアは長い沈黙のあと、消え入りそうな声で「……うん」と答えた。それだけで、十分な答えだった。"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・分け合う焚き火",
+            text:"冬、拠点の焚き火を囲んで、静かな夜を過ごした。",
+            choices:[
+              {label:"黙って、温かい時間を共有する", delta:15, result:"カイアは炎を見つめながらそっと微笑んだ。「こういう時間、悪くないね」"},
+              {label:"「この時間が、一番好きだ」と伝える", delta:35, result:"カイアは驚いた顔のあと、嬉しそうに肩を寄せてきた。「……私も」小さな声だった。"},
+              {label:"「来年の冬も、隣で焚き火を囲もう」と伝える", delta:70, result:"カイアは涙ぐみながら、小さく、けれど確かに頷いた。「……うん、隣にいる」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、カイアは以前よりずっと自分の身を大事にするようになっていた。焚き火の前、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、いつも通り隣にいる」とだけ伝える", delta:20, result:"カイアは小さく頷いた。「……うん、それでいい」穏やかな声だった。"},
+              {label:"「これからは、隣にいるだけじゃなく、一緒に生きていきたい」と伝える", delta:85, result:"カイアは長い沈黙のあと、静かに涙をこぼしながら頷いた。「……自分の命を大事に思えるのが、こんなに嬉しいことだったんだね」"}
+            ],
+            final:true,
+            endingText:"派手な変化は何もなかった。ただ、依頼をこなすカイアの戦い方から、いつしか投げやりな影が消えていた。それだけで、十分すぎるほどだった。"
+          }
+        ]
+      }
+    }
+  },
+  roze: {
+    name:"ロゼ",
+    subtitle:"酒場の女将",
+    color:"#7a2038", glow:"#e88aa0", emblem:"酒", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"夜な夜な酔い潰れる客たちを、ロゼは涼しい顔で捌いていた。喧嘩を止め、泣き言を聞き流し、時には力ずくで客を追い出す。誰よりも逞しく、誰よりも口が悪い、酒場の女将。\n閉店後、誰もいなくなった店で、彼女が一人カウンターに突っ伏しているのを見かけた。\n「……見なかったことにして」\n慌てて取り繕おうとする声は、いつもの威勢の良さが嘘のように弱々しかった。毎晩誰かの弱さを受け止め続けているくせに、自分の弱さは誰にも見せない。そういう女だった。",
+      choices:[
+        {label:"「その気丈さ、誰のために張ってるんだ」と正面から聞く", delta:100, route:"A",
+         result:"ロゼの肩がびくりと跳ねた。\n「……は? 何、いきなり」\n睨むような目で振り向いたが、その声は動揺で上ずっていた。図星を突かれた者の反応だった。"},
+        {label:"何も言わず、閉店後の片付けを手伝うことにする", delta:75, route:"B",
+         result:"ロゼは驚いた顔をしたが、追い返すこともせず、黙って片付けを任せてくれた。「……変な客」その声に、拒絶の色はなかった。"}
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"素顔を晒す夜",
+        epilogueText:"「毎晩、誰かの愚痴を聞いて、喧嘩を止めて、それで気が済んでた」\n閉店後のカウンターで、ロゼが言う。「自分のことなんて、後回しにしてれば良かったから」\n「今は?」と聞くと、彼女は肘をついたまま、初めて素の顔で笑った。\n「今は、あんたの前でだけ、しんどいって言える」\n誰よりも他人の弱さを受け止め続けてきた女将の背中に、初めて寄りかかれる誰かがいた。",
+        events:[
+          {
+            label:"SCENE 02 — カウンター越しの本音",
+            text:"閉店後、誰もいない店で、ロゼがぽつりと弱音をこぼした。「毎晩毎晩、他人の人生の後始末ばっかり。たまに、うんざりする」",
+            choices:[
+              {label:"黙って、その愚痴を聞く", delta:10, result:"ロゼは少し驚いた顔をしたあと、ぽつぽつと本音を重ねるようになった。「……こんな話、誰にもしたことなかったのに」"},
+              {label:"「愚痴くらい、いくらでも聞く」と伝える", delta:40, result:"ロゼは目を見開き、それから小さく笑った。「……変な客。でも、悪くない」耳が少し赤かった。"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 店の裏で",
+            text:"仕込みの合間、店の裏でロゼと少し話す時間が増えた。彼女は表向き素っ気ないが、その時間を心待ちにしているのが分かるようになっていた。",
+            choices:[
+              {label:"急かさず、彼女のペースに合わせる", delta:15, result:"ロゼは少しほっとした様子で、ぽつぽつと日常のことを話すようになった。「こんな話、誰にもしたことなかった」"},
+              {label:"「ロゼの本当の顔、俺は嫌いじゃない」と伝える", delta:55, result:"ロゼは驚いた顔をしたあと、頬を赤らめて視線を逸らした。「……そういうこと、簡単に言わないでよ」"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・裏庭の一杯",
+            text:"春、店の裏庭でロゼと二人、仕事終わりの一杯を交わした。「客に出す酒より、こっちの方が美味いんだよね」珍しく、くつろいだ顔をしていた。",
+            choices:[
+              {label:"「たまにはこういう時間も必要だな」と伝える", delta:15, result:"ロゼは少し照れたように「……珍しく同意見」と呟いた。"},
+              {label:"「ロゼのこういう顔、もっと見たい」と伝える", delta:35, result:"ロゼは驚いて固まったあと、頬を赤らめた。「……調子に乗るなよ」照れ隠しの声だった。"},
+              {label:"「来年もこの時期、同じ酒を飲もう」と約束する", delta:70, result:"ロゼは目を見開き、それから小さく笑った。「……約束って柄じゃないけど、いいよ」"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・客のいない夜",
+            text:"夏、珍しく客の少ない夜、ロゼと二人でカウンターに座って過ごした。",
+            choices:[
+              {label:"何も言わず、隣で静かに過ごす", delta:15, result:"ロゼは目を閉じて、久しぶりに何も気にせず過ごす時間を味わっているようだった。"},
+              {label:"「こういう夜、たまにはいいな」と伝える", delta:35, result:"ロゼは小さく笑った。「……うん。悪くない」珍しく、素直な同意だった。"},
+              {label:"「ロゼといると、この店の夜が特別に感じる」と伝える", delta:70, result:"ロゼは息を呑み、それから顔を背けた。「……そういうこと、簡単に言うな」声が上ずっていた。"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・本当の理由",
+            text:"秋、ロゼがぽつりと打ち明けた。誰かの人生が崩れていく様を見続けてきたせいで、自分だけは崩れないように、ずっと気を張り続けてきたこと。",
+            choices:[
+              {label:"黙って、最後まで話を聞く", delta:15, result:"話し終えたロゼは、少し肩の力が抜けた様子だった。「……聞いてくれて、ありがとう」珍しく素直な言葉だった。"},
+              {label:"「話してくれて嬉しい」とまっすぐ伝える", delta:35, result:"ロゼは目を伏せ、小さく頷いた。「……こんな話、誰にもしたことなかったのに」"},
+              {label:"「これからは、俺がロゼの弱さも受け止める」と伝える", delta:70, result:"ロゼは目を潤ませ、慌てて顔を背けた。「……そんなの、ずるいだろ。信じたくなるじゃん」震える声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・灯り一つの店で",
+            text:"冬、閉め切った酒場、灯り一つだけを残して二人で夜を過ごした。客のいない静かな夜だった。",
+            choices:[
+              {label:"何も言わず、静かな時間を共有する", delta:15, result:"ロゼは灯りの下でそっと微笑んだ。「こういう夜、悪くないね」"},
+              {label:"「この店で一番好きな時間だ」と伝える", delta:35, result:"ロゼは驚いた顔のあと、嬉しそうに肩を寄せてきた。「……私も、そう思う」"},
+              {label:"「来年の冬も、その先も、ロゼの隣にいたい」と伝える", delta:70, result:"ロゼは長い沈黙のあと、涙ぐみながら頷いた。「……うん。ずっと、隣にいて」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、ロゼは時々、素の弱さを見せてくれるようになっていた。閉店後、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"ロゼは小さく頷いた。「……うん、それで十分」穏やかな声だった。"},
+              {label:"「この店で、ロゼと一緒に生きていきたい」と伝える", delta:85, result:"ロゼは大粒の涙をこぼしながら、力いっぱい頷いた。「……誰かに支えてもらえる日が来るなんて、思わなかった」"}
+            ],
+            final:true,
+            endingText:"それからも、ロゼはカウンターに立ち続けた。ただ、その背中にはもう一人で抱え込む影はなく、寄りかかれる誰かがいる安心感が宿っていた。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"黙って片付ける夜",
+        epilogueText:"「毎晩、何も聞かずに片付けを手伝ってくれるから」\nカウンターの奥、ロゼがぽつりと言う。「私、いつの間にか、一人で抱え込まなくていいって思えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、閉店後のこの時間だけ、女将じゃなくていられる気がする」\n派手な出来事は何もなかった。ただ、毎晩黙って隣にいた時間の積み重ねが、一人で抱え込んでいた女将に、確かな温度を与えていた。",
+        events:[
+          {
+            label:"SCENE 02 — 変わらない片付け",
+            text:"閉店後の片付けを手伝うのが、いつの間にか習慣になっていた。ロゼは相変わらず素っ気ないが、こちらの分の椅子を黙って空けておくようになっていた。",
+            choices:[
+              {label:"何も言わず、いつも通り片付けを手伝う", delta:10, result:"ロゼはちらりとこちらを見ただけで、また作業に戻った。だが、その空気は以前より確かに柔らかかった。"},
+              {label:"「この時間、地味に楽しみにしてる」と伝える", delta:40, result:"ロゼの手が一瞬止まった。「……別に、他の意味はないから」早口の返事が、逆に何かを物語っていた。"}
+            ]
+          },
+          {
+            label:"SCENE 03 — カウンターの内側で",
+            text:"手伝ううちに、ロゼの方から少しずつ仕事の合間の話をしてくれるようになった。特別な会話はなくても、その時間は積み重なっていった。",
+            choices:[
+              {label:"急かさず、隣にいるだけの時間を大事にする", delta:15, result:"ロゼはそれが心地よかったのか、自然と話しかけてくるようになっていた。言葉のない時間も、不思議と気まずくなかった。"},
+              {label:"「この時間、地味に大事にしてる」と伝える", delta:55, result:"ロゼは驚いた顔をしたあと、俯いて小さく笑った。「……私も、実は」小さな告白だった。"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・裏庭の静けさ",
+            text:"春、店の裏庭で、ロゼが珍しく足を止めて夜風にあたっていた。",
+            choices:[
+              {label:"急かさず、彼女が満足するまで待つ", delta:15, result:"ロゼは満足そうに息をついた。「こんな時間、悪くないね」"},
+              {label:"「たまにはこういう時間もいいな」とだけ、隣で呟く", delta:35, result:"ロゼはちらりとこちらを見て、また夜風に視線を戻した。「……うん」短い返事に、確かな共感があった。"},
+              {label:"「また、この時期に一緒にこうしよう」とそっと提案する", delta:70, result:"ロゼは驚いた顔をしたあと、小さく頷いた。「……約束、だからね」声が少し震えていた。"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・静かなカウンターで",
+            text:"夏、客の少ない夜、カウンター越しにロゼが珍しくぽつぽつと自分のことを話し始めた。今まで誰にも話さなかった、一人で店を支え続けてきた日々のこと。",
+            choices:[
+              {label:"急かさず、最後まで静かに耳を傾ける", delta:15, result:"話し終えたロゼは、少し肩の力が抜けた様子だった。「……聞いてくれて、ありがとう」珍しく素直な言葉だった。"},
+              {label:"「話してくれて嬉しい」と静かに伝える", delta:35, result:"ロゼは目を伏せ、小さく頷いた。「……こんな話、誰にもしたことなかったのに」"},
+              {label:"何も言わず、そっと隣に座る距離を詰める", delta:70, result:"ロゼは一瞬身を固くしたが、やがて力を抜いて寄りかかってきた。「……もう少し、このままで」"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・緩んでいく表情",
+            text:"秋、ロゼの表情が少しずつ柔らかくなっていることに、常連客たちも気づき始めていた。",
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"ロゼはふと視線に気づき、照れたように目を逸らした。何も言わなくても、伝わるものがあった。"},
+              {label:"「最近、表情が柔らかくなった気がする」と伝える", delta:35, result:"ロゼは頬を染め、「……あんたのせいかもね」とぽつりと呟いた。"},
+              {label:"「これからも、ロゼの隣にいたい」と静かに伝える", delta:70, result:"ロゼは長い沈黙のあと、消え入りそうな声で「……うん」と答えた。それだけで、十分な答えだった。"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・分け合う灯り",
+            text:"冬、閉め切った店で、灯り一つだけを分け合って静かな夜を過ごした。",
+            choices:[
+              {label:"黙って、温かい時間を共有する", delta:15, result:"ロゼは灯りの下でそっと微笑んだ。「こういう時間、悪くないね」"},
+              {label:"「この時間が、一番好きだ」と伝える", delta:35, result:"ロゼは驚いた顔のあと、嬉しそうに肩を寄せてきた。「……私も」小さな声だった。"},
+              {label:"「来年の冬も、隣で灯りを分けてくれ」と伝える", delta:70, result:"ロゼは涙ぐみながら、小さく、けれど確かに頷いた。「……うん、隣にいる」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、ロゼは以前よりずっと自然な顔で店に立つようになっていた。閉店後、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、いつも通り隣にいる」とだけ伝える", delta:20, result:"ロゼは小さく頷いた。「……うん、それでいい」穏やかな声だった。"},
+              {label:"「これからは、隣にいるだけじゃなく、一緒に生きていきたい」と伝える", delta:85, result:"ロゼは長い沈黙のあと、静かに涙をこぼしながら頷いた。「……誰かに寄りかかるのが、こんなに楽なことだったんだね」"}
+            ],
+            final:true,
+            endingText:"派手な変化は何もなかった。ただ、カウンターに立つロゼの顔から、いつしか気を張り詰めた跡が消えていた。それだけで、十分すぎるほどだった。"
+          }
+        ]
+      }
+    }
+  },
+  vera: {
+    name:"ヴェラ",
+    subtitle:"賭博場のディーラー",
+    color:"#2f5c4a", glow:"#8fe0b8", emblem:"賭", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"賭博場の卓で、ヴェラは淡々とカードを配っていた。表情筋一つ動かさず、客が大金を失って崩れ落ちる様も、大勝ちして歓喜する様も、同じ温度で眺めている。\n「運なんて、存在しません。あるのは確率と、破滅する客の数だけです」\n何百人もの人生が狂っていくのを卓の向こうで見続けてきたヴェラにとって、「幸運」や「幸福」という言葉は、都合の良い幻想でしかなかった。\n「あなたも、いずれ同じように壊れていくんでしょうね」\n感情のない声で、そう言い放った。",
+      choices:[
+        {label:"「その計算高さ、誰から自分を守るためのものだ」と踏み込む", delta:100, route:"A",
+         result:"ヴェラの手が、カードの上でぴたりと止まった。\n「……何のことでしょう」\n表情は変わらなかったが、その声にはわずかな乱れがあった。感情を読ませない仮面に、初めて罅が入った瞬間だった。"},
+        {label:"何も言わず、ただ毎晩その卓に座り続ける", delta:75, route:"B",
+         result:"ヴェラは眉一つ動かさずカードを配り続けたが、閉店間際、初めてこちらの顔を確かめるように見た。「……物好きですね」その声に、拒絶の色はなかった。"}
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"確率の外側へ",
+        epilogueText:"「幸福なんて、確率で語れるものだと思ってました」\n閉店後の卓で、ヴェラが言う。「壊れていく人ばかり見てきたから、期待するだけ無駄だと」\n「今は?」と聞くと、彼女は初めて、計算のない顔で笑った。\n「今は、あなたという例外だけは、確率で説明できません」\nどんな確率にも当てはまらない一つの答えを、ヴェラは初めて自分の手で引き当てていた。",
+        events:[
+          {
+            label:"SCENE 02 — 崩れた仮面",
+            text:"閉店後、ヴェラが一人で帳簿をつけているところに出くわした。「……見たなら、忘れてください」慌てて感情のない声に戻そうとしていたが、遅かった。",
+            choices:[
+              {label:"「無理に取り繕わなくていい」とだけ伝える", delta:10, result:"ヴェラは戸惑った顔をしたあと、ゆっくりと肩の力を抜いた。「……こんな顔、誰にも見せたことないのに」"},
+              {label:"「その顔も、ちゃんと見せてほしい」と踏み込む", delta:40, result:"ヴェラは目を見開き、それから小さく俯いた。「……ずるいですね、そんな言い方」声がわずかに震えていた。"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 閉店後の卓で",
+            text:"閉店後、二人きりで過ごす時間が増えた。仮面を外したヴェラは、思ったよりずっと不器用に感情を扱っていた。",
+            choices:[
+              {label:"急かさず、彼女のペースに合わせる", delta:15, result:"ヴェラは少しほっとした様子で、ぽつぽつと本音をこぼすようになった。「こんな話、誰にもしたことなかった」"},
+              {label:"「ヴェラの本当の顔、俺は嫌いじゃない」と伝える", delta:55, result:"ヴェラは驚いた顔をしたあと、頬をわずかに赤らめて視線を逸らした。「……そういうこと、簡単に言わないでください」"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・賭場の裏庭で",
+            text:"春、賭博場の裏庭に咲く花に、ヴェラが珍しく足を止めた。「こんなもの、確率で説明できませんね」",
+            choices:[
+              {label:"「説明できないものも、悪くないだろう」と伝える", delta:15, result:"ヴェラは少し戸惑いながらも「……そうかもしれません」と呟いた。"},
+              {label:"花を一輪摘んで、ヴェラに差し出す", delta:35, result:"ヴェラは驚いて固まったあと、ゆっくりと受け取った。「……こういうの、計算できないから苦手です」頬がわずかに赤らんでいた。"},
+              {label:"「来年も、この庭の花が咲く頃に会おう」と約束する", delta:70, result:"ヴェラは目を見開き、それから小さく笑った。「……確約できない約束、初めて受け入れる気になりました」"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・客のいない卓で",
+            text:"夏、珍しく客の少ない夜、ヴェラと二人で誰もいない卓を挟んで座った。",
+            choices:[
+              {label:"何も言わず、隣で静かに過ごす", delta:15, result:"ヴェラは珍しく肩の力を抜いて、久しぶりに何も計算せず過ごす時間を味わっているようだった。"},
+              {label:"「こういう夜、たまにはいいな」と伝える", delta:35, result:"ヴェラは小さく笑った。「……うん。悪くないです」珍しく、素直な同意だった。"},
+              {label:"「ヴェラといると、確率で測れない時間になる」と伝える", delta:70, result:"ヴェラは息を呑み、それから顔を背けた。「……そういうこと、簡単に言わないでください」声が上ずっていた。"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・本当の理由",
+            text:"秋、ヴェラがぽつりと打ち明けた。賭け事で人生を狂わせていく客を見続けるうち、何も期待しなければ傷つかないと、感情そのものを切り離すようになったこと。",
+            choices:[
+              {label:"黙って、最後まで話を聞く", delta:15, result:"話し終えたヴェラは、少し肩の力が抜けた様子だった。「……聞いてくれて、ありがとうございます」珍しく素直な言葉だった。"},
+              {label:"「話してくれて嬉しい」とまっすぐ伝える", delta:35, result:"ヴェラは目を伏せ、小さく頷いた。「……こんな話、誰にもしたことなかったのに」"},
+              {label:"「これからは、俺がヴェラの例外になる」と伝える", delta:70, result:"ヴェラの目が見開かれ、次の瞬間伏せられた。「そんなこと、簡単に言わないでください……信じてしまいます」声は震えていたが、拒絶の響きはどこにもなかった。"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・灯り一つの卓で",
+            text:"冬、閉め切った賭博場、灯り一つだけを残して二人で夜を過ごした。客のいない静かな夜だった。",
+            choices:[
+              {label:"何も言わず、静かな時間を共有する", delta:15, result:"ヴェラは灯りの下でそっと微笑んだ。「こういう夜、悪くないですね」"},
+              {label:"「この賭場で一番好きな時間だ」と伝える", delta:35, result:"ヴェラは驚いた顔のあと、嬉しそうに肩を寄せてきた。「……私も、そう思います」"},
+              {label:"「来年の冬も、その先も、ヴェラの隣にいたい」と伝える", delta:70, result:"ヴェラは長い沈黙のあと、涙ぐみながら頷いた。「……はい。ずっと、隣にいてください」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、ヴェラは時々、計算では測れない顔を見せてくれるようになっていた。閉店後、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"ヴェラは小さく頷いた。「……はい、それで十分です」穏やかな声だった。"},
+              {label:"「この賭場で、ヴェラと一緒に生きていきたい」と伝える", delta:85, result:"ヴェラは大粒の涙をこぼしながら、力いっぱい頷いた。「……確率で説明できない幸福が、本当にあったんですね」"}
+            ],
+            final:true,
+            endingText:"それからも、ヴェラは卓に立ち続けた。ただ、その目にはもう全てを見切ったような冷たさはなく、確かな温度が宿っていた。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"黙って座り続ける夜",
+        epilogueText:"「毎晩、何も聞かずにこの卓に座ってくれるから」\n閉店後の賭博場、ヴェラがぽつりと言う。「私、いつの間にか、確率で測れないものを信じられるようになっていました」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、あなたが座るこの席だけ、計算の外側にあります」\n派手な出来事は何もなかった。ただ、毎晩黙って隣に座り続けた時間の積み重ねが、何も信じなかったディーラーに、確かな温度を与えていた。",
+        events:[
+          {
+            label:"SCENE 02 — 変わらない席",
+            text:"毎晩同じ時間に同じ卓に座るうち、ヴェラの方から言葉を交わしてくれるようになっていた。「……今日も、この席ですか」それだけのやり取りが、不思議と待ち遠しくなっていた。",
+            choices:[
+              {label:"「ああ、いつもの席だ」と短く返す", delta:10, result:"ヴェラは小さく頷いて、カードを配り始めた。それだけの時間が、確かに温かかった。"},
+              {label:"「ヴェラと話すのも、目当ての一つだ」と伝える", delta:40, result:"ヴェラは手を止め、少し驚いた顔をした。「……お世辞でも、悪くないです」小さな声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 閉店間際の会話",
+            text:"閉店間際、客がはけた卓で少しだけ言葉を交わすのが習慣になっていた。特別な会話はなくても、その時間は積み重なっていった。",
+            choices:[
+              {label:"急かさず、隣にいるだけの時間を大事にする", delta:15, result:"ヴェラはそれが心地よかったのか、自然と会話を続けるようになっていた。言葉の少ない時間も、不思議と気まずくなかった。"},
+              {label:"「この時間、地味に大事にしてる」と伝える", delta:55, result:"ヴェラは驚いた顔をしたあと、俯いて小さく笑った。「……私も、実は」小さな告白だった。"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・裏庭の変化",
+            text:"春、賭博場の裏庭に咲く花に、ヴェラが自分から気づいて足を止めるようになっていた。",
+            choices:[
+              {label:"急かさず、彼女が満足するまで待つ", delta:15, result:"ヴェラは満足そうに息をついた。「こんな時間、悪くないですね」"},
+              {label:"「綺麗だな」とだけ、隣で呟く", delta:35, result:"ヴェラはちらりとこちらを見て、また花に視線を戻した。「……はい」短い返事に、確かな共感があった。"},
+              {label:"「また、この時期に一緒に見よう」とそっと提案する", delta:70, result:"ヴェラは驚いた顔をしたあと、小さく頷いた。「……約束、ですからね」声が少し震えていた。"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・静かな卓で",
+            text:"夏、客の少ない夜、ヴェラが珍しくぽつぽつと自分のことを話し始めた。今まで誰にも話さなかった、感情を切り離すようになった理由。",
+            choices:[
+              {label:"急かさず、最後まで静かに耳を傾ける", delta:15, result:"話し終えたヴェラは、少し肩の力が抜けた様子だった。「……聞いてくれて、ありがとうございます」珍しく素直な言葉だった。"},
+              {label:"「話してくれて嬉しい」と静かに伝える", delta:35, result:"ヴェラは目を伏せ、小さく頷いた。「……こんな話、誰にもしたことなかったのに」"},
+              {label:"何も言わず、そっと隣に座る距離を詰める", delta:70, result:"ヴェラは一瞬身を固くしたが、やがて力を抜いて寄りかかってきた。「……もう少し、このままで」"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・緩んでいく仮面",
+            text:"秋、ヴェラの表情が少しずつ柔らかくなっていることに、常連客たちも気づき始めていた。",
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"ヴェラはふと視線に気づき、照れたように目を逸らした。何も言わなくても、伝わるものがあった。"},
+              {label:"「最近、表情が柔らかくなった気がする」と伝える", delta:35, result:"ヴェラは頬を染め、「……あなたのせいかもしれません」とぽつりと呟いた。"},
+              {label:"「これからも、ヴェラの隣にいたい」と静かに伝える", delta:70, result:"ヴェラは長い沈黙のあと、消え入りそうな声で「……はい」と答えた。それだけで、十分な答えだった。"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・分け合う灯り",
+            text:"冬、閉め切った賭博場で、灯り一つだけを分け合って静かな夜を過ごした。",
+            choices:[
+              {label:"黙って、温かい時間を共有する", delta:15, result:"ヴェラは灯りの下でそっと微笑んだ。「こういう時間、悪くないですね」"},
+              {label:"「この時間が、一番好きだ」と伝える", delta:35, result:"ヴェラは驚いた顔のあと、嬉しそうに肩を寄せてきた。「……私も、です」小さな声だった。"},
+              {label:"「来年の冬も、隣で灯りを分けてくれ」と伝える", delta:70, result:"ヴェラは涙ぐみながら、小さく、けれど確かに頷いた。「……はい、隣にいます」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、ヴェラは以前よりずっと自然な顔でカードを配るようになっていた。閉店後、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、いつも通り隣にいる」とだけ伝える", delta:20, result:"ヴェラは小さく頷いた。「……はい、それでいいです」穏やかな声だった。"},
+              {label:"「これからは、隣にいるだけじゃなく、一緒に生きていきたい」と伝える", delta:85, result:"ヴェラは長い沈黙のあと、静かに涙をこぼしながら頷いた。「……確率で測れない幸福を、信じてみたくなりました」"}
+            ],
+            final:true,
+            endingText:"派手な変化は何もなかった。ただ、卓に立つヴェラの目から、いつしか全てを見切ったような冷たさが消えていた。それだけで、十分すぎるほどだった。"
+          }
+        ]
+      }
+    }
+  },
+  fine: {
+    name:"フィーネ",
+    subtitle:"第七王女",
+    color:"#6f4e9c", glow:"#d9baf0", emblem:"七", tier:2,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"王宮の奥、誰も来ないはずの物見台で、一人佇む少女を見かけた。着飾った衣装に反して、その表情はひどく空虚だった。\n「第七王女のフィーネです。……といっても、覚える価値もない名前ですけど」\n自嘲するように名乗った彼女は、王位継承からは程遠い順位で、生まれた時から「使い道」だけを期待されてきたのだと語った。どこかの国との同盟のため、いずれ会ったこともない誰かに嫁がされる。それが決まっている、ただそれだけの存在。\n「私が何を望むかなんて、誰も聞いたことがないので」\n乾いた声で、フィーネはそう言った。",
+      choices:[
+        {label:"「肩書なんてどうでもいい、フィーネ自身に興味がある」と踏み込む", delta:100, route:"A",
+         result:"フィーネの目が、大きく見開かれた。\n「……そんなこと言われたの、生まれて初めてです」\n声が震えていた。困惑と、隠しきれない期待が入り混じった震えだった。"},
+        {label:"何も言わず、ただ隣に座って同じ景色を眺める", delta:75, route:"B",
+         result:"フィーネは驚いた様子だったが、何も聞かずに隣に座られたことに、少しだけ肩の力を抜いたようだった。「……変な人ですね」その声は、思ったより優しかった。"}
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"名もなき私を見つけて",
+        epilogueText:"「肩書なしの私に、価値なんてないと思ってました」\n城下を見下ろすバルコニーで、フィーネが言う。「政略の駒として生まれて、政略の駒として終わる。それだけの人生だと」\n「今は?」と聞くと、彼女は初めて、王女としてではなく一人の少女として笑った。\n「今は、あなたが望んでくれる私に、なりたいと思ってます」\n第七王女という肩書の奥に隠れていた本当の顔が、ようやく日の光を浴びていた。",
+        events:[
+          {
+            label:"SCENE 02 — 城下へのお忍び",
+            text:"「一度でいいから、普通の街を歩いてみたくて」\nフィーネのささやかな願いを叶えるため、変装して城下へ抜け出した。人混みの中、彼女は子供のように目を輝かせていた。",
+            choices:[
+              {label:"「気に入ったところがあれば言ってくれ」と伝える", delta:10, result:"フィーネは屋台の前で足を止め、嬉しそうに振り返った。「……こんなに自由なの、初めてです」"},
+              {label:"「フィーネが望むなら、何度でも連れ出す」と伝える", delta:40, result:"フィーネは目を潤ませ、慌てて袖で拭った。「……そんな約束、簡単にしないでください。信じてしまいます」"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 誰も知らない顔",
+            text:"城下では「フィーネ」という名前だけで過ごせることに、彼女は少しずつ慣れていった。肩書のない自分でいられる時間を、心から楽しむようになっていた。",
+            choices:[
+              {label:"黙って、彼女の変化を見守る", delta:15, result:"フィーネは屋台の食べ物を頬張りながら、年相応の顔で笑っていた。「こんな顔、王宮では見せられないんですけどね」"},
+              {label:"「その顔、俺の前でだけは見せてくれ」と伝える", delta:55, result:"フィーネは頬を染め、視線を逸らした。「……ずるいです、そういう言い方」拒絶ではない声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・城下の花畑で",
+            text:"春、城下外れの花畑にフィーネを連れ出した。「こんな綺麗な景色、王宮の窓からは見えません」",
+            choices:[
+              {label:"「今度からは、ここに来ればいい」と伝える", delta:15, result:"フィーネは嬉しそうに頷いた。「……はい。また、連れてきてください」"},
+              {label:"花を一輪、フィーネの髪に挿す", delta:35, result:"フィーネは驚いて固まったあと、顔を赤らめた。「……こういうこと、王族はされる側で、する側じゃないので……嬉しいです」"},
+              {label:"「来年も、この花畑に来よう」と約束する", delta:70, result:"フィーネは目を見開き、それから泣きそうな顔で笑った。「……約束なんて、初めてしてもらいました」"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・誰も知らない海辺で",
+            text:"夏、遠出を許された数少ない機会に、フィーネを海辺へ連れ出した。彼女は初めて見る海に、言葉を失っていた。",
+            choices:[
+              {label:"何も言わず、隣で同じ景色を眺める", delta:15, result:"フィーネはしばらく無言のまま、寄せては返す波を見つめていた。「……こんな世界も、あったんですね」"},
+              {label:"「フィーネと見る景色は、何でも特別に見える」と伝える", delta:35, result:"フィーネは息を呑み、それから頬を赤らめた。「……そういうこと、簡単に言わないでください」"},
+              {label:"波打ち際で、そっと手を握る", delta:70, result:"フィーネの手が一瞬跳ねたが、すぐに力を抜いて握り返してきた。「……離さないでくださいね」小さな声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・本当の望み",
+            text:"秋、フィーネがぽつりと打ち明けた。誰かに望まれて生まれてきたわけではないと、ずっと思っていたこと。今は、初めて自分の意思で誰かのそばにいたいと思えること。",
+            choices:[
+              {label:"黙って、最後まで話を聞く", delta:15, result:"話し終えたフィーネは、少し肩の力が抜けた様子だった。「……聞いてくださって、ありがとうございます」"},
+              {label:"「フィーネが望むなら、俺はいつでもそばにいる」と伝える", delta:35, result:"フィーネは目を伏せ、小さく震える声で「……本当に、望んでいいんですか」と聞き返した。「本当に」と返すと、彼女は涙をこぼした。"},
+              {label:"「肩書がなくなっても、俺はフィーネのそばを選ぶ」と伝える", delta:70, result:"フィーネの目が見開かれ、次の瞬間伏せられた。「そんなこと、簡単に言わないでください……本気にしてしまいます」声は震えていたが、拒絶の響きはどこにもなかった。"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・バルコニーの灯りの下で",
+            text:"冬、王宮の人目を避けたバルコニーで、二人だけの静かな時間を過ごした。眼下に広がる城下の灯りが、いつもより温かく見えた。",
+            choices:[
+              {label:"何も言わず、静かな時間を共有する", delta:15, result:"フィーネは灯りを見下ろしながらそっと微笑んだ。「こういう夜、悪くないですね」"},
+              {label:"「この一年で一番、フィーネが自由に見えた」と伝える", delta:35, result:"フィーネは驚いた顔のあと、嬉しそうに肩を寄せてきた。「……そうかもしれません」"},
+              {label:"「来年の冬も、その先も、フィーネの隣にいたい」と伝える", delta:70, result:"フィーネは長い沈黙のあと、涙ぐみながら頷いた。「……はい。ずっと、隣にいてください」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、フィーネの表情から、諦めの色はすっかり消えていた。人目を避けたバルコニーで、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"フィーネは小さく頷いた。「……はい、それで十分です」穏やかな声だった。"},
+              {label:"「肩書ではなく、フィーネ自身と一緒に生きていきたい」と伝える", delta:85, result:"フィーネは大粒の涙をこぼしながら、力いっぱい頷いた。「……政略の駒じゃない私を、初めて望んでもらえました」"}
+            ],
+            final:true,
+            endingText:"それからも、フィーネは第七王女であり続けた。ただ、その肩書の奥にある本当の顔を知る者が、確かに一人増えていた。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"そっと隣で同じ景色を",
+        epilogueText:"「毎回、何も聞かずに隣に座ってくれるから」\nバルコニーの片隅、フィーネがぽつりと言う。「私、いつの間にか、素の自分でいられる時間を待つようになってました」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、あなたと過ごす時間だけ、王女ではない自分でいられる気がします」\n派手な出来事は何もなかった。ただ、何も聞かずに隣に座り続けた時間の積み重ねが、政略の駒だった王女に、確かな温度を与えていた。",
+        events:[
+          {
+            label:"SCENE 02 — 変わらない時間",
+            text:"物見台での逢瀬が、いつの間にか習慣になっていた。特別な会話がなくても、フィーネはその時間を心待ちにしているようだった。",
+            choices:[
+              {label:"「今日も来た」とだけ、静かに伝える", delta:10, result:"フィーネは小さく微笑んだ。「……はい、待ってました」珍しく素直な言葉だった。"},
+              {label:"「この時間、地味に楽しみにしてる」と伝える", delta:40, result:"フィーネは驚いた顔をしたあと、頬を染めた。「……私も、実は」小さな声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 少しずつの信頼",
+            text:"何も聞かず隣にいるだけの関係だったが、フィーネの方から少しずつ言葉をこぼすようになっていた。",
+            choices:[
+              {label:"急かさず、彼女のペースに合わせる", delta:15, result:"フィーネは安心した様子で、また少し言葉を重ねてくれた。「急かされないの、初めてです」"},
+              {label:"「もっと聞かせてほしい、フィーネのこと」と伝える", delta:55, result:"フィーネは戸惑いながらも、嬉しそうに頷いた。「……こんなに聞かれたの、初めてです」"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・静かな花畑で",
+            text:"春、物見台の下に広がる庭園で、フィーネが珍しく足を止めて花を眺めていた。",
+            choices:[
+              {label:"急かさず、彼女が満足するまで待つ", delta:15, result:"フィーネは満足そうに息をついた。「こんな時間、悪くないですね」"},
+              {label:"「綺麗だな」とだけ、隣で呟く", delta:35, result:"フィーネはちらりとこちらを見て、また花に視線を戻した。「……はい」短い返事に、確かな共感があった。"},
+              {label:"「また、この時期に一緒に見よう」とそっと提案する", delta:70, result:"フィーネは驚いた顔をしたあと、小さく頷いた。「……約束、ですからね」声が少し震えていた。"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・静かな夜風の中で",
+            text:"夏、バルコニーで夜風にあたりながら、フィーネが珍しくぽつぽつと自分のことを話し始めた。誰にも望まれずに生まれてきたと思っていたこと。",
+            choices:[
+              {label:"急かさず、最後まで静かに耳を傾ける", delta:15, result:"話し終えたフィーネは、少し肩の力が抜けた様子だった。「……聞いてくださって、ありがとうございます」"},
+              {label:"「話してくれて嬉しい」と静かに伝える", delta:35, result:"フィーネは目を伏せ、小さく頷いた。「……こんな話、誰にもしたことなかったのに」"},
+              {label:"何も言わず、そっと隣に座る距離を詰める", delta:70, result:"フィーネは一瞬身を固くしたが、やがて力を抜いて寄りかかってきた。「……もう少し、このままで」"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・変わっていく表情",
+            text:"秋、フィーネの表情が少しずつ柔らかくなっていることに、侍女たちも気づき始めていた。",
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"フィーネはふと視線に気づき、照れたように目を逸らした。何も言わなくても、伝わるものがあった。"},
+              {label:"「最近、表情が柔らかくなった気がする」と伝える", delta:35, result:"フィーネは頬を染め、「……あなたのせいかもしれません」とぽつりと呟いた。"},
+              {label:"「これからも、フィーネの隣にいたい」と静かに伝える", delta:70, result:"フィーネは長い沈黙のあと、消え入りそうな声で「……はい」と答えた。それだけで、十分な答えだった。"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・分け合う灯り",
+            text:"冬、人目を避けたバルコニーで、城下の灯りを二人で見下ろしながら静かな夜を過ごした。",
+            choices:[
+              {label:"黙って、温かい時間を共有する", delta:15, result:"フィーネは灯りを見下ろしながらそっと微笑んだ。「こういう時間、悪くないですね」"},
+              {label:"「この時間が、一番好きだ」と伝える", delta:35, result:"フィーネは驚いた顔のあと、嬉しそうに肩を寄せてきた。「……私も、です」小さな声だった。"},
+              {label:"「来年の冬も、隣で同じ灯りを見たい」と伝える", delta:70, result:"フィーネは涙ぐみながら、小さく、けれど確かに頷いた。「……はい、隣にいます」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、フィーネは以前よりずっと自然な顔で微笑むようになっていた。人目を避けたバルコニーで、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、いつも通り隣にいる」とだけ伝える", delta:20, result:"フィーネは小さく頷いた。「……はい、それでいいです」穏やかな声だった。"},
+              {label:"「これからは、隣にいるだけじゃなく、一緒に生きていきたい」と伝える", delta:85, result:"フィーネは長い沈黙のあと、静かに涙をこぼしながら頷いた。「……政略の駒じゃない自分を、初めて誇らしく思えます」"}
+            ],
+            final:true,
+            endingText:"派手な変化は何もなかった。ただ、フィーネの表情から、いつしか諦めの色が消えていた。それだけで、十分すぎるほどだった。"
+          }
+        ]
+      }
+    }
+  },
+  charlotte: {
+    name:"シャルロット",
+    subtitle:"侯爵家の長女",
+    color:"#8c3a4a", glow:"#f0a8b8", emblem:"誇", tier:3,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"侯爵家主催の夜会で、シャルロットは誰よりも美しく、そして誰よりも隙のない微笑みを浮かべていた。だがその裏で、侯爵家の内情は火の車だということは、社交界では公然の秘密だった。\n「我が家にふさわしい縁談を、そろそろ結ばねばなりませんの」\n本人の口から語られたその言葉は、まるで他人事のように乾いていた。誇り高い家名を保つため、彼女自身の気持ちなど二の次にされている。\n「平民風情に、何が分かるというんです」\n刺々しい言葉の奥に、隠しきれない疲れが滲んでいた。",
+      choices:[
+        {label:"「身分など関係ない、俺は自分の力でシャルロットに相応しい男になる」と踏み込む", delta:100, route:"A",
+         result:"シャルロットは一瞬、呆気にとられた顔をした。\n「……本気で言っているの? 平民が、侯爵家に釣り合う力を持つなど」\n嘲るような口調だったが、その目には隠しきれない好奇心が浮かんでいた。"},
+        {label:"「無理に取り繕わなくていい、素のシャルロットを知りたい」と静かに伝える", delta:75, route:"B",
+         result:"シャルロットは虚を突かれたように黙り込んだ。「……そんなこと、誰にも言われたことがありません」取り繕った微笑みが、ほんの一瞬だけ剥がれ落ちた。"}
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"再建を賭けた道",
+        epilogueText:"「婚約を破棄された時、私はもう終わりだと思っていました」\n侯爵邸の庭園で、シャルロットが言う。「家も、誇りも、何もかも失うと。それを、まさか平民のあなたが立て直してしまうなんて」\n「それでも、まだ足りないか」と聞くと、彼女は初めて心からの笑顔を見せた。\n「いいえ。もう十分です。あなたはもう、誰にも文句を言わせない場所に立っている」\n屈辱の中から始まった道のりが、確かに一つの家名を救っていた。",
+        events:[
+          {
+            label:"SCENE 02 — 破談の報せ",
+            text:"シャルロットに決められていた縁談相手が、侯爵家の財政悪化を理由に、一方的に婚約破棄を言い渡してきた。「借金塗れの家となど、これ以上関わりたくない」——大勢の前での、屈辱的な仕打ちだった。",
+            choices:[
+              {label:"何も言わず、シャルロットのそばに立つ", delta:10, result:"シャルロットは唇を噛み締めながらも、隣にいる存在に気づいて、わずかに肩の力を抜いた。「……見苦しいところを、見せましたね」"},
+              {label:"「その屈辱、俺が必ず晴らしてみせる」と宣言する", delta:40, result:"シャルロットは驚いた顔で振り向いた。「……平民に、何ができるというんです」声は刺々しかったが、瞳には隠しきれない縋るような光があった。"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 再建の申し出",
+            text:"侯爵に「家の再建を、俺にやらせてほしい」と申し出た。「平民風情が、商いの何を知っている」鼻で笑われたが、猶予として半年の期限と、わずかな元手だけが与えられた。",
+            choices:[
+              {label:"「結果で示す」とだけ短く答える", delta:15, result:"侯爵は鼻を鳴らしただけだったが、物陰で見ていたシャルロットは複雑な表情を浮かべていた。「……本気、なんですね」"},
+              {label:"「シャルロットの家名を、俺が守ってみせる」と伝える", delta:55, result:"侯爵は眉をひそめたが、シャルロットの頬がわずかに赤らんだのを見逃さなかった。「……お父様の前で、そんなことを」"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・最初の一手",
+            text:"春、わずかな元手を元に、他国との小さな交易路を開拓した。最初は失敗続きだったが、シャルロットが密かに帳簿の見方を教えてくれるようになっていた。",
+            choices:[
+              {label:"「助かる」とだけ、素直に礼を言う", delta:15, result:"シャルロットは意外そうな顔をしたあと、少し照れくさそうに帳簿に視線を戻した。「……役に立てているなら、良かったです」"},
+              {label:"「シャルロットがいなければ、とっくに詰んでた」と伝える", delta:35, result:"シャルロットは頬を染めた。「……大袈裟です。でも、悪い気はしません」"},
+              {label:"「この事業、シャルロットと一緒に育てていきたい」と伝える", delta:70, result:"シャルロットは目を見開き、それから小さく笑った。「……一緒に、ですか。悪くない響きですね」"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・軌道に乗る商い",
+            text:"夏、小さかった交易は着実に利益を生み始めていた。「あの平民が」という嘲りは、少しずつ「あの若者、只者ではないぞ」という評判に変わっていった。",
+            choices:[
+              {label:"変わらぬ態度で、地道に商いを続ける", delta:15, result:"シャルロットはその真摯な姿勢を、そばで見つめ続けていた。「……変わらないところが、あなたらしいですね」"},
+              {label:"「評判より、シャルロットに認められたい」と伝える", delta:35, result:"シャルロットは目を伏せた。「……もう、十分に認めています。それだけは、分かってください」"},
+              {label:"「必ず、侯爵家の借金を全て返してみせる」と誓う", delta:70, result:"シャルロットは驚いた顔をしたあと、静かに微笑んだ。「……その言葉、忘れないでくださいね」"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・借金の完済",
+            text:"秋、ついに侯爵家の借財を完済する目処が立った。侯爵の態度が、目に見えて軟化していった。「まだ完全に認めたわけではないが……娘がお前を選ぶというなら、口は出さん」",
+            choices:[
+              {label:"「感謝します」と、丁重に頭を下げる", delta:15, result:"シャルロットは物陰で涙をこぼしていた。「……お父様が、あんなことを言うなんて」"},
+              {label:"「必ずシャルロットを幸せにする」と侯爵に誓う", delta:35, result:"シャルロットは驚いた顔のあと、堪えきれずに涙をこぼした。「……ずるいです、そんなの」"},
+              {label:"シャルロットの手を取り、「これで、堂々と隣にいられる」と伝える", delta:70, result:"シャルロットは声を上げて泣き出した。「……ずっと、こんな日が来るなんて思ってませんでした」"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・正式な求婚",
+            text:"冬、侯爵家の広間で、正式にシャルロットへの求婚を申し出た。かつて婚約を破棄された屈辱の場に立っていた彼女の隣に、今は家を救った男が堂々と立っていた。",
+            choices:[
+              {label:"「これからも、隣で商いを続ける」と誓う", delta:15, result:"シャルロットは静かに頷いた。「……はい、私も隣で見ていたいです」"},
+              {label:"「地位ではなく、シャルロット自身が欲しかった」と伝える", delta:35, result:"シャルロットは目を潤ませた。「……分かっています。それでも、支えてくれて嬉しかった」"},
+              {label:"「これから先も、シャルロットに恥じない男であり続ける」と誓う", delta:70, result:"シャルロットは涙をこぼしながら頷いた。「……はい。ずっと、隣にいてください」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、かつて「平民風情」と鼻で笑われた男の名は、侯爵家を救った立役者として社交界に知れ渡っていた。庭園で、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、この場所で商いを続ける」とだけ伝える", delta:20, result:"シャルロットは小さく頷いた。「……はい、それで十分です」穏やかな声だった。"},
+              {label:"「地位も家名も関係なく、シャルロットと一緒に生きていきたい」と伝える", delta:85, result:"シャルロットは大粒の涙をこぼしながら、力いっぱい頷いた。「……家格のためではなく、私自身のために選ばれる日が来るなんて」"}
+            ],
+            final:true,
+            endingText:"それからも、商いは順調に続いた。ただ、隣に立つシャルロットの顔には、もう破談の屈辱も政略の影もなく、誇らしげな笑みだけが残っていた。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"没落が導く道",
+        epilogueText:"「家が傾いた時、私は全てを失うと思っていました」\n侯爵邸の縮小した庭園で、シャルロットが言う。「家名も、誇りも、居場所も。でも、あなただけは変わらずそばにいてくれた」\n「今は?」と聞くと、彼女は肩書のない顔で、初めて心から笑った。\n「今は、何も持たない私を選んでくれる人がいる。それだけで、十分すぎるくらいです」\n没落していく家名の中で、失われなかったものが確かにあった。",
+        events:[
+          {
+            label:"SCENE 02 — 隠された重圧",
+            text:"社交界の華やかな仮面の下で、シャルロットが珍しく本音を漏らした。「本当は、こんな縁談ごっこ、うんざりしているんです」",
+            choices:[
+              {label:"黙って、彼女の愚痴を聞く", delta:10, result:"シャルロットは少し驚いた顔をしたあと、ぽつぽつと本音を重ねるようになった。「……こんな話、誰にもしたことなかったのに」"},
+              {label:"「無理に着飾らなくていい、素のままでいい」と伝える", delta:40, result:"シャルロットは目を見開き、それから小さく笑った。「……変わった人ですね、あなたは」拒絶ではない声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 忍び寄る影",
+            text:"侯爵家の財政が、噂以上に深刻であることが少しずつ明らかになっていった。シャルロットは気丈に振る舞っていたが、その顔には隠しきれない不安があった。",
+            choices:[
+              {label:"何も言わず、いつも通り隣にいる", delta:15, result:"シャルロットはちらりとこちらを見て、それ以上何も聞かなかった。だが、その存在に安堵しているのは明らかだった。"},
+              {label:"「何があっても、俺はシャルロットの隣にいる」と伝える", delta:55, result:"シャルロットは驚いた顔をしたあと、震える声で「……今、それを言うのはずるいです」と呟いた。"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・崩れゆく体裁",
+            text:"春、侯爵家の借財がついに社交界の噂となった。シャルロットを取り巻く縁談の話は、潮が引くように消えていった。",
+            choices:[
+              {label:"「体裁なんて、気にしなくていい」と伝える", delta:15, result:"シャルロットは自嘲気味に笑った。「……そう言えるの、あなたくらいですよ」"},
+              {label:"「縁談が消えたなら、俺が名乗りを上げる」と伝える", delta:35, result:"シャルロットは驚いた顔をしたあと、目を潤ませた。「……こんな時に、そんなことを」"},
+              {label:"「家がどうなっても、シャルロットのそばを離れない」と約束する", delta:70, result:"シャルロットは声を詰まらせ、それでも気丈に頷いた。「……約束、ですよ。忘れないでください」"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・誇りを手放す日",
+            text:"夏、シャルロットがついに家格への固執を手放す決意を口にした。「もう、侯爵家の娘という肩書に縋るのはやめます」",
+            choices:[
+              {label:"黙って、彼女の決意を尊重する", delta:15, result:"シャルロットは少し寂しそうに、けれど確かな決意を持って頷いた。「見守ってくれて、ありがとうございます」"},
+              {label:"「肩書がなくても、シャルロットはシャルロットのままだ」と伝える", delta:35, result:"シャルロットは目を潤ませた。「……そう言ってもらえると、少し楽になります」"},
+              {label:"「これからは、俺がシャルロットを守る番だ」と伝える", delta:70, result:"シャルロットは涙をこぼしながら、小さく頷いた。「……頼っても、いいんですか」震える声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・変わる父の態度",
+            text:"秋、財政再建に追われる侯爵は、もはや娘の縁談に口を出す余裕を失っていた。「好きにするがいい……もう、そんな余裕はない」",
+            choices:[
+              {label:"「感謝します」とだけ、静かに伝える", delta:15, result:"シャルロットは複雑な表情で、それでもどこかほっとした様子だった。「お父様も、疲れているんです」"},
+              {label:"「これからはシャルロットを俺が支える」と侯爵に伝える", delta:35, result:"侯爵は何も言わなかったが、シャルロットは静かに涙をこぼしていた。「……ありがとうございます」"},
+              {label:"シャルロットの手を取り、「もう誰にも縛られなくていい」と伝える", delta:70, result:"シャルロットは声を上げて泣き出した。「……こんなに自由になれる日が来るなんて、思いませんでした」"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・小さくなった邸で",
+            text:"冬、規模を縮小した侯爵邸で、シャルロットと静かな時間を過ごした。かつての華やかさはなくとも、そこには確かな温もりがあった。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」と伝える", delta:15, result:"シャルロットは静かに頷いた。「……はい、それで十分です」"},
+              {label:"「肩書がなくなった今の方が、シャルロットらしく見える」と伝える", delta:35, result:"シャルロットは驚いた顔のあと、嬉しそうに微笑んだ。「……そうかもしれません」"},
+              {label:"「これから先も、何もかも失っても隣にいる」と誓う", delta:70, result:"シャルロットは涙をこぼしながら頷いた。「……はい。ずっと、隣にいてください」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、侯爵家という肩書はもはやかつての輝きを失っていたが、シャルロットの表情はかつてないほど穏やかだった。縮小した庭園で、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"シャルロットは小さく頷いた。「……はい、それで十分です」穏やかな声だった。"},
+              {label:"「肩書も家名もなくなっても、シャルロットと一緒に生きていきたい」と伝える", delta:85, result:"シャルロットは大粒の涙をこぼしながら、力いっぱい頷いた。「……何も持たない私を選んでもらえるなんて、思いませんでした」"}
+            ],
+            final:true,
+            endingText:"それからも、侯爵家は静かに縮小を続けた。ただ、シャルロットの顔には、もう誇りに縛られた影はなく、穏やかな笑みだけが残っていた。"
+          }
+        ]
+      }
+    }
+  },
+  alicia: {
+    name:"アリシア",
+    subtitle:"聖女",
+    color:"#d4af6a", glow:"#fff6dc", emblem:"聖", tier:4,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"大聖堂の奥、浄化の儀式を終えたばかりのアリシアは、立っているのもやっとという様子で壁に手をついていた。その顔には、崇められる「聖女」という肩書からは想像もつかないほどの疲弊が滲んでいた。\n「聖女に、個人の望みなど許されておりません」\n手を貸そうとした瞬間、そう静かに拒まれた。浄化の力を使うたび、彼女自身の生命力が確実に削られていくこと。にもかかわらず、聖女は生涯を祈りに捧げる存在として、誰かを愛することも、家庭を持つことも許されない掟があること。\n「これは、私が生まれた時から決まっていたことですから」\n諦めきった声だった。",
+      choices:[
+        {label:"「その掟ごと、俺が壊してやる」と踏み込む", delta:100, route:"A",
+         result:"アリシアの目が、大きく見開かれた。\n「……正気ですか。聖女の掟を覆すなど、教会そのものに逆らうということですよ」\n拒絶の言葉とは裏腹に、その声には隠しきれない動揺と、微かな希望が滲んでいた。"},
+        {label:"「無理に微笑まなくていい」と、静かに寄り添う", delta:75, route:"B",
+         result:"アリシアは驚いた様子だったが、何も聞かずにそばにいてくれることに、少しだけ肩の力を抜いたようだった。「……こんな風に扱われたの、初めてです」その声は、思ったより儚かった。"}
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"運命に抗う道",
+        epilogueText:"「私の人生は、生まれた時から決まっていました」\n大聖堂の裏庭で、アリシアが言う。「祈って、力を使って、いずれ果てる。それだけの一生だと」\n「それを、壊してみせただろう」と聞くと、彼女は掟から解き放たれた顔で、初めて心から笑った。\n「はい。まさか、本当に運命を書き換える人がいるなんて、思いませんでした」\n生まれながらに定められていたはずの人生に、初めて自分自身で選んだ未来が刻まれていた。",
+        events:[
+          {
+            label:"SCENE 02 — 大司教への直談判",
+            text:"聖女の掟の見直しを求め、教会の最高権力者である大司教に直談判した。「聖女の力は、生涯を捧げてこそ意味を持つ。個人の欲などもってのほかだ」一蹴されたが、そこで初めて掟の根拠となる古い盟約の存在を知った。",
+            choices:[
+              {label:"「必ず、その盟約の真実を突き止める」とだけ答える", delta:10, result:"大司教は鼻を鳴らしただけだったが、物陰でその様子を見ていたアリシアは、複雑な表情を浮かべていた。「……そんなことをして、何になるんですか」"},
+              {label:"「アリシアの人生を、掟のためだけに終わらせたくない」と伝える", delta:40, result:"大司教は顔をしかめたが、アリシアの頬がわずかに赤らんだのを見逃さなかった。「……大司教様の前で、そんなことを」"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 禁書庫にて",
+            text:"教会の禁書庫に眠る古い盟約書を、アリシアと共にこっそり調べ始めた。彼女は最初こそ及び腰だったが、次第に自らも真実を知りたがるようになっていった。",
+            choices:[
+              {label:"黙々と調査を進める", delta:15, result:"アリシアは古い文献をめくりながら、ぽつりと呟いた。「……こんな風に、自分の運命に疑問を持ったの、初めてです」"},
+              {label:"「アリシアのために、必ず答えを見つける」と伝える", delta:55, result:"アリシアは驚いた顔をしたあと、目を潤ませた。「……そこまで、私のために」声が震えていた。"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・禁忌の外出",
+            text:"春、儀式の合間を縫って、アリシアを外の世界へこっそり連れ出した。聖女として外出すら制限されてきた彼女にとって、それは生まれて初めての「禁忌」だった。",
+            choices:[
+              {label:"「見つかったら俺の責任だ、気にするな」と伝える", delta:15, result:"アリシアは戸惑いながらも、次第に花畑の景色に見入っていった。「……こんな世界が、外にあったんですね」"},
+              {label:"花を一輪、アリシアの髪に挿す", delta:35, result:"アリシアは驚いて固まったあと、頬を染めた。「……聖女は、着飾ることも許されていないので……嬉しいです」"},
+              {label:"「来年も、この景色を見に来よう」と約束する", delta:70, result:"アリシアは目を見開き、それから泣きそうな顔で笑った。「……来年の私が、まだ生きているといいですね」寂しげな声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・力の代償と向き合う",
+            text:"夏、浄化の儀式のあと倒れたアリシアを見て、初めて彼女の力の代償の深刻さを目の当たりにした。「このままでは、遠くない未来に力を使い果たす」",
+            choices:[
+              {label:"「代わりに俺が儀式を肩代わりできないか調べる」と伝える", delta:15, result:"アリシアは驚いた顔をしたあと、静かに首を振った。「そんな方法、あるはずが……でも、探してくれるんですね」"},
+              {label:"「アリシアを失う未来なんて、絶対に認めない」と伝える", delta:35, result:"アリシアは目を潤ませた。「……そんなに、必死にならないでください。私まで、期待してしまいます」"},
+              {label:"禁書庫で見つけた「力を分け合う秘術」に懸ける決意をする", delta:70, result:"アリシアは驚いた顔のあと、涙をこぼした。「……そんな方法があるなら、生きてもいいと思えます」"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・古の盟約の真実",
+            text:"秋、ついに盟約書の真実にたどり着いた。「聖女は独りで力を背負う」という掟は、後世の教会が都合よく歪めた解釈に過ぎなかった。本来は「信頼する者と力を分かち合ってよい」という盟約だった。",
+            choices:[
+              {label:"「これで、アリシアは独りじゃなくなる」と伝える", delta:15, result:"アリシアは声を震わせた。「……本当に、こんな真実があったなんて」"},
+              {label:"「これからは、俺がアリシアの力を分け合う」と申し出る", delta:35, result:"アリシアは驚いた顔のあと、堪えきれずに涙をこぼした。「……そんなこと、していいんですか」"},
+              {label:"アリシアの手を取り、「もう独りで背負わなくていい」と伝える", delta:70, result:"アリシアは声を上げて泣き出した。「……こんな日が来るなんて、生まれてから一度も想像しませんでした」"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・教会との決着",
+            text:"冬、盟約の真実を突きつけ、教会に掟の撤廃を正式に認めさせた。かつて「正気か」と一蹴された申し出が、今は覆せない事実として認められていた。",
+            choices:[
+              {label:"「これで、アリシアは自分の人生を歩める」と伝える", delta:15, result:"アリシアは静かに頷いた。「……はい。あなたのおかげです」"},
+              {label:"「力ではなく、アリシア自身の人生を取り戻したかった」と伝える", delta:35, result:"アリシアは目を潤ませた。「……分かっています。それでも、諦めずにいてくれて嬉しかった」"},
+              {label:"「これから先も、アリシアの隣で力を分け合い続ける」と誓う", delta:70, result:"アリシアは涙をこぼしながら頷いた。「……はい。ずっと、隣にいてください」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、かつて生涯を独りで捧げる運命だった聖女は、もう独りではなくなっていた。大聖堂の裏庭で、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、この場所で力を分け合っていく」とだけ伝える", delta:20, result:"アリシアは小さく頷いた。「……はい、それで十分です」穏やかな声だった。"},
+              {label:"「運命ではなく、アリシア自身と一緒に生きていきたい」と伝える", delta:85, result:"アリシアは大粒の涙をこぼしながら、力いっぱい頷いた。「……生まれた時から決まっていたはずの人生に、初めて自分で選んだ未来ができました」"}
+            ],
+            final:true,
+            endingText:"それからも、アリシアは祈りを捧げ続けた。ただ、その力はもう独りで背負うものではなく、隣にいる誰かと分かち合うものに変わっていた。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"祈りの重さを分け合う道",
+        epilogueText:"「掟も運命も、何一つ変わっていません」\n大聖堂の裏庭で、アリシアが言う。「それでも、あなたがそばにいてくれるだけで、この人生に意味があると思えるようになりました」\n「今は?」と聞くと、彼女は変わらぬ聖女の姿のまま、初めて心から穏やかに笑った。\n「今は、残された時間の一瞬一瞬が、ちゃんと愛おしいです」\n何も変わらなかったはずの運命の中に、確かな温もりだけが宿っていた。",
+        events:[
+          {
+            label:"SCENE 02 — 疲弊の吐露",
+            text:"儀式のあと、アリシアが珍しく本音をこぼした。「本当は、こんな毎日に疲れ切っているんです。それでも、誰にも弱音を吐けなくて」",
+            choices:[
+              {label:"黙って、彼女の本音を受け止める", delta:10, result:"アリシアは少し驚いた顔をしたあと、ぽつぽつと本音を重ねるようになった。「……聞いてくれる人、初めてです」"},
+              {label:"「弱音くらい、俺の前では吐いていい」と伝える", delta:40, result:"アリシアは目を見開き、それから小さく涙をこぼした。「……そんな風に、言ってもらえるなんて」"}
+            ]
+          },
+          {
+            label:"SCENE 03 — 儀式の合間に",
+            text:"儀式の合間の短い休憩時間、アリシアのそばで過ごすのが習慣になっていた。彼女は何も変えることを望まず、ただその時間だけを心の支えにしていた。",
+            choices:[
+              {label:"何も言わず、いつも通り隣にいる", delta:15, result:"アリシアはちらりとこちらを見て、それ以上何も聞かなかった。だが、その存在に安堵しているのは明らかだった。"},
+              {label:"「この時間だけは、聖女じゃなくていい」と伝える", delta:55, result:"アリシアは驚いた顔をしたあと、震える声で「……そんな時間、初めてです」と呟いた。"}
+            ]
+          },
+          {
+            label:"SCENE 04 — 春・小さな我慢",
+            text:"春、アリシアが「本当はずっと、外の花を見てみたかった」とぽつりとこぼした。掟を破らない範囲で、大聖堂の窓辺に小さな花を飾ることにした。",
+            choices:[
+              {label:"「これくらいなら、誰にも咎められないだろう」と伝える", delta:15, result:"アリシアは嬉しそうに花を見つめた。「……こんな小さなことで、こんなに幸せになれるんですね」"},
+              {label:"「アリシアの我慢していたこと、少しずつ叶えていこう」と伝える", delta:35, result:"アリシアは目を潤ませた。「……そんなこと、望んでもいいんでしょうか」"},
+              {label:"「来年も、同じ花をここに飾ろう」とそっと約束する", delta:70, result:"アリシアは驚いた顔をしたあと、小さく頷いた。「……約束、ですね。忘れないでください」"}
+            ]
+          },
+          {
+            label:"SCENE 05 — 夏・初めての願い",
+            text:"夏、アリシアが初めて自分の意思で願いを口にした。「私、少しでいいから、自分のために生きてみたいです」",
+            choices:[
+              {label:"黙って、その願いを受け止める", delta:15, result:"アリシアは少し驚いた顔をしたあと、安堵したように微笑んだ。「否定されなくて、良かったです」"},
+              {label:"「その願い、俺がそばで支える」と伝える", delta:35, result:"アリシアは目を潤ませた。「……そう言ってもらえるだけで、十分すぎるくらいです」"},
+              {label:"「アリシアが自分のために生きる時間を、一緒に作っていこう」と伝える", delta:70, result:"アリシアは涙をこぼしながら、小さく頷いた。「……頼っても、いいんですか」震える声だった。"}
+            ]
+          },
+          {
+            label:"SCENE 06 — 秋・内側から変わる心",
+            text:"秋、アリシアの表情に、以前とは違う柔らかさが宿るようになっていた。掟も運命も変わらないままだったが、彼女自身の心は確かに変わり始めていた。",
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"アリシアはふと視線に気づき、照れたように目を逸らした。何も言わなくても、伝わるものがあった。"},
+              {label:"「最近、表情が穏やかになった気がする」と伝える", delta:35, result:"アリシアは頬を染め、「……あなたのおかげかもしれません」とぽつりと呟いた。"},
+              {label:"「これからも、アリシアの隣にいたい」と静かに伝える", delta:70, result:"アリシアは長い沈黙のあと、消え入りそうな声で「……はい」と答えた。それだけで、十分な答えだった。"}
+            ]
+          },
+          {
+            label:"SCENE 07 — 冬・変わらぬ運命の中で",
+            text:"冬、大聖堂の片隅で、変わらぬ運命を抱えたまま、二人だけの静かな時間を過ごした。",
+            choices:[
+              {label:"黙って、温かい時間を共有する", delta:15, result:"アリシアはそっと微笑んだ。「こういう時間、悪くないですね」"},
+              {label:"「この時間が、一番好きだ」と伝える", delta:35, result:"アリシアは驚いた顔のあと、嬉しそうに肩を寄せてきた。「……私も、です」小さな声だった。"},
+              {label:"「残された時間、すべてアリシアの隣で過ごしたい」と伝える", delta:70, result:"アリシアは涙ぐみながら、小さく、けれど確かに頷いた。「……はい、隣にいてください」"}
+            ]
+          },
+          {
+            label:"SCENE 08 — これから",
+            text:"一年が過ぎ、アリシアは変わらず聖女であり続けていたが、その表情はかつてないほど穏やかだった。大聖堂の裏庭で、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"アリシアは小さく頷いた。「……はい、それで十分です」穏やかな声だった。"},
+              {label:"「運命は変えられなくても、残された時間をアリシアと一緒に生きていきたい」と伝える", delta:85, result:"アリシアは大粒の涙をこぼしながら、力いっぱい頷いた。「……何も変えられない私を、それでも選んでもらえるなんて」"}
+            ],
+            final:true,
+            endingText:"派手な変化は何もなかった。掟も運命も、何一つ変わらなかった。ただ、アリシアの表情から、いつしか諦めの色だけが消えていた。それだけで、十分すぎるほどだった。"
+          }
+        ]
+      }
+    }
+  }
+};
+
+let state = { charKey:null, affection:{}, route:{}, clearedRoutes:{}, characterTotal:{}, eventIndex:0, awaitingContinue:false };
+Object.keys(DATA).forEach(k => { state.affection[k] = 0; state.route[k] = null; state.clearedRoutes[k] = {}; state.characterTotal[k] = 0; });
+
+/* --- セーブデータ(localStorage) --- */
+/* SAVE_KEYは作品ごとに必ず変える(同じキーだと別作品のセーブと衝突する) */
+const SAVE_KEY = 'haiiro_no_kuni_save_v1';
+function loadSave(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    if(data.clearedRoutes){
+      Object.keys(data.clearedRoutes).forEach(k=>{ if(state.clearedRoutes[k]){ Object.assign(state.clearedRoutes[k], data.clearedRoutes[k]); } });
+    }
+    if(data.characterTotal){
+      Object.keys(data.characterTotal).forEach(k=>{ if(k in state.characterTotal){ state.characterTotal[k] = data.characterTotal[k]; } });
+    }
+  }catch(e){ console.warn('セーブデータの読み込みに失敗しました', e); }
+}
+function saveGame(){
+  try{
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
+      clearedRoutes: state.clearedRoutes,
+      characterTotal: state.characterTotal
+    }));
+  }catch(e){ console.warn('セーブデータの保存に失敗しました', e); }
+}
+function resetSave(){
+  try{ localStorage.removeItem(SAVE_KEY); }catch(e){}
+  Object.keys(DATA).forEach(k => { state.clearedRoutes[k] = {}; state.characterTotal[k] = 0; });
+  renderSelect();
+}
+loadSave();
+
+/* --- 解放システム(累計幸福度によるキャラ解放) ---
+   tier:1 は常時解放。tier:2以上はここで指定した総幸福度に到達すると解放される。
+   キャラを増やしたら、そのキャラのtierに応じて閾値を調整すること。 */
+const TIER_THRESHOLDS = { 2: 2200, 3: 4200, 4: 6500 };
+function grandTotal(){
+  return Object.values(state.characterTotal).reduce((a,b)=>a+b, 0);
+}
+function isCharUnlocked(key){
+  const t = DATA[key].tier || 1;
+  if(t <= 1) return true;
+  const need = TIER_THRESHOLDS[t];
+  return need === undefined ? true : grandTotal() >= need;
+}
+
+/* --- 特別編(全員読了で解放されるエピローグ集) --- */
+function clearedRouteCount(){
+  return Object.keys(DATA).reduce((n,k)=>{
+    const c = state.clearedRoutes[k] || {};
+    return n + (c.A ? 1 : 0) + (c.B ? 1 : 0);
+  }, 0);
+}
+function isFinaleUnlocked(){
+  return Object.keys(DATA).every(k=>{
+    const c = state.clearedRoutes[k] || {};
+    return c.A && c.B;
+  });
+}
+/* FINALE_VIGNETTES: DATAのキーと同じキー名で、1人につき1パラグラフの短い後日談を書く。
+   キャラを追加・削除したら、ここも必ず同期させること。 */
+const FINALE_VIGNETTES = {
+  meria:"パン屋の店先に立つメリアの顔は、今日も明るい。「いつもの」と声をかけると、彼女は変わらず笑って迎えてくれる。灰色だったはずの毎日に、いつの間にか確かな彩りが差していた。",
+  sera:"宿屋の帳場に立つセラは、今日も旅人一人一人の名前をきちんと呼ぶ。見送る顔にはもう、諦めの色はない。次に会える誰かを待つような、穏やかな表情だけが残っていた。",
+  rina:"ギルドの受付に立つリナの笑顔は、今日も眩しい。ただ、その笑顔にはもう無理をした跡はなく、本物の温かさだけが宿っている。「いってらっしゃい、必ず帰ってきてね」——その一言に、今は確かな願いが込められていた。",
+  kaia:"依頼をこなすカイアの戦い方は、今日も鋭い。ただ、その太刀筋にはもう投げやりな影はなく、必ず生きて帰るという確かな意志だけが宿っていた。",
+  roze:"カウンターに立つロゼは、今日も誰かの愚痴を軽くいなしている。ただ、その背中にはもう一人で抱え込む影はなく、寄りかかれる誰かがいる安心感だけが宿っていた。",
+  vera:"賭博場の卓に立つヴェラの目は、今日も冷静に確率を語る。ただ、その瞳からはもう全てを見切ったような冷たさが消え、確かな温度だけが残っていた。",
+  fine:"第七王女フィーネは、今日も王宮の片隅で微笑んでいる。政略の駒として扱われる肩書はそのままでも、その表情からはもう諦めの色が消えていた。",
+  charlotte:"シャルロットは今日も誇り高く微笑んでいる。ただ、その誇りはもう家名を守るためのものではなく、隣にいる人を選んだ自分自身への誇りだった。",
+  alicia:"大聖堂で祈りを捧げるアリシアの横顔は、今日も静かに美しい。掟も運命も、何一つ変わってはいない。それでも、その表情からはもう諦めの色だけが消えていた。"
+};
+function showFinale(){
+  document.getElementById('screen-select').classList.add('hidden');
+  document.getElementById('screen-game').classList.add('hidden');
+  document.getElementById('screen-ending').classList.add('hidden');
+  document.getElementById('screen-finale').classList.remove('hidden');
+  document.getElementById('finale-intro').textContent =
+    '娯楽といえば酒場と賭場くらいしかなかった、灰色の国。そこで出会った九人が、それぞれのやり方で少しずつ明日を明るくしていった、それからの日々。';
+  const box = document.getElementById('finale-vignettes');
+  box.innerHTML = '';
+  Object.keys(DATA).forEach(key=>{
+    const c = DATA[key];
+    const card = document.createElement('div');
+    card.className = 'finale-card';
+    card.style.setProperty('--vc', c.color);
+    card.innerHTML = `<div class="fname">${c.name}</div><div class="ftext">${FINALE_VIGNETTES[key] || ''}</div>`;
+    box.appendChild(card);
+  });
+  document.getElementById('finale-closing').textContent =
+    '娯楽のない国に、笑い方を思い出した人たちがいる。\n殺伐とした景色の中にも、確かに灯る温もりがあった。\n\nThank you for playing.';
+  playBgm('finale_bgm.mp3');
+}
+
+function rankFor(v){
+  let r = RANKS[0], idx = 0;
+  RANKS.forEach((rk,i)=>{ if(v>=rk.min){ r=rk; idx=i; } });
+  return {name:r.name, idx};
+}
+function tierFor(v){ return rankFor(v).idx; }
+
+// 分岐ルート対応: event1(共有シーン) + routes[X].events、または従来の events[] のどちらにも対応
+function getEventList(key){
+  const c = DATA[key];
+  if(c.routes){
+    const r = state.route[key];
+    if(r && c.routes[r]){ return [c.event1, ...c.routes[r].events]; }
+    return [c.event1];
+  }
+  return c.events;
+}
+function getEpilogueText(key){
+  const c = DATA[key];
+  if(c.routes && state.route[key] && c.routes[state.route[key]]){
+    return c.routes[state.route[key]].epilogueText;
+  }
+  return c.epilogueText;
+}
+function routeKeyFor(key){
+  return DATA[key].routes ? (state.route[key] || 'A') : 'main';
+}
+
+function setCardVars(el, color, glow){
+  el.style.setProperty('--card-color', color);
+  el.style.setProperty('--glow-c', glow);
+}
+
+/* --- BGM engine --- */
+const CHAR_KEYS = Object.keys(DATA); // 並び順 = キャラ選択カードの表示順
+function charBgmFile(key){
+  const idx = CHAR_KEYS.indexOf(key) + 1;
+  return 'character_bgm' + String(idx).padStart(2,'0') + '.mp3';
+}
+const bgm = document.getElementById('bgm');
+const muteBtn = document.getElementById('mute-btn');
+let bgmMuted = false;
+let bgmFadeTimer = null;
+const BGM_VOLUME = 0.55;
+
+function fadeBgmTo(target, ms){
+  clearInterval(bgmFadeTimer);
+  const start = bgm.volume;
+  const steps = 20;
+  let i = 0;
+  bgmFadeTimer = setInterval(()=>{
+    i++;
+    bgm.volume = Math.max(0, Math.min(1, start + (target-start) * (i/steps)));
+    if(i>=steps){ clearInterval(bgmFadeTimer); }
+  }, ms/steps);
+}
+
+function playBgm(src){
+  if(bgm.getAttribute('data-src') === src){ return; } // 既に再生中なら再スタートしない
+  bgm.setAttribute('data-src', src);
+  const doSwitch = ()=>{
+    bgm.src = src;
+    bgm.currentTime = 0;
+    bgm.volume = 0;
+    bgm.muted = bgmMuted; // iOS Safari対策: volumeが無視される環境でも確実にミュートを反映する
+    bgm.play().then(()=>{ fadeBgmTo(bgmMuted ? 0 : BGM_VOLUME, 900); }).catch(()=>{ /* ユーザー操作待ち */ });
+  };
+  if(bgm.src && !bgm.paused){
+    fadeBgmTo(0, 400);
+    setTimeout(doSwitch, 400);
+  } else {
+    doSwitch();
+  }
+}
+
+muteBtn.addEventListener('click', ()=>{
+  bgmMuted = !bgmMuted;
+  muteBtn.textContent = bgmMuted ? '🔇' : '🔊';
+  bgm.muted = bgmMuted; // iOS Safari対策: volumeフェードだけだと無音にならない環境があるため、mutedを直接切り替える
+  fadeBgmTo(bgmMuted ? 0 : BGM_VOLUME, 300);
+  if(!bgmMuted && bgm.paused){ bgm.play().catch(()=>{}); }
+});
+
+function progressLabel(key){
+  const c = DATA[key];
+  const cleared = state.clearedRoutes[key] || {};
+  const total = state.characterTotal[key] || 0;
+  if(c.routes){
+    const a = cleared.A ? '既読' : '未読';
+    const b = cleared.B ? '既読' : '未読';
+    return `累計幸福度 ${total}　|　ルートA ${a} / ルートB ${b}`;
+  }
+  return `累計幸福度 ${total}　|　${cleared.main ? '既読' : '未読'}`;
+}
+
+function renderSelect(){
+  const grid = document.getElementById('char-grid');
+  grid.innerHTML = '';
+  const gt = grandTotal();
+  Object.keys(DATA).forEach(key=>{
+    const c = DATA[key];
+    const card = document.createElement('div');
+    const unlocked = isCharUnlocked(key);
+    if(!unlocked){
+      card.className = 'char-card locked';
+      const need = TIER_THRESHOLDS[c.tier];
+      card.innerHTML = `
+        <div class="emblem locked-emblem">🔒</div>
+        <h3>？？？</h3>
+        <p>総幸福度 ${need} で解放</p>
+        <div class="char-progress">現在の総幸福度 ${gt} / ${need}</div>
+      `;
+      grid.appendChild(card);
+      return;
+    }
+    card.className = 'char-card';
+    setCardVars(card, c.color, c.glow);
+    card.innerHTML = `
+      <div class="emblem">${c.emblem}</div>
+      <h3>${c.name}</h3>
+      <p>${c.subtitle}</p>
+      <div class="char-progress">${progressLabel(key)}</div>
+    `;
+    card.addEventListener('click', ()=> startGame(key));
+    grid.appendChild(card);
+  });
+
+  // 特別編カード(全9人・両ルート読了で解放)
+  const finaleCard = document.createElement('div');
+  const finaleUnlocked = isFinaleUnlocked();
+  const doneCount = clearedRouteCount();
+  if(finaleUnlocked){
+    finaleCard.className = 'char-card finale-card-select';
+    finaleCard.style.setProperty('--card-color', '#ffe3a3');
+    finaleCard.style.setProperty('--glow-c', '#fffbe8');
+    finaleCard.innerHTML = `
+      <div class="emblem">✦</div>
+      <h3>特別編</h3>
+      <p>それからの日々 — 全員のエピローグ集</p>
+      <div class="char-progress">解放済み</div>
+    `;
+    finaleCard.addEventListener('click', showFinale);
+  } else {
+    finaleCard.className = 'char-card locked';
+    finaleCard.innerHTML = `
+      <div class="emblem locked-emblem">🔒</div>
+      <h3>特別編</h3>
+      <p>全キャラ、両ルートを読了すると解放</p>
+      <div class="char-progress">読了 ${doneCount} / 18</div>
+    `;
+  }
+  grid.appendChild(finaleCard);
+
+  document.getElementById('total-happiness').textContent = `総幸福度: ${gt}`;
+  document.getElementById('screen-select').classList.remove('hidden');
+  document.getElementById('screen-game').classList.add('hidden');
+  document.getElementById('screen-ending').classList.add('hidden');
+  document.getElementById('screen-finale').classList.add('hidden');
+  playBgm('select_bgm.mp3');
+}
+
+function startGame(key){
+  state.charKey = key;
+  state.eventIndex = 0;
+  state.affection[key] = 0;
+  state.route[key] = null;
+  document.getElementById('screen-select').classList.add('hidden');
+  document.getElementById('screen-ending').classList.add('hidden');
+  document.getElementById('screen-game').classList.remove('hidden');
+  const c = DATA[key];
+  setCardVars(document.getElementById('screen-game'), c.color, c.glow);
+  document.getElementById('who-dot').style.background = c.color;
+  document.getElementById('who-dot').style.boxShadow = '0 0 16px -2px ' + c.color;
+  document.getElementById('who-name').textContent = c.name;
+  document.body.setAttribute('data-tier', tierFor(state.affection[key]));
+  playBgm(charBgmFile(key));
+  renderEvent();
+}
+
+function updateGauge(){
+  const key = state.charKey;
+  const aff = state.affection[key];
+  const rk = rankFor(aff);
+  document.getElementById('who-rank').textContent = '絆ランク: ' + rk.name;
+  document.getElementById('gauge-num').textContent = '幸福度 ' + aff;
+  const nextRank = RANKS[rk.idx+1];
+  const span = nextRank ? (nextRank.min - RANKS[rk.idx].min) : 60;
+  const within = nextRank ? (aff - RANKS[rk.idx].min) : span;
+  const pct = nextRank ? Math.min(100, Math.round((within/span)*100)) : 100;
+  document.getElementById('gauge-fill').style.width = pct + '%';
+}
+
+function renderEvent(){
+  const key = state.charKey;
+  const events = getEventList(key);
+  const ev = events[state.eventIndex];
+  document.getElementById('scene-label').textContent = ev.label;
+  document.getElementById('scene-text').textContent = ev.text;
+  updateGauge();
+  const box = document.getElementById('choices');
+  box.innerHTML = '';
+  ev.choices.forEach(ch=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = `${ch.label}<span class="delta-hint">選択すると幸福度が変化します</span>`;
+    btn.addEventListener('click', ()=> pickChoice(ev, ch));
+    box.appendChild(btn);
+  });
+}
+
+function pickChoice(ev, ch){
+  const key = state.charKey;
+  if(ch.route){ state.route[key] = ch.route; }
+  const before = state.affection[key];
+  const beforeRank = rankFor(before);
+  state.affection[key] = before + ch.delta;
+  const after = state.affection[key];
+  const afterRank = rankFor(after);
+
+  // show result text + continue button instead of choices
+  document.getElementById('scene-text').textContent = ch.result;
+  const box = document.getElementById('choices');
+  box.innerHTML = '';
+  const cont = document.createElement('button');
+  cont.className = 'continue-btn';
+  cont.textContent = ev.final ? 'エンディングへ →' : '次へ →';
+  cont.addEventListener('click', ()=>{
+    if(ev.final){ showEnding(); }
+    else { state.eventIndex++; renderEvent(); }
+  });
+  box.appendChild(cont);
+
+  updateGauge();
+  document.body.setAttribute('data-tier', afterRank.idx);
+  playBurst(ch.delta, afterRank.idx > beforeRank.idx ? afterRank.name : null);
+}
+
+function playBurst(delta, rankUpName){
+  const burst = document.getElementById('burst');
+  burst.textContent = '+' + delta + ' 幸福度';
+  burst.classList.remove('play'); void burst.offsetWidth; burst.classList.add('play');
+
+  if(rankUpName){
+    const banner = document.getElementById('rankup-banner');
+    document.getElementById('rankup-text').textContent = rankUpName;
+    banner.classList.remove('play'); void banner.offsetWidth; banner.classList.add('play');
+  }
+}
+
+function showEnding(){
+  const key = state.charKey;
+  const c = DATA[key];
+  const events = getEventList(key);
+  const ev = events[events.length-1];
+  const aff = state.affection[key];
+  const rk = rankFor(aff);
+  const isMax = rk.idx === RANKS.length - 1;
+  state.clearedRoutes[key][routeKeyFor(key)] = true;
+  state.characterTotal[key] = (state.characterTotal[key] || 0) + aff;
+  saveGame();
+  document.getElementById('screen-game').classList.add('hidden');
+  document.getElementById('screen-ending').classList.remove('hidden');
+  setCardVars(document.getElementById('screen-ending'), c.color, c.glow);
+  const routeTag = c.routes ? `【${c.routes[state.route[key]].routeLabel}】` : '';
+  document.getElementById('end-label').textContent = (isMax ? 'TRUE EPILOGUE — 絆MAX到達 ' : 'EPILOGUE ') + routeTag;
+  document.getElementById('end-title').textContent = c.name + ' — ' + rk.name;
+  document.getElementById('end-num').textContent = `今回の幸福度 +${aff} ・ 累計 ${state.characterTotal[key]}`;
+  document.getElementById('end-text').textContent = isMax ? getEpilogueText(key) : ev.endingText;
+  const box = document.getElementById('screen-ending');
+  box.classList.toggle('is-max', isMax);
+  if(isMax){
+    const banner = document.getElementById('rankup-banner');
+    document.getElementById('rankup-text').textContent = '絆MAX — TRUE EPILOGUE';
+    banner.classList.remove('play'); void banner.offsetWidth; banner.classList.add('play');
+  }
+}
+
+document.getElementById('btn-back').addEventListener('click', renderSelect);
+document.getElementById('btn-ending-back').addEventListener('click', renderSelect);
+document.getElementById('btn-finale-back').addEventListener('click', renderSelect);
+document.getElementById('btn-reset-save').addEventListener('click', ()=>{
+  if(confirm('セーブデータ(既読状態・累計幸福度)を全て消去します。よろしいですか?')){
+    resetSave();
+  }
+});
+
+document.getElementById('screen-title').addEventListener('click', ()=>{
+  document.getElementById('screen-title').classList.add('hidden');
+  renderSelect();
+});
+</script>
+</body>
+</html>
