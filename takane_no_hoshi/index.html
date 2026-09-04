@@ -1,0 +1,2502 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高嶺の星、見つけに行こう</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#f3ecd8;
+    --paper:#fbf6ea;
+    --slum-a:#221f2b;
+    --slum-b:#2f2a35;
+    --paradise-a:#3a2350;
+    --paradise-b:#e8b04b;
+    --gold:#e8b04b;
+    --glow:#ffe3a3;
+    --rose:#e8879a;
+    --line: rgba(243,236,216,0.16);
+    --tier0-1:#1c1a24;
+    --tier0-2:#2a2531;
+    --tier1-1:#211f34;
+    --tier1-2:#3a2f4d;
+    --tier2-1:#2a2140;
+    --tier2-2:#5a3a5e;
+    --tier3-1:#3a2246;
+    --tier3-2:#8a4e5a;
+    --tier4-1:#4a2340;
+    --tier4-2:#e8b04b;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    color:var(--ink);
+    background: radial-gradient(circle at 20% 0%, var(--tier0-2), var(--tier0-1) 60%);
+    transition: background 1.4s ease;
+    overflow-x:hidden;
+    position:relative;
+  }
+  body[data-tier="1"]{background: radial-gradient(circle at 20% 0%, var(--tier1-2), var(--tier1-1) 60%);}
+  body[data-tier="2"]{background: radial-gradient(circle at 20% 0%, var(--tier2-2), var(--tier2-1) 60%);}
+  body[data-tier="3"]{background: radial-gradient(circle at 20% 0%, var(--tier3-2), var(--tier3-1) 60%);}
+  body[data-tier="4"]{background: radial-gradient(circle at 30% 0%, var(--tier4-2), var(--tier4-1) 55%);}
+
+  .stars{
+    position:fixed; inset:0; pointer-events:none; opacity:0.5;
+    background-image:
+      radial-gradient(1.5px 1.5px at 10% 20%, var(--ink), transparent),
+      radial-gradient(1.5px 1.5px at 80% 10%, var(--ink), transparent),
+      radial-gradient(1px 1px at 40% 60%, var(--ink), transparent),
+      radial-gradient(1.5px 1.5px at 70% 80%, var(--ink), transparent),
+      radial-gradient(1px 1px at 90% 50%, var(--ink), transparent),
+      radial-gradient(1px 1px at 25% 85%, var(--ink), transparent);
+    background-repeat:no-repeat;
+  }
+
+  .wrap{
+    max-width:720px; margin:0 auto; padding:32px 20px 80px;
+    position:relative; z-index:1;
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; letter-spacing:0.22em; text-transform:uppercase;
+    color:var(--gold); opacity:0.85; text-align:center; margin-bottom:6px;
+  }
+  h1.title{
+    font-family:'Shippori Mincho', serif;
+    font-weight:800;
+    font-size:clamp(26px,6vw,38px);
+    text-align:center; margin:0 0 6px;
+    letter-spacing:0.02em;
+    background: linear-gradient(90deg, var(--glow), var(--gold) 60%, var(--rose));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .lede{
+    text-align:center; font-size:13.5px; color:var(--ink); opacity:0.65;
+    margin:0 0 34px; line-height:1.7;
+  }
+
+  /* --- select screen --- */
+  .total-happiness{
+    text-align:center; font-family:'JetBrains Mono',monospace; font-size:13px;
+    color:var(--gold); opacity:0.85; letter-spacing:0.05em; margin-bottom:18px;
+  }
+  .char-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:520px){ .char-grid{grid-template-columns:1fr;} }
+  .char-card{
+    background:linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+    border:1px solid var(--line); border-radius:18px;
+    padding:22px 18px; text-align:center; cursor:pointer;
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .char-card:hover{ transform:translateY(-4px); border-color:var(--card-color,var(--gold)); box-shadow:0 10px 30px -12px var(--card-color,var(--gold)); }
+  }
+  .emblem{
+    width:78px; height:78px; margin:0 auto 14px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--glow-c,var(--glow)), var(--card-color,var(--gold)) 70%);
+    box-shadow:0 0 30px -6px var(--card-color,var(--gold));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Shippori Mincho',serif; font-weight:800; font-size:26px; color:#241522;
+  }
+  .char-card h3{ font-family:'Shippori Mincho',serif; font-size:19px; margin:0 0 4px; }
+  .char-card p{ font-size:12px; opacity:0.6; margin:0 0 14px; line-height:1.6;}
+  .char-progress{ font-family:'JetBrains Mono',monospace; font-size:11px; opacity:0.75; }
+
+  .char-card.locked{
+    opacity:0.55; cursor:default; filter:grayscale(0.6);
+  }
+  @media (hover:hover) and (pointer:fine){
+    .char-card.locked:hover{ transform:none; border-color:var(--line); box-shadow:none; }
+  }
+  .locked-emblem{
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.15), rgba(255,255,255,0.03) 70%);
+    box-shadow:none; color:var(--ink); opacity:0.7;
+  }
+
+  .reset-save-btn{
+    display:block; margin:28px auto 0; background:none; border:none;
+    color:var(--ink); opacity:0.4; font-size:11px; font-family:'Zen Kaku Gothic New',sans-serif;
+    text-decoration:underline; cursor:pointer;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .reset-save-btn:hover{ opacity:0.7; }
+  }
+
+  .zukan-btn{
+    display:block; margin:26px auto 0; background:rgba(255,255,255,0.04);
+    border:1px solid var(--line); color:var(--ink); opacity:0.85;
+    font-size:12.5px; font-family:'Zen Kaku Gothic New',sans-serif;
+    padding:10px 20px; border-radius:100px; cursor:pointer;
+    transition: opacity .2s, border-color .2s;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .zukan-btn:hover{ opacity:1; border-color:var(--gold); }
+  }
+
+  .zukan-list{ display:flex; flex-direction:column; gap:12px; margin-top:18px; }
+  .zukan-card{
+    border:1px solid var(--line); border-radius:16px; padding:18px 20px;
+    background:linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01));
+  }
+  .zukan-card.locked{ opacity:0.45; filter:grayscale(0.7); }
+  .zukan-card .zname{
+    font-family:'Shippori Mincho',serif; font-weight:700; font-size:17px;
+    margin-bottom:2px;
+  }
+  .zukan-card .zreading{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; opacity:0.55; margin-bottom:10px;
+  }
+  .zukan-card .zrow{ font-size:12.5px; opacity:0.8; margin-bottom:4px; line-height:1.6; }
+  .zukan-card .zrow b{ color:var(--gold); opacity:0.9; font-weight:700; }
+  .zukan-card .znote{ font-size:12.5px; opacity:0.75; line-height:1.8; margin-top:8px; }
+
+  /* --- game screen --- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:18px; gap:12px;
+  }
+  .backbtn{
+    background:none; border:1px solid var(--line); color:var(--ink);
+    font-family:'Zen Kaku Gothic New',sans-serif; font-size:12px;
+    padding:8px 14px; border-radius:100px; cursor:pointer; opacity:0.75;
+    transition:opacity .2s, border-color .2s;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .backbtn:hover{ opacity:1; border-color:var(--gold); }
+  }
+
+  .who{ display:flex; align-items:center; gap:10px; }
+  .who .dot{ width:34px; height:34px; border-radius:50%; background:var(--card-color,var(--gold)); box-shadow:0 0 16px -2px var(--card-color,var(--gold)); flex:none; }
+  .who .name{ font-family:'Shippori Mincho',serif; font-weight:700; font-size:15px; }
+  .who .rank{ font-size:10.5px; opacity:0.6; font-family:'JetBrains Mono',monospace; letter-spacing:0.05em; }
+
+  .gauge-shell{
+    border:1px solid var(--line); border-radius:100px; height:12px;
+    overflow:hidden; background:rgba(0,0,0,0.25); margin-bottom:4px;
+  }
+  .gauge-fill{
+    height:100%; border-radius:100px;
+    background:linear-gradient(90deg, var(--rose), var(--gold), var(--glow));
+    width:0%; transition: width 1s cubic-bezier(.2,.9,.25,1);
+    box-shadow:0 0 12px 1px var(--gold);
+  }
+  .gauge-num{
+    text-align:right; font-family:'JetBrains Mono',monospace; font-size:11px; opacity:0.7;
+    margin-bottom:22px;
+  }
+
+  .scene{
+    position:relative;
+    border:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01));
+    border-radius:20px; padding:26px 24px 22px;
+    margin-bottom:18px;
+  }
+  .scene::before{
+    content:""; position:absolute; top:14px; left:14px; width:16px; height:16px;
+    border-top:2px solid var(--card-color,var(--gold)); border-left:2px solid var(--card-color,var(--gold));
+    opacity:0.7;
+  }
+  .scene::after{
+    content:""; position:absolute; bottom:14px; right:14px; width:16px; height:16px;
+    border-bottom:2px solid var(--card-color,var(--gold)); border-right:2px solid var(--card-color,var(--gold));
+    opacity:0.7;
+  }
+  .scene-label{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.15em;
+    text-transform:uppercase; color:var(--card-color,var(--gold)); margin-bottom:10px; opacity:0.85;
+  }
+  .scene-text{
+    font-size:15.5px; line-height:1.95; white-space:pre-wrap;
+  }
+
+  /* --- 高解像度ビート演出(scene-textの中身をビート単位で差し替える際に使用) --- */
+  .beat-fade{ animation: beatFadeIn .5s ease both; }
+  @keyframes beatFadeIn{
+    from{ opacity:0; transform:translateY(6px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .beat-sfx{
+    display:block; text-align:center; font-family:'Shippori Mincho',serif; font-weight:700;
+    font-size:26px; letter-spacing:0.25em; margin:18px 0; color:var(--card-color,var(--gold));
+    text-shadow:0 0 18px var(--card-glow, rgba(255,255,255,0.25));
+  }
+  .flash-overlay{
+    position:fixed; inset:0; pointer-events:none; z-index:40;
+    background:var(--card-glow, #ffffff); opacity:0;
+  }
+  .flash-overlay.play{ animation: climaxFlash .55s ease-out; }
+  @keyframes climaxFlash{
+    0%{ opacity:0; } 12%{ opacity:0.55; } 100%{ opacity:0; }
+  }
+  .beat-continue-btn{
+    margin-top:14px; align-self:center;
+    background:none; border:1px solid var(--card-color,var(--gold));
+    color:var(--card-color,var(--gold)); padding:10px 20px; border-radius:100px;
+    font-family:'Zen Kaku Gothic New',sans-serif; font-size:13px; font-weight:700; cursor:pointer;
+    transition: background .2s;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .beat-continue-btn:hover{ background:rgba(255,255,255,0.08); }
+  }
+
+  .choices{ display:flex; flex-direction:column; gap:10px; }
+  .choice-btn{
+    text-align:left; padding:15px 18px; border-radius:14px;
+    border:1px solid var(--line); background:rgba(255,255,255,0.03);
+    color:var(--ink); font-family:'Zen Kaku Gothic New',sans-serif; font-size:14px;
+    cursor:pointer; transition: border-color .2s, background .2s, transform .15s;
+    line-height:1.5;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .choice-btn:hover{ border-color:var(--card-color,var(--gold)); background:rgba(255,255,255,0.07); transform:translateX(2px); }
+  }
+  .choice-btn:active{ border-color:var(--card-color,var(--gold)); background:rgba(255,255,255,0.07); transform:scale(0.98) translateX(2px); }
+  .choice-btn .delta-hint{
+    display:block; margin-top:5px; font-family:'JetBrains Mono',monospace; font-size:10.5px; opacity:0.55;
+  }
+  .continue-btn{
+    margin-top:4px; align-self:flex-end;
+    background:linear-gradient(90deg, var(--gold), var(--rose));
+    color:#241522; border:none; padding:12px 22px; border-radius:100px;
+    font-weight:700; font-size:13px; cursor:pointer;
+    box-shadow:0 8px 20px -8px var(--gold);
+  }
+
+  /* --- popup burst --- */
+  .burst-layer{
+    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+    pointer-events:none; z-index:50;
+  }
+  .burst{
+    font-family:'JetBrains Mono',monospace; font-weight:700;
+    font-size:54px; color:var(--glow);
+    text-shadow:0 0 20px var(--gold), 0 0 50px var(--rose);
+    opacity:0; transform:scale(0.4);
+  }
+  .burst.play{ animation: burstpop 1.5s cubic-bezier(.2,1.4,.3,1) forwards; }
+  @keyframes burstpop{
+    0%{ opacity:0; transform:scale(0.3) translateY(20px);}
+    18%{ opacity:1; transform:scale(1.15) translateY(0);}
+    30%{ transform:scale(1);}
+    75%{ opacity:1; }
+    100%{ opacity:0; transform:scale(1) translateY(-30px);}
+  }
+  .rankup-banner{
+    position:fixed; left:0; right:0; top:26%; text-align:center; z-index:51;
+    pointer-events:none; opacity:0;
+  }
+  .rankup-banner.play{ animation: bannerslide 2.2s ease forwards; }
+  @keyframes bannerslide{
+    0%{ opacity:0; transform:translateY(-14px) scale(0.96);}
+    14%{ opacity:1; transform:translateY(0) scale(1);}
+    80%{ opacity:1;}
+    100%{ opacity:0; transform:translateY(-6px) scale(1);}
+  }
+  .rankup-banner .lbl{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    letter-spacing:0.2em; color:var(--glow); background:rgba(20,10,20,0.55);
+    border:1px solid var(--gold); padding:5px 14px; border-radius:100px; margin-bottom:10px;
+  }
+  .rankup-banner .big{
+    font-family:'Shippori Mincho',serif; font-weight:800; font-size:clamp(28px,7vw,44px);
+    background:linear-gradient(90deg, var(--glow), var(--gold), var(--rose));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 0 40px rgba(232,176,75,0.35);
+  }
+
+  /* --- ending --- */
+  .ending{
+    text-align:center; padding:40px 10px;
+  }
+  .ending h2{ font-family:'Shippori Mincho',serif; font-size:24px; margin-bottom:10px; }
+  .ending p{ font-size:14px; opacity:0.75; line-height:1.9; max-width:480px; margin:0 auto 22px; }
+  .ending .final-num{
+    font-family:'JetBrains Mono',monospace; font-size:40px; color:var(--gold); margin-bottom:6px;
+  }
+  #screen-ending.is-max .scene{
+    border-color: var(--card-color, var(--gold));
+    box-shadow:0 0 50px -14px var(--card-color, var(--gold)), inset 0 0 40px -20px var(--card-color, var(--gold));
+  }
+  #screen-ending.is-max #end-label{
+    color: var(--glow-c, var(--glow));
+    font-weight:700;
+    text-shadow:0 0 12px var(--card-color, var(--gold));
+  }
+  #screen-ending.is-max #end-title{
+    background: linear-gradient(90deg, var(--glow-c,var(--glow)), var(--card-color,var(--gold)));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  /* --- finale (epilogue collection) --- */
+  .finale-title{
+    font-family:'Shippori Mincho',serif; font-weight:800;
+    font-size:clamp(24px,6vw,32px); text-align:center; margin:2px 0 18px;
+    background: linear-gradient(90deg, #ffdf99, #ffc2d1, #bcdcff, #d9c2ff, #a8e8cf, #fff5d9);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .finale-intro{
+    text-align:center; font-size:14px; opacity:0.8; line-height:1.9;
+    max-width:520px; margin:0 auto 28px;
+  }
+  .finale-vignettes{
+    display:flex; flex-direction:column; gap:14px; margin-bottom:30px;
+  }
+  .finale-card{
+    border:1px solid var(--line); border-left:3px solid var(--vc, var(--gold));
+    border-radius:14px; padding:16px 18px;
+    background:linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+  }
+  .finale-card .fname{
+    font-family:'Shippori Mincho',serif; font-weight:700; font-size:14px;
+    color:var(--vc, var(--gold)); margin-bottom:6px;
+  }
+  .finale-card .ftext{
+    font-size:13.5px; line-height:1.85; opacity:0.85;
+  }
+  .finale-closing{
+    text-align:center; font-size:14px; line-height:2.1; opacity:0.85;
+    max-width:480px; margin:0 auto 26px; white-space:pre-wrap;
+  }
+
+  .hidden{ display:none !important; }
+
+  .mute-btn{
+    position:fixed; top:16px; right:16px; z-index:60;
+    width:42px; height:42px; border-radius:50%;
+    border:1px solid var(--line); background:rgba(20,15,25,0.55);
+    color:var(--ink); font-size:17px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter: blur(6px);
+    transition: border-color .2s, transform .15s;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .mute-btn:hover{ border-color:var(--gold); transform:scale(1.06); }
+  }
+
+  /* --- title screen --- */
+  #screen-title{
+    min-height:72vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    cursor:pointer;
+  }
+  #screen-title .lede{ max-width:420px; }
+  .tap-start{
+    margin-top:46px; display:flex; flex-direction:column;
+    align-items:center; gap:14px;
+  }
+  .tap-circle{
+    width:64px; height:64px; border-radius:50%;
+    border:1px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--glow); font-size:19px; padding-left:4px;
+    animation: pulseRing 2.2s ease-in-out infinite;
+  }
+  @keyframes pulseRing{
+    0%,100%{ box-shadow:0 0 0 0 rgba(232,176,75,0.35); transform:scale(1); }
+    50%{ box-shadow:0 0 0 16px rgba(232,176,75,0); transform:scale(1.06); }
+  }
+  .tap-label{
+    font-family:'JetBrains Mono',monospace; font-size:11px;
+    letter-spacing:0.3em; color:var(--gold); opacity:0.85;
+  }
+  /* ============================================================
+     図鑑画面の背景:実際の冬の大三角/オリオン座に基づく星図レイヤー
+     (「冬の大三角形.html」より移植・#screen-zukan配下に限定)
+     ============================================================ */
+  #screen-zukan{
+    --void-0: rgb(0,0,0); --void-1: rgb(2,2,4); --void-2: rgb(1,1,3); --void-3: rgb(3,3,5);
+    --star-core: rgba(235,241,255,0.95);
+    --star-glow: rgba(210,222,250,0.5);
+    --line-color: rgba(220,230,250,0.14);
+    --breath-fast: 4.5s; --breath-slow: 7.5s; --ease-breath: ease-in-out;
+    background:var(--void-0);
+  }
+  #screen-zukan .planetarium{ position:fixed; inset:0; z-index:0; overflow:hidden; }
+  #screen-zukan .void-base{
+    position:absolute; inset:-10%;
+    background:
+      radial-gradient(ellipse at 25% 20%, var(--void-3), transparent 45%),
+      radial-gradient(ellipse at 75% 70%, var(--void-2), transparent 50%),
+      radial-gradient(ellipse at 50% 95%, var(--void-1), transparent 55%),
+      linear-gradient(160deg, var(--void-1) 0%, var(--void-0) 60%, var(--void-0) 100%);
+  }
+  #screen-zukan .void-rotor{ position:absolute; inset:-35%; transform-origin:50% 50%; will-change:transform; }
+  #screen-zukan .lines-layer{ position:absolute; inset:0; width:100%; height:100%; }
+  #screen-zukan .lines-layer .constellation{ stroke:var(--line-color); stroke-width:0.1; vector-effect:non-scaling-stroke; }
+  #screen-zukan .lines-layer .asterism{
+    stroke:rgba(220,230,250,0.22); stroke-width:0.08; stroke-dasharray:0.6 0.8; vector-effect:non-scaling-stroke;
+  }
+  #screen-zukan .scatter-layer, #screen-zukan .named-layer{ position:absolute; inset:0; }
+  #screen-zukan .scatter{
+    position:absolute; border-radius:50%; transform:translate(-50%,-50%);
+    animation: zukan-breathe var(--dur, var(--breath-slow)) var(--ease-breath) infinite;
+    animation-delay: var(--delay, 0s);
+  }
+  @keyframes zukan-breathe{
+    0%   { transform:translate(-50%,-50%) scale(0.85); opacity:var(--op-low, 0.25); }
+    45%  { transform:translate(-50%,-50%) scale(1);    opacity:var(--op-high, 0.6); }
+    100% { transform:translate(-50%,-50%) scale(0.85); opacity:var(--op-low, 0.25); }
+  }
+  #screen-zukan .named-star{ position:absolute; transform:translate(-50%,-50%); }
+  #screen-zukan .named-star .glow{
+    position:absolute; left:50%; top:50%; border-radius:50%; transform:translate(-50%,-50%);
+    filter:blur(2.5px); animation: zukan-breathe var(--dur) var(--ease-breath) infinite; animation-delay: var(--delay, 0s);
+  }
+  #screen-zukan .named-star .core{
+    position:absolute; left:50%; top:50%; border-radius:50%; transform:translate(-50%,-50%); background:var(--star-core);
+  }
+  #screen-zukan .named-star .star-label{
+    position:absolute; left:50%; top:100%; transform:translate(-50%, 8px);
+    white-space:nowrap; font-size:.68rem; letter-spacing:.12em;
+    color:rgba(220,230,250,0.55); text-shadow:0 0 6px var(--void-0);
+  }
+  @media (prefers-reduced-motion: reduce){
+    #screen-zukan .scatter, #screen-zukan .named-star .glow{ animation:none !important; }
+  }
+  /* 図鑑カードは星図の上に重なるので、可読性のために背景を少し強め+ぼかしを追加 */
+  #screen-zukan .zukan-card{
+    background:linear-gradient(160deg, rgba(10,10,20,0.55), rgba(10,10,20,0.35));
+    backdrop-filter: blur(6px);
+    position:relative; z-index:2;
+  }
+  #screen-zukan .eyebrow, #screen-zukan .title, #screen-zukan #zukan-progress, #screen-zukan .backbtn{
+    position:relative; z-index:2;
+  }
+</style>
+</head>
+<body data-tier="0">
+<audio id="bgm" loop preload="auto"></audio>
+<button class="mute-btn" id="mute-btn" title="BGMのオン/オフ">🔊</button>
+<div class="stars"></div>
+<div class="wrap">
+
+  <!-- TITLE SCREEN -->
+  <div id="screen-title">
+    <div class="eyebrow">Celestial Observation Chronicle</div>
+    <h1 class="title">高嶺の星、見つけに行こう</h1>
+    <p class="lede">誰もが遠巻きに眺めるだけの「高嶺の花」。誘ってみたら、意外にも「ついていっていい?」と返ってきた。<br>夜空なんて見上げたこともなかった日常に、一夜限りの流星群、二度と巡り合わない皆既日食——彼女と二人だけで見上げる、誰にも見せられない特別な光が増えていく。</p>
+    <div class="tap-start" id="tap-start">
+      <div class="tap-circle">▶</div>
+      <div class="tap-label">TAP TO START</div>
+    </div>
+  </div>
+
+  <!-- SELECT SCREEN -->
+  <div id="screen-select" class="hidden">
+    <div class="eyebrow">Choose Your Story</div>
+    <div class="total-happiness" id="total-happiness">総幸福度: 0</div>
+    <div class="char-grid" id="char-grid"></div>
+    <button class="zukan-btn" id="btn-zukan">📖 天体観測ログを見る</button>
+    <button class="reset-save-btn" id="btn-reset-save">セーブデータをリセット</button>
+  </div>
+
+  <!-- ZUKAN (FIELD GUIDE) SCREEN -->
+  <div id="screen-zukan" class="hidden">
+    <div class="planetarium" aria-hidden="true">
+      <div class="void-base"></div>
+      <div class="void-rotor" id="zukan-rotor">
+        <svg class="lines-layer" viewBox="0 0 100 100" preserveAspectRatio="none" id="zukanLinesLayer"></svg>
+        <div class="scatter-layer" id="zukanScatterLayer"></div>
+        <div class="named-layer" id="zukanNamedLayer"></div>
+      </div>
+    </div>
+    <div class="topbar">
+      <button class="backbtn" id="btn-zukan-back">← キャラクター選択に戻る</button>
+    </div>
+    <div class="eyebrow">FIELD GUIDE</div>
+    <h1 class="title" style="font-size:24px;">天体観測ログ</h1>
+    <p class="lede" id="zukan-progress"></p>
+    <div class="zukan-list" id="zukan-list"></div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="screen-game" class="hidden">
+    <div class="topbar">
+      <button class="backbtn" id="btn-back">← キャラクター選択に戻る</button>
+    </div>
+    <div class="who">
+      <div class="dot" id="who-dot"></div>
+      <div>
+        <div class="name" id="who-name"></div>
+        <div class="rank" id="who-rank"></div>
+      </div>
+    </div>
+    <div style="height:14px;"></div>
+    <div class="gauge-shell"><div class="gauge-fill" id="gauge-fill"></div></div>
+    <div class="gauge-num" id="gauge-num">幸福度 0</div>
+
+    <div class="scene">
+      <div class="scene-label" id="scene-label">SCENE</div>
+      <div class="scene-text" id="scene-text"></div>
+    </div>
+
+    <div class="choices" id="choices"></div>
+  </div>
+
+  <!-- ENDING SCREEN -->
+  <div id="screen-ending" class="hidden">
+    <div class="scene ending">
+      <div class="scene-label" id="end-label">EPILOGUE</div>
+      <h2 id="end-title"></h2>
+      <div class="final-num" id="end-num"></div>
+      <p id="end-text"></p>
+      <button class="continue-btn" id="btn-ending-back" style="float:none;">キャラクター選択に戻る</button>
+    </div>
+  </div>
+
+  <!-- FINALE SCREEN -->
+  <div id="screen-finale" class="hidden">
+    <div class="eyebrow">SPECIAL EPILOGUE COLLECTION</div>
+    <h2 class="finale-title">それからの日々</h2>
+    <p class="finale-intro" id="finale-intro"></p>
+    <div class="finale-vignettes" id="finale-vignettes"></div>
+    <p class="finale-closing" id="finale-closing"></p>
+    <button class="continue-btn" id="btn-finale-back" style="float:none;">キャラクター選択に戻る</button>
+  </div>
+
+</div>
+
+<div class="burst-layer">
+  <div class="burst" id="burst"></div>
+</div>
+<div class="flash-overlay" id="flash-overlay"></div>
+<div class="rankup-banner" id="rankup-banner">
+  <div class="lbl">RANK UP</div>
+  <div class="big" id="rankup-text"></div>
+</div>
+
+<script>
+const RANKS = [
+  {min:0,   name:"警戒"},
+  {min:50,  name:"顔見知り"},
+  {min:100, name:"友達"},
+  {min:180, name:"親友"},
+  {min:250, name:"唯一無二の相棒"}
+];
+
+/* --- 図鑑データ(CELESTIAL_DATA) ---
+   実在する天体現象の観測情報。シーンのcelestialId(旧birdId)と同じキーで登録する。
+   新しいヒロイン/現象を追加したら、ここにも必ずエントリを足すこと。
+   フィールドは前作CELESTIAL_DATAから読み替え:
+     reading  → 別名・二つ名
+     habitat  → 観測条件(どこで/どんな空模様なら見えるか)
+     season   → 周期(いつ/どのくらいの頻度で起こるか)
+     rarity   → 現象としての希少性・格
+     note     → 補足説明
+   企画書2-3に基づく新規フィールド:
+     equipment  → 観測難易度(肉眼/双眼鏡/望遠鏡いずれが必要か)
+     nextView   → 次回いつ観測できるか(周期の長い現象ほど「一生に一度」の重みが出る)
+   出典: 国立天文台・各種天文情報サイトの記述を要約。 */
+const CELESTIAL_DATA = {
+  perseids: {
+    name:"ペルセウス座流星群", reading:"日本三大流星群の一つ",
+    habitat:"街明かりの少ない開けた場所。放射点(ペルセウス座)の方角に限らず空全体に出現するため、視界の広い高原や山が向く",
+    season:"毎年7月中旬〜8月下旬に活動、極大は8月12〜13日頃(周期は年一度)",
+    equipment:"肉眼で十分(双眼鏡は視野が狭まりむしろ不向き)",
+    nextView:"来年も同じ時期に観測機会はあるが、その夜の天候・月明かり・二人でいる時間は二度と同じ形では巡ってこない",
+    rarity:"日本三大流星群の一つ", note:"母天体はスイフト・タットル彗星が撒き散らした塵。条件が良ければ1時間に数十個の流れ星が見え、初心者にも観測しやすい流星群として知られる。"
+  },
+  amanogawa: {
+    name:"天の川", reading:"銀河系を横から見た姿",
+    habitat:"人工の光がほとんどない離島・山間部。新月前後、空気の澄んだ夜が条件",
+    season:"一年中見えるが、日本からは夏の夜に最も濃く高い位置に昇る(周期は毎晩、条件が揃うかは別)",
+    equipment:"肉眼が基本。双眼鏡があれば無数の恒星の集まりだと分かるほど解像度が上がる",
+    nextView:"翌晩も空に昇るが、新月・快晴・視界良好が同時に揃う夜は限られている",
+    rarity:"都市部ではまず見られなくなった原風景", note:"無数の恒星が帯状に密集して見える現象。何千光年、何万光年先の星の光が束になって届いている、というスケール感が魅力。"
+  },
+  venus: {
+    name:"金星(明けの明星)", reading:"「明けの明星」「宵の明星」",
+    habitat:"開けた東の低空(明け方)または西の低空(夕方)。地平線近くまで視界が開けた岬・海沿いが向く",
+    season:"約1年7ヶ月の周期で「明けの明星」と「宵の明星」を交互に繰り返す",
+    equipment:"肉眼で十分。恒星と見紛うほど明るく、都市部でも街明かりに負けず輝いて見える",
+    nextView:"次に同じ側(明け方/夕方)で見えるようになるまで数ヶ月単位のブランクが空く",
+    rarity:"太陽・月に次いで明るい天体", note:"太陽系で最も地球に近い惑星。分厚い雲に覆われているため、地上から見ると恒星よりも遥かに強く、瞬かない光として輝く。"
+  },
+  aurora: {
+    name:"オーロラ", reading:"極光",
+    habitat:"高緯度地域が主だが、太陽活動が活発な年は北海道など日本の一部でも低緯度オーロラとして観測例がある",
+    season:"太陽風の状態に左右されるため予測が難しい。発生確率が上がる時期はあっても、確実な周期はない",
+    equipment:"肉眼でも見えるが、淡い場合はカメラの長時間露光の方がはっきり色を捉えられる",
+    nextView:"次にいつ見られるかは天文台の予報頼み。同じ場所・同じ相手ともう一度、とは約束できない現象",
+    rarity:"日本国内では極めて稀な観測例", note:"太陽から放出された荷電粒子が地球の磁場に導かれ、大気の分子とぶつかって発光する現象。日本での観測は「一生に一度あるかないか」と言われるほど希少。"
+  },
+  saturn_rings: {
+    name:"土星の環", reading:"「指輪のような星」",
+    habitat:"都市部でも観測可能だが、環を分離して見るには望遠鏡が必須。屋上やベランダなど、空へ視界の開けた場所で",
+    season:"土星はおよそ29.5年で公転。地球からの見え方(環の傾き)は年によって変わる",
+    equipment:"望遠鏡が必須(倍率30倍程度から環の存在が確認でき、口径が大きいほど輪の分かれ目まで見える)",
+    nextView:"土星自体は毎年観測できるが、環がもっとも美しく開いて見える年は限られている",
+    rarity:"望遠鏡で見る天体の中でも屈指の感動を呼ぶとされる", note:"肉眼では明るい一つの点にしか見えないが、望遠鏡を向けた瞬間、輪を持つ星として姿を変える。初めて見た人の多くが息を呑むことで知られる。"
+  },
+  total_lunar_eclipse: {
+    name:"皆既月食", reading:"月が地球の影に完全に隠れる現象",
+    habitat:"月が昇っている場所ならどこでも肉眼で観測可能。天候さえ良ければ設備は不要",
+    season:"満月の夜にしか起こらず、しかも太陽・地球・月が完全に一直線に並ぶ必要があるため、同じ地域で見られるのは数年に一度程度",
+    equipment:"肉眼で十分。双眼鏡があれば赤銅色に染まる月の質感までよく見える",
+    nextView:"次に同じ地域で皆既月食が見られるのは数年先になることが多い",
+    rarity:"満月が丸ごと欠ける、日本で見られる中では大掛かりな天文現象", note:"月が地球の影に完全に入ると、大気を通り抜けた太陽光の赤い成分だけが月を照らし、赤銅色に染まる。「血の月」と呼ばれることもある。"
+  },
+  lake_reflection: {
+    name:"湖面に映る星々と流星", reading:"「もう一つの夜空」",
+    habitat:"風のない無風の夜、鏡のように凪いだ湖面。人工の光が届かない湖畔が条件",
+    season:"無風・快晴・新月が同時に揃う夜は限られており、流星群の時期と重なればさらに稀",
+    equipment:"肉眼が基本。三脚とカメラがあれば水面ごと写し取れる",
+    nextView:"次に同じ湖で同じ凪を待つのは、天候次第で数週間先か、あるいはその年のうちに二度と来ないか",
+    rarity:"天候・水面・天体、三つの偶然が重ならないと成立しない現象", note:"風が完全に止み、水面が鏡のようになった瞬間だけ、空の星と流れ星がそのまま水面に映り込む。片方の空だけでも稀な現象が、二重に重なる一瞬。"
+  },
+  harvest_moon: {
+    name:"中秋の名月", reading:"十五夜",
+    habitat:"月が見える場所ならどこでも。神社仏閣や田園風景の中で見ると特に映える",
+    season:"旧暦8月15日の夜(新暦ではおおむね9月中旬〜10月上旬。年によって日付が変わる)",
+    equipment:"肉眼で十分。すすきと月見団子があれば伝統的な観月の形が整う",
+    nextView:"来年も同じ行事はあるが、旧暦基準のため満月と重なるとは限らず、同じ形の名月は毎年少しずつ違う",
+    rarity:"日本古来の観月行事として定着した年中行事", note:"必ずしも満月とは限らないが、一年で最も美しいとされてきた月。平安時代から続く観月の風習が今も残る、季節の節目の現象。"
+  },
+  total_solar_eclipse: {
+    name:"皆既日食", reading:"太陽が完全に月に隠される現象",
+    habitat:"皆既帯と呼ばれる、地表のごく狭い帯状の地域でしか観測できない。少しでも外れると部分日食にしかならない",
+    season:"地球上のどこかでは1〜2年に一度起こるが、同一地点で再び皆既日食が見られるのは平均して300年以上先とされる",
+    equipment:"専用の日食グラスが必須(皆既中のわずかな時間のみ肉眼可)。望遠鏡を使う場合も専用フィルターが要る",
+    nextView:"この場所で次に見られる保証はなく、多くの人にとって一生に一度きりの数分間になる",
+    rarity:"天文現象の中でも最上位の希少性・「一生に一度」の代名詞", note:"太陽が完全に月に隠れる数分間だけ、昼が夜のように暗くなり、太陽の外側のコロナが肉眼で見える。地球上の特定の場所限定・数分間限定という、天体現象の中でも極めつけの一期一会。"
+  },
+  jupiter_moons: {
+    name:"木星とガリレオ衛星", reading:"「ガリレオ衛星」(イオ・エウロパ・ガニメデ・カリスト)",
+    habitat:"都市部でも観測可能。木星自体は肉眼でも明るい点として見えるが、衛星を分離して見るには望遠鏡が必須",
+    season:"約12年で公転。衛星の並び方は数時間単位でも変化するため、同じ夜でも見るたびに配置が違う",
+    equipment:"望遠鏡が必須(倍率20倍程度から、木星本体の縞模様と、その周りに並ぶ4つの衛星が確認できる)",
+    nextView:"木星自体は毎年観測できるが、衛星の並びは二度と同じ形にはならない。その夜だけの配置",
+    rarity:"望遠鏡を持つ人なら誰もが一度は感動するという、入門者向け天体の代表格",
+    note:"肉眼では木星は一つの明るい点にしか見えないが、望遠鏡を向けると、四つの衛星が小さな点となって寄り添う。ガリレオが400年以上前に発見した並びを、今も同じように見ることができる。"
+  },
+  geminids: {
+    name:"ふたご座流星群", reading:"三大流星群の一つ、冬の澄んだ空で見る流星群",
+    habitat:"街明かりの少ない開けた場所。冬場のため防寒対策が観測の質を左右する",
+    season:"毎年12月中旬に活動、極大は12月14日頃(周期は年一度)",
+    equipment:"肉眼で十分。空気が乾燥して澄む冬は、夏の流星群より流れ星がくっきり見えると言われる",
+    nextView:"来年も同時期に観測可能だが、その夜の寒さと澄んだ空気の組み合わせは、二度と同じ形では巡ってこない",
+    rarity:"日本三大流星群の一つ、夏のペルセウス座流星群と並ぶ人気の流星群",
+    note:"母天体は彗星ではなく小惑星ファエトンとされる、珍しいタイプの流星群。空気が澄む冬の夜は、流れ星の色や尾までくっきり見えることがある。"
+  },
+  pleiades: {
+    name:"すばる(プレアデス星団)", reading:"和名「すばる」、清少納言も枕草子で称えた星の集まり",
+    habitat:"街明かりの少ない場所ならどこでも肉眼で観測可能。高山など空気の澄んだ場所ではより多くの星が見分けられる",
+    season:"冬から春にかけて夜空に高く昇る。一年のうち観測に適した季節は限られる",
+    equipment:"肉眼でも6つほどの星の集まりとして見えるが、双眼鏡があれば100個以上の星の集合だと分かる",
+    nextView:"毎年冬に見えるが、視力や大気の状態によって見分けられる星の数が変わるため、同じ見え方は二度とない",
+    rarity:"日本最古の文学作品にも登場する、古来から愛されてきた星団",
+    note:"肉眼では小さな星の塊にしか見えないが、双眼鏡や望遠鏡を向けると、青白く輝く恒星が寄り添うように群れている。清少納言が枕草子で「星はすばる」と称えたことでも知られる。"
+  }
+};
+
+
+
+/*
+  ============================================================
+  DATA構造ガイド(このコメントブロックは実装に含めないこと)
+  ============================================================
+  各キャラは以下の形をとる:
+
+  charKey: {
+    name: "表示名",
+    subtitle: "1行の紹介文",
+    color: "#hexカラー",   glow: "#淡い色",  emblem: "漢字1文字",
+    tier: 1,  // 1=最初から解放 / 2以上=TIER_THRESHOLDSの値に到達で解放
+
+    event1: {                         // 全ルート共通の邂逅シーン
+      label: "SCENE 01 — 邂逅",
+      text: "状況описание...",
+      choices: [
+        { label:"選択肢A", delta:100, route:"A", result:"..." },
+        { label:"選択肢B", delta:75,  route:"B", result:"..." }
+      ]
+    },
+
+    routes: {
+      A: {
+        routeLabel: "ルートAの呼び名",
+        epilogueText: "幸福度MAXで到達する特別エンディング文",
+        events: [
+          { label:"SCENE 02 — ...", text:"...", choices:[
+              {label:"控えめな選択", delta:10, result:"..."},
+              {label:"踏み込む選択", delta:40, result:"..."}
+          ]},
+          // SCENE 03(15/55の2択)
+          // SCENE 04〜07: 春夏秋冬、3択(15/35/70)にすると読み応えが出る
+          // SCENE 08: 最後のシーン。final:true と endingText を必ず入れる
+          {
+            label:"SCENE 08 — これから", text:"...",
+            choices:[
+              {label:"控えめな選択", delta:20, result:"..."},
+              {label:"踏み込む選択", delta:85, result:"..."}
+            ],
+            final:true,
+            endingText:"幸福度が最大値に届かなかった場合のノーマルエンド文"
+          }
+        ]
+      },
+      B: { routeLabel:"ルートBの呼び名", epilogueText:"...", events: [ Aと同じ形で7シーン分続ける ] }
+    }
+  }
+
+  ポイント:
+  - event1のchoicesは必ず2つ、それぞれにroute:"A" / route:"B" を付ける
+  - 各ルートのeventsは7個(SCENE 02〜08)、最後だけ final:true + endingText
+  - deltaの目安: 邂逅=100/75前後、通常2択=10-15(控えめ)/40-60(踏み込む)、
+    季節3択=15(控えめ)/35(中間)/70(踏み込む)、最終=20(控えめ)/85(踏み込む)
+  - 好意度用語は「幸福度」で統一(このテンプレのUI文言も幸福度に合わせてある)
+  ============================================================
+*/
+
+const DATA = {
+  /* ============================================================
+     9人、全員実装完了。
+     tier1: 玲奈(高原/流星群) 陽葵(離島/天の川) 更紗(岬灯台/金星)
+            雫(雪山/オーロラ) 冬乃(都市屋上/土星の環) 芽依(神社仏閣/中秋の名月)
+     tier2: 茜(高山/皆既月食)
+     tier3: 汐里(湖畔/水面反射+流星、一晩完結の短編構成)
+     tier4(本命): 凪(特別な場所/皆既日食、出張先の一期一会・長編構成)
+     ============================================================ */
+  reina: {
+    name:"玲奈",
+    subtitle:"同じ部署の「仕事のできる先輩」、誰もが認める社内の憧れ",
+    color:"#4a7ca3", glow:"#f3e7c9", emblem:"玲", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"営業推進部の東玲奈を知らない社員はいない。\n入社五年目にして最年少でチームリーダーに抜擢され、プレゼンはいつも完璧、後輩の相談にも嫌な顔ひとつ見せない。\n「東さんみたいになりたいです」\n新人の誰もがそう口を揃える。彼女はいつも背筋を伸ばし、隙のない微笑みを浮かべている。\n終電も逃した深夜、企画書の直しのため一人フロアに残っていた。飲み物を切らし、給湯室に立ち寄ると、電気も点けないまま、床に座り込む人影があった。\n「……あと、少し……」\n独り言のような、掠れた声。玲奈だった。スーツのまま壁にもたれ、目の下には隠しきれない濃い隈。手元のスマホには、深夜だというのに鳴り止まないチャット通知が並んでいた。\n誰もいないと思っていたのだろう、いつもの完璧な微笑みは、そこにはどこにもなかった。",
+      choices:[
+        { label:"電気を点けて「大丈夫ですか」と声をかける", delta:100, route:"A",
+          result:"玲奈の肩が、大きく跳ねた。\n「……っ、見た?今の」\n慌てて立ち上がろうとして、疲れきった膝が小さくよろける。取り繕う余力もないのか、玲奈はそのまま壁に背を預け、観念したように小さく息を吐いた。\n「……最悪。後輩に、こんな格好悪いとこ」\nいつもの隙のない声ではない、剥き出しの声だった。" },
+        { label:"気づかれないよう、そっと給湯室を離れる", delta:75, route:"B",
+          result:"物音を立てないよう、そっと引き返した。数分後、何事もなかったように戻ってきた玲奈は、いつもの完璧な微笑みでこちらに気づいた。\n「あら、まだ残ってたの。お疲れさま」\nいつも通りの声。けれど、目の下の隈も、僅かに掠れた声も、隠しきれていないことに、しばらく気づかないふりをした。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"隠さなくていい素顔",
+        epilogueText:"「あの夜、給湯室で座り込んでるとこ見られてなかったら」\n流星群から数ヶ月後、帰り道に玲奈がぽつりと言う。「私、今でも社内で『完璧な東さん』を演じ続けて、それで満足したふりしてたと思う」\n「今は?」と聞くと、彼女は初めて出会った夜には見せなかった顔で笑った。\n「今は、あなたの前でだけ、格好つけなくていいのが分かってる。それだけで、驚くほど息がしやすい」\n社内で「憧れの先輩」と呼ばれ続けた横顔に、誰にも見せたことのない温度が灯っていた。",
+        events:[
+          { label:"SCENE 02 — 翌朝のよそよそしさ", text:"翌朝、玲奈はいつも通りの完璧な笑顔でオフィスに現れた。けれど、昨夜のことに触れられるたび、微かに視線を逸らした。\n「昨日のことだけど……誰にも言わないでもらえる?『東さんも人間だったんだ』とか思われたくないから」\n声は軽い調子を装っていたが、目の奥には確かな不安があった。",
+            choices:[
+              {label:"「言いません。約束します」と静かに頷く", delta:10, result:"玲奈はほっとしたように、小さく息を吐いた。「……ありがとう」まだ完全に気は抜けていない様子だったが、声には確かな安堵が滲んでいた。"},
+              {label:"「別に、疲れてる姿くらい誰にでもあると思いますけど」と本音で返す", delta:45, result:"玲奈は驚いた顔でこちらを見た。「……そんな風に言われたの、久しぶりかも」少しの沈黙のあと、彼女は小さく、けれど確かに笑った。作られたものじゃない、初めて見る笑い方だった。"}
+            ]},
+          { label:"SCENE 03 — 「星なんて見て何になるの」", text:"それから数週間、玲奈の残業は変わらず続いた。ある晩、資料を届けに寄ると、彼女はまた目の下に濃い隈を作っていた。\n「たまには、息抜きした方がいいですよ」\n思わずそう言うと、玲奈は怪訝な顔をした。\n「息抜き?例えば?」\n「今度の週末、ペルセウス座流星群が見頃らしいです。天文台まで行けば、かなり見えるって」\n玲奈は一瞬固まったあと、小さく笑った。\n「……星?そんなもの見て、何になるの」\n呆れたような、それでいてどこか意外そうな声だった。",
+            choices:[
+              {label:"「何にもなりませんけど、頭は空っぽになりますよ」と軽く返す", delta:15, result:"玲奈はふっと肩の力を抜いて笑った。「……それ、今の私に一番必要なやつじゃない」"},
+              {label:"「東さんが本気で何もしない時間、見てみたいだけです」と正直に伝える", delta:50, result:"玲奈は虚をつかれたように黙り込み、それから観念したように小さく息を吐いた。「……変なこと言うのね、あなた」そう言いながらも、目は逸れていなかった。"}
+            ]},
+          { label:"SCENE 04 — 週末、いつもと違う顔", text:"当日、待ち合わせ場所に現れた玲奈は、いつものきっちりしたスーツ姿ではなく、ラフなニットにスニーカーという格好だった。\n「こんな格好、会社の人に見せるの初めてなんだけど」\n居心地悪そうに髪を触りながらも、車に乗り込む横顔は、どこか浮き立って見えた。\n高原へ向かう車内、玲奈は珍しく仕事の話を一切せず、窓の外を眺め続けていた。\n「こんな風に、何も予定を詰め込まずに移動するの、いつぶりだろう」",
+            choices:[
+              {label:"何も言わず、彼女の沈黙にただ付き合う", delta:15, result:"玲奈は窓の外を見つめたまま、小さく息を吐いた。何も言われないことが、今の彼女には心地よいようだった。"},
+              {label:"「今日だけは、スケジュールのこと全部忘れていいですよ」と伝える", delta:55, result:"玲奈はこちらを見て、少し驚いた顔をしたあと、ふっと表情を緩めた。「……そんな許可、誰にも貰ったことなかった」その声には、隠しきれない安堵が滲んでいた。"}
+            ]},
+          { label:"SCENE 05 — 天文台、開始前の沈黙", text:"天文台の駐車場に着くと、辺りにはすでに数組の観測客が三脚を立てていた。玲奈は車を降りるなり、思わずといった様子で夜空を見上げた。\n「……都会だと、こんなに星、見えないよね」\n声には、いつもの隙のない響きがなかった。ただ純粋に、目の前の景色に見入っているだけの声だった。\n開始まで、まだ小一時間ある。レジャーシートを広げながら、玲奈は珍しく落ち着かない様子で何度も空を見上げていた。",
+            choices:[
+              {label:"「そんなに気になります?」とからかう", delta:15, result:"玲奈は少しむっとした顔をしたあと、すぐに笑った。「……気になるでしょ、こんなの初めてなんだから」拗ねた声も、素直な返しも、以前より自然になっていた。"},
+              {label:"「今夜は、東さんの知らない東さんが見られそうです」と伝える", delta:55, result:"玲奈は虚をつかれたように黙り込み、それから小さく息を吐いた。「……なにそれ。気の早いこと言わないで」目を逸らした横顔が、夜目にも分かるほど赤らんでいた。"}
+            ]},
+          { label:"SCENE 06 — 高原の天文台、流星群の夜", celestialId:"perseids",
+            beats:[
+              {text:"日付が変わる少し前、辺りはすっかり暗くなっていた。街の明かりが一つも届かない空には、見たこともない密度で星が散らばっている。\n「……こんなに、見えるものなんだ」\n玲奈は敷いたレジャーシートに座り込み、呆然とした声を漏らした。スマホは、車を降りる前に電源ごと切っていた。"},
+              {text:"係員の説明によれば、ペルセウス座流星群のピークは日付が変わる前後の、ほんの数十分。それを過ぎれば、今夜これほどの密度ではもう見られない。\n「今夜しか見れない、ってこと?」\n玲奈が確かめるように呟いた。頷くと、彼女は小さく息を呑んだ。"},
+              {text:"沈黙の中、二人で空を見上げ続けた。\n一分、二分。\n何も起こらない時間が、かえって空気を張り詰めさせていく。"},
+              {text:"不意に、視界の端で光の筋が走った。", type:"sfx"},
+              {text:"一筋、また一筋。まるで空そのものが静かに崩れ落ちるように、光の尾が幾つも夜空を横切っていく。", climax:true},
+              {text:"「……嘘、すごい……!」\n玲奈が声を上げ、思わずこちらの腕を掴んだ。いつもの隙のない声ではない、飾り気のない、子供のような歓声だった。頬が紅潮し、目には薄っすらと涙が浮かんでいる。\n「私、こんなに何かに驚いたの、いつぶりだろう……」"}
+            ],
+            choices:[
+              {label:"何も言わず、興奮する彼女の横顔をただ見守る", delta:15, result:"玲奈はしばらく興奮冷めやらぬ様子で、何度も夜空を見上げていた。何も言わなくても、その横顔を見ているだけで十分だった。"},
+              {label:"「東さんがそんな顔するの、初めて見ました」と伝える", delta:35, result:"玲奈は我に返ったように、慌てて涙を拭おうとしたが、うまくいかず、結局照れ笑いを浮かべた。「……びっくりしただけ。忘れて」"},
+              {label:"あと数分でピークが終わると分かっていて「その顔の方が、今夜連れてきてよかったと思えます」と伝える", delta:70, result:"玲奈は一瞬固まり、それから消え入りそうな声で「……ずるい。こんな時に」と呟いた。目を逸らした頬が、夜目にも分かるほど赤く染まっていた。まだ何本か、光の尾が夜空を横切っていた。"}
+            ]},
+          { label:"SCENE 07 — 職場に戻った月曜日", text:"週明け、玲奈はいつも通り完璧な微笑みでフロアに現れた。けれど、以前と何かが違っていた。\n「東さん、最近雰囲気変わりました?なんか、前より柔らかいっていうか」\n後輩の一人がそう漏らすのを、偶然そばで聞いた。玲奈は少し困ったように笑って誤魔化していたが、こちらに向けた一瞬の視線には、隠しきれない共犯者めいた色があった。\n終業後、給湯室で二人きりになった瞬間、玲奈が小さく言った。\n「……あの夜のこと、まだ誰にも言ってないでしょうね」",
+            choices:[
+              {label:"「言ってません。二人だけの秘密です」と笑って返す", delta:15, result:"玲奈は安堵したように微笑んだ。「……よかった。あれは、あなたにだけ見せたものだから」その言い方に、以前にはなかった親密さが滲んでいた。"},
+              {label:"「秘密にする必要、そろそろなくなってきてる気がしますけど」と踏み込む", delta:55, result:"玲奈は息を呑み、それからゆっくりと視線を上げた。「……そういうこと、こんな場所で言う?」咎めるような口調とは裏腹に、拒む響きは少しもなかった。"}
+            ]},
+          {
+            label:"SCENE 08 — もう一度、あの空の下で", text:"数ヶ月後、玲奈から誘われて再び同じ天文台を訪れた。流星群の季節は終わっていたが、変わらず満点の星が広がっていた。\n「あの夜から、ずっと考えてたことがあるんだけど」\n玲奈は星を見上げたまま、静かに切り出した。\n「あなたの前でだけ、格好つけなくていい自分がいる。それって、多分もう、後輩に対する感情じゃないんだと思う」",
+            choices:[
+              {label:"「これからも、その顔だけは俺にだけ見せてください」と静かに伝える", delta:20, result:"玲奈は小さく頷き、少しだけ口角を上げた。「……上出来、その返事」いつもの評価するような口ぶりに、隠しきれない安堵が混ざっていた。"},
+              {label:"「後輩じゃなくて、俺の彼女になってください」と正直に伝える", delta:85, result:"玲奈の表情が、一瞬で崩れた。取り繕う余裕もないまま、両手で顔を覆って俯く。\n「……ずるい。そんなの、断れるわけないでしょ」\n指の隙間から漏れた声は、涙で濡れていた。社内で「完璧な東さん」と呼ばれていた人の、初めて見る決壊だった。"}
+            ],
+            final:true,
+            endingText:"月曜の朝、給湯室でコーヒーを淹れる玲奈の手元は、相変わらず一切の無駄がない。ただ、カップを傾ける合間にふと浮かぶ微笑みだけは、もう誰にも取り繕ったものではなかった。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"そっと近づく距離",
+        epilogueText:"「あなたが、いつも急かさずに待っていてくれたから」\n流星群から数ヶ月後、帰り道に玲奈がぽつりと言う。「私、いつの間にか、素顔の方が楽だって思えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、『完璧な東さん』なんて呼ばれるより、あなたの隣にいる自分の方が、ずっと好き」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、誰も近づけなかった距離を、確かに縮めていた。",
+        events:[
+          { label:"SCENE 02 — 探るような一言", text:"翌週、廊下ですれ違いざま、玲奈に呼び止められた。\n「ねえ、この前、給湯室に来るの早くなかった?」\n何気ない調子を装っていたが、目はまっすぐこちらを探るように見ていた。何かに気づかれている、そんな気配があった。",
+            choices:[
+              {label:"「気のせいだと思いますけど」ととぼける", delta:10, result:"玲奈はしばらくこちらを見つめていたが、やがて「そう」とだけ言って引き下がった。疑いは晴れていないようだったが、それ以上は追及してこなかった。"},
+              {label:"「疲れてる姿、見なかったって言ったら嘘になります」と正直に認める", delta:40, result:"玲奈は息を呑み、それから観念したように肩の力を抜いた。「……やっぱり。もういいや、正直に言うと恥ずかしい」初めて見せる、拗ねたような素顔だった。"}
+            ]},
+          { label:"SCENE 03 — 素顔の分だけ", text:"それからというもの、玲奈は打ち合わせの合間、少しずつ気を抜いた顔を見せるようになっていた。\n「一つだけ見られたんだから、もう隠す意味ないよね」\n開き直ったような口調だったが、声には確かな安心が滲んでいた。",
+            choices:[
+              {label:"急かさず、彼女のペースに合わせる", delta:15, result:"玲奈はそれが心地よかったのか、少しずつ肩の力を抜いていった。言葉のない時間が、不思議と気まずくなかった。"},
+              {label:"「素顔の東さんの方が、話しやすいです」と伝える", delta:55, result:"玲奈は驚いた顔をしたあと、俯いて小さく笑った。「……そういうこと、簡単に言うんだ」小さな声に、隠しきれない喜びが滲んでいた。"}
+            ]},
+          { label:"SCENE 04 — 「星でも見に行く?」", text:"ある晩、資料整理を終えた玲奈が、珍しく自分から切り出した。\n「この前、ふと思ったんだけど。……たまには、仕事以外のことした方がいいのかもね」\n「例えば、天の川を見に行くとか、どうです?」と返すと、玲奈は目を丸くした。\n「星?そんなもの見て、何になるの……とか思ったけど。……ちょっと、興味出てきたかも」\n照れ隠しなのか、早口でそう付け足す横顔が、いつもより幼く見えた。",
+            choices:[
+              {label:"「無理にとは言いません」と一歩引く", delta:15, result:"玲奈は少し慌てたように「無理してないから」と言い返してきた。その反応そのものが、答えだった。"},
+              {label:"「東さんが本気で驚く顔、見てみたいだけです」と伝える", delta:55, result:"玲奈は虚をつかれたように黙り込み、それから小さく頷いた。「……変なこと言うのね、あなた」そう言いながらも、目は逸れていなかった。"}
+            ]},
+          { label:"SCENE 05 — 待ち合わせの日", text:"当日、待ち合わせ場所に現れた玲奈は、いつものスーツ姿ではなく、ラフなニットにスニーカーという格好だった。\n「こんな格好、会社の人に見せるの初めてなんだけど」\n居心地悪そうに髪を触りながらも、車に乗り込む横顔は、どこか浮き立って見えた。",
+            choices:[
+              {label:"何も言わず、彼女の緊張がほぐれるのを待つ", delta:15, result:"玲奈は窓の外を見つめたまま、少しずつ肩の力を抜いていった。急かさなくてよかった、と思える時間だった。"},
+              {label:"「今日だけは、スケジュールのこと全部忘れていいですよ」と伝える", delta:55, result:"玲奈はこちらを見て、少し驚いた顔をしたあと、ふっと表情を緩めた。「……そんな許可、誰にも貰ったことなかった」その声には、隠しきれない安堵が滲んでいた。"}
+            ]},
+          { label:"SCENE 06 — 高原の天文台、天の川の夜", celestialId:"amanogawa",
+            beats:[
+              {text:"天文台に着く頃には、辺りはすっかり暗くなっていた。街の明かりが一つも届かない空には、見たこともない密度で星が散らばっている。\n「……こんなに、見えるものなんだ」\n玲奈は敷いたレジャーシートに座り込み、呆然とした声を漏らした。スマホは、車を降りる前に自分から電源を切っていた。"},
+              {text:"座って十数分、目が暗さに慣れてくると、頭上に白く煙るような帯が浮かび上がってきた。\n「……あれ、雲?」\n玲奈が首を傾げた。頷いて、あれが無数の星の集まりだと伝えると、彼女は言葉を失ったように黙り込んだ。"},
+              {text:"沈黙の中、二人で空を見上げ続けた。\n流星群のような一瞬の煌めきではなく、ただ静かに、その帯はそこにあり続けた。"},
+              {text:"……頭上に、白い帯がくっきりと浮かび上がった。", type:"sfx"},
+              {text:"「これが、天の川……」", climax:true},
+              {text:"玲奈は空を見上げたまま、しばらく声も出せない様子だった。いつもの隙のない声ではない、飾り気のない、静かな感動だった。\n「私、こんなにゆっくり何かを見つめたの、いつぶりだろう……」"}
+            ],
+            choices:[
+              {label:"何も言わず、見入る彼女の横顔をただ見守る", delta:15, result:"玲奈はしばらく夜空を見上げ続けていた。何も言わなくても、その横顔を見ているだけで十分だった。"},
+              {label:"「東さんがそんな顔するの、初めて見ました」と伝える", delta:35, result:"玲奈は我に返ったように、慌てて表情を引き締めようとしたが、うまくいかず、結局照れ笑いを浮かべた。「……見惚れてただけ。忘れて」"},
+              {label:"「急がなくていい。この帯みたいに、ゆっくり隣にいたいです」と伝える", delta:70, result:"玲奈は目に涙を滲ませながら、小さく笑った。「……そういう言い方、ずるいと思う。……嬉しいけど」"}
+            ]},
+          { label:"SCENE 07 — 職場に戻った月曜日", text:"週明け、玲奈はいつも通り完璧な微笑みでフロアに現れた。けれど、以前と何かが違っていた。\n「東さん、最近雰囲気変わりました?なんか、前より柔らかいっていうか」\n後輩の一人がそう漏らすのを、偶然そばで聞いた。玲奈は少し困ったように笑って誤魔化していたが、こちらに向けた一瞬の視線には、隠しきれない共犯者めいた色があった。",
+            choices:[
+              {label:"気づかないふりをして、いつも通り接する", delta:15, result:"玲奈はほっとしたように微笑んだ。急かされないことが、今の彼女には心地よいようだった。"},
+              {label:"「変わったの、俺のせいだったら嬉しいですけど」と伝える", delta:55, result:"玲奈は息を呑み、それからゆっくりと視線を上げた。「……そういうこと、こんな場所で言う?」咎めるような口調とは裏腹に、拒む響きは少しもなかった。"}
+            ]},
+          {
+            label:"SCENE 08 — もう一度、あの空の下で", text:"数ヶ月後、玲奈からの誘いで再び同じ天文台を訪れた。流星群の季節は終わっていたが、変わらず満点の星が広がっていた。\n「あなたが、いつも急かさずに待っててくれたから」\n玲奈は星を見上げたまま、静かに切り出した。\n「私、自分のペースで、ちゃんと気持ちに気づけた気がする」",
+            choices:[
+              {label:"「これからも、その顔だけは俺にだけ見せてください」と静かに伝える", delta:20, result:"玲奈は小さく頷き、少しだけ口角を上げた。「……上出来、その返事」いつもの評価するような口ぶりに、隠しきれない安堵が混ざっていた。"},
+              {label:"「後輩じゃなくて、俺の彼女になってください」と正直に伝える", delta:85, result:"玲奈はしばらく黙って星を見上げていたが、やがて、ゆっくりと目を細めて笑った。\n「……うん。分かってた、多分。ずっと前から」\n笑顔のまま、目尻にだけ涙が滲んでいた。焦らず待った時間の分だけ、その笑顔は静かで、確かなものだった。"}
+            ],
+            final:true,
+            endingText:"月曜の朝、給湯室でコーヒーを淹れる玲奈の手元は、相変わらず一切の無駄がない。ただ、カップを傾ける合間にふと浮かぶ微笑みだけは、もう誰にも取り繕ったものではなかった。"
+          }
+        ]
+      }
+    }
+  }
+,
+  himari: {
+    name:"陽葵",
+    subtitle:"「先輩」と慕ってくる、誰よりもモテる後輩",
+    color:"#b8703f", glow:"#ffe3c9", emblem:"葵", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"営業事務の後輩、宮下陽葵は、部内で誰よりも人懐っこい。\n「先輩、先輩」が口癖で、飲み会に誘えば誰よりも先に返事をくれる。\n「私ってモテちゃうんですよねー」と本人はよく笑って言うが、それは謙遜でも冗談でもなく、社内でも社外でも彼女に告白する人間は後を絶たない。そのたび、陽葵は困ったように笑って流してきた。\nそんな彼女が、なぜか自分にだけは妙になつく。仕事終わり、エレベーターで一緒になれば必ず話しかけてくるし、飲み会では気づけば隣の席に座っている。\n「先輩、今度離島に出張あるじゃないですか。あそこ、天の川がすごい綺麗に見えるらしいですよ」\n何気ない雑談のつもりで返した言葉に、陽葵の目が急に輝いた。\n「……それ、私も連れてってもらえたりします?」",
+      choices:[
+        { label:"「せっかくだし、一緒に見に行くか」と誘う", delta:100, route:"A",
+          result:"陽葵は一瞬固まったあと、満面の笑みを浮かべた。\n「え、ほんとですか!?やった……!」\n普段の余裕たっぷりな態度とは違う、隠しきれない喜びが声に滲んでいた。「先輩から誘ってもらえるの、初めてです」" },
+        { label:"「出張のついでだし、時間があれば」と濁す", delta:75, route:"B",
+          result:"陽葵は少し不満そうに唇を尖らせたが、すぐにいつもの笑顔に戻った。\n「じゃあ、時間できたら絶対誘ってくださいね。約束ですよ」\n念を押すように指切りを求めてくる仕草に、いつもの気安さの奥に、微かな必死さが見えた気がした。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"素直に踏み込んでくる後輩",
+        epilogueText:"「先輩が自分から誘ってくれたの、あの時だけなんですよね」\n離島から帰ったあとも、陽葵はことあるごとにその話を持ち出すようになった。「知ってます?私、誰かに告白されるのは慣れてても、自分から好きって言うの、初めてなんですよ」\n「今は?」と聞くと、彼女は照れくさそうに、けれどまっすぐこちらを見て笑った。\n「今は、先輩に好きって言えて、ちゃんと同じだけ返してもらえてる。それだけで、今までのモテてた自分より、ずっと幸せです」\n誰よりもモテると評判の後輩の、一番飾らない顔がそこにあった。",
+        events:[
+          { label:"SCENE 02 — 出張前夜、鳴り止まない連絡", text:"出張の日程が決まってから、陽葵からの連絡は目に見えて増えた。\n「先輩、離島の宿ってどんな感じですか?」「双眼鏡、持ってった方がいいですかね?」\n業務連絡のついでとは思えない頻度に、同僚から「宮下、最近ずいぶん懐いてない?」とからかわれるほどだった。",
+            choices:[
+              {label:"「準備、張り切りすぎだろ」と軽く流す", delta:10, result:"陽葵はむっとした顔をしたが、すぐにへらっと笑った。「だって、先輩と行くの楽しみなんですもん」悪びれない笑顔だった。"},
+              {label:"「そんなに楽しみにしてもらえると、こっちも嬉しい」と素直に伝える", delta:45, result:"陽葵は目を丸くしたあと、耳まで赤くして俯いた。「……そういうこと、簡単に言わないでください」珍しく歯切れの悪い返事だった。"}
+            ]},
+          { label:"SCENE 03 — 「星とか、興味なかったんですけど」", text:"出張二日目の夜、仕事を終えて宿を出ると、陽葵はスマホの画面から顔を上げた。\n「正直、星とか興味なかったんですけど。先輩が好きそうな話し方するから、気になっちゃって」\n照れ隠しなのか早口でそう言うと、彼女は先に立って歩き出した。\n「今夜、天の川のピークらしいです。行きましょう、先輩」",
+            choices:[
+              {label:"「変わってるな、お前」と笑って付いていく", delta:15, result:"陽葵は「褒めてます?」と唇を尖らせながらも、機嫌よさそうに歩調を緩めなかった。"},
+              {label:"「陽葵がそこまで乗り気なの、珍しいな」と伝える", delta:50, result:"陽葵は一瞬足を止め、それから振り返らずに答えた。「……先輩が絡むと、なんでも珍しくなるんですよ、私」"}
+            ]},
+          { label:"SCENE 04 — 港からの道、二人きり", text:"宿から浜辺までの道のりは、街灯もほとんどない暗い一本道だった。陽葵はスマホのライトも点けず、隣を歩き続けた。\n「先輩、暗いとこ平気なんですか?」\n「陽葵こそ、怖くないのか」と返すと、彼女はくすりと笑った。\n「隣に先輩がいれば、平気です」",
+            choices:[
+              {label:"「大袈裟だな」とそっけなく返す", delta:15, result:"陽葵は「またそうやって流す」と拗ねたが、それ以上は何も言わず、隣を歩き続けた。"},
+              {label:"何も言わず、さりげなく歩幅を合わせる", delta:55, result:"陽葵は隣の変化に気づいたのか、一瞬こちらを見上げ、それから何も言わず、少しだけ距離を詰めてきた。"}
+            ]},
+          { label:"SCENE 05 — 波音だけの浜辺", text:"浜辺に着くと、波音以外、何の音もしなかった。陽葵は靴を脱ぎ、砂の上に座り込んだ。\n「こんな静かなとこ、久しぶりです。いつも誰かに囲まれてるから」\nいつもの快活さの奥に、ふと素の疲れが滲んだ声だった。",
+            choices:[
+              {label:"「たまにはいいだろ、こういうのも」と隣に座る", delta:15, result:"陽葵は小さく頷き、それ以上は何も言わず、隣に座る気配に安心したように肩の力を抜いた。"},
+              {label:"「陽葵がそんな顔するの、珍しいな」と伝える", delta:55, result:"陽葵は驚いた顔をしたあと、小さく笑った。「……先輩の前でだけ、気抜けちゃうんですよね、なんでだろ」"}
+            ]},
+          { label:"SCENE 06 — 天の川、離島の夜空", celestialId:"amanogawa",
+            beats:[
+              {text:"座って十数分、陽葵はいつの間にか静かになっていた。その横顔をちらりと見た瞬間、頭上に信じられない光景が広がっていることに気づいた。無数の星が帯状に密集し、白く煙るように空を横切っている。"},
+              {text:"「……先輩、あれ」\n陽葵が声を潜め、まっすぐ真上を指差した。"},
+              {text:"……頭上に、白い帯がくっきりと浮かび上がった。", type:"sfx"},
+              {text:"「あんなにはっきり天の川見えるの、初めてです……」", climax:true},
+              {text:"陽葵は口を半開きにしたまま、しばらく言葉を失っていた。いつもの人懐っこい笑顔とは違う、心から見入っている横顔だった。\n「私が今まで浮かれてモテてきたの、なんかちっぽけに思えてきました」"}
+            ],
+            choices:[
+              {label:"「そんなことないだろ」と軽く否定する", delta:15, result:"陽葵は「先輩がそう言うなら、いいです」と素直に笑った。"},
+              {label:"「陽葵の本当の魅力、こういう顔の方だと思うけどな」と伝える", delta:35, result:"陽葵は一瞬固まり、それから消え入りそうな声で「……ずるいです、それ」と呟いた。"},
+              {label:"「今夜、陽葵の知らない顔、たくさん見れた気がする」と伝える", delta:70, result:"陽葵は星空を見上げたまま、静かに涙を一筋こぼした。「……先輩にだけは、ちゃんと知っててほしいです。私の、こういうとこ」"}
+            ]},
+          { label:"SCENE 07 — 帰社後の変化", text:"出張から戻ると、陽葵の周りの空気が少し変わった。以前のように誰彼構わず愛想を振りまくことが減り、その分、こちらへの視線と言葉の頻度が増えた。\n「先輩、今日もお昼一緒でいいですか?」\n同僚が「宮下、最近独占欲すごくない?」とからかうほどだった。",
+            choices:[
+              {label:"「独占欲、隠す気ないんだな」とからかう", delta:15, result:"陽葵は悪びれもせず「隠す意味、もうなくないですか?」と笑い返してきた。"},
+              {label:"「陽葵がそうやって選んでくれるの、悪い気しない」と伝える", delta:55, result:"陽葵は嬉しそうに、けれど照れくさそうに視線を逸らした。「……そういうの、もっと聞かせてください」"}
+            ]},
+          {
+            label:"SCENE 08 — 二度目の離島", text:"数ヶ月後、陽葵からの提案で再び同じ島を訪れた。同じ浜辺、同じ波音。\n「先輩、あの夜からずっと考えてたことがあるんです」\n陽葵は星空を見上げたまま、珍しく静かな声で切り出した。\n「私、誰かに告白されるのは慣れてるのに、自分から好きって言ったこと、一度もなかったんですよね」",
+            choices:[
+              {label:"「無理に言わなくていい」と優しく返す", delta:20, result:"陽葵は小さく笑い、「……先輩のそういうとこ、好きです」と静かに言った。"},
+              {label:"「その一言、俺のために取っておいてくれたのか」と踏み込む", delta:85, result:"陽葵は言葉より先に、勢いよく抱きついてきた。\n「……先輩、大好きです!ずっと言いたかった!」\n誰よりもモテると評判の後輩の、飾る余裕もないくらい素直な告白だった。"}
+            ],
+            final:true,
+            endingText:"誰よりもモテると評判だった陽葵の笑顔から、誰かに合わせるための愛想が消えていた。それは、彼女がずっと誰にも見せてこなかった、一番飾らない顔だった。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"焦らされる後輩の本気",
+        epilogueText:"「あの時、先輩がすぐ誘ってくれなかったの、実はちょっと寂しかったんです」\n離島から数ヶ月後、陽葵がぽつりと打ち明けた。「でも、待ってる間、自分の気持ちがどんどんはっきりしていったから、それはそれでよかったのかも」\n「今は?」と聞くと、彼女は照れくさそうに、けれどまっすぐ笑った。\n「今は、待った甲斐があったって、心から思ってます」\n誰よりもモテると評判の後輩が、初めて自分から待つ側に回った、その先の笑顔だった。",
+        events:[
+          { label:"SCENE 02 — 約束、まだですか", text:"出張の日程が近づいても誘いがないことに焦れたのか、陽葵は毎日のように探りを入れてきた。\n「先輩、離島の件、まだ時間できてないんですか?」\n笑顔の下に、隠しきれない苛立ちが見え隠れしていた。",
+            choices:[
+              {label:"「忙しいのは事実だからな」と素っ気なく返す", delta:10, result:"陽葵はむっとした顔をしたが、それ以上は食い下がらず、大人しく引き下がった。"},
+              {label:"「そんなに気にしてくれてたのか」と少し歩み寄る", delta:40, result:"陽葵は虚をつかれたように黙り込み、それから小さく「……当たり前じゃないですか」と呟いた。"}
+            ]},
+          { label:"SCENE 03 — 素直になれない後輩", text:"出張二日目、仕事を終えた陽葵は、いつもの快活さが鳴りを潜めていた。\n「先輩、まだ誘ってくれないから、私から言おうか迷ってたんですけど」\n珍しくしおらしい態度だった。「明日の明け方、金星が一番綺麗に見えるらしいですよ。……一緒に、行きませんか」",
+            choices:[
+              {label:"「珍しいな、陽葵がそんな風に言うの」とからかう", delta:15, result:"陽葵はむっとしたが、すぐに開き直ったように笑った。「たまにはいいでしょ、こういうのも」"},
+              {label:"「待たせて悪かった。行こう」と素直に応じる", delta:50, result:"陽葵はほっとしたように表情を緩めた。「……やっと。ずっと待ってたんですからね」"}
+            ]},
+          { label:"SCENE 04 — 港からの道、二人きり", text:"夜明け前、宿から浜辺までの道のりは、街灯もほとんどない暗い一本道だった。陽葵はいつもよりずっと静かに、隣を歩いていた。\n「先輩と二人でこんなとこ歩くの、初めてですね」\nその声には、いつもの浮かれた調子がなかった。",
+            choices:[
+              {label:"「静かだな、今日は」と軽く聞く", delta:15, result:"陽葵は「たまには、こういうのもいいかなって」と小さく笑った。"},
+              {label:"何も言わず、さりげなく歩幅を合わせる", delta:55, result:"陽葵は隣の変化に気づいたのか、一瞬こちらを見上げ、それから何も言わず、少しだけ距離を詰めてきた。"}
+            ]},
+          { label:"SCENE 05 — 波音だけの浜辺", text:"浜辺に着くと、波音以外、何の音もしなかった。陽葵は靴を脱ぎ、砂の上に座り込んだ。\n「こんな静かなとこ、久しぶりです。いつも誰かに囲まれてるから」\nいつもの快活さの奥に、ふと素の疲れが滲んだ声だった。",
+            choices:[
+              {label:"「たまにはいいだろ、こういうのも」と隣に座る", delta:15, result:"陽葵は小さく頷き、それ以上は何も言わず、隣に座る気配に安心したように肩の力を抜いた。"},
+              {label:"「陽葵がそんな顔するの、珍しいな」と伝える", delta:55, result:"陽葵は驚いた顔をしたあと、小さく笑った。「……先輩の前でだけ、気抜けちゃうんですよね、なんでだろ」"}
+            ]},
+          { label:"SCENE 06 — 金星、離島の夜明け前", celestialId:"venus",
+            beats:[
+              {text:"座って十数分、二人して黙ったまま、空が白み始めるのを待っていた。どちらからともなく見つめた東の低い空に、一つだけ強く輝く光が現れた。"},
+              {text:"「……先輩、あれ」\n陽葵が声を潜め、まっすぐその光を指差した。恒星よりも遥かに強く、瞬かない光だった。"},
+              {text:"……東の空に、光が一つ灯った。", type:"sfx"},
+              {text:"「明けの明星……あんなにはっきり見えるの、初めてです……」", climax:true},
+              {text:"陽葵は口を半開きにしたまま、しばらく言葉を失っていた。いつもの人懐っこい笑顔とは違う、心から見入っている横顔だった。\n「私が今まで浮かれてモテてきたの、なんかちっぽけに思えてきました」"}
+            ],
+            choices:[
+              {label:"「そんなことないだろ」と軽く否定する", delta:15, result:"陽葵は「先輩がそう言うなら、いいです」と素直に笑った。"},
+              {label:"「陽葵の本当の魅力、こういう顔の方だと思うけどな」と伝える", delta:35, result:"陽葵は一瞬固まり、それから消え入りそうな声で「……ずるいです、それ」と呟いた。"},
+              {label:"「待たせた分、今夜はちゃんと隣にいる」と伝える", delta:70, result:"陽葵は星空を見上げたまま、静かに涙を一筋こぼした。「……そういうの、もっと早く言ってほしかったです。でも、今言ってもらえただけで十分です」"}
+            ]},
+          { label:"SCENE 07 — 帰社後の変化", text:"出張から戻ると、陽葵の周りの空気が少し変わった。以前のように誰彼構わず愛想を振りまくことが減り、その分、こちらへの視線と言葉の頻度が増えた。\n「先輩、今日もお昼一緒でいいですか?」\n同僚が「宮下、最近独占欲すごくない?」とからかうほどだった。",
+            choices:[
+              {label:"「独占欲、隠す気ないんだな」とからかう", delta:15, result:"陽葵は悪びれもせず「隠す意味、もうなくないですか?」と笑い返してきた。"},
+              {label:"「陽葵がそうやって選んでくれるの、悪い気しない」と伝える", delta:55, result:"陽葵は嬉しそうに、けれど照れくさそうに視線を逸らした。「……そういうの、もっと聞かせてください」"}
+            ]},
+          {
+            label:"SCENE 08 — 二度目の離島", text:"数ヶ月後、陽葵からの提案で再び同じ島を訪れた。同じ浜辺、同じ波音。\n「先輩、あの夜からずっと考えてたことがあるんです」\n陽葵は星空を見上げたまま、珍しく静かな声で切り出した。\n「待たされてる間、自分の気持ちがどんどんはっきりしていったんです」",
+            choices:[
+              {label:"「待たせて悪かった」と優しく返す", delta:20, result:"陽葵は小さく笑い、「……もう気にしてないです」と静かに言った。"},
+              {label:"「これからは、待たせない。ちゃんと隣にいる」と踏み込む", delta:85, result:"陽葵は目にいっぱい涙を溜めて、震える声で言った。\n「……待った甲斐、ありました。先輩のこと、ずっと好きでした」\n誰よりもモテると評判の後輩が、初めて自分から待つ側に回った先の、飾らない告白だった。"}
+            ],
+            final:true,
+            endingText:"誰よりもモテると評判だった陽葵の笑顔から、誰かに合わせるための愛想が消えていた。それは、彼女がずっと誰にも見せてこなかった、一番飾らない顔だった。"
+          }
+        ]
+      }
+    }
+  },
+  sarasa: {
+    name:"更紗",
+    subtitle:"化粧っ気のない同僚。学生時代は「高嶺の花」と呼ばれていたらしい",
+    color:"#5a94a3", glow:"#ffd9a8", emblem:"紗", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"経理部の三宅更紗は、いつも化粧っ気のない顔で、髪をひとつに結んだまま、黙々と伝票を処理している。\n「三宅さん、真面目だけど、地味だよね」\nそんな評判を、何度か耳にしたことがあった。\nある日、大学時代の友人と飲みに行った帰り、駅前で偶然、その友人が更紗に声をかけた。\n「……更紗?久しぶり!やっぱり更紗だ、相変わらず綺麗——」\n友人はそこまで言って、更紗の疲れきった顔を見て、言葉を濁した。\n「三宅さんのこと、知り合いなのか」と聞くと、友人は驚いた顔で言った。\n「知り合いも何も、高校で『高嶺の花』って呼ばれてた子だよ。学年一の美人で、告白の列ができるくらいだったのに……こんなに変わるんだ」\n別れ際、更紗はこちらの視線に気づき、気まずそうに目を逸らした。",
+      choices:[
+        { label:"翌日、さりげなく「昨日は驚いた」と声をかける", delta:100, route:"A",
+          result:"更紗の肩が、びくりと強張った。\n「……あれ、見られてたんだ」\n諦めたように小さく息を吐き、いつもの無表情に近い声で続けた。「昔の話、しないでもらえる?今の私には、関係ないから」\n突き放すような言葉の奥に、隠しきれない疲労が滲んでいた。" },
+        { label:"何も聞かなかったふりをして、いつも通り接する", delta:75, route:"B",
+          result:"翌日、更紗はいつも通り黙々と仕事をしていた。何も触れずにいると、彼女の方から、ぽつりと呟いた。\n「……昨日、変なとこ見せたね」\n驚いて顔を上げると、更紗はすぐに視線を逸らし、それきり何も言わなかった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"隠さなくていい素顔",
+        epilogueText:"「あの日、駅前で声をかけられてなかったら」\n数ヶ月後、更紗がぽつりと言う。「私、今でも『昔は綺麗だったのに』って言われるのが怖くて、ずっと地味なふりをしてたと思う」\n「今は?」と聞くと、彼女は初めて出会った頃には見せなかった顔で笑った。\n「今は、綺麗って言われることより、あなたの前で素のままでいられることの方が、ずっと大事だって思える」\n学生時代「高嶺の花」と呼ばれた横顔に、誰にも見せたことのない柔らかさが灯っていた。",
+        events:[
+          { label:"SCENE 02 — 「昔の話はしないで」", text:"数日後、給湯室で二人きりになった時、更紗の方から切り出した。\n「この前、ちゃんと答えられなかったから言うけど。……昔は、確かに周りにちやほやされてた。でも、それに疲れて、全部やめたの」\n淡々とした口調だったが、目には拒絶に近い硬さがあった。",
+            choices:[
+              {label:"「そうだったんだな」とだけ静かに受け止める", delta:10, result:"更紗は少し驚いたように黙り込んだあと、小さく息を吐いた。「……詮索してこないんだ、あなた」わずかに肩の力が抜けたようだった。"},
+              {label:"「今の三宅さんが嫌いってわけじゃないから、安心してくれ」と伝える", delta:45, result:"更紗は虚をつかれたように顔を上げた。「……そんな風に言われたの、初めて」小さな声に、隠しきれない戸惑いが滲んでいた。"}
+            ]},
+          { label:"SCENE 03 — 岬の話", text:"仕事帰り、更紗が珍しく雑談を振ってきた。\n「休みの日、何してるの」\n「今度、岬に金星を見に行こうと思ってる」と返すと、更紗は意外そうな顔をした。\n「星?……そういうの、興味なさそうな顔してるのに」\n少し考えたあと、彼女はぽつりと付け足した。「……私も、たまには外の空気吸った方がいいのかもね」",
+            choices:[
+              {label:"「気が向いたら来ればいい」と誘う", delta:15, result:"更紗は少し驚いた顔をしたあと、小さく頷いた。「……考えとく」珍しく即答しない返事だった。"},
+              {label:"「三宅さんの素の顔、少し見てみたい」と本音で伝える", delta:50, result:"更紗は息を呑み、それから視線を逸らした。「……変なこと言うのね」拒む口調ではなかった。"}
+            ]},
+          { label:"SCENE 04 — 岬までの道、化粧っ気のない横顔", text:"当日、待ち合わせに現れた更紗は、いつも通り化粧っ気のない顔だったが、心なしか表情が柔らかかった。\n「こんな遠くまで来たの、久しぶり」\n岬までの道すがら、更紗はぽつぽつと、学生時代のことを話し始めた。\n「綺麗だって言われ続けるの、実は結構しんどかったんだよね。中身を見てもらえてる気がしなくて」",
+            choices:[
+              {label:"「今は、中身の方をちゃんと見てるつもりだけどな」と伝える", delta:15, result:"更紗は小さく笑った。「……そう言われると、悪い気しないな」"},
+              {label:"何も言わず、隣で黙って話を聞き続ける", delta:55, result:"更紗はしばらく黙って歩いたあと、小さく呟いた。「……話、ちゃんと聞いてくれるんだね。ありがとう」"}
+            ]},
+          { label:"SCENE 05 — 灯台の下で待つ", text:"岬の灯台の下、日の出前の暗闇の中で二人、金星が昇るのを待った。\n「明けの明星、見るの初めて」\n更紗は膝を抱えて座り込み、東の空をじっと見つめていた。「なんか、こういう静かな時間、久しぶりかも」",
+            choices:[
+              {label:"「急がなくていい、待とう」と隣に座る", delta:15, result:"更紗は小さく頷き、それ以上は何も言わず、隣に座る気配に安心したように肩の力を抜いた。"},
+              {label:"「三宅さんがそうやって落ち着いてる顔、いいと思う」と伝える", delta:55, result:"更紗は驚いた顔をしたあと、小さく笑った。「……そんな風に見られてるの、知らなかった」"}
+            ]},
+          { label:"SCENE 06 — 明けの明星、東の空", celestialId:"venus",
+            beats:[
+              {text:"空が白み始めた頃、隣に座る更紗の横顔がうっすら見えるようになった、その東の低い空に、一つだけ強く輝く光が現れた。"},
+              {text:"「……あれ」\n更紗が声を漏らし、まっすぐその光を見つめた。恒星よりも遥かに強く、瞬かない光だった。"},
+              {text:"……東の空に、光が一つ灯った。", type:"sfx"},
+              {text:"「明けの明星……本当に、綺麗", climax:true},
+              {text:"更紗は光を見つめたまま、静かに呟いた。\n「学生時代、みんなに『綺麗』って言われ続けてきたけど。……こんな風に、自分から何かを綺麗だって思ったの、久しぶりな気がする」\nその横顔には、いつもの無表情ではない、素直な感動があった。"}
+            ],
+            choices:[
+              {label:"「三宅さんも、今のその顔、綺麗だと思う」と伝える", delta:15, result:"更紗は照れたように顔を背けた。「……そういうの、今言う?」拒む響きはなかった。"},
+              {label:"「昔とは違う意味で、今の三宅さんに惹かれてる」と伝える", delta:35, result:"更紗は息を呑み、しばらく黙り込んだあと、小さく「……ずるい言い方」と呟いた。"},
+              {label:"「化粧っ気がなくても、今のその顔が一番魅力的だと思う」と正直に伝える", delta:70, result:"更紗は目に涙を滲ませながら、小さく笑った。「……そんなこと言われたの、初めて。ちゃんと、覚えとく」"}
+            ]},
+          { label:"SCENE 07 — 出勤してきた更紗", text:"数日後、更紗は珍しく薄く化粧をして出社してきた。\n「三宅さん、雰囲気変わった?」\n同僚たちがざわつく中、更紗は少し照れくさそうに、けれど隠す様子もなく答えた。\n「……たまには、ちゃんとしてみようかなって」\nその声には、以前の張り詰めた硬さがなかった。",
+            choices:[
+              {label:"「似合ってる」とさらりと褒める", delta:15, result:"更紗は驚いた顔をしたあと、俯いて小さく笑った。「……ありがとう」小さな声に、確かな喜びが滲んでいた。"},
+              {label:"「三宅さんが変わったきっかけ、俺だったら嬉しい」と伝える", delta:55, result:"更紗は息を呑み、それからゆっくりと視線を上げた。「……図星だから、否定できない」珍しく素直な返事だった。"}
+            ]},
+          {
+            label:"SCENE 08 — 宵の明星、もう一つの顔", text:"数ヶ月後のある日、更紗から「今日、思ったより早く仕事が終わったの」と連絡が来た。\n誘われるまま、二人でまた同じ岬へ向かった。ただし今度は、朝ではなく夕暮れ時だった。\n「また金星?」と聞くと、更紗は首を振った。\n「今度は『宵の明星』。同じ星なのに、朝と夕方で呼び名が変わるんだって」\n西の空に、あの朝と同じ強さで光る星があった。\n更紗はそれを見上げたまま、静かに切り出した。\n「明けの明星も、宵の明星も、結局は同じ星なんだよね。……昔の私と今の私も、結局は同じ、ってことなのかな」",
+            choices:[
+              {label:"「これからも、その顔を隣で見ていたい」と静かに伝える", delta:20, result:"更紗は俯いたまま、小さく頷いた。「……うん」それだけしか言わなかったが、声に張り詰めていたものが、少し緩んでいた。"},
+              {label:"「隣じゃなくて、俺の彼女になってほしい」と正直に伝える", delta:85, result:"更紗はしばらく黙り込んだあと、俯いたまま小さく肩を震わせた。\n「……ずるいこと言うのね。断る理由、探してたのに」\n顔を上げた時には、目の縁が赤くなっていた。「『高嶺の花』なんて呼ばれてた私が、こんな不器用な泣き方するなんて」"}
+            ],
+            final:true,
+            endingText:"派手な出来事は何もなかった。ただ、化粧っ気のない顔の奥に隠れていた更紗の硬さが、いつしか消えていた。明けの明星も宵の明星も、見上げるたび、あの朝のことを思い出させてくれる。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"そっと近づく距離",
+        epilogueText:"「あなたが、急かさずに待っていてくれたから」\n数ヶ月後、更紗がぽつりと言う。「私、いつの間にか、素のままの自分の方が楽だって思えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、『高嶺の花』なんて呼ばれるより、あなたの隣にいる自分の方が、ずっと好き」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、誰も近づけなかった距離を、確かに縮めていた。",
+        events:[
+          { label:"SCENE 02 — 少しずつ開く口", text:"それから数日、更紗は少しずつ、業務以外の言葉も口にするようになっていた。\n「あの日のこと、まだ何も聞いてこないんだね」\n探るような口調に、こちらの出方を窺っているのが伝わってきた。",
+            choices:[
+              {label:"「聞かれたくないことなら、聞かない」と静かに返す", delta:10, result:"更紗はしばらくこちらを見つめていたが、やがて「……そう」とだけ言って、小さく息を吐いた。"},
+              {label:"「無理に話さなくていい。でも、聞く準備はできてる」と伝える", delta:40, result:"更紗は驚いた顔をしたあと、俯いて小さく笑った。「……変な言い方するね」小さな声に、隠しきれない安心が滲んでいた。"}
+            ]},
+          { label:"SCENE 03 — 岬の話", text:"仕事帰り、更紗が珍しく雑談を振ってきた。\n「休みの日、何してるの」\n「今度、岬に金星を見に行こうと思ってる」と返すと、更紗は意外そうな顔をした。\n「星?……そういうの、興味なさそうな顔してるのに」\n少し考えたあと、彼女はぽつりと付け足した。「……私も、たまには外の空気吸った方がいいのかもね」",
+            choices:[
+              {label:"「気が向いたら来ればいい」と誘う", delta:15, result:"更紗は少し驚いた顔をしたあと、小さく頷いた。「……考えとく」珍しく即答しない返事だった。"},
+              {label:"「無理にとは言わないけど、来てくれたら嬉しい」と伝える", delta:50, result:"更紗は視線を逸らしたまま、小さく「……分かった」と呟いた。拒む響きはなかった。"}
+            ]},
+          { label:"SCENE 04 — 岬までの道、化粧っ気のない横顔", text:"当日、待ち合わせに現れた更紗は、いつも通り化粧っ気のない顔だったが、心なしか表情が柔らかかった。\n「こんな遠くまで来たの、久しぶり」\n岬までの道すがら、更紗はぽつぽつと、学生時代のことを話し始めた。\n「綺麗だって言われ続けるの、実は結構しんどかったんだよね。中身を見てもらえてる気がしなくて」",
+            choices:[
+              {label:"何も言わず、隣で黙って話を聞き続ける", delta:15, result:"更紗はしばらく黙って歩いたあと、小さく呟いた。「……話、ちゃんと聞いてくれるんだね。ありがとう」"},
+              {label:"「今は、中身の方をちゃんと見てるつもりだけどな」と伝える", delta:55, result:"更紗は小さく笑った。「……そう言われると、悪い気しないな」"}
+            ]},
+          { label:"SCENE 05 — 灯台の下で待つ", text:"岬の灯台の下、日の出前の暗闇の中で二人、金星が昇るのを待った。\n「明けの明星、見るの初めて」\n更紗は膝を抱えて座り込み、東の空をじっと見つめていた。「なんか、こういう静かな時間、久しぶりかも」",
+            choices:[
+              {label:"「急がなくていい、待とう」と隣に座る", delta:15, result:"更紗は小さく頷き、それ以上は何も言わず、隣に座る気配に安心したように肩の力を抜いた。"},
+              {label:"「三宅さんがそうやって落ち着いてる顔、いいと思う」と伝える", delta:55, result:"更紗は驚いた顔をしたあと、小さく笑った。「……そんな風に見られてるの、知らなかった」"}
+            ]},
+          { label:"SCENE 06 — 明けの明星、東の空", celestialId:"venus",
+            beats:[
+              {text:"空が白み始めた頃、言葉少なに並んで待っていた東の低い空に、一つだけ強く輝く光が現れた。"},
+              {text:"「……あれ」\n更紗が声を漏らし、まっすぐその光を見つめた。恒星よりも遥かに強く、瞬かない光だった。"},
+              {text:"……東の空に、光が一つ灯った。", type:"sfx"},
+              {text:"「明けの明星……本当に、綺麗", climax:true},
+              {text:"更紗は光を見つめたまま、静かに呟いた。\n「学生時代、みんなに『綺麗』って言われ続けてきたけど。……こんな風に、自分から何かを綺麗だって思ったの、久しぶりな気がする」\nその横顔には、いつもの無表情ではない、素直な感動があった。"}
+            ],
+            choices:[
+              {label:"「三宅さんも、今のその顔、綺麗だと思う」と伝える", delta:15, result:"更紗は照れたように顔を背けた。「……そういうの、今言う?」拒む響きはなかった。"},
+              {label:"「昔とは違う意味で、今の三宅さんに惹かれてる」と伝える", delta:35, result:"更紗は息を呑み、しばらく黙り込んだあと、小さく「……ずるい言い方」と呟いた。"},
+              {label:"「急がなくていい。ゆっくり、隣で見ていたい」と伝える", delta:70, result:"更紗は目に涙を滲ませながら、小さく笑った。「……そういう言い方、ずるいと思う。……嬉しいけど」"}
+            ]},
+          { label:"SCENE 07 — 出勤してきた更紗", text:"数日後、更紗は珍しく薄く化粧をして出社してきた。\n「三宅さん、雰囲気変わった?」\n同僚たちがざわつく中、更紗は少し照れくさそうに、けれど隠す様子もなく答えた。\n「……たまには、ちゃんとしてみようかなって」\nその声には、以前の張り詰めた硬さがなかった。",
+            choices:[
+              {label:"「似合ってる」とさらりと褒める", delta:15, result:"更紗は驚いた顔をしたあと、俯いて小さく笑った。「……ありがとう」小さな声に、確かな喜びが滲んでいた。"},
+              {label:"「三宅さんが変わったきっかけ、俺だったら嬉しい」と伝える", delta:55, result:"更紗は息を呑み、それからゆっくりと視線を上げた。「……図星だから、否定できない」珍しく素直な返事だった。"}
+            ]},
+          {
+            label:"SCENE 08 — 宵の明星、もう一つの顔", text:"数ヶ月後のある日、更紗の方から「今日、仕事早く終わったんだけど、少し付き合ってくれない?」と誘ってきた。\n連れて行かれたのは、同じ岬。ただし今回は夕暮れ時だった。\n「明けの明星は前に見せてもらったから、今日は宵の明星、見せたくて」\n更紗は少し得意げに言った。西の空に、あの朝と同じ強さで光る星が浮かんでいた。\n「あなたが急かさなかったから、私は自分のペースで少しずつ変われた気がする。今度は、私から誘えるくらいには」",
+            choices:[
+              {label:"「これからも、その顔を隣で見ていたい」と静かに伝える", delta:20, result:"更紗は俯いたまま、小さく頷いた。「……うん」それだけしか言わなかったが、声に張り詰めていたものが、少し緩んでいた。"},
+              {label:"「隣じゃなくて、俺の彼女になってほしい」と正直に伝える", delta:85, result:"更紗は少しの沈黙のあと、ふっと表情を緩めて笑った。\n「……そう来ると思ってた。だから、断る理由も用意してなかった」\n笑いながら、目には薄っすらと涙が浮かんでいた。焦らず待ってくれたことへの、静かな感謝が滲む声だった。"}
+            ],
+            final:true,
+            endingText:"派手な出来事は何もなかった。ただ、化粧っ気のない顔の奥に隠れていた更紗の硬さが、いつしか消えていた。明けの明星も宵の明星も、見上げるたび、あの朝のことを思い出させてくれる。"
+          }
+        ]
+      }
+    }
+  },
+  shizuku: {
+    name:"雫",
+    subtitle:"お淑やかな隣人。実は夜の街で指名ナンバーワンのホステス",
+    color:"#5573a8", glow:"#9df0c7", emblem:"雫", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"隣の部屋に住む神無雫とは、引っ越してきて以来、ゴミ出しの時間にすれ違う程度の付き合いだった。\n物静かで、化粧っ気もなく、いつも地味な部屋着姿。会釈だけして、すぐに部屋に引っ込んでしまう。\n「大人しい人だな」というのが、雫に対する唯一の印象だった。\nある夜、眠れずベランダに出ると、隣の部屋のベランダにも人影があった。雫だった。\n煙草を吸っていた雫は、こちらに気づくと慌てて火を消そうとした。\nその一瞬、街灯に照らされた横顔は、いつもの地味な印象とはまるで違う、作り込まれた化粧と、隙のない色気を纏っていた。\n「……見た?」\n低く、掠れた声だった。普段の物静かな雫からは想像もつかない声色に、思わず言葉を失った。",
+      choices:[
+        { label:"「見ました。……何かあったんですか」と踏み込む", delta:100, route:"A",
+          result:"雫はしばらく黙り込んだあと、諦めたように小さく笑った。\n「……もういいや。バレたなら仕方ない」\n煙を吐き出しながら、彼女は続けた。「私、夜の店で働いてるの。ここでの顔は、素の私。あっちの顔は、仕事用」" },
+        { label:"「何も見てません」と、そっと部屋に戻る", delta:75, route:"B",
+          result:"何も言わず、そっと部屋に戻った。翌日、ゴミ出しで会った雫は、いつもの地味な格好に戻っていた。\n「昨日は、その……ごめんなさい」\n消え入りそうな声だった。何も見なかったふりを続けることに決めた。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"隠さなくていい素顔",
+        epilogueText:"「あの夜、ベランダで見られてなかったら」\n数ヶ月後、雫がぽつりと言う。「私、今でも隣人としての顔と、仕事の顔を、完全に分けたまま生きてたと思う」\n「今は?」と聞くと、彼女は初めて出会った夜には見せなかった顔で笑った。\n「今は、どっちの顔も、あなたにだけは隠さなくていいって分かってる。それだけで、驚くほど楽になれた」\nお淑やかな隣人と呼ばれた横顔に、誰にも見せたことのない安心が灯っていた。",
+        events:[
+          { label:"SCENE 02 — ベランダ越しの秘密", text:"翌晩、またベランダで顔を合わせた。雫は今度は隠そうとせず、煙草を手にしたまま話しかけてきた。\n「指名ナンバーワンとか呼ばれてるけど、正直、疲れるだけなんだよね。誰にも言わないでくれる?」\n声には、隣人としての顔とは違う、素の疲労が滲んでいた。",
+            choices:[
+              {label:"「言いません」と静かに約束する", delta:10, result:"雫はほっとしたように、小さく息を吐いた。「……ありがとう」まだ完全に気は抜けていない様子だった。"},
+              {label:"「どっちの雫さんも、俺は普通に受け止めますよ」と伝える", delta:45, result:"雫は驚いた顔でこちらを見た。「……そんな風に言われたの、初めてかも」少しの沈黙のあと、彼女は小さく、けれど確かに笑った。"}
+            ]},
+          { label:"SCENE 03 — 「星でも見に行きます?」", text:"それから何度か、ベランダで言葉を交わす関係が続いた。ある晩、雫が珍しく疲れた顔で座り込んでいるのを見て、思わず声をかけた。\n「今度の休み、雪山までオーロラを見に行こうと思ってるんですけど、来ますか」\n雫は目を丸くした。\n「オーロラ?……そんなの、日本で見れるの」\n半信半疑ながらも、彼女は珍しく興味を示した。",
+            choices:[
+              {label:"「見れるかは運次第ですけど」と正直に言う", delta:15, result:"雫は「賭けみたいで、逆に面白いかも」と小さく笑った。"},
+              {label:"「雫さんの気晴らしになればと思って」と本音を伝える", delta:50, result:"雫は一瞬固まり、それから視線を逸らした。「……そういうの、慣れてないから、困る」拒む口調ではなかった。"}
+            ]},
+          { label:"SCENE 04 — 雪山への道、飾らない私服", text:"当日、待ち合わせに現れた雫は、厚手のコートに身を包み、化粧っ気のない顔だった。\n「こんな格好、お店の人には絶対見せられないな」\n車内では、店の話や隣人としての普段の話が、少しずつ混ざり合っていった。「二つの顔、両方知ってるの、多分あなただけ」",
+            choices:[
+              {label:"「秘密は守ります」と軽く返す", delta:15, result:"雫は「頼りにしてる」と、いたずらっぽく笑った。"},
+              {label:"「どっちの顔も、俺には隠さなくていいですから」と伝える", delta:55, result:"雫は小さく息を呑み、それから静かに微笑んだ。「……そういう言い方、ずるいと思う」"}
+            ]},
+          { label:"SCENE 05 — 雪原で待つ、長い夜", text:"雪山の展望台に着くと、辺りは既に真っ暗だった。オーロラが見られるかどうかは、この夜の運次第だという。\n「もし出なかったら、寒い思いしただけだね」\n雫は白い息を吐きながらも、期待を隠しきれない様子で、何度も北の空を見上げていた。",
+            choices:[
+              {label:"「出なくても、悪くない夜だと思いますよ」と伝える", delta:15, result:"雫は少し驚いた顔をしたあと、小さく笑った。「……そういうこと言うんだ」"},
+              {label:"「雫さんとなら、待つ時間も悪くないです」と本音で伝える", delta:55, result:"雫は虚をつかれたように黙り込み、それから小さく、けれど確かに頷いた。「……そういうの、困るんだけどな」"}
+            ]},
+          { label:"SCENE 06 — オーロラ、雪山の夜空", celestialId:"aurora",
+            beats:[
+              {text:"待つこと二時間、諦めかけて雫の横顔を窺った瞬間、北の空に微かな緑の揺らめきが現れた。"},
+              {text:"「……あれ、まさか」\n雫が声を上げ、まっすぐ北の空を見つめた。淡い光が、まるで生き物のようにゆっくりと形を変えていく。"},
+              {text:"……夜空の色が、静かに揺らぎ始めた。", type:"sfx"},
+              {text:"「オーロラ……嘘、本当に出た」", climax:true},
+              {text:"雫は口元を手で覆い、しばらく声も出せない様子だった。いつもの隣人としての顔でも、仕事用の顔でもない、剥き出しの驚きだった。\n「私、こんなに何かに感動したの、いつぶりだろう」"}
+            ],
+            choices:[
+              {label:"何も言わず、彼女の横顔をただ見守る", delta:15, result:"雫はしばらく夜空を見上げ続けていた。何も言わなくても、その横顔を見ているだけで十分だった。"},
+              {label:"「雫さんがそんな顔するの、初めて見ました」と伝える", delta:35, result:"雫は我に返ったように、慌てて表情を引き締めようとしたが、うまくいかず、結局照れ笑いを浮かべた。「……忘れて、今の」"},
+              {label:"「どっちの顔でもない、今の雫さんが一番魅力的です」と伝える", delta:70, result:"雫は一瞬固まり、それから消え入りそうな声で「……ずるい。そんな時に」と呟いた。目を逸らした頬が、寒さのせいだけではなく赤く染まっていた。"}
+            ]},
+          { label:"SCENE 07 — ベランダの新しい習慣", text:"雪山から帰って以来、雫はベランダで煙草を吸わなくなった。代わりに、二人でお茶を飲みながら話す時間が増えた。\n「最近、お店の同僚に『雰囲気変わった?』って聞かれるんだよね」\n雫は少し照れたように笑った。「……理由、心当たりありすぎて困る」",
+            choices:[
+              {label:"「いい変化なら、それでいいと思いますよ」と伝える", delta:15, result:"雫は嬉しそうに、けれど照れくさそうに視線を逸らした。「……そうだといいけど」"},
+              {label:"「理由、俺だったら嬉しいです」と伝える", delta:55, result:"雫は息を呑み、それからゆっくりと視線を上げた。「……図星だから、否定できない」"}
+            ]},
+          {
+            label:"SCENE 08 — もう一度、あの雪山で", text:"数ヶ月後、雫からの提案で再び同じ雪山を訪れた。星空を見上げながら、雫が静かに切り出した。\n「あの夜から、ずっと考えてたことがあるの。……二つの顔、両方知ってるあなたにだけ、ちゃんと本音を言いたいって」",
+            choices:[
+              {label:"「これからも、両方の雫さんの隣にいたい」と静かに伝える", delta:20, result:"雫は目を細めて微笑んだ。「……合格、かな」からかうような言い方の奥に、確かな安心が滲んでいた。"},
+              {label:"「隣人じゃなくて、俺の彼女になってください」と正直に伝える", delta:85, result:"雫は一瞬呆気にとられたあと、小さく吹き出した。\n「……接客業で泣かない自信あったのに、こんなところで崩れるとはね」\n笑いながら零れた涙を拭いもせず、雫は頷いた。「お淑やかな隣人なんて呼ばれてた私の、一番情けない顔。もう見られたから、開き直る」"}
+            ],
+            final:true,
+            endingText:"夜の店に出勤する前、鏡の前で化粧を仕上げる雫の手つきは、いつも通り迷いがない。ただ、鏡越しに浮かぶ表情だけは、隣人としての素顔とほとんど変わらなくなっていた。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"そっと近づく距離",
+        epilogueText:"「あなたが、何も詮索せずにいてくれたから」\n数ヶ月後、雫がぽつりと言う。「私、いつの間にか、隣人としての自分の方が本当の自分だって思えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、指名ナンバーワンなんて呼ばれるより、あなたの隣にいる自分の方が、ずっと好き」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、誰も近づけなかった距離を、確かに縮めていた。",
+        events:[
+          { label:"SCENE 02 — 何も聞かない距離感", text:"それから数日、ゴミ出しで顔を合わせても、雫は何も触れずにいてくれることに戸惑っているようだった。\n「……本当に、何も聞かないんだ」\n探るような視線だった。",
+            choices:[
+              {label:"「聞かれたくないなら、聞かない」と静かに返す", delta:10, result:"雫はしばらくこちらを見つめていたが、やがて「……そう」とだけ言って、小さく息を吐いた。"},
+              {label:"「話したくなったら、いつでも聞きますよ」と伝える", delta:40, result:"雫は驚いた顔をしたあと、俯いて小さく笑った。「……変な人だね、あなた」小さな声に、隠しきれない安心が滲んでいた。"}
+            ]},
+          { label:"SCENE 03 — 「星でも見に行きます?」", text:"それから何度か、ベランダで言葉を交わす関係が続いた。ある晩、雫が珍しく疲れた顔で座り込んでいるのを見て、思わず声をかけた。\n「今度の休み、雪山までオーロラを見に行こうと思ってるんですけど、来ますか」\n雫は目を丸くした。\n「オーロラ?……そんなの、日本で見れるの」\n半信半疑ながらも、彼女は珍しく興味を示した。",
+            choices:[
+              {label:"「見れるかは運次第ですけど」と正直に言う", delta:15, result:"雫は「賭けみたいで、逆に面白いかも」と小さく笑った。"},
+              {label:"「無理にとは言いませんけど、来てくれたら嬉しいです」と伝える", delta:50, result:"雫は視線を逸らしたまま、小さく「……考えとく」と呟いた。拒む響きはなかった。"}
+            ]},
+          { label:"SCENE 04 — 雪山への道、飾らない私服", text:"当日、待ち合わせに現れた雫は、厚手のコートに身を包み、化粧っ気のない顔だった。\n「こんな格好、お店の人には絶対見せられないな」\n車内では、店の話や隣人としての普段の話が、少しずつ混ざり合っていった。「二つの顔、両方知ってるの、多分あなただけ」",
+            choices:[
+              {label:"「秘密は守ります」と軽く返す", delta:15, result:"雫は「頼りにしてる」と、いたずらっぽく笑った。"},
+              {label:"「どっちの顔も、俺には隠さなくていいですから」と伝える", delta:55, result:"雫は小さく息を呑み、それから静かに微笑んだ。「……そういう言い方、ずるいと思う」"}
+            ]},
+          { label:"SCENE 05 — 雪原で待つ、長い夜", text:"雪山の展望台に着くと、辺りは既に真っ暗だった。オーロラが見られるかどうかは、この夜の運次第だという。\n「もし出なかったら、寒い思いしただけだね」\n雫は白い息を吐きながらも、期待を隠しきれない様子で、何度も北の空を見上げていた。",
+            choices:[
+              {label:"「出なくても、悪くない夜だと思いますよ」と伝える", delta:15, result:"雫は少し驚いた顔をしたあと、小さく笑った。「……そういうこと言うんだ」"},
+              {label:"「雫さんとなら、待つ時間も悪くないです」と本音で伝える", delta:55, result:"雫は虚をつかれたように黙り込み、それから小さく、けれど確かに頷いた。「……そういうの、困るんだけどな」"}
+            ]},
+          { label:"SCENE 06 — ふたご座流星群、雪山の夜空", celestialId:"geminids",
+            beats:[
+              {text:"待つこと二時間、隣で辛抱強く待ち続ける気配を感じていた。夏よりずっと澄んだ空気の中、星々がやけにくっきりと瞬いていた。"},
+              {text:"「……冷えるけど、綺麗だね」\n雫が白い息を吐きながら、まっすぐ夜空を見上げた。"},
+              {text:"……澄んだ夜空に、光の筋が一つ走った。", type:"sfx"},
+              {text:"一筋、また一筋。夏の流星群よりもくっきりとした尾を引きながら、光が夜空を横切っていく。", climax:true},
+              {text:"雫は口元を手で覆い、しばらく声も出せない様子だった。いつもの隣人としての顔でも、仕事用の顔でもない、剥き出しの驚きだった。\n「私、こんなに何かに感動したの、いつぶりだろう」"}
+            ],
+            choices:[
+              {label:"何も言わず、彼女の横顔をただ見守る", delta:15, result:"雫はしばらく夜空を見上げ続けていた。何も言わなくても、その横顔を見ているだけで十分だった。"},
+              {label:"「雫さんがそんな顔するの、初めて見ました」と伝える", delta:35, result:"雫は我に返ったように、慌てて表情を引き締めようとしたが、うまくいかず、結局照れ笑いを浮かべた。「……忘れて、今の」"},
+              {label:"「急がなくていい。ゆっくり、隣で見ていたいです」と伝える", delta:70, result:"雫は目に涙を滲ませながら、小さく笑った。「……そういう言い方、ずるいと思う。……嬉しいけど」"}
+            ]},
+          { label:"SCENE 07 — ベランダの新しい習慣", text:"雪山から帰って以来、雫はベランダで煙草を吸わなくなった。代わりに、二人でお茶を飲みながら話す時間が増えた。\n「最近、お店の同僚に『雰囲気変わった?』って聞かれるんだよね」\n雫は少し照れたように笑った。「……理由、心当たりありすぎて困る」",
+            choices:[
+              {label:"「いい変化なら、それでいいと思いますよ」と伝える", delta:15, result:"雫は嬉しそうに、けれど照れくさそうに視線を逸らした。「……そうだといいけど」"},
+              {label:"「理由、俺だったら嬉しいです」と伝える", delta:55, result:"雫は息を呑み、それからゆっくりと視線を上げた。「……図星だから、否定できない」"}
+            ]},
+          {
+            label:"SCENE 08 — もう一度、あの雪山で", text:"数ヶ月後、雫からの提案で再び同じ雪山を訪れた。星空を見上げながら、雫が静かに切り出した。\n「あなたが何も詮索しなかったから、私は自分のペースで、少しずつ心を開けた気がする」",
+            choices:[
+              {label:"「これからも、両方の雫さんの隣にいたい」と静かに伝える", delta:20, result:"雫は目を細めて微笑んだ。「……合格、かな」からかうような言い方の奥に、確かな安心が滲んでいた。"},
+              {label:"「隣人じゃなくて、俺の彼女になってください」と正直に伝える", delta:85, result:"雫はしばらく俯いたまま黙っていたが、やがて小さく頷いた。\n「……ありがとう、急かさないでいてくれて」\n顔を上げた時、目には涙が浮かんでいた。「そのおかげで、ちゃんと素直になれた気がする」"}
+            ],
+            final:true,
+            endingText:"夜の店に出勤する前、鏡の前で化粧を仕上げる雫の手つきは、いつも通り迷いがない。ただ、鏡越しに浮かぶ表情だけは、隣人としての素顔とほとんど変わらなくなっていた。"
+          }
+        ]
+      }
+    }
+  },
+  fuyuno: {
+    name:"冬乃",
+    subtitle:"部内で恐れられる完璧主義の女性上司",
+    color:"#5c8fac", glow:"#e8d9ff", emblem:"冬", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"係長の氷室冬乃は、部内で「氷の女係長」と呼ばれている。\nミスには一切の妥協を許さず、部下への指導は的確だが容赦がない。誰もが彼女の前では姿勢を正す。\nある日、大口取引先への提案資料で、部下である自分の重大なミスが発覚した。冬乃は青ざめた顔で資料を確認し、深夜、二人きりで取引先への謝罪対応に追われることになった。\n「今回のミス、私が事前にチェックしきれなかった責任もある」\n終電も逃した頃、対応を終えた冬乃は、いつもの冷静な声とは違う、疲れきった声でそう言った。\n「係長のせいじゃないです、俺が」\n「言い訳はいい」\n遮るように言った冬乃の目には、珍しく涙が滲んでいた。誰もいない会議室で、初めて見る彼女の弱さだった。",
+      choices:[
+        { label:"「係長も、人間なんですね」と踏み込む", delta:100, route:"A",
+          result:"冬乃は弾かれたように顔を上げた。\n「……失礼な言い方ね」\n強がった口調とは裏腹に、涙は止まらなかった。「でも、否定はできない。完璧でいなきゃって、ずっと自分に言い聞かせてきただけだから」" },
+        { label:"何も言わず、そっとハンカチを差し出す", delta:75, route:"B",
+          result:"黙ってハンカチを差し出すと、冬乃は一瞬驚いた顔をしたあと、受け取って目元を押さえた。\n「……ありがとう。今日のことは、忘れて」\nいつもの毅然とした声に戻ろうとしていたが、まだ完全には立て直せていないようだった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"仮面が外れる瞬間",
+        epilogueText:"「あの夜、涙を見られてなかったら」\n数ヶ月後、冬乃がぽつりと言う。「私、今でも『氷の女係長』を演じ続けて、それで満足したふりをしてたと思う」\n「今は?」と聞くと、彼女は初めて出会った夜には見せなかった顔で笑った。\n「今は、あなたの前でだけ、気を張らなくていいのが分かってる。それだけで、驚くほど楽になれた」\n部内で恐れられる完璧主義者と呼ばれた横顔に、誰にも見せたことのない温度が灯っていた。",
+        events:[
+          { label:"SCENE 02 — 翌朝の距離感", text:"翌朝、冬乃はいつも通りの毅然とした態度でフロアに現れた。けれど、こちらと目が合うたび、微かに視線を逸らした。\n「昨日のことは、忘れてもらえる?部下に情けないところを見せるなんて、係長失格だから」\n声は冷静だったが、目の奥には確かな不安があった。",
+            choices:[
+              {label:"「忘れます」と静かに頷く", delta:10, result:"冬乃はほっとしたように、小さく息を吐いた。「……ありがとう」まだ完全に気は抜けていない様子だった。"},
+              {label:"「情けないなんて思ってません」と本音で返す", delta:45, result:"冬乃は驚いた顔でこちらを見た。「……そんな風に言われたの、久しぶりかも」少しの沈黙のあと、彼女は小さく、けれど確かに笑った。"}
+            ]},
+          { label:"SCENE 03 — 「土星の環でも見に行く?」", text:"それから数週間、冬乃の指導はいつも通り厳しかったが、時折こちらにだけ、素の表情を見せるようになっていた。\nある晩、資料を届けに寄ると、冬乃は珍しく疲れた顔をしていた。\n「係長、たまには息抜きした方がいいですよ。屋上に望遠鏡持ち込んで、土星の環でも見ませんか」\n冬乃は怪訝な顔をしたあと、小さく笑った。\n「……係長を誘うなんて、いい度胸ね」",
+            choices:[
+              {label:"「ダメですか」と少し引く", delta:15, result:"冬乃は「……冗談よ。付き合うわ」とふっと表情を緩めた。"},
+              {label:"「係長が本気で驚く顔、見てみたいだけです」と伝える", delta:50, result:"冬乃は虚をつかれたように黙り込み、それから観念したように小さく息を吐いた。「……変なこと言うのね、あなた」"}
+            ]},
+          { label:"SCENE 04 — 屋上、望遠鏡の組み立て", text:"終業後、屋上に望遠鏡を持ち込むと、冬乃は物珍しそうに機材を眺めていた。\n「こんなの、触ったことない」\n慣れない手つきで覗き込む姿は、普段の厳しい係長の顔とはまるで違って見えた。",
+            choices:[
+              {label:"「筋、悪くないですよ」と素直に褒める", delta:15, result:"冬乃は少し誇らしげに笑った。「……初めてなんだから、当然でしょう」"},
+              {label:"手を添えて、見やすい角度に調整してあげる", delta:55, result:"冬乃の肩が、びくりと強張った。「……ちょっと、近い」小さな声でそう言いながらも、身体を離そうとはしなかった。"}
+            ]},
+          { label:"SCENE 05 — レンズの向こうの緊張", text:"望遠鏡の焦点を合わせる間、冬乃は珍しく落ち着かない様子で何度も瞬きをしていた。\n「本当に、輪っかなんて見えるの?」\n半信半疑ながらも、期待を隠しきれない声だった。",
+            choices:[
+              {label:"「見えますよ、もうすぐ」と落ち着かせる", delta:15, result:"冬乃は小さく頷き、それ以上は何も言わず、待つ気配に落ち着きを取り戻していった。"},
+              {label:"「係長がそんな風に緊張してるの、新鮮です」と伝える", delta:55, result:"冬乃は少しむっとした顔をしたあと、観念したように笑った。「……悪い?こんなの初めてなんだから」"}
+            ]},
+          { label:"SCENE 06 — 土星の環、屋上の夜", celestialId:"saturn_rings",
+            beats:[
+              {text:"接眼レンズを覗き込んだ冬乃の動きが、ぴたりと止まった。その横顔から、いつもの厳しさがふっと抜け落ちていた。"},
+              {text:"「……嘘、本当に輪っかがある」\n声が微かに震えていた。ただの光の点だと思っていた星が、望遠鏡越しには確かに環を持つ姿を見せていた。"},
+              {text:"……レンズの中に、光の輪が浮かび上がった。", type:"sfx"},
+              {text:"「こんなの、初めて見た……」", climax:true},
+              {text:"冬乃はレンズから顔を上げ、興奮を隠しきれない様子でこちらを見た。いつもの厳しい係長の顔ではない、飾り気のない、子供のような輝きが目に宿っていた。\n「私、こんなに何かに感動したの、いつぶりだろう」"}
+            ],
+            choices:[
+              {label:"何も言わず、興奮する彼女の横顔をただ見守る", delta:15, result:"冬乃はしばらく興奮冷めやらぬ様子で、何度もレンズを覗き込んでいた。何も言わなくても、その横顔を見ているだけで十分だった。"},
+              {label:"「係長がそんな顔するの、初めて見ました」と伝える", delta:35, result:"冬乃は我に返ったように、慌てて表情を引き締めようとしたが、うまくいかず、結局照れ笑いを浮かべた。「……びっくりしただけ。忘れて」"},
+              {label:"「その顔の方が、いつもよりずっと係長らしいと思います」と伝える", delta:70, result:"冬乃は一瞬固まり、それから消え入りそうな声で「……ずるい言い方」と呟いた。目を逸らした頬が、夜目にも分かるほど赤く染まっていた。"}
+            ]},
+          { label:"SCENE 07 — 部下たちの噂", text:"それ以来、冬乃の指導は変わらず厳しかったが、時折こちらに向ける表情に、以前にはない柔らかさが混じるようになった。\n「係長、最近ちょっと丸くなりました?」\n若手社員がそう漏らすのを、偶然そばで聞いた。冬乃は少し困ったように誤魔化していたが、こちらへの一瞬の視線には、隠しきれない共犯者めいた色があった。",
+            choices:[
+              {label:"「気のせいじゃないと思いますよ」と笑って返す", delta:15, result:"冬乃は睨むふりをしたあと、小さく笑った。「……余計なこと言わないの」"},
+              {label:"「丸くなった理由、俺だったら嬉しいです」と伝える", delta:55, result:"冬乃は息を呑み、それからゆっくりと視線を上げた。「……そういうこと、こんな場所で言う?」咎めるような口調とは裏腹に、拒む響きは少しもなかった。"}
+            ]},
+          {
+            label:"SCENE 08 — もう一度、あの屋上で", text:"数ヶ月後、冬乃から誘われて再び同じ屋上を訪れた。望遠鏡越しに星を見上げながら、冬乃が静かに切り出した。\n「あの夜から、ずっと考えてたことがあるの。あなたの前でだけ、気を張らなくていい自分がいる。それって、もう部下に対する感情じゃないんだと思う」",
+            choices:[
+              {label:"「これからも、その顔だけは俺にだけ見せてください」と静かに伝える", delta:20, result:"冬乃は背筋を伸ばしたまま、小さく頷いた。「……及第点、あげる」係長らしい評価口調のまま、目元だけが柔らかかった。"},
+              {label:"「部下じゃなくて、俺の彼女になってください」と正直に伝える", delta:85, result:"冬乃は背筋を伸ばしたまま、しばらく何も言わなかった。けれど、堪えきれなくなったように、ふっと視線を落とした。\n「……係長らしくない返事で悪いけど」\n声が、わずかに震えていた。「うん、って。それだけしか言えない」"}
+            ],
+            final:true,
+            endingText:"月曜朝礼、冬乃の指導は今日も一切の妥協がない。ただ、部下がミスを申告した時の第一声だけが、以前より心なしか柔らかくなっていることに、フロアの誰かがそろそろ気づき始めている。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"そっと近づく距離",
+        epilogueText:"「あなたが、いつも急かさずに待っていてくれたから」\n数ヶ月後、冬乃がぽつりと言う。「私、いつの間にか、素顔の方が楽だって思えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、『氷の女係長』なんて呼ばれるより、あなたの隣にいる自分の方が、ずっと好き」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、誰も近づけなかった距離を、確かに縮めていた。",
+        events:[
+          { label:"SCENE 02 — 何も聞かれない安心", text:"翌週、冬乃の方から声をかけてきた。\n「あの夜のこと、何も聞いてこないのね」\n探るような口調に、こちらの出方を窺っているのが伝わってきた。",
+            choices:[
+              {label:"「聞かれたくないなら、聞きません」と静かに返す", delta:10, result:"冬乃はしばらくこちらを見つめていたが、やがて「……そう」とだけ言って、小さく息を吐いた。"},
+              {label:"「無理に話さなくていいですけど、聞く準備はできてます」と伝える", delta:40, result:"冬乃は驚いた顔をしたあと、俯いて小さく笑った。「……変な言い方するのね」小さな声に、隠しきれない安心が滲んでいた。"}
+            ]},
+          { label:"SCENE 03 — 「木星の衛星でも見に行く?」", text:"それから数週間、冬乃の指導はいつも通り厳しかったが、時折こちらにだけ、素の表情を見せるようになっていた。\nある晩、資料を届けに寄ると、冬乃は珍しく疲れた顔をしていた。\n「係長、たまには息抜きした方がいいですよ。屋上に望遠鏡持ち込んで、木星の衛星でも見ませんか」\n冬乃は怪訝な顔をしたあと、小さく笑った。\n「……係長を誘うなんて、いい度胸ね」",
+            choices:[
+              {label:"「ダメですか」と少し引く", delta:15, result:"冬乃は「……冗談よ。付き合うわ」とふっと表情を緩めた。"},
+              {label:"「無理にとは言いませんが、来てくれたら嬉しいです」と伝える", delta:50, result:"冬乃は視線を逸らしたまま、小さく「……分かったわ」と呟いた。拒む響きはなかった。"}
+            ]},
+          { label:"SCENE 04 — 屋上、望遠鏡の組み立て", text:"終業後、屋上に望遠鏡を持ち込むと、冬乃は物珍しそうに機材を眺めていた。\n「こんなの、触ったことない」\n慣れない手つきで覗き込む姿は、普段の厳しい係長の顔とはまるで違って見えた。",
+            choices:[
+              {label:"「筋、悪くないですよ」と素直に褒める", delta:15, result:"冬乃は少し誇らしげに笑った。「……初めてなんだから、当然でしょう」"},
+              {label:"手を添えて、見やすい角度に調整してあげる", delta:55, result:"冬乃の肩が、びくりと強張った。「……ちょっと、近い」小さな声でそう言いながらも、身体を離そうとはしなかった。"}
+            ]},
+          { label:"SCENE 05 — レンズの向こうの緊張", text:"望遠鏡の焦点を合わせる間、冬乃は珍しく落ち着かない様子で何度も瞬きをしていた。\n「本当に、衛星なんて見えるの?」\n半信半疑ながらも、期待を隠しきれない声だった。",
+            choices:[
+              {label:"「見えますよ、もうすぐ」と落ち着かせる", delta:15, result:"冬乃は小さく頷き、それ以上は何も言わず、待つ気配に落ち着きを取り戻していった。"},
+              {label:"「係長がそんな風に緊張してるの、新鮮です」と伝える", delta:55, result:"冬乃は少しむっとした顔をしたあと、観念したように笑った。「……悪い?こんなの初めてなんだから」"}
+            ]},
+          { label:"SCENE 06 — 木星とガリレオ衛星、屋上の夜", celestialId:"jupiter_moons",
+            beats:[
+              {text:"接眼レンズを覗き込む冬乃の背中を、少し離れたところで静かに見守っていた。その動きが、ぴたりと止まった。"},
+              {text:"「……嘘、点が四つ並んでる」\n声が微かに震えていた。ただの明るい星だと思っていたものが、望遠鏡越しには小さな衛星を四つ引き連れた姿を見せていた。"},
+              {text:"……レンズの中に、小さな光の点が四つ並んだ。", type:"sfx"},
+              {text:"「こんなの、初めて見た……」", climax:true},
+              {text:"冬乃はレンズから顔を上げ、興奮を隠しきれない様子でこちらを見た。いつもの厳しい係長の顔ではない、飾り気のない、子供のような輝きが目に宿っていた。\n「私、こんなに何かに感動したの、いつぶりだろう」"}
+            ],
+            choices:[
+              {label:"何も言わず、興奮する彼女の横顔をただ見守る", delta:15, result:"冬乃はしばらく興奮冷めやらぬ様子で、何度もレンズを覗き込んでいた。何も言わなくても、その横顔を見ているだけで十分だった。"},
+              {label:"「係長がそんな顔するの、初めて見ました」と伝える", delta:35, result:"冬乃は我に返ったように、慌てて表情を引き締めようとしたが、うまくいかず、結局照れ笑いを浮かべた。「……びっくりしただけ。忘れて」"},
+              {label:"「急がなくていい。ゆっくり、隣で見ていたいです」と伝える", delta:70, result:"冬乃は目に涙を滲ませながら、小さく笑った。「……そういう言い方、ずるいと思う。……嬉しいけど」"}
+            ]},
+          { label:"SCENE 07 — 部下たちの噂", text:"それ以来、冬乃の指導は変わらず厳しかったが、時折こちらに向ける表情に、以前にはない柔らかさが混じるようになった。\n「係長、最近ちょっと丸くなりました?」\n若手社員がそう漏らすのを、偶然そばで聞いた。冬乃は少し困ったように誤魔化していたが、こちらへの一瞬の視線には、隠しきれない共犯者めいた色があった。",
+            choices:[
+              {label:"「気のせいじゃないと思いますよ」と笑って返す", delta:15, result:"冬乃は睨むふりをしたあと、小さく笑った。「……余計なこと言わないの」"},
+              {label:"「丸くなった理由、俺だったら嬉しいです」と伝える", delta:55, result:"冬乃は息を呑み、それからゆっくりと視線を上げた。「……そういうこと、こんな場所で言う?」咎めるような口調とは裏腹に、拒む響きは少しもなかった。"}
+            ]},
+          {
+            label:"SCENE 08 — もう一度、あの屋上で", text:"数ヶ月後、冬乃から誘われて再び同じ屋上を訪れた。望遠鏡越しに星を見上げながら、冬乃が静かに切り出した。\n「あなたが急かさなかったから、私は自分のペースで、少しずつ肩の力を抜けた気がする」",
+            choices:[
+              {label:"「これからも、その顔だけは俺にだけ見せてください」と静かに伝える", delta:20, result:"冬乃は背筋を伸ばしたまま、小さく頷いた。「……及第点、あげる」係長らしい評価口調のまま、目元だけが柔らかかった。"},
+              {label:"「部下じゃなくて、俺の彼女になってください」と正直に伝える", delta:85, result:"冬乃は一瞬、驚いた顔をしたあと、珍しく声を立てて笑った。笑いながら、目には涙が滲んでいた。\n「……こんな風に笑いながら泣くの、何年ぶりだろう」\n「氷の女係長」と呼ばれた人の、一番人間らしい顔だった。"}
+            ],
+            final:true,
+            endingText:"月曜朝礼、冬乃の指導は今日も一切の妥協がない。ただ、部下がミスを申告した時の第一声だけが、以前より心なしか柔らかくなっていることに、フロアの誰かがそろそろ気づき始めている。"
+          }
+        ]
+      }
+    }
+  },
+  akane: {
+    name:"茜",
+    subtitle:"同期入社、負けず嫌いのライバル",
+    color:"#b5605a", glow:"#ff8a65", emblem:"茜", tier:2,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"同期入社の高梨茜とは、入社以来何かと張り合う関係だった。\n営業成績、資格試験の点数、上司からの評価。どちらからともなく始まった競争は、五年経った今も続いている。\n「今月の数字、私の方が上だったけど」\n「来月は分からないだろ」\nそんなやり取りが、もう日常になっていた。\n同期の飲み会の帰り道、二人だけ同じ方向になった。\n「今日の部長の評価、ちょっと納得いかなかったんだけど」\n珍しく愚痴っぽい茜に、意外な一面を見た気がした。\n「お前でも、納得いかないことあるんだな」\nからかうつもりで言うと、茜は足を止め、こちらを睨んだ。\n「……馬鹿にしてる?」\nその声は、いつもの強気な調子とは違う、少し弱々しいものだった。",
+      choices:[
+        { label:"「してない。ちゃんと聞くから話せよ」と踏み込む", delta:100, route:"A",
+          result:"茜は驚いた顔をしたあと、視線を逸らした。\n「……珍しいこと言うじゃん」\n強がった口調とは裏腹に、足を止めたまま、ぽつぽつと話し始めた。同期にすら見せたことのない、素の弱さだった。" },
+        { label:"「そうか」とだけ言って、話を変える", delta:75, route:"B",
+          result:"茜は一瞬何か言いたげな顔をしたが、結局何も言わず、そのまま話題を変えた。「……別に、大したことじゃないから」\nいつもの強気な声に戻ろうとしていたが、隠しきれない何かが残っていた。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"対等から本音へ",
+        epilogueText:"「あの夜、話を聞いてくれてなかったら」\n数ヶ月後、茜がぽつりと言う。「私、今でもあんたに対等でいることばっかり気にして、弱いとこ絶対見せなかったと思う」\n「今は?」と聞くと、彼女は初めて出会った頃には見せなかった顔で笑った。\n「今は、負けたくない相手だったはずなのに、一番弱いとこ見せられる相手になってる。おかしいよね」\n同期のライバルと呼ばれた横顔に、誰にも見せたことのない柔らかさが灯っていた。",
+        events:[
+          { label:"SCENE 02 — 珍しい弱音", text:"あの夜以来、茜は時折、業務の愚痴をこぼすようになっていた。\n「本当は、あんたに負けたくないって気持ち、ずっと空回りしてる気がする」\n珍しく弱気な言葉だった。",
+            choices:[
+              {label:"「今更弱気になるなよ」とからかう", delta:10, result:"茜はむっとした顔をしたが、すぐに笑った。「……うるさいな。分かってるよ」"},
+              {label:"「空回りしてても、お前のそういうとこ嫌いじゃない」と伝える", delta:45, result:"茜は驚いた顔でこちらを見た。「……そんな風に言われたの、初めてかも」少しの沈黙のあと、彼女は小さく、けれど確かに笑った。"}
+            ]},
+          { label:"SCENE 03 — 「皆既月食、見に行くか」", text:"数週間後、社内報で皆既月食の話題を見かけた。\n「今度の皆既月食、高山まで行けばよく見えるらしいぞ」\n茜は意外そうな顔をした。\n「星なんかに興味あるの?意外」\n「たまにはいいだろ」と返すと、彼女は少し考えたあと、いつもの負けず嫌いな口調で言った。\n「……付き合ってやってもいいけど」",
+            choices:[
+              {label:"「じゃあ決まりだな」と軽く流す", delta:15, result:"茜は「その言い方、腹立つ」と唇を尖らせながらも、機嫌よさそうについてきた。"},
+              {label:"「珍しく素直じゃないな、それ」とからかう", delta:50, result:"茜はむっとしたが、すぐに開き直ったように笑った。「うるさい。行くって言ってるんだからいいでしょ」"}
+            ]},
+          { label:"SCENE 04 — 高山への道、無口な横顔", text:"高山への道のり、茜は珍しく静かだった。いつもの張り合うような会話がなく、ただ窓の外を見つめていた。\n「今日は喧嘩売ってこないんだな」\n「……たまにはいいでしょ、こういうのも」\n短い返事の中に、いつもとは違う柔らかさがあった。",
+            choices:[
+              {label:"何も言わず、彼女の沈黙にただ付き合う", delta:15, result:"茜は窓の外を見つめたまま、小さく息を吐いた。何も言われないことが、今の彼女には心地よいようだった。"},
+              {label:"「今日くらい、休戦にするか」と提案する", delta:55, result:"茜はこちらを見て、少し驚いた顔をしたあと、ふっと表情を緩めた。「……休戦、悪くないかも」"}
+            ]},
+          { label:"SCENE 05 — 山頂、月が欠け始める", text:"展望台に着くと、既に月食は始まっていた。丸い月に、少しずつ影がかかっていく。\n「これ、地球の影なんだよな」\n茜は膝を抱えて座り込み、月を見上げていた。「なんか、こういう静かな時間、珍しく落ち着く」",
+            choices:[
+              {label:"「珍しいな、お前がそんなこと言うの」とからかう", delta:15, result:"茜は「うるさい」と言いながらも、機嫌よさそうに月を見上げ続けた。"},
+              {label:"「茜がそうやって落ち着いてる顔、悪くないと思う」と伝える", delta:55, result:"茜は驚いた顔をしたあと、小さく笑った。「……そんな風に見られてるの、知らなかった」"}
+            ]},
+          { label:"SCENE 06 — 皆既月食、赤銅色の月", celestialId:"total_lunar_eclipse",
+            beats:[
+              {text:"月が完全に地球の影に入る瞬間、思わず茜の横顔を見た。月は消えるのではなく、不思議な赤銅色に染まった。"},
+              {text:"「……赤い。月って、こんな色になるんだ」\n茜が声を潜め、まっすぐ月を見つめた。"},
+              {text:"……月の輪郭が、静かに赤く染まっていく。", type:"sfx"},
+              {text:"「血の月、なんて呼ばれるのも分かる気がする……」", climax:true},
+              {text:"茜は月を見つめたまま、静かに呟いた。\n「私、ずっとあんたに負けたくなくて、意地張ってばっかりだった。でも今、そんなのどうでもよくなってる自分がいる」\nその横顔には、いつもの強気な表情ではない、素直な感動があった。"}
+            ],
+            choices:[
+              {label:"「今更対等とか気にしなくていいだろ」と軽く返す", delta:15, result:"茜は「そうかもね」と、珍しく素直に頷いた。"},
+              {label:"「対等な相手じゃなくて、特別な相手になりたい」と伝える", delta:35, result:"茜は息を呑み、しばらく黙り込んだあと、小さく「……ずるい言い方」と呟いた。"},
+              {label:"「負けず嫌いなお前も、今のその顔も、両方好きだ」と正直に伝える", delta:70, result:"茜は目に涙を滲ませながら、小さく笑った。「……そんなこと言われたの、初めて。ちゃんと、覚えとく」"}
+            ]},
+          { label:"SCENE 07 — 職場の空気", text:"それ以来、茜との張り合いは変わらず続いていたが、時折見せる表情に、以前にはない柔らかさが混じるようになった。\n「あんたたち、最近喧嘩の仕方が違う気がする」\n同期の一人がそう漏らすのを、偶然そばで聞いた。茜は少し照れくさそうに誤魔化していたが、こちらへの一瞬の視線には、隠しきれない親密さがあった。",
+            choices:[
+              {label:"「気のせいだろ」と笑って返す", delta:15, result:"茜は「だよね」と、どこか嬉しそうに頷いた。"},
+              {label:"「変わった理由、俺だったら嬉しいけどな」と伝える", delta:55, result:"茜は息を呑み、それからゆっくりと視線を上げた。「……そういうこと、こんな場所で言う?」咎めるような口調とは裏腹に、拒む響きは少しもなかった。"}
+            ]},
+          {
+            label:"SCENE 08 — もう一度、あの山で", text:"数ヶ月後、茜からの提案で再び同じ高山を訪れた。月を見上げながら、茜が静かに切り出した。\n「あの夜から、ずっと考えてたことがある。あんたに負けたくないって気持ちが、いつの間にか、隣にいたいって気持ちに変わってた」",
+            choices:[
+              {label:"「対等な相棒として、これからも隣にいよう」と伝える", delta:20, result:"茜はふん、と鼻を鳴らして頷いた。「……まあ、それくらいで手を打ってあげる」憎まれ口の割に、口元は緩んでいた。"},
+              {label:"「相棒じゃなくて、俺の彼女になってほしい」と正直に伝える", delta:85, result:"茜は一瞬固まったあと、慌てて顔を背けた。\n「は、はぁ?何それ、急に」\n強気な言葉とは裏腹に、声は上ずっていた。しばらくして、小さく啜り泣くような声が漏れた。「……ずるい。今更そんなの、断れるわけないでしょ」"}
+            ],
+            final:true,
+            endingText:"月次会議で今日も数字を競い合う茜の声は、相変わらず一歩も譲らない。ただ、負けた時の悔しがり方に、以前にはなかった余裕めいた笑みが混ざるようになっていた。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"そっと近づく距離",
+        epilogueText:"「あんたが、無理に踏み込んでこなかったから」\n数ヶ月後、茜がぽつりと言う。「私、いつの間にか、素直な自分の方が楽だって思えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、負けたくないライバルなんかより、あんたの隣にいる自分の方が、ずっと好き」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、誰も近づけなかった距離を、確かに縮めていた。",
+        events:[
+          { label:"SCENE 02 — 探るような一言", text:"翌週、茜の方から声をかけてきた。\n「この前のこと、何も聞いてこないじゃん」\n探るような口調に、こちらの出方を窺っているのが伝わってきた。",
+            choices:[
+              {label:"「聞かれたくないなら、聞かない」と静かに返す", delta:10, result:"茜はしばらくこちらを見つめていたが、やがて「……そう」とだけ言って、小さく息を吐いた。"},
+              {label:"「話したくなったら、いつでも聞くから」と伝える", delta:40, result:"茜は驚いた顔をしたあと、俯いて小さく笑った。「……変なやつ」小さな声に、隠しきれない安心が滲んでいた。"}
+            ]},
+          { label:"SCENE 03 — 「すばる、見に行くか」", text:"数週間後、社内報ですばる(プレアデス星団)の話題を見かけた。\n「今度の休み、高山まで行けばすばるがよく見えるらしいぞ」\n茜は意外そうな顔をした。\n「星なんかに興味あるの?意外」\n「たまにはいいだろ」と返すと、彼女は少し考えたあと、いつもの負けず嫌いな口調で言った。\n「……付き合ってやってもいいけど」",
+            choices:[
+              {label:"「じゃあ決まりだな」と軽く流す", delta:15, result:"茜は「その言い方、腹立つ」と唇を尖らせながらも、機嫌よさそうについてきた。"},
+              {label:"「無理にとは言わないけど、来てくれたら嬉しい」と伝える", delta:50, result:"茜は視線を逸らしたまま、小さく「……分かった」と呟いた。拒む響きはなかった。"}
+            ]},
+          { label:"SCENE 04 — 高山への道、無口な横顔", text:"高山への道のり、茜は珍しく静かだった。いつもの張り合うような会話がなく、ただ窓の外を見つめていた。\n「今日は喧嘩売ってこないんだな」\n「……たまにはいいでしょ、こういうのも」\n短い返事の中に、いつもとは違う柔らかさがあった。",
+            choices:[
+              {label:"何も言わず、彼女の沈黙にただ付き合う", delta:15, result:"茜は窓の外を見つめたまま、小さく息を吐いた。何も言われないことが、今の彼女には心地よいようだった。"},
+              {label:"「今日くらい、休戦にするか」と提案する", delta:55, result:"茜はこちらを見て、少し驚いた顔をしたあと、ふっと表情を緩めた。「……休戦、悪くないかも」"}
+            ]},
+          { label:"SCENE 05 — 山頂、星を待つ", text:"展望台に着くと、辺りはすっかり暗くなっていた。空気が澄んでいて、いつもより多くの星が見える。\n「あれがすばるって聞いたことあるけど、どれだろ」\n茜は膝を抱えて座り込み、空を見上げていた。「なんか、こういう静かな時間、珍しく落ち着く」",
+            choices:[
+              {label:"「珍しいな、お前がそんなこと言うの」とからかう", delta:15, result:"茜は「うるさい」と言いながらも、機嫌よさそうに月を見上げ続けた。"},
+              {label:"「茜がそうやって落ち着いてる顔、悪くないと思う」と伝える", delta:55, result:"茜は驚いた顔をしたあと、小さく笑った。「……そんな風に見られてるの、知らなかった」"}
+            ]},
+          { label:"SCENE 06 — すばる、山頂の夜空", celestialId:"pleiades",
+            beats:[
+              {text:"目が暗さに慣れてくると、隣で息を潜めていた茜の視線の先に、小さな星の塊が浮かび上がってきた。"},
+              {text:"「……あれかな、すばるって」\n茜が声を潜め、まっすぐその一角を見つめた。肉眼でも、いくつかの星が寄り添っているのが分かる。"},
+              {text:"……星の塊が、静かに輪郭を持ち始めた。", type:"sfx"},
+              {text:"「思ったより、たくさん星があるんだ……」", climax:true},
+              {text:"茜は星を見つめたまま、静かに呟いた。\n「私、ずっとあんたに負けたくなくて、意地張ってばっかりだった。でも今、そんなのどうでもよくなってる自分がいる」\nその横顔には、いつもの強気な表情ではない、素直な感動があった。"}
+            ],
+            choices:[
+              {label:"「今更対等とか気にしなくていいだろ」と軽く返す", delta:15, result:"茜は「そうかもね」と、珍しく素直に頷いた。"},
+              {label:"「対等な相手じゃなくて、特別な相手になりたい」と伝える", delta:35, result:"茜は息を呑み、しばらく黙り込んだあと、小さく「……ずるい言い方」と呟いた。"},
+              {label:"「急がなくていい。ゆっくり、隣で見ていたい」と伝える", delta:70, result:"茜は目に涙を滲ませながら、小さく笑った。「……そういう言い方、ずるいと思う。……嬉しいけど」"}
+            ]},
+          { label:"SCENE 07 — 職場の空気", text:"それ以来、茜との張り合いは変わらず続いていたが、時折見せる表情に、以前にはない柔らかさが混じるようになった。\n「あんたたち、最近喧嘩の仕方が違う気がする」\n同期の一人がそう漏らすのを、偶然そばで聞いた。茜は少し照れくさそうに誤魔化していたが、こちらへの一瞬の視線には、隠しきれない親密さがあった。",
+            choices:[
+              {label:"「気のせいだろ」と笑って返す", delta:15, result:"茜は「だよね」と、どこか嬉しそうに頷いた。"},
+              {label:"「変わった理由、俺だったら嬉しいけどな」と伝える", delta:55, result:"茜は息を呑み、それからゆっくりと視線を上げた。「……そういうこと、こんな場所で言う?」咎めるような口調とは裏腹に、拒む響きは少しもなかった。"}
+            ]},
+          {
+            label:"SCENE 08 — もう一度、あの山で", text:"数ヶ月後、茜からの提案で再び同じ高山を訪れた。月を見上げながら、茜が静かに切り出した。\n「あんたが無理に踏み込んでこなかったから、私は自分のペースで、少しずつ意地を手放せた気がする」",
+            choices:[
+              {label:"「対等な相棒として、これからも隣にいよう」と伝える", delta:20, result:"茜はふん、と鼻を鳴らして頷いた。「……まあ、それくらいで手を打ってあげる」憎まれ口の割に、口元は緩んでいた。"},
+              {label:"「相棒じゃなくて、俺の彼女になってほしい」と正直に伝える", delta:85, result:"茜はしばらく黙っていたが、やがて観念したように小さく笑った。\n「……負けたわ、完全に」\n笑いながら、目尻には涙が浮かんでいた。「あんたが急かさなかったから、ちゃんと自分の気持ちと向き合えた。だから、もう意地張らない」"}
+            ],
+            final:true,
+            endingText:"月次会議で今日も数字を競い合う茜の声は、相変わらず一歩も譲らない。ただ、負けた時の悔しがり方に、以前にはなかった余裕めいた笑みが混ざるようになっていた。"
+          }
+        ]
+      }
+    }
+  },
+  shiori: {
+    name:"汐里",
+    subtitle:"慢性的な睡眠不足の看護師。会えるのはいつも一瞬だけ",
+    color:"#5a8a99", glow:"#cdeeff", emblem:"汐", tier:3,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"夜勤明けの朝、いつものコンビニで、看護師服のまま棚を眺めている女性と何度も鉢合わせるようになった。\n名札には「汐里」とある。目の下には濃い隈があり、いつも眠そうな目をこすりながら、栄養ドリンクとおにぎりを選んでいる。\nある朝、レジで会計を待つ間、彼女がふらりとよろけた。\n「大丈夫ですか」\n咄嗟に支えると、汐里は驚いた顔で目を覚ましたように瞬きをした。\n「……あ、ごめんなさい。三日連続の夜勤明けで、立ったまま寝てたかも」\n力なく笑うその顔には、隠しきれない疲労が滲んでいた。\n「今日、久しぶりの休みなんです。……でも、家に帰ったらそのまま寝るだけなんですよね」",
+      choices:[
+        { label:"「寝る前に、少しだけ付き合ってもらえませんか」と誘う", delta:100, route:"A",
+          result:"汐里はきょとんとした顔をしたあと、小さく笑った。\n「……変わった人ですね、初対面で誘うなんて」\n迷うそぶりを見せながらも、その目には、隠しきれない好奇心があった。「まあ、いいですよ。どうせ今日は何も予定ないので」" },
+        { label:"「無理しないで、ゆっくり休んでください」と気遣う", delta:75, route:"B",
+          result:"汐里は少し寂しそうに、けれど納得したように頷いた。\n「……そうですね、ありがとうございます」\n立ち去りかけて、ふと足を止め、振り返った。「また、ここで会えたら」" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"一晩だけの、消えものの時間",
+        epilogueText:"あの朝から、汐里の非番の日には、時々一緒に星を見に行くようになった。\n「次、いつ休めるか分からないけど」\n汐里はそう前置きしながらも、必ず連絡をくれる。「消えものの時間だからこそ、大事にしたいって思えるんです。あなたと一緒だと、特に」\n激務の合間の、ほんの数時間。それでも、二人にとっては十分すぎる時間だった。",
+        events:[
+          { label:"SCENE 02 — 湖畔まで、仮眠代わりのドライブ", text:"「本当は今から寝るはずだったのに」\n汐里は助手席で笑いながら、それでも眠そうに窓に頭をもたせかけていた。\n「湖畔まで行けば、水面に星が映るくらい綺麗らしいですよ」\n「そんなの、寝不足でも見る価値ありそうですね」\n半分眠りながらも、汐里の声には確かな期待が滲んでいた。",
+            choices:[
+              {label:"「寝てていいですよ、着いたら起こします」と気遣う", delta:15, result:"汐里は「……ありがとうございます」と呟き、そのまま静かに目を閉じた。信頼しきった寝顔だった。"},
+              {label:"「今日一日くらい、寝不足でも付き合ってください」と少し我儘を言う", delta:55, result:"汐里は目を開け、驚いた顔をしたあと、小さく笑った。「……そんな風に言われたの、久しぶりです」"}
+            ]},
+          { label:"SCENE 04 — 無風の湖畔、鏡のような水面", celestialId:"lake_reflection",
+            beats:[
+              {text:"湖畔に着くと、風は完全に止み、水面は鏡のように静まり返っていた。隣を見ると、汐里はいつになくしっかりした目で、その水面を見つめていた。"},
+              {text:"「……これ、空が二つあるみたい」\n汐里が声を漏らし、水面を見つめた。無数の星が、そのまま水面にも映り込んでいる。"},
+              {text:"……水面が、鏡のように静まり返った。", type:"sfx"},
+              {text:"不意に、一筋の光が空を横切り、そのまま水面にも同じ軌跡を描いた。", climax:true},
+              {text:"「流れ星まで、映るんだ……」\n汐里は目を見開いたまま、しばらく声も出せない様子だった。いつもの眠そうな目ではない、はっきりとした輝きがそこにあった。\n「私、こんなにゆっくり何かを見たの、いつぶりだろう」"}
+            ],
+            choices:[
+              {label:"何も言わず、彼女の横顔をただ見守る", delta:15, result:"汐里はしばらく水面を見つめ続けていた。何も言わなくても、その横顔を見ているだけで十分だった。"},
+              {label:"「汐里さんがそんな顔するの、初めて見ました」と伝える", delta:35, result:"汐里は照れたように笑った。「……珍しく、ちゃんと起きてられたので」"},
+              {label:"「今日みたいな一瞬を、これからも一緒に探したいです」と伝える", delta:70, result:"汐里は目に涙を滲ませながら、小さく頷いた。「……そんなこと言われたの、初めてです。次の休み、必ず連絡します」"}
+            ]},
+          {
+            label:"SCENE 05 — 車に戻る前の一言", text:"湖畔からの帰り道、汐里は珍しくしっかりした足取りで歩いていた。\n「今日、寝るはずだった時間、全部これに使っちゃいましたね」\n笑いながら、彼女は続けた。\n「でも、後悔なんて全然ない。むしろ、こんな一瞬のために、また頑張れる気がします」",
+            choices:[
+              {label:"「また、次の休みも付き合います」と約束する", delta:20, result:"汐里は嬉しそうに頷いた。「……約束ですよ」穏やかな声だった。"},
+              {label:"「友達じゃなくて、俺の彼女になってくれませんか」と正直に伝える", delta:85, result:"汐里は目を丸くしたあと、堪えきれずに噴き出すように笑った。\n「……こんな寝不足の顔で告白されるの、初めてです。でも、まっすぐ言われると、断る理由がないですね」\n笑いながら、目には涙も滲んでいた。"}
+            ],
+            final:true,
+            endingText:"派手な出来事は何もなかった。ただ、いつも眠そうにしていた汐里の目に、確かな輝きが増えていった。消えものの時間だからこそ、二人はそれを何より大切にした。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"また会えたら、の積み重ね",
+        epilogueText:"「あの日、無理に誘われなかったから」\n汐里がぽつりと言う。「私、自分のペースで、少しずつ会いたいって思えるようになった気がします」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、また会えたらって思ってた気持ちが、ちゃんと会いたいに変わってます」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、確かな距離を縮めていた。",
+        events:[
+          { label:"SCENE 02 — 二度目の偶然", text:"それから数週間後、また同じコンビニで汐里と会った。\n「また会いましたね」\n汐里は少し驚いた顔をしたあと、嬉しそうに笑った。「……偶然にしては、出来すぎな気がします」",
+            choices:[
+              {label:"「偶然にしとくのも、悪くないですね」と流す", delta:10, result:"汐里は「そうですね」と小さく笑い、それ以上は何も言わなかった。"},
+              {label:"「今度は、偶然じゃなく誘ってもいいですか」と踏み込む", delta:40, result:"汐里は驚いた顔をしたあと、俯いて小さく笑った。「……はい。待ってます」小さな声に、隠しきれない喜びが滲んでいた。"}
+            ]},
+          { label:"SCENE 03 — 湖畔まで、仮眠代わりのドライブ", text:"「本当は今から寝るはずだったのに」\n汐里は助手席で笑いながら、それでも眠そうに窓に頭をもたせかけていた。\n「湖畔まで行けば、水面に星が映るくらい綺麗らしいですよ」\n「そんなの、寝不足でも見る価値ありそうですね」\n半分眠りながらも、汐里の声には確かな期待が滲んでいた。",
+            choices:[
+              {label:"「寝てていいですよ、着いたら起こします」と気遣う", delta:15, result:"汐里は「……ありがとうございます」と呟き、そのまま静かに目を閉じた。信頼しきった寝顔だった。"},
+              {label:"「無理せず、ゆっくり向かいましょう」と気遣う", delta:50, result:"汐里は小さく頷き、安心したように目を細めた。「……そういう気遣い、嬉しいです」"}
+            ]},
+          { label:"SCENE 04 — 無風の湖畔、鏡のような水面", celestialId:"lake_reflection",
+            beats:[
+              {text:"湖畔に着くと、風は完全に止み、水面は鏡のように静まり返っていた。並んで座る汐里の呼吸が、少しずつ落ち着いていくのが分かった。"},
+              {text:"「……これ、空が二つあるみたい」\n汐里が声を漏らし、水面を見つめた。無数の星が、そのまま水面にも映り込んでいる。"},
+              {text:"……水面が、鏡のように静まり返った。", type:"sfx"},
+              {text:"不意に、一筋の光が空を横切り、そのまま水面にも同じ軌跡を描いた。", climax:true},
+              {text:"「流れ星まで、映るんだ……」\n汐里は目を見開いたまま、しばらく声も出せない様子だった。いつもの眠そうな目ではない、はっきりとした輝きがそこにあった。\n「私、こんなにゆっくり何かを見たの、いつぶりだろう」"}
+            ],
+            choices:[
+              {label:"何も言わず、彼女の横顔をただ見守る", delta:15, result:"汐里はしばらく水面を見つめ続けていた。何も言わなくても、その横顔を見ているだけで十分だった。"},
+              {label:"「急がなくていい。ゆっくり、また一緒に見たいです」と伝える", delta:55, result:"汐里は目に涙を滲ませながら、小さく笑った。「……そういう言い方、ずるいと思います。……嬉しいけど」"}
+            ]},
+          {
+            label:"SCENE 05 — 車に戻る前の一言", text:"湖畔からの帰り道、汐里は珍しくしっかりした足取りで歩いていた。\n「今日、寝るはずだった時間、全部これに使っちゃいましたね」\n笑いながら、彼女は続けた。\n「でも、後悔なんて全然ない。あなたが急かさなかったから、私は自分のペースで、ちゃんと気持ちに気づけた気がします」",
+            choices:[
+              {label:"「また、次の休みも付き合います」と約束する", delta:20, result:"汐里は嬉しそうに頷いた。「……約束ですよ」穏やかな声だった。"},
+              {label:"「友達じゃなくて、俺の彼女になってくれませんか」と正直に伝える", delta:85, result:"汐里は足を止め、しばらく黙り込んだあと、目に涙を浮かべながら小さく頷いた。\n「……急かされなかったから、ちゃんと自分の気持ちに気づけました。……はい、よろしくお願いします」\n震える声が、そのまま答えだった。"}
+            ],
+            final:true,
+            endingText:"派手な出来事は何もなかった。ただ、いつも眠そうにしていた汐里の目に、確かな輝きが増えていった。消えものの時間だからこそ、二人はそれを何より大切にした。"
+          }
+        ]
+      }
+    }
+  },
+  mei: {
+    name:"芽依",
+    subtitle:"取引先の担当者。会う頻度は低いが、なぜか記憶に残る",
+    color:"#a8823f", glow:"#ffdca8", emblem:"芽", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"取引先の担当者、芽依とは、四半期に一度の定例打ち合わせでしか顔を合わせない。\n毎回、丁寧で隙のない対応。世間話もほとんどせず、用件が終わればすぐに帰っていく。\n「事務的な人だな」というのが、正直な印象だった。\nある日、地方の取引先を訪れた際、芽依が案内役として同行することになった。打ち合わせは予定より早く終わり、次の新幹線までは数時間、ぽっかりと予定が空いた。\n「……こんなに時間が余ったの、初めてです」\n芽依は珍しく戸惑った様子で呟いた。\n「せっかくだし、少し歩きませんか。この辺り、神社があるみたいですし」\n誘うと、芽依は意外そうな顔をしたあと、小さく頷いた。\n「……いいんですか、仕事以外でご一緒するの」",
+      choices:[
+        { label:"「たまにはいいでしょう」と気軽に誘う", delta:100, route:"A",
+          result:"芽依は少し驚いた顔をしたあと、微笑んだ。\n「……そう言っていただけるなら」\nいつもの事務的な口調とは違う、柔らかい声だった。" },
+        { label:"「無理にとは言いません」と一歩引く", delta:75, route:"B",
+          result:"芽依は少し考え込んだあと、自分から言った。\n「……行きます。せっかくの機会ですし」\nいつもの隙のない態度の奥に、微かな好奇心が見えた。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"低頻度の縁、途切れない縁",
+        epilogueText:"「あの日、時間が空いてなかったら」\n数ヶ月後、四半期に一度の打ち合わせのあと、芽依がぽつりと言う。「私たち、多分ずっと事務的な関係のままだったと思います」\n「今は?」と聞くと、彼女は初めて出会った頃には見せなかった顔で笑った。\n「今は、次に会えるまでの数ヶ月が、ただの空白じゃなくて、ちゃんと『次を楽しみにする時間』になってます」\n会う頻度は低いままだったが、途切れることのない縁が、確かにそこにあった。",
+        events:[
+          { label:"SCENE 02 — 神社までの道", text:"神社までの道すがら、芽依は少しずつ、業務以外の言葉も口にするようになった。\n「実は、こういう土地に来ると、つい史跡とか調べちゃうんです。仕事とは関係ないんですけど」\n意外な一面だった。",
+            choices:[
+              {label:"「そういうの、いいですね」と素直に興味を示す", delta:10, result:"芽依は嬉しそうに、けれど少し照れくさそうに続けた。「……あまり人に話したことなかったです」"},
+              {label:"「事務的な芽依さんとは違う一面、もっと知りたいです」と伝える", delta:45, result:"芽依は驚いた顔でこちらを見た。「……そんな風に言われたの、初めてです」少しの沈黙のあと、彼女は小さく、けれど確かに笑った。"}
+            ]},
+          { label:"SCENE 03 — 「今度、中秋の名月がありますね」", text:"境内を歩いていると、芽依がふと足を止めた。\n「そういえば、今度、中秋の名月ですね。ここ、観月の行事で有名みたいです」\n「その頃、また来る予定でも?」と聞くと、芽依は少し考えたあと言った。\n「……次の打ち合わせ、ちょうどその時期なんです。もし、よければ」",
+            choices:[
+              {label:"「じゃあ、予定合わせましょう」と応じる", delta:15, result:"芽依はほっとしたように微笑んだ。「……よかった。断られたらどうしようかと」"},
+              {label:"「芽依さんから誘ってもらえるの、意外でした」と伝える", delta:50, result:"芽依は少し赤くなった顔を隠すように俯いた。「……珍しく、自分から言ってみました」"}
+            ]},
+          { label:"SCENE 04 — 数ヶ月後、再びの土地", text:"数ヶ月後、約束通り同じ土地を再訪した。芽依は変わらず丁寧な対応だったが、打ち合わせが終わるなり、少し表情を緩めた。\n「今日のこと、ずっと楽しみにしてました」\n事務的な口調の奥に、隠しきれない期待が滲んでいた。",
+            choices:[
+              {label:"「俺もです」と素直に返す", delta:15, result:"芽依は小さく笑った。「……そう言ってもらえると、安心します」"},
+              {label:"「次に会えるまでの期間、意外と長く感じました」と伝える", delta:55, result:"芽依は虚をつかれたように黙り込み、それから小さく頷いた。「……私も、実は同じです」"}
+            ]},
+          { label:"SCENE 05 — 境内、月が昇るのを待つ", text:"境内に着くと、既に何人かが月見の準備をしていた。芽依はすすきを買い、少し照れくさそうに手渡してきた。\n「形だけでも、揃えたくて」\nいつもの事務的な態度からは想像もつかない、可愛らしい一面だった。",
+            choices:[
+              {label:"「似合いますね、こういうの」と素直に褒める", delta:15, result:"芽依は照れたように笑った。「……からかわないでください」"},
+              {label:"「芽依さんのこういう顔、もっと見たいです」と伝える", delta:55, result:"芽依は息を呑み、それから静かに微笑んだ。「……そういう言い方、ずるいと思います」"}
+            ]},
+          { label:"SCENE 06 — 中秋の名月、境内の夜", celestialId:"harvest_moon",
+            beats:[
+              {text:"日が沈み、隣に座る芽依の横顔がだんだんはっきり見えてくる頃、東の空から、大きな満月が静かに昇ってきた。"},
+              {text:"「……綺麗」\n芽依が小さく声を漏らし、まっすぐ月を見上げた。境内の灯りに照らされたその横顔は、いつもの事務的な表情とはまるで違っていた。"},
+              {text:"……雲の切れ間から、光が差し込んだ。", type:"sfx"},
+              {text:"「毎年同じ行事のはずなのに、なんだか今年は特別な気がします」", climax:true},
+              {text:"芽依は月を見つめたまま、静かに続けた。\n「四半期に一度しか会えないのに、こんな風に特別な時間を共有できるの、不思議です」\nその声には、いつもの事務的な硬さがなかった。"}
+            ],
+            choices:[
+              {label:"「特別に感じるの、月のせいだけじゃないかもですね」と伝える", delta:15, result:"芽依は照れたように顔を背けた。「……そういうの、今言います?」拒む響きはなかった。"},
+              {label:"「次に会える日を、ちゃんと楽しみに待ちたいです」と伝える", delta:35, result:"芽依は一瞬固まり、それから消え入りそうな声で「……私も、そうします」と呟いた。"},
+              {label:"「会う頻度は低くても、途切れない関係でいたいです」と正直に伝える", delta:70, result:"芽依は目に涙を滲ませながら、小さく笑った。「……そんなこと言われたの、初めてです。ちゃんと、覚えておきます」"}
+            ]},
+          { label:"SCENE 07 — 次の打ち合わせ", text:"それから数ヶ月後、いつもの定例打ち合わせで再会した。芽依はいつも通り丁寧な対応だったが、資料を渡す時の一瞬の視線に、以前にはない親密さがあった。\n「今日の打ち合わせが終わったら、少し時間ありますか」\n事務的な声色の奥に、確かな期待が滲んでいた。",
+            choices:[
+              {label:"「もちろんです」と笑って返す", delta:15, result:"芽依は安堵したように微笑んだ。「……よかった」小さな声に、確かな喜びが滲んでいた。"},
+              {label:"「毎回この時間を、一番楽しみにしてます」と伝える", delta:55, result:"芽依は息を呑み、それからゆっくりと視線を上げた。「……そういうこと、打ち合わせの後で言うんですね」咎めるような口調とは裏腹に、拒む響きは少しもなかった。"}
+            ]},
+          {
+            label:"SCENE 08 — もう一度、あの境内で", text:"一年後、再び同じ中秋の名月の夜、同じ境内を訪れた。月を見上げながら、芽依が静かに切り出した。\n「あの夜から、ずっと考えてたことがあります。会う頻度は変わらないのに、あなたの存在の大きさだけは、どんどん変わっていくんです」",
+            choices:[
+              {label:"「これからも、この頻度で会い続けよう」と静かに伝える", delta:20, result:"芽依は小さく頷いた。「……うん、それでいいです」穏やかな声だった。"},
+              {label:"「取引先の担当者じゃなくて、俺の彼女になってください」と正直に伝える", delta:85, result:"芽依は息を呑んだまま、しばらく言葉を失っていた。事務的な受け答えが、初めて機能しなくなったようだった。\n「……ずるいです、不意打ちなんて」\n目に涙を浮かべながら、それでも小さく頷いた。「事務的な人間だと思われてた私が、こんなに動揺するなんて、思いませんでした」"}
+            ],
+            final:true,
+            endingText:"四半期に一度の定例打ち合わせで、資料を捌く芽依の対応は今日も一分の隙もない。ただ、資料を渡す時の一瞬の視線だけは、事務的という言葉では説明がつかなくなっていた。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"距離を保ったまま近づく縁",
+        epilogueText:"「あなたが、無理に踏み込んでこなかったから」\n数ヶ月後、芽依がぽつりと言う。「私、いつの間にか、自分のペースで距離を縮められるようになってました」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、事務的な関係なんかより、あなたと過ごす時間の方が、ずっと大事です」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、確かな距離を縮めていた。",
+        events:[
+          { label:"SCENE 02 — 神社までの道", text:"神社までの道すがら、芽依は少しずつ、業務以外の言葉も口にするようになった。\n「実は、こういう土地に来ると、つい史跡とか調べちゃうんです。仕事とは関係ないんですけど」\n意外な一面だった。",
+            choices:[
+              {label:"「そういうの、いいですね」と素直に興味を示す", delta:10, result:"芽依は嬉しそうに、けれど少し照れくさそうに続けた。「……あまり人に話したことなかったです」"},
+              {label:"何も急かさず、彼女のペースで話を聞く", delta:40, result:"芽依はゆっくりと言葉を続け、やがて小さく笑った。「……こんなに話したの、久しぶりです」"}
+            ]},
+          { label:"SCENE 03 — 「今度、中秋の名月がありますね」", text:"境内を歩いていると、芽依がふと足を止めた。\n「そういえば、今度、中秋の名月ですね。ここ、観月の行事で有名みたいです」\n「その頃、また来る予定でも?」と聞くと、芽依は少し考えたあと言った。\n「……次の打ち合わせ、ちょうどその時期なんです。もし、よければ」",
+            choices:[
+              {label:"「じゃあ、予定合わせましょう」と応じる", delta:15, result:"芽依はほっとしたように微笑んだ。「……よかった。断られたらどうしようかと」"},
+              {label:"「無理にとは言いませんが、来てくれたら嬉しいです」と伝える", delta:50, result:"芽依は視線を逸らしたまま、小さく「……分かりました」と呟いた。拒む響きはなかった。"}
+            ]},
+          { label:"SCENE 04 — 数ヶ月後、再びの土地", text:"数ヶ月後、約束通り同じ土地を再訪した。芽依は変わらず丁寧な対応だったが、打ち合わせが終わるなり、少し表情を緩めた。\n「今日のこと、ずっと楽しみにしてました」\n事務的な口調の奥に、隠しきれない期待が滲んでいた。",
+            choices:[
+              {label:"「俺もです」と素直に返す", delta:15, result:"芽依は小さく笑った。「……そう言ってもらえると、安心します」"},
+              {label:"急かさず、彼女のペースに合わせて歩く", delta:55, result:"芽依はそれが心地よかったのか、少しずつ肩の力を抜いていった。"}
+            ]},
+          { label:"SCENE 05 — 境内、暗くなるのを待つ", text:"境内に着くと、辺りはまだ薄明るかった。芽依はレジャーシートを広げ、少し照れくさそうに手招きした。\n「新月の夜を選んだの、実は本気なんです」\nいつもの事務的な態度からは想像もつかない、几帳面で可愛らしい一面だった。",
+            choices:[
+              {label:"「似合いますね、こういうの」と素直に褒める", delta:15, result:"芽依は照れたように笑った。「……からかわないでください」"},
+              {label:"「芽依さんのこういう顔、もっと見たいです」と伝える", delta:55, result:"芽依は息を呑み、それから静かに微笑んだ。「……そういう言い方、ずるいと思います」"}
+            ]},
+          { label:"SCENE 06 — 天の川、境内の夜", celestialId:"amanogawa",
+            beats:[
+              {text:"日が沈み、言葉少なに並んで待っていた頭上に、少しずつ星が増えていった。"},
+              {text:"「……見えてきました」\n芽依が小さく声を漏らし、まっすぐ頭上を見上げた。境内の暗さに目が慣れてくると、白く煙るような帯が浮かび上がってきた。"},
+              {text:"……頭上に、白い帯がくっきりと浮かび上がった。", type:"sfx"},
+              {text:"「四半期に一度しか会えないのに、こんな風に特別な時間を共有できるの、不思議です」", climax:true},
+              {text:"芽依は天の川を見つめたまま、静かに続けた。\n「新月の夜を選んだの、これが見たかったからなんです」\nその声には、いつもの事務的な硬さがなかった。"}
+            ],
+            choices:[
+              {label:"「特別に感じるの、天の川のせいだけじゃないかもですね」と伝える", delta:15, result:"芽依は照れたように顔を背けた。「……そういうの、今言います?」拒む響きはなかった。"},
+              {label:"「次に会える日を、ちゃんと楽しみに待ちたいです」と伝える", delta:35, result:"芽依は一瞬固まり、それから消え入りそうな声で「……私も、そうします」と呟いた。"},
+              {label:"「急がなくていい。この頻度のまま、ゆっくり近づきたいです」と伝える", delta:70, result:"芽依は目に涙を滲ませながら、小さく笑った。「……そういう言い方、ずるいと思います。……嬉しいですけど」"}
+            ]},
+          { label:"SCENE 07 — 次の打ち合わせ", text:"それから数ヶ月後、いつもの定例打ち合わせで再会した。芽依はいつも通り丁寧な対応だったが、資料を渡す時の一瞬の視線に、以前にはない親密さがあった。\n「今日の打ち合わせが終わったら、少し時間ありますか」\n事務的な声色の奥に、確かな期待が滲んでいた。",
+            choices:[
+              {label:"「もちろんです」と笑って返す", delta:15, result:"芽依は安堵したように微笑んだ。「……よかった」小さな声に、確かな喜びが滲んでいた。"},
+              {label:"「毎回この時間を、一番楽しみにしてます」と伝える", delta:55, result:"芽依は息を呑み、それからゆっくりと視線を上げた。「……そういうこと、打ち合わせの後で言うんですね」咎めるような口調とは裏腹に、拒む響きは少しもなかった。"}
+            ]},
+          {
+            label:"SCENE 08 — もう一度、あの境内で", text:"一年後、再び同じ中秋の名月の夜、同じ境内を訪れた。月を見上げながら、芽依が静かに切り出した。\n「あなたが急かさなかったから、私は自分のペースで、少しずつ気持ちに気づけました」",
+            choices:[
+              {label:"「これからも、この頻度で会い続けよう」と静かに伝える", delta:20, result:"芽依は小さく頷いた。「……うん、それでいいです」穏やかな声だった。"},
+              {label:"「取引先の担当者じゃなくて、俺の彼女になってください」と正直に伝える", delta:85, result:"芽依はしばらく静かに微笑んでいたが、やがて目を伏せた。\n「……待っていてくれて、ありがとうございます」\n顔を上げた時には、目に涙が浮かんでいた。「事務的な関係だと思っていたのに、いつの間にか、一番大切な時間になってました」"}
+            ],
+            final:true,
+            endingText:"四半期に一度の定例打ち合わせで、資料を捌く芽依の対応は今日も一分の隙もない。ただ、資料を渡す時の一瞬の視線だけは、事務的という言葉では説明がつかなくなっていた。"
+          }
+        ]
+      }
+    }
+  },
+  nagi: {
+    name:"凪",
+    subtitle:"出張先で一度きり出会った、名前も知らなかった人",
+    color:"#3f6f8f", glow:"#ffd700", emblem:"凪", tier:4,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"地方出張の帰り、最終の電車を逃した。\n泊まる当てもなく途方に暮れていると、駅前の小さな食堂の明かりが目に入った。\n「もう閉店なんですけど……まあ、いいですよ。座ってください」\n店を切り盛りしていたのは、凪と名乗る女性だった。愛想がいいわけではないが、突き放すこともない、不思議な距離感の人だった。\n出す当てのないまま、賄いの残りものを分けてもらいながら、他愛のない話を続けた。\n「この町、何もないでしょう。でも、ここで生まれてここで育って、多分ここで死ぬんだろうなって思ってます」\n淡々とした口調だったが、そこには諦めではない、確かな覚悟があった。\n「また来るんですか、この町」\n凪の問いに、答えはすぐには出なかった。仕事の都合上、次にいつ来られるかも分からない。もしかしたら、二度と来ないかもしれない。",
+      choices:[
+        { label:"連絡先を交換する", delta:100, route:"A",
+          result:"凪は少し驚いた顔をしたあと、小さく笑った。\n「……律儀ですね。まあ、いいですけど」\nスマホを取り出しながらも、その目には、隠しきれない期待のようなものが見えた。「本当に、連絡くれるとは思ってませんけど」" },
+        { label:"「また来られたら」とだけ言い、連絡先は交換しない", delta:75, route:"B",
+          result:"凪は少し寂しそうに、けれど納得したように微笑んだ。\n「……その方が、この町らしいかもしれないですね。一期一会、みたいな」\n店を出る間際、彼女は静かに付け足した。「でも、本当にまた来てくれたら、覚えてますから」" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"繋いだ縁の先で",
+        epilogueText:"皆既日食から数年後、この町には再びあの日と同じ光景が広がることはない。太陽と月と地球が再びこの土地で一直線に並ぶのは、何十年も先のことだという。\n「でも、それでいいんです」\n凪は隣で笑う。「一生に一度の景色を、たった一人じゃなくて、あなたと見られた。それだけで、もう十分すぎるくらい」\n出張先で一度きり出会うはずだった人が、今は隣にいる。それこそが、この物語で一番の奇跡だった。",
+        events:[
+          { label:"SCENE 02 — 途切れなかった連絡", text:"あの夜から、時折メッセージのやり取りが続いた。\n「今日、店の常連さんが珍しく大漁だったって、魚くれました」\n他愛のない日常の報告だったが、それが途切れないことが、何より嬉しかった。\nある日、凪から連絡が来た。\n「数年後、この町、皆既日食の帯に入るらしいです。ニュースでやってました」",
+            choices:[
+              {label:"「その時、また会えたら」と伝える", delta:15, result:"凪は「……気が早いですね」と笑いながらも、既読のまま少し時間を置いて返信した。「でも、私も同じこと考えてました」"},
+              {label:"「その日は必ず会いに行く」と約束する", delta:55, result:"しばらく既読がつかなかった。数分後、短い返信が届いた。「……約束、忘れないでくださいね」いつもより素っ気ない文面の奥に、隠しきれない照れが見えた。"}
+            ]},
+          { label:"SCENE 03 — 数ヶ月に一度の再会", text:"それから、休みを見つけては、その町を訪れるようになった。\n「また来たんですか、物好きですね」\n凪は毎回そう言いながらも、店の一番いい席を用意してくれた。訪れるたび、二人の会話は少しずつ増えていった。",
+            choices:[
+              {label:"「物好きで悪かったな」と笑って返す", delta:15, result:"凪は「悪いなんて言ってません」と、珍しく素直な笑顔を見せた。"},
+              {label:"「凪に会いに来てるだけだ」と正直に伝える", delta:55, result:"凪は虚をつかれたように黙り込み、それから視線を逸らした。「……そういうの、簡単に言わないでください」拒む口調ではなかった。"}
+            ]},
+          { label:"SCENE 04 — 一年が過ぎて", text:"最初の出会いから一年が過ぎた。凪との関係は、恋人と呼ぶには曖昧なまま、それでも確かに深まっていた。\n「皆既日食まで、あと少しですね」\n凪はカレンダーを指差しながら、どこか落ち着かない様子で言った。「本当に、その日また会えるんでしょうか」",
+            choices:[
+              {label:"「約束しただろ」と静かに返す", delta:15, result:"凪は小さく頷いた。「……そうでした」安堵したような声だった。"},
+              {label:"「もう、この町に会いに来る理由は凪しかない」と伝える", delta:55, result:"凪は息を呑み、それから静かに微笑んだ。「……そういう言い方、ずるいと思います」"}
+            ]},
+          { label:"SCENE 05 — 当日、町中が空を見上げる", text:"皆既日食の当日、町は普段の何倍もの人で賑わっていた。凪は仕事を休み、専用の日食グラスを手に、待ち合わせ場所に現れた。\n「こんなに人が集まるの、この町では初めて見ました」\n興奮と緊張が入り混じった声だった。",
+            choices:[
+              {label:"「特等席、探そうか」と提案する", delta:15, result:"凪は小さく笑い、「……知ってます、いい場所」と、先に立って歩き出した。"},
+              {label:"「今日、隣にいられて嬉しい」と伝える", delta:55, result:"凪は照れたように視線を逸らした。「……気が早いですよ、まだ何も起きてないのに」"}
+            ]},
+          { label:"SCENE 06 — 皆既日食、数分間の夜", celestialId:"total_solar_eclipse",
+            beats:[
+              {text:"太陽が少しずつ月に隠されていく。隣に立つ凪の横顔を見ると、辺りの明るさが、まるで日没のように静かに落ちていく。"},
+              {text:"「……昼なのに、夜みたい」\n凪が声を潜め、日食グラス越しに空を見上げた。気温まで下がったように感じられた。"},
+              {text:"……太陽の光が、音もなく細くなっていく。", type:"sfx"},
+              {text:"太陽が完全に隠れた瞬間、辺りは夜のように暗くなり、太陽の縁だけが白く輝くコロナとして浮かび上がった。", climax:true},
+              {text:"「……嘘、綺麗……!」\n凪は日食グラスを外し、肉眼でその一瞬だけの光景を見つめた。頬には涙が伝っていた。\n「私、生まれてからずっとこの町にいたのに、こんな景色、初めて見ました。……あなたと一緒に見られて、本当によかった」"}
+            ],
+            choices:[
+              {label:"何も言わず、その手を握る", delta:15, result:"凪はこちらの手をしっかりと握り返し、言葉もなく空を見上げ続けた。それだけで、十分すぎる時間だった。"},
+              {label:"「一生に一度の景色を、凪と見られてよかった」と伝える", delta:35, result:"凪は涙を拭いながら、小さく頷いた。「……私も、同じこと思ってました」"},
+              {label:"「一生に一度の景色より、凪との縁の方が、俺にとっては奇跡だ」と伝える", delta:70, result:"凪は大きく目を見開いたあと、声を殺して泣き出した。「……そんなこと言われたの、初めてです。……本当に、初めてです」コロナの光が、二人を静かに照らしていた。"}
+            ]},
+          { label:"SCENE 07 — 影が過ぎ去った後", text:"数分後、太陽が再び姿を現し、町には少しずつ普段の明るさが戻ってきた。周りの人々の歓声が上がる中、凪はまだ空を見上げたまま動かずにいた。\n「終わっちゃいましたね」\n寂しさと満足が入り混じった声だった。",
+            choices:[
+              {label:"「また、いつか二人で何か見に行こう」と提案する", delta:15, result:"凪は小さく頷いた。「……はい、探しておきます、次の景色」"},
+              {label:"「次は、一期一会じゃなくて、当たり前に隣にいたい」と伝える", delta:55, result:"凪は息を呑み、それからゆっくりと視線を上げた。「……そういうこと、こんな場所で言うんですね」咎めるような口調とは裏腹に、拒む響きは少しもなかった。"}
+            ]},
+          {
+            label:"SCENE 08 — 町を出る前に", text:"日食から数日後、凪の店で、二人きりの時間があった。\n「あの日、迷わず連絡先を交換してくれて、良かったと思ってます」\n凪は珍しく緊張した面持ちで切り出した。\n「一度きりのはずだった出会いが、今はこんなに大きな存在になってます。……これって、もう一期一会なんかじゃないですよね」",
+            choices:[
+              {label:"「一期一会じゃない。これからも、ずっと会いに来る」と静かに伝える", delta:20, result:"凪は小さく頷いた。「……うん、それでいいです」穏やかな声だった。"},
+              {label:"「もう会いに来るんじゃなくて、一緒に暮らす方法を考えたい。俺の彼女になってくれ」と正直に伝える", delta:85, result:"凪は一瞬息を呑んだあと、堪えきれずに笑い出した。笑いながら、涙も一緒にこぼれていた。\n「……律儀に連絡先交換した甲斐、ちゃんとありましたね」\n「一期一会のはずだった出会いが、まさかここまで続くなんて。……はい、よろしくお願いします」震える声の中に、隠しきれない喜びがあった。"}
+            ],
+            final:true,
+            endingText:"出張先で一度きり出会うはずだった人と、二度、三度と会ううちに、いつしか一期一会は、途切れない縁に変わっていた。何十年に一度の皆既日食よりも、この出会いの方が、二人にとってはずっと稀有な奇跡だった。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"運命に任せた、その先で",
+        epilogueText:"連絡先も交換しないまま別れたあの夜から、この日を待ち続けた。\n「本当に、また来てくれるとは思ってませんでした」\n皆既日食の日、再会した凪は、涙ぐみながらそう言った。「一期一会だと思ってたのに、あなたはちゃんと約束を覚えてた」\n出張先で一度きり出会うはずだった人が、今は隣にいる。それこそが、この物語で一番の奇跡だった。",
+        events:[
+          { label:"SCENE 02 — 忘れられない町", text:"連絡先を交換しなかったことを、何度も後悔した。それでも、あの町のことは、なぜか忘れられなかった。\n数ヶ月後、たまたま見たニュースで、あの町が数年後、皆既日食の帯に入ることを知った。",
+            choices:[
+              {label:"「その日、また行ってみよう」と決意する", delta:15, result:"漠然とした決意だった。それでも、あの一夜のことを思い出すたび、確信は強くなっていった。"},
+              {label:"「凪が覚えていてくれるかは分からないが」と不安を抱えつつ決める", delta:45, result:"不安はあったが、それでも足を運ばずにはいられなかった。あの一夜の記憶だけが、確かな道標だった。"}
+            ]},
+          { label:"SCENE 03 — 一年後、再びの町", text:"一年後、休みを取って、あの町を再訪した。あの食堂は、変わらずそこにあった。\n扉を開けると、凪がこちらを見て、大きく目を見開いた。\n「……嘘。本当に来た」\n声が震えていた。",
+            choices:[
+              {label:"「言っただろ、また来るって」と静かに笑う", delta:15, result:"凪は目に涙を滲ませながら、小さく笑った。「……本当に、律儀な人ですね」"},
+              {label:"「凪のこと、ずっと忘れられなかった」と正直に伝える", delta:55, result:"凪は言葉を失ったように立ち尽くしたあと、消え入りそうな声で「……私も、です」と呟いた。"}
+            ]},
+          { label:"SCENE 04 — 取り戻す時間", text:"それから、休みを見つけては、その町を訪れるようになった。\n「今度こそ、連絡先交換しませんか」\n凪が少し照れくさそうに切り出した。「一期一会は、もう十分堪能したので」",
+            choices:[
+              {label:"「賛成だ」と笑ってスマホを取り出す", delta:15, result:"凪は嬉しそうに笑い、「……今度こそ、途切れないですね」と呟いた。"},
+              {label:"「凪がそう言ってくれるの、待ってた」と伝える", delta:55, result:"凪は驚いた顔をしたあと、俯いて小さく笑った。「……そういうの、もっと早く言ってください」"}
+            ]},
+          { label:"SCENE 05 — 皆既日食が近づく", text:"最初の再会から一年が過ぎ、いよいよ皆既日食の日が近づいてきた。\n「本当に、この日が来るんですね」\n凪はカレンダーを指差しながら、どこか感慨深そうに言った。「一期一会のはずだった出会いが、まさかここまで続くなんて」",
+            choices:[
+              {label:"「凪のおかげだ」と伝える", delta:15, result:"凪は照れたように視線を逸らした。「……そんなことないです」"},
+              {label:"「これからも、ずっと途切れさせない」と約束する", delta:55, result:"凪は目を潤ませながら、小さく頷いた。「……約束、ちゃんと覚えておきます」"}
+            ]},
+          { label:"SCENE 06 — 皆既日食、数分間の夜", celestialId:"total_solar_eclipse",
+            beats:[
+              {text:"太陽が少しずつ月に隠されていく。凪と並んで見上げる空の下、辺りの明るさが、まるで日没のように静かに落ちていく。"},
+              {text:"「……昼なのに、夜みたい」\n凪が声を潜め、日食グラス越しに空を見上げた。気温まで下がったように感じられた。"},
+              {text:"……太陽の光が、音もなく細くなっていく。", type:"sfx"},
+              {text:"太陽が完全に隠れた瞬間、辺りは夜のように暗くなり、太陽の縁だけが白く輝くコロナとして浮かび上がった。", climax:true},
+              {text:"「……嘘、綺麗……!」\n凪は日食グラスを外し、肉眼でその一瞬だけの光景を見つめた。頬には涙が伝っていた。\n「私、生まれてからずっとこの町にいたのに、こんな景色、初めて見ました。……あなたと一緒に見られて、本当によかった」"}
+            ],
+            choices:[
+              {label:"何も言わず、その手を握る", delta:15, result:"凪はこちらの手をしっかりと握り返し、言葉もなく空を見上げ続けた。それだけで、十分すぎる時間だった。"},
+              {label:"「一期一会だったはずの縁を、ここまで繋いでくれてありがとう」と伝える", delta:35, result:"凪は涙を拭いながら、小さく頷いた。「……私こそ、忘れずに来てくれて、ありがとうございます」"},
+              {label:"「一生に一度の景色より、凪との縁の方が、俺にとっては奇跡だ」と伝える", delta:70, result:"凪は大きく目を見開いたあと、声を殺して泣き出した。「……そんなこと言われたの、初めてです。……本当に、初めてです」コロナの光が、二人を静かに照らしていた。"}
+            ]},
+          { label:"SCENE 07 — 影が過ぎ去った後", text:"数分後、太陽が再び姿を現し、町には少しずつ普段の明るさが戻ってきた。周りの人々の歓声が上がる中、凪はまだ空を見上げたまま動かずにいた。\n「終わっちゃいましたね」\n寂しさと満足が入り混じった声だった。",
+            choices:[
+              {label:"「また、いつか二人で何か見に行こう」と提案する", delta:15, result:"凪は小さく頷いた。「……はい、探しておきます、次の景色」"},
+              {label:"「次は、一期一会じゃなくて、当たり前に隣にいたい」と伝える", delta:55, result:"凪は息を呑み、それからゆっくりと視線を上げた。「……そういうこと、こんな場所で言うんですね」咎めるような口調とは裏腹に、拒む響きは少しもなかった。"}
+            ]},
+          {
+            label:"SCENE 08 — 町を出る前に", text:"日食から数日後、凪の店で、二人きりの時間があった。\n「あの日、連絡先も交換しないまま別れたのに、あなたは本当に来てくれました」\n凪は珍しく緊張した面持ちで切り出した。\n「一期一会のはずだった出会いが、今はこんなに大きな存在になってます。……これって、もう一期一会なんかじゃないですよね」",
+            choices:[
+              {label:"「一期一会じゃない。これからも、ずっと会いに来る」と静かに伝える", delta:20, result:"凪は小さく頷いた。「……うん、それでいいです」穏やかな声だった。"},
+              {label:"「もう会いに来るんじゃなくて、一緒に暮らす方法を考えたい。俺の彼女になってくれ」と正直に伝える", delta:85, result:"凪は長い沈黙のあと、静かに目を伏せた。\n「……信じて待ってて、よかった」\n顔を上げた時には、涙が頬を伝っていた。「一期一会だったはずの出会いが、まさかここまで続くなんて。……はい、よろしくお願いします」震える声が、そのまま答えだった。"}
+            ],
+            final:true,
+            endingText:"出張先で一度きり出会うはずだった人と、二度、三度と会ううちに、いつしか一期一会は、途切れない縁に変わっていた。何十年に一度の皆既日食よりも、この出会いの方が、二人にとってはずっと稀有な奇跡だった。"
+          }
+        ]
+      }
+    }
+  }
+};
+
+let state = { charKey:null, affection:{}, route:{}, clearedRoutes:{}, characterTotal:{}, eventIndex:0, awaitingContinue:false, discoveredCelestials:{}, beatIndex:0, inBeatMode:false };
+Object.keys(DATA).forEach(k => { state.affection[k] = 0; state.route[k] = null; state.clearedRoutes[k] = {}; state.characterTotal[k] = 0; });
+
+/* --- セーブデータ(localStorage) --- */
+/* SAVE_KEYは作品ごとに必ず変える(同じキーだと別作品のセーブと衝突する) */
+const SAVE_KEY = 'takane_no_hoshi_save_v1';
+/* --- 画面/シーン切り替え時のスクロール位置リセット ---
+   シーンが長い状態で下の方のボタンを押すと、DOMは差し替わってもスクロール位置(ピクセル)だけ
+   維持されてしまい、新しい本文が途中から表示されているように見えるバグへの対策。
+   アニメーションは smooth ではなく auto(瞬時)にする: 通常のページ遷移に近い自然な体感になる。 */
+function scrollToTop(){
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+}
+
+function loadSave(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    if(data.clearedRoutes){
+      Object.keys(data.clearedRoutes).forEach(k=>{ if(state.clearedRoutes[k]){ Object.assign(state.clearedRoutes[k], data.clearedRoutes[k]); } });
+    }
+    if(data.characterTotal){
+      Object.keys(data.characterTotal).forEach(k=>{ if(k in state.characterTotal){ state.characterTotal[k] = data.characterTotal[k]; } });
+    }
+    if(data.discoveredCelestials){
+      Object.assign(state.discoveredCelestials, data.discoveredCelestials);
+    }
+  }catch(e){ console.warn('セーブデータの読み込みに失敗しました', e); }
+}
+function saveGame(){
+  try{
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
+      clearedRoutes: state.clearedRoutes,
+      characterTotal: state.characterTotal,
+      discoveredCelestials: state.discoveredCelestials
+    }));
+  }catch(e){ console.warn('セーブデータの保存に失敗しました', e); }
+}
+function resetSave(){
+  try{ localStorage.removeItem(SAVE_KEY); }catch(e){}
+  Object.keys(DATA).forEach(k => { state.clearedRoutes[k] = {}; state.characterTotal[k] = 0; });
+  state.discoveredCelestials = {};
+  renderSelect();
+}
+loadSave();
+
+/* --- 解放システム(累計幸福度によるキャラ解放) ---
+   tier:1 は常時解放。tier:2以上はここで指定した総幸福度に到達すると解放される。
+   キャラを増やしたら、そのキャラのtierに応じて閾値を調整すること。 */
+const TIER_THRESHOLDS = { 2: 2200, 3: 4200, 4: 6500 };
+function grandTotal(){
+  return Object.values(state.characterTotal).reduce((a,b)=>a+b, 0);
+}
+function isCharUnlocked(key){
+  const t = DATA[key].tier || 1;
+  if(t <= 1) return true;
+  const need = TIER_THRESHOLDS[t];
+  return need === undefined ? true : grandTotal() >= need;
+}
+
+/* --- 特別編(全員読了で解放されるエピローグ集) --- */
+function clearedRouteCount(){
+  return Object.keys(DATA).reduce((n,k)=>{
+    const c = state.clearedRoutes[k] || {};
+    return n + (c.A ? 1 : 0) + (c.B ? 1 : 0);
+  }, 0);
+}
+function isFinaleUnlocked(){
+  return Object.keys(DATA).every(k=>{
+    const c = state.clearedRoutes[k] || {};
+    return c.A && c.B;
+  });
+}
+/* FINALE_VIGNETTES: DATAのキーと同じキー名で、1人につき1パラグラフの短い後日談を書く。
+   キャラを追加・削除したら、ここも必ず同期させること。 */
+const FINALE_VIGNETTES = {
+  reina:"オフィスですれ違う玲奈は、今日も社内で「完璧な東さん」と呼ばれている。ただ、その微笑みにはもう誰も寄せ付けない硬さはなく、時折こちらにだけ向ける、少し崩れた素顔の笑い方が残っていた。",
+  himari:"デスクで後輩たちに囲まれる陽葵は、今日も社内一モテる後輩として評判だ。ただ、誰にでも振りまいていた愛想は減り、その分、こちらにだけ向ける言葉と視線が増えていた。",
+  sarasa:"経理部の窓際で伝票を処理する更紗は、今日も物静かに仕事をしている。ただ、化粧っ気のなかった顔には自然な彩りが戻り、ふとした瞬間に見せる笑顔から、昔の硬さは消えていた。",
+  shizuku:"ベランダで夜風にあたる雫は、今日も静かにお茶を飲んでいる。仕事用の顔と素顔、二つを使い分けていたはずの彼女から、いつしかその境界の硬さが消えていた。",
+  fuyuno:"フロアに響く冬乃の指導は、今日も相変わらず厳しい。ただ、「氷の女係長」と呼ばれていた表情には、部下の誰も知らない柔らかさが、確かに増えていた。",
+  akane:"隣のデスクで数字を競い合う茜は、今日も張り合ってくる。ただ、その負けず嫌いな笑顔の奥に、以前にはなかった安心しきった温度が滲むようになっていた。",
+  shiori:"夜勤明けのコンビニで栄養ドリンクを選ぶ汐里は、今日も眠そうな目をこすっている。ただ、消えものの時間を大切にすることを知った彼女の目には、以前より確かな輝きが増えていた。",
+  mei:"四半期に一度の打ち合わせに現れる芽依は、今日も丁寧で隙のない対応をしている。ただ、資料を渡す一瞬の視線には、事務的な関係だけでは説明のつかない親密さが宿っていた。",
+  nagi:"地方の小さな食堂を切り盛りする凪は、今日も静かにこの町で暮らしている。出張先で一度きり出会うはずだった人が、いつしか途切れない縁になったことを、誰よりも彼女自身が驚いていた。"
+  /* さらに追加する場合は、ここにも同じキー名で1パラグラフずつ追加すること */
+  /* 今後キャラを追加したら、ここにも同じキー名で1パラグラフずつ追加すること */
+};
+function showFinale(){
+  scrollToTop();
+  document.getElementById('screen-select').classList.add('hidden');
+  document.getElementById('screen-game').classList.add('hidden');
+  document.getElementById('screen-ending').classList.add('hidden');
+  document.getElementById('screen-finale').classList.remove('hidden');
+  document.getElementById('finale-intro').textContent =
+    '誰もが遠巻きに眺めるだけだった「高嶺の花」たち。ゼミやサークル、偶然の再会をきっかけに少しずつ素顔を見せてくれた、それからの日々。';
+  const box = document.getElementById('finale-vignettes');
+  box.innerHTML = '';
+  Object.keys(DATA).forEach(key=>{
+    const c = DATA[key];
+    const card = document.createElement('div');
+    card.className = 'finale-card';
+    card.style.setProperty('--vc', c.color);
+    card.innerHTML = `<div class="fname">${c.name}</div><div class="ftext">${FINALE_VIGNETTES[key] || ''}</div>`;
+    box.appendChild(card);
+  });
+  document.getElementById('finale-closing').textContent =
+    '誰も踏み込めなかった距離に、確かな温度が灯った。\nキャンパスのどこかで、今日も少しずつ、素顔が増えていく。\n\nThank you for playing.';
+  playBgm('finale_bgm.mp3');
+}
+
+function rankFor(v){
+  let r = RANKS[0], idx = 0;
+  RANKS.forEach((rk,i)=>{ if(v>=rk.min){ r=rk; idx=i; } });
+  return {name:r.name, idx};
+}
+function tierFor(v){ return rankFor(v).idx; }
+
+/* --- 天体観測ログ画面 --- */
+/* --- 図鑑画面の背景星図(冬の大三角/オリオン座、実際の赤経・赤緯に基づく簡易投影) ---
+   「冬の大三角形.html」から移植。#screen-zukan配下でのみ使用し、初回表示時に一度だけ構築する。 */
+let zukanStarfieldBuilt = false;
+function initZukanStarfield(){
+  if(zukanStarfieldBuilt) return;
+  zukanStarfieldBuilt = true;
+
+  const RA_MIN = 5.0, RA_MAX = 8.0;
+  const DEC_MIN = -18.0, DEC_MAX = 10.0;
+  function project(ra, dec){
+    const x = (ra - RA_MIN) / (RA_MAX - RA_MIN) * 100;
+    const y = (DEC_MAX - dec) / (DEC_MAX - DEC_MIN) * 100;
+    return { x, y };
+  }
+
+  const STARS = [
+    { id:'sirius',    name:'シリウス',     ra:6.75, dec:-16.7, mag:-1.46, group:'triangle' },
+    { id:'procyon',   name:'プロキオン',   ra:7.65, dec:5.2,   mag:0.34,  group:'triangle' },
+    { id:'betelgeuse',name:'ベテルギウス', ra:5.92, dec:7.4,   mag:0.42,  group:'triangle' },
+    { id:'rigel',    name:'リゲル',     ra:5.24, dec:-8.2, mag:0.13, group:'orion' },
+    { id:'bellatrix',name:'ベラトリックス', ra:5.42, dec:6.3,  mag:1.64, group:'orion' },
+    { id:'saiph',    name:'サイフ',     ra:5.80, dec:-9.7, mag:2.07, group:'orion' },
+    { id:'alnitak',  name:'アルニタク', ra:5.92, dec:-1.9, mag:1.74, group:'orion' },
+    { id:'alnilam',  name:'アルニラム', ra:5.90, dec:-1.2, mag:1.69, group:'orion' },
+    { id:'mintaka',  name:'ミンタカ',   ra:5.87, dec:-0.3, mag:2.23, group:'orion' },
+  ];
+  const ORION_LINES = [
+    ['betelgeuse','alnitak'], ['bellatrix','mintaka'],
+    ['mintaka','alnilam'], ['alnilam','alnitak'],
+    ['alnitak','saiph'], ['mintaka','rigel'],
+  ];
+  const TRIANGLE_LINES = [
+    ['sirius','procyon'], ['procyon','betelgeuse'], ['betelgeuse','sirius'],
+  ];
+
+  const namedLayer   = document.getElementById('zukanNamedLayer');
+  const scatterLayer = document.getElementById('zukanScatterLayer');
+  const linesLayer    = document.getElementById('zukanLinesLayer');
+  const rotor         = document.getElementById('zukan-rotor');
+  if(!namedLayer || !scatterLayer || !linesLayer || !rotor) return;
+
+  function magToSize(mag){ return Math.max(2, 8.5 - mag * 1.5); }
+  function magToOpacity(mag){ return Math.max(0.5, 1 - mag * 0.12); }
+  function magToDuration(mag){
+    const t = Math.min(1, Math.max(0, (mag + 1.5) / 3));
+    return 4.5 + t * 3.0;
+  }
+
+  const starMap = {};
+  STARS.forEach((s, i) => {
+    const pos = project(s.ra, s.dec);
+    s.x = pos.x; s.y = pos.y;
+    starMap[s.id] = s;
+
+    const size = magToSize(s.mag);
+    const op   = magToOpacity(s.mag);
+    const dur  = magToDuration(s.mag);
+    const delay = -(i * 0.9);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'named-star';
+    wrap.style.left = s.x + '%';
+    wrap.style.top  = s.y + '%';
+    wrap.innerHTML = `
+      <span class="glow" style="
+        width:${size * 3}px; height:${size * 3}px;
+        background:radial-gradient(circle, var(--star-glow) 0%, transparent 70%);
+        --dur:${dur}s; --delay:${delay}s; --op-low:${op * 0.55}; --op-high:${Math.min(1, op * 0.9 + 0.1)};
+      "></span>
+      <span class="core" style="
+        width:${size}px; height:${size}px;
+        box-shadow:0 0 ${size * 1.4}px rgba(235,241,255,0.85);
+      "></span>
+      ${s.group === 'triangle' ? `<span class="star-label">${s.name}</span>` : ''}
+    `;
+    namedLayer.appendChild(wrap);
+  });
+
+  function drawLines(pairs, cls){
+    return pairs.map(([a, b]) => {
+      const sa = starMap[a], sb = starMap[b];
+      if(!sa || !sb) return '';
+      return `<line class="${cls}" x1="${sa.x}" y1="${sa.y}" x2="${sb.x}" y2="${sb.y}"/>`;
+    }).join('');
+  }
+  linesLayer.innerHTML = drawLines(ORION_LINES, 'constellation') + drawLines(TRIANGLE_LINES, 'asterism');
+
+  function spawnScatter(count){
+    const frag = document.createDocumentFragment();
+    for(let i = 0; i < count; i++){
+      const depth = Math.random();
+      const size = 0.6 + depth * 1.6;
+      const opLow = 0.15 + depth * 0.35;
+      const opHigh = Math.min(0.9, opLow + 0.3);
+      const dur = 7.5 - depth * 3.0;
+      const t = Math.round(depth * 3);
+      const r = 235 + t, g = 240 + t, b = 250 + Math.min(5, t * 2);
+
+      const el = document.createElement('span');
+      el.className = 'scatter';
+      el.style.left = (Math.random() * 100) + '%';
+      el.style.top  = (Math.random() * 100) + '%';
+      el.style.width = size + 'px';
+      el.style.height = size + 'px';
+      el.style.background = `rgb(${r},${g},${b})`;
+      el.style.setProperty('--dur', dur.toFixed(2) + 's');
+      el.style.setProperty('--delay', (-Math.random() * dur).toFixed(2) + 's');
+      el.style.setProperty('--op-low', opLow.toFixed(2));
+      el.style.setProperty('--op-high', opHigh.toFixed(2));
+      frag.appendChild(el);
+    }
+    scatterLayer.appendChild(frag);
+  }
+  spawnScatter(160); // モバイル配慮でオリジナル(220)より少なめ
+
+  // スクロールに応じた緩やかな回転(図鑑リストのスクロールに連動)
+  let ticking = false;
+  function updateRotation(){
+    const angle = (window.scrollY || 0) * 0.015;
+    rotor.style.transform = `rotate(${angle}deg)`;
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if(document.getElementById('screen-zukan').classList.contains('hidden')) return;
+    if(!ticking){ requestAnimationFrame(updateRotation); ticking = true; }
+  }, { passive:true });
+  updateRotation();
+}
+
+function showZukan(){
+  scrollToTop();
+  document.body.setAttribute('data-tier', '0'); // 図鑑は常にニュートラルな背景に戻す(ランクMAXの余韻を持ち込まない)
+  document.getElementById('screen-select').classList.add('hidden');
+  document.getElementById('screen-zukan').classList.remove('hidden');
+  initZukanStarfield();
+  const ids = Object.keys(CELESTIAL_DATA);
+  const foundCount = ids.filter(id => state.discoveredCelestials[id]).length;
+  document.getElementById('zukan-progress').textContent =
+    `これまでの物語で出会った天体現象の記録。観測済み ${foundCount} / ${ids.length}種`;
+  const list = document.getElementById('zukan-list');
+  list.innerHTML = '';
+  ids.forEach(id=>{
+    const b = CELESTIAL_DATA[id];
+    const found = !!state.discoveredCelestials[id];
+    const card = document.createElement('div');
+    card.className = found ? 'zukan-card' : 'zukan-card locked';
+    if(found){
+      card.innerHTML = `
+        <div class="zname">${b.name}</div>
+        <div class="zreading">${b.reading}</div>
+        <div class="zrow"><b>観測条件</b> ${b.habitat}</div>
+        <div class="zrow"><b>周期</b> ${b.season}</div>
+        <div class="zrow"><b>観測難易度</b> ${b.equipment}</div>
+        <div class="zrow"><b>次回観測</b> ${b.nextView}</div>
+        <div class="zrow"><b>特記</b> ${b.rarity}</div>
+        <div class="znote">${b.note}</div>
+      `;
+    } else {
+      card.innerHTML = `
+        <div class="zname">？？？</div>
+        <div class="zreading">まだ観測していない現象</div>
+      `;
+    }
+    list.appendChild(card);
+  });
+}
+document.getElementById('btn-zukan').addEventListener('click', showZukan);
+document.getElementById('btn-zukan-back').addEventListener('click', renderSelect);
+
+/* --- 隠しジェスチャー: ビート再生中のみ、左右フリックで前後に移動できる ---
+   画面上には何も表示せず、説明もしない。ボタンでの操作と併用可能。 */
+(function(){
+  let touchStartX = null, touchStartY = null;
+  const gameScreen = document.getElementById('screen-game');
+  gameScreen.addEventListener('touchstart', (e)=>{
+    if(!state.inBeatMode) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, {passive:true});
+  gameScreen.addEventListener('touchend', (e)=>{
+    if(!state.inBeatMode || touchStartX === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    touchStartX = null;
+    if(Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return; // 横方向優位のフリックのみ
+    const events = getEventList(state.charKey);
+    const ev = events[state.eventIndex];
+    if(!ev.beats) return;
+    if(dx > 0){
+      // 左 → 右 フリック: 一つ前のビートへ
+      if(state.beatIndex > 0){ state.beatIndex--; renderBeat(ev); }
+    } else {
+      // 右 → 左 フリック: 次のビートへ(最後なら選択肢表示)
+      if(state.beatIndex < ev.beats.length - 1){ state.beatIndex++; renderBeat(ev); }
+      else { renderChoiceButtons(ev); }
+    }
+  }, {passive:true});
+})();
+
+// 分岐ルート対応: event1(共有シーン) + routes[X].events、または従来の events[] のどちらにも対応
+function getEventList(key){
+  const c = DATA[key];
+  if(c.routes){
+    const r = state.route[key];
+    if(r && c.routes[r]){ return [c.event1, ...c.routes[r].events]; }
+    return [c.event1];
+  }
+  return c.events;
+}
+function getEpilogueText(key){
+  const c = DATA[key];
+  if(c.routes && state.route[key] && c.routes[state.route[key]]){
+    return c.routes[state.route[key]].epilogueText;
+  }
+  return c.epilogueText;
+}
+function routeKeyFor(key){
+  return DATA[key].routes ? (state.route[key] || 'A') : 'main';
+}
+
+function setCardVars(el, color, glow){
+  el.style.setProperty('--card-color', color);
+  el.style.setProperty('--glow-c', glow);
+}
+
+/* --- BGM engine --- */
+const CHAR_KEYS = Object.keys(DATA); // 並び順 = キャラ選択カードの表示順
+function charBgmFile(key){
+  const idx = CHAR_KEYS.indexOf(key) + 1;
+  return 'character_bgm' + String(idx).padStart(2,'0') + '.mp3';
+}
+const bgm = document.getElementById('bgm');
+const muteBtn = document.getElementById('mute-btn');
+let bgmMuted = false;
+let bgmFadeTimer = null;
+const BGM_VOLUME = 0.55;
+
+function fadeBgmTo(target, ms){
+  clearInterval(bgmFadeTimer);
+  const start = bgm.volume;
+  const steps = 20;
+  let i = 0;
+  bgmFadeTimer = setInterval(()=>{
+    i++;
+    bgm.volume = Math.max(0, Math.min(1, start + (target-start) * (i/steps)));
+    if(i>=steps){ clearInterval(bgmFadeTimer); }
+  }, ms/steps);
+}
+
+function playBgm(src){
+  if(bgm.getAttribute('data-src') === src){ return; } // 既に再生中なら再スタートしない
+  bgm.setAttribute('data-src', src);
+  const doSwitch = ()=>{
+    bgm.src = src;
+    bgm.currentTime = 0;
+    bgm.volume = 0;
+    bgm.muted = bgmMuted; // iOS Safari対策: volumeが無視される環境でも確実にミュートを反映する
+    bgm.play().then(()=>{ fadeBgmTo(bgmMuted ? 0 : BGM_VOLUME, 900); }).catch(()=>{ /* ユーザー操作待ち */ });
+  };
+  if(bgm.src && !bgm.paused){
+    fadeBgmTo(0, 400);
+    setTimeout(doSwitch, 400);
+  } else {
+    doSwitch();
+  }
+}
+
+muteBtn.addEventListener('click', ()=>{
+  bgmMuted = !bgmMuted;
+  muteBtn.textContent = bgmMuted ? '🔇' : '🔊';
+  bgm.muted = bgmMuted; // iOS Safari対策: volumeフェードだけだと無音にならない環境があるため、mutedを直接切り替える
+  fadeBgmTo(bgmMuted ? 0 : BGM_VOLUME, 300);
+  if(!bgmMuted && bgm.paused){ bgm.play().catch(()=>{}); }
+});
+
+function progressLabel(key){
+  const c = DATA[key];
+  const cleared = state.clearedRoutes[key] || {};
+  const total = state.characterTotal[key] || 0;
+  if(c.routes){
+    const a = cleared.A ? '既読' : '未読';
+    const b = cleared.B ? '既読' : '未読';
+    return `累計幸福度 ${total}　|　ルートA ${a} / ルートB ${b}`;
+  }
+  return `累計幸福度 ${total}　|　${cleared.main ? '既読' : '未読'}`;
+}
+
+function renderSelect(){
+  scrollToTop();
+  const grid = document.getElementById('char-grid');
+  grid.innerHTML = '';
+  const gt = grandTotal();
+  Object.keys(DATA).forEach(key=>{
+    const c = DATA[key];
+    const card = document.createElement('div');
+    const unlocked = isCharUnlocked(key);
+    if(!unlocked){
+      card.className = 'char-card locked';
+      const need = TIER_THRESHOLDS[c.tier];
+      card.innerHTML = `
+        <div class="emblem locked-emblem">🔒</div>
+        <h3>？？？</h3>
+        <p>総幸福度 ${need} で解放</p>
+        <div class="char-progress">現在の総幸福度 ${gt} / ${need}</div>
+      `;
+      grid.appendChild(card);
+      return;
+    }
+    card.className = 'char-card';
+    setCardVars(card, c.color, c.glow);
+    card.innerHTML = `
+      <div class="emblem">${c.emblem}</div>
+      <h3>${c.name}</h3>
+      <p>${c.subtitle}</p>
+      <div class="char-progress">${progressLabel(key)}</div>
+    `;
+    card.addEventListener('click', ()=> startGame(key));
+    grid.appendChild(card);
+  });
+
+  // 特別編カード(全9人・両ルート読了で解放)
+  const finaleCard = document.createElement('div');
+  const finaleUnlocked = isFinaleUnlocked();
+  const doneCount = clearedRouteCount();
+  if(finaleUnlocked){
+    finaleCard.className = 'char-card finale-card-select';
+    finaleCard.style.setProperty('--card-color', '#ffe3a3');
+    finaleCard.style.setProperty('--glow-c', '#fffbe8');
+    finaleCard.innerHTML = `
+      <div class="emblem">✦</div>
+      <h3>特別編</h3>
+      <p>それからの日々 — 全員のエピローグ集</p>
+      <div class="char-progress">解放済み</div>
+    `;
+    finaleCard.addEventListener('click', showFinale);
+  } else {
+    finaleCard.className = 'char-card locked';
+    finaleCard.innerHTML = `
+      <div class="emblem locked-emblem">🔒</div>
+      <h3>特別編</h3>
+      <p>全キャラ、両ルートを読了すると解放</p>
+      <div class="char-progress">読了 ${doneCount} / 18</div>
+    `;
+  }
+  grid.appendChild(finaleCard);
+
+  document.getElementById('total-happiness').textContent = `総幸福度: ${gt}`;
+  document.getElementById('screen-select').classList.remove('hidden');
+  document.getElementById('screen-game').classList.add('hidden');
+  document.getElementById('screen-ending').classList.add('hidden');
+  document.getElementById('screen-finale').classList.add('hidden');
+  document.getElementById('screen-zukan').classList.add('hidden');
+  playBgm('select_bgm.mp3');
+}
+
+function startGame(key){
+  state.charKey = key;
+  state.eventIndex = 0;
+  state.affection[key] = 0;
+  state.route[key] = null;
+  document.getElementById('screen-select').classList.add('hidden');
+  document.getElementById('screen-ending').classList.add('hidden');
+  document.getElementById('screen-game').classList.remove('hidden');
+  const c = DATA[key];
+  setCardVars(document.getElementById('screen-game'), c.color, c.glow);
+  document.getElementById('who-dot').style.background = c.color;
+  document.getElementById('who-dot').style.boxShadow = '0 0 16px -2px ' + c.color;
+  document.getElementById('who-name').textContent = c.name;
+  document.body.setAttribute('data-tier', tierFor(state.affection[key]));
+  playBgm(charBgmFile(key));
+  renderEvent();
+}
+
+function updateGauge(){
+  const key = state.charKey;
+  const aff = state.affection[key];
+  const rk = rankFor(aff);
+  document.getElementById('who-rank').textContent = '絆ランク: ' + rk.name;
+  document.getElementById('gauge-num').textContent = '幸福度 ' + aff;
+  const nextRank = RANKS[rk.idx+1];
+  const span = nextRank ? (nextRank.min - RANKS[rk.idx].min) : 60;
+  const within = nextRank ? (aff - RANKS[rk.idx].min) : span;
+  const pct = nextRank ? Math.min(100, Math.round((within/span)*100)) : 100;
+  document.getElementById('gauge-fill').style.width = pct + '%';
+}
+
+function renderEvent(){
+  scrollToTop();
+  const key = state.charKey;
+  const events = getEventList(key);
+  const ev = events[state.eventIndex];
+  document.getElementById('scene-label').textContent = ev.label;
+  if(ev.celestialId && !state.discoveredCelestials[ev.celestialId]){
+    state.discoveredCelestials[ev.celestialId] = true;
+    saveGame();
+  }
+  updateGauge();
+
+  if(ev.beats && ev.beats.length){
+    state.beatIndex = 0;
+    renderBeat(ev);
+  } else {
+    state.inBeatMode = false;
+    document.getElementById('scene-text').textContent = ev.text;
+    renderChoiceButtons(ev);
+  }
+}
+
+/* --- 高解像度ビート演出: text の代わりに beats:[{text, type, climax}] を1つずつ表示する ---
+   type: "prose"(通常)|"sfx"(擬音を強調表示)。climax:true のビートで画面フラッシュ。
+   最後のビートまで進んだら通常の選択肢を表示する。
+   左右フリックでもビートを前後に移動できる(隠しジェスチャー、説明なし)。 */
+function renderBeat(ev){
+  scrollToTop();
+  state.inBeatMode = true;
+  const beat = ev.beats[state.beatIndex];
+  const textEl = document.getElementById('scene-text');
+  textEl.innerHTML = '';
+  const span = document.createElement('div');
+  span.className = 'beat-fade' + (beat.type === 'sfx' ? ' beat-sfx' : '');
+  span.textContent = beat.text;
+  textEl.appendChild(span);
+
+  if(beat.climax){
+    const flash = document.getElementById('flash-overlay');
+    flash.classList.remove('play'); void flash.offsetWidth; flash.classList.add('play');
+  }
+
+  const box = document.getElementById('choices');
+  box.innerHTML = '';
+  const isLast = state.beatIndex === ev.beats.length - 1;
+  const btn = document.createElement('button');
+  btn.className = 'beat-continue-btn';
+  btn.textContent = isLast ? '続きを読む →' : '続きを読む →';
+  btn.addEventListener('click', ()=>{
+    if(isLast){ renderChoiceButtons(ev); }
+    else { state.beatIndex++; renderBeat(ev); }
+  });
+  box.appendChild(btn);
+}
+
+function renderChoiceButtons(ev){
+  state.inBeatMode = false;
+  const box = document.getElementById('choices');
+  box.innerHTML = '';
+  ev.choices.forEach(ch=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = `${ch.label}<span class="delta-hint">選択すると幸福度が変化します</span>`;
+    btn.addEventListener('click', ()=> pickChoice(ev, ch));
+    box.appendChild(btn);
+  });
+}
+
+function pickChoice(ev, ch){
+  scrollToTop();
+  state.inBeatMode = false;
+  const key = state.charKey;
+  if(ch.route){ state.route[key] = ch.route; }
+  const before = state.affection[key];
+  const beforeRank = rankFor(before);
+  state.affection[key] = before + ch.delta;
+  const after = state.affection[key];
+  const afterRank = rankFor(after);
+
+  // show result text + continue button instead of choices
+  document.getElementById('scene-text').textContent = ch.result;
+  const box = document.getElementById('choices');
+  box.innerHTML = '';
+  const cont = document.createElement('button');
+  cont.className = 'continue-btn';
+  cont.textContent = ev.final ? 'エンディングへ →' : '次へ →';
+  cont.addEventListener('click', ()=>{
+    if(ev.final){ showEnding(); }
+    else { state.eventIndex++; renderEvent(); }
+  });
+  box.appendChild(cont);
+
+  updateGauge();
+  document.body.setAttribute('data-tier', afterRank.idx);
+  playBurst(ch.delta, afterRank.idx > beforeRank.idx ? afterRank.name : null);
+}
+
+function playBurst(delta, rankUpName){
+  const burst = document.getElementById('burst');
+  burst.textContent = '+' + delta + ' 幸福度';
+  burst.classList.remove('play'); void burst.offsetWidth; burst.classList.add('play');
+
+  if(rankUpName){
+    const banner = document.getElementById('rankup-banner');
+    document.getElementById('rankup-text').textContent = rankUpName;
+    banner.classList.remove('play'); void banner.offsetWidth; banner.classList.add('play');
+  }
+}
+
+function showEnding(){
+  scrollToTop();
+  const key = state.charKey;
+  const c = DATA[key];
+  const events = getEventList(key);
+  const ev = events[events.length-1];
+  const aff = state.affection[key];
+  const rk = rankFor(aff);
+  const isMax = rk.idx === RANKS.length - 1;
+  state.clearedRoutes[key][routeKeyFor(key)] = true;
+  state.characterTotal[key] = (state.characterTotal[key] || 0) + aff;
+  saveGame();
+  document.getElementById('screen-game').classList.add('hidden');
+  document.getElementById('screen-ending').classList.remove('hidden');
+  setCardVars(document.getElementById('screen-ending'), c.color, c.glow);
+  const routeTag = c.routes ? `【${c.routes[state.route[key]].routeLabel}】` : '';
+  document.getElementById('end-label').textContent = (isMax ? 'TRUE EPILOGUE — 絆MAX到達 ' : 'EPILOGUE ') + routeTag;
+  document.getElementById('end-title').textContent = c.name + ' — ' + rk.name;
+  document.getElementById('end-num').textContent = `今回の幸福度 +${aff} ・ 累計 ${state.characterTotal[key]}`;
+  document.getElementById('end-text').textContent = isMax ? getEpilogueText(key) : ev.endingText;
+  const box = document.getElementById('screen-ending');
+  box.classList.toggle('is-max', isMax);
+  if(isMax){
+    const banner = document.getElementById('rankup-banner');
+    document.getElementById('rankup-text').textContent = '絆MAX — TRUE EPILOGUE';
+    banner.classList.remove('play'); void banner.offsetWidth; banner.classList.add('play');
+  }
+}
+
+document.getElementById('btn-back').addEventListener('click', renderSelect);
+document.getElementById('btn-ending-back').addEventListener('click', renderSelect);
+document.getElementById('btn-finale-back').addEventListener('click', renderSelect);
+document.getElementById('btn-reset-save').addEventListener('click', ()=>{
+  if(confirm('セーブデータ(既読状態・累計幸福度)を全て消去します。よろしいですか?')){
+    resetSave();
+  }
+});
+
+document.getElementById('screen-title').addEventListener('click', ()=>{
+  document.getElementById('screen-title').classList.add('hidden');
+  renderSelect();
+});
+</script>
+</body>
+</html>
