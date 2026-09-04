@@ -4,84 +4,366 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>インタラクティブノベル｜はぜるの作品</title>
-    <link rel="stylesheet" href="style.css">
     <style>
-        /* 作品カード全体をリンク化 */
-        .work-card-link {
-            display: block;
-            text-decoration: none;
-            color: inherit;
-            margin-bottom: 20px;
+        :root{
+            --ink:#28323d;
+            --ink-light:#e7f1fb;
+            --paper:#ffffff;
+            --gold:#f0b429;
+            --glow:#fff6df;
+            --citrus:#ff8a3d;
+            --ice:#3fb8e0;
+            --line: rgba(35,49,63,0.12);
+            --bg-1:#0c1928;
+            --bg-2:#2b74ad;
+        }
+        *{ box-sizing:border-box; }
+        html,body{ margin:0; padding:0; }
+        body{
+            min-height:100vh;
+            font-family:'Zen Kaku Gothic New','Hiragino Sans',sans-serif;
+            color:var(--ink);
+            background: radial-gradient(circle at 20% 0%, var(--bg-2), var(--bg-1) 65%);
+            line-height:1.8;
+        }
+        .stars{
+            position:fixed; inset:0; pointer-events:none; opacity:0.7;
+            background-image:
+                radial-gradient(1.8px 1.8px at 10% 20%, var(--ice), transparent),
+                radial-gradient(1.8px 1.8px at 80% 10%, var(--gold), transparent),
+                radial-gradient(1.3px 1.3px at 40% 60%, var(--citrus), transparent),
+                radial-gradient(1.8px 1.8px at 70% 80%, var(--ice), transparent),
+                radial-gradient(1.3px 1.3px at 90% 50%, var(--gold), transparent),
+                radial-gradient(1.3px 1.3px at 25% 85%, var(--citrus), transparent);
+            background-repeat:no-repeat;
+        }
+        .container{
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 2.5rem 1.2rem 4rem;
+            position: relative;
+            z-index: 1;
+        }
+        header{ text-align:center; margin-bottom: 8px; }
+        .site-title{
+            font-family:'JetBrains Mono', monospace;
+            font-size: 11px; letter-spacing:0.22em; text-transform:uppercase;
+            color: var(--citrus); opacity:0.9; margin: 0 0 6px;
+        }
+        h1{
+            font-family:'Shippori Mincho', serif;
+            font-weight:800;
+            font-size: clamp(24px, 5.6vw, 34px);
+            margin: 0 0 14px;
+            background: linear-gradient(90deg, var(--citrus), var(--gold) 55%, var(--ice));
+            -webkit-background-clip:text; background-clip:text; color:transparent;
+            filter: drop-shadow(0 0 16px rgba(240,180,41,0.35));
+        }
+        .site-menu{
+            margin: 0 0 26px;
+            text-align:center;
+        }
+        .site-menu a{
+            color: var(--ink-light);
+            opacity:0.85;
+            text-decoration:none;
+            font-size:0.85em;
+            font-weight:bold;
+            border:1px solid rgba(255,255,255,0.25);
+            padding: 6px 16px;
+            border-radius: 100px;
+            transition: opacity .2s, border-color .2s;
+        }
+        @media (hover:hover) and (pointer:fine){
+            .site-menu a:hover{ opacity:1; border-color:var(--citrus); }
         }
 
-        .work-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 20px;
-            transition: transform 0.2s, background-color 0.2s;
+        .intro{
+            text-align:center;
+            font-size: 13.5px;
+            color: var(--ink-light);
+            opacity:0.8;
+            margin: 0 0 32px;
         }
-        .work-card-link:hover .work-card {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
+        .intro p{ margin:0; }
+
+        h2.section-title{
+            font-family:'Shippori Mincho', serif;
+            font-size: 16px;
+            color: var(--ink-light);
+            opacity:0.9;
+            margin: 0 0 16px;
+            padding-left: 4px;
+            border-left: 3px solid var(--citrus);
         }
 
-        .work-card h3 {
-            margin: 0 0 8px 0;
-            color: #ffb74d; /* オレンジの差し色 */
+        .work-grid{
+            display:grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 40px;
         }
-        .work-card p {
-            margin: 0;
-            font-size: 0.9em;
-            color: #ccc;
-            line-height: 1.6;
+        @media (max-width:560px){
+            .work-grid{ grid-template-columns: 1fr; }
         }
-        .play-badge {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 4px 12px;
-            background: #ffb74d;
-            color: #111;
-            font-weight: bold;
-            font-size: 0.8em;
-            border-radius: 20px;
+
+        .work-card-link{
+            display:block;
+            text-decoration:none;
+            color:inherit;
         }
+        .work-card{
+            position:relative;
+            overflow:hidden;
+            background:#ffffff;
+            border:1px solid var(--line);
+            border-radius:18px;
+            padding: 22px 20px;
+            box-shadow: 0 10px 30px -14px rgba(4,10,20,0.65);
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+            height:100%;
+        }
+        @media (hover:hover) and (pointer:fine){
+            .work-card-link:hover .work-card{
+                transform: translateY(-4px);
+                border-color: var(--citrus);
+                box-shadow: 0 16px 34px -14px rgba(255,138,61,0.5);
+            }
+        }
+        .work-card-link:active .work-card{ transform: scale(0.98); }
+
+        /* 30秒に一度、カードの表面を光がサッと横切る演出 */
+        .work-card::after{
+            content:"";
+            position:absolute; top:0; left:-60%; width:35%; height:100%;
+            background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.85) 45%, transparent 100%);
+            transform: skewX(-20deg);
+            animation: cardShine 30s ease-in-out infinite;
+            pointer-events:none;
+        }
+        @keyframes cardShine{
+            0%{ left:-60%; opacity:0; }
+            2%{ opacity:0.9; }
+            8%{ left:130%; opacity:0; }
+            100%{ left:130%; opacity:0; }
+        }
+
+        .emblem{
+            width:52px; height:52px; border-radius:50%;
+            margin-bottom: 14px;
+            display:flex; align-items:center; justify-content:center;
+            font-size: 24px;
+            background: radial-gradient(circle at 35% 30%, var(--glow), var(--gold) 70%);
+            box-shadow: 0 6px 16px -6px rgba(240,180,41,0.6);
+        }
+        .work-card h3{
+            font-family:'Shippori Mincho', serif;
+            font-size: 16.5px;
+            margin: 0 0 8px;
+            color: #241a10;
+        }
+        .work-card p.work-desc{
+            margin: 0 0 14px;
+            font-size: 12.5px;
+            color: var(--ink);
+            opacity:0.72;
+            line-height:1.7;
+        }
+        .badge-row{
+            display:flex; flex-wrap:wrap; gap:8px;
+            position:relative; z-index:1;
+        }
+        .badge{
+            display:inline-flex; align-items:center;
+            padding: 4px 13px;
+            border-radius: 100px;
+            font-weight:bold;
+            font-size: 0.72em;
+        }
+        .play-badge{
+            background: linear-gradient(90deg, var(--citrus), var(--gold));
+            color:#2a1f0a;
+        }
+        .progress-badge{
+            background: rgba(63,184,224,0.14);
+            border: 1px solid rgba(63,184,224,0.45);
+            color:#1c6f8f;
+        }
+        .complete-badge{
+            background: linear-gradient(90deg, #ff5f6d, #ffc371, #f9f871, #47e6b1, #4facfe, #a86ef0, #ff5f6d);
+            background-size: 300% 100%;
+            animation: rainbowShift 4s linear infinite;
+            color:#111;
+        }
+        @keyframes rainbowShift{
+            0%{ background-position:0% 50%; }
+            100%{ background-position:300% 50%; }
+        }
+        .hidden{ display:none !important; }
+
+        footer.site-footer{
+            text-align:center;
+            color: var(--ink-light);
+            opacity:0.6;
+            font-size: 12px;
+            margin-top: 40px;
+        }
+        footer.site-footer a{ color: var(--ink-light); }
     </style>
 </head>
 <body>
+    <div class="stars"></div>
     <div class="container">
         <header>
-            <p class="site-title">はぜるの作品</p>
+            <p class="site-title">Hazeru Works</p>
             <h1>インタラクティブノベル</h1>
             <nav class="site-menu">
-                <a href="index.html">トップ</a>
+                <a href="index.html">← トップに戻る</a>
             </nav>
         </header>
 
-        <main>
-            <section class="intro">
-                <p>BGMと共に物語が展開する、選択式のインタラクティブノベル。<br>
-                あなたの選択によって、ストーリーの行方と結末が変化します。</p>
-            </section>
+        <section class="intro">
+            <p>BGMと共に物語が展開する、選択式のインタラクティブノベル。<br>
+            あなたの選択によって、ストーリーの行方と結末が変化します。</p>
+        </section>
 
-            <section class="work-list">
-                <h2>作品一覧</h2>
+        <section class="work-list">
+            <h2 class="section-title">作品一覧</h2>
 
-                <!-- 🎴 target="_blank" で別タブ開く作品カード -->
+            <div class="work-grid">
+
                 <a href="isekai_paradise/index.html" target="_blank" rel="noopener noreferrer" class="work-card-link">
                     <div class="work-card">
+                        <div class="emblem">📖</div>
                         <h3>異世界パラダイス幸福度クロニクル</h3>
-                        <p>現代日本の"良いとこ取り"の暮らしを、この世界に生きる少女たちへ。小さな親切が心を揺さぶるミニデモ作品。</p>
-                        <span class="play-badge">▶ プレイする ↗</span>
+                        <p class="work-desc">現代日本の"良いとこ取り"の暮らしを、この世界に生きる少女たちへ。小さな親切が心を揺さぶるミニデモ作品。</p>
+                        <div class="badge-row">
+                            <span class="badge play-badge">▶ プレイする ↗</span>
+                            <span id="ip-progress-badge" class="badge progress-badge hidden"></span>
+                            <span id="ip-complete-badge" class="badge complete-badge hidden">🌈 COMPLETE</span>
+                        </div>
                     </div>
                 </a>
 
-            </section>
-        </main>
+                <a href="haiiro_no_kuni/index.html" target="_blank" rel="noopener noreferrer" class="work-card-link">
+                    <div class="work-card">
+                        <div class="emblem">☁️</div>
+                        <h3>灰の国で、恋を知る</h3>
+                        <p class="work-desc">色を失いつつある灰色の世界で、九人の女性それぞれの物語にそっと寄り添う、静かで切ない恋物語。パン屋の娘から聖女まで、身分も境遇も異なる出会いが待っている。</p>
+                        <div class="badge-row">
+                            <span class="badge play-badge">▶ プレイする ↗</span>
+                            <span id="hk-progress-badge" class="badge progress-badge hidden"></span>
+                            <span id="hk-complete-badge" class="badge complete-badge hidden">🌈 COMPLETE</span>
+                        </div>
+                    </div>
+                </a>
 
-        <footer style="margin-top: 50px; text-align: center; color: #777;">
+                <a href="kuzureyuku_kuni/index.html" target="_blank" rel="noopener noreferrer" class="work-card-link">
+                    <div class="work-card">
+                        <div class="emblem">🕯️</div>
+                        <h3>崩れゆく国で、明日を灯す</h3>
+                        <p class="work-desc">崩壊した王国で、それぞれの喪失を抱えたまま生きる九人の女性たち。元王女、元近衛騎士、元道化師——誰もが何かを失った国で、小さな灯をともす恋物語。</p>
+                        <div class="badge-row">
+                            <span class="badge play-badge">▶ プレイする ↗</span>
+                            <span id="kk-progress-badge" class="badge progress-badge hidden"></span>
+                            <span id="kk-complete-badge" class="badge complete-badge hidden">🌈 COMPLETE</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="isekai_dame_ningen/index.html" target="_blank" rel="noopener noreferrer" class="work-card-link">
+                    <div class="work-card">
+                        <div class="emblem">🍹</div>
+                        <h3>異世界ダメ人間計画</h3>
+                        <p class="work-desc">暇を持て余した主人公が、異世界の重鎮たちを深夜こっそり「瓢箪」して、現代の快適さでとことん甘やかす瓢箪コメディ。全11組のゲストが登場。</p>
+                        <div class="badge-row">
+                            <span class="badge play-badge">▶ プレイする ↗</span>
+                            <span id="dn-progress-badge" class="badge progress-badge hidden"></span>
+                            <span id="dn-complete-badge" class="badge complete-badge hidden">🌈 COMPLETE</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="takane_no_hoshi/index.html" target="_blank" rel="noopener noreferrer" class="work-card-link">
+                    <div class="work-card">
+                        <div class="emblem">🔭</div>
+                        <h3>高嶺の星、見つけに行こう</h3>
+                        <p class="work-desc">夜空を見上げる何気ない瞬間から始まる、大人の恋物語。天体観測をきっかけに、少しずつ距離が縮まっていく——全9人のヒロインが登場する、じっくり読ませる系ノベル。</p>
+                        <div class="badge-row">
+                            <span class="badge play-badge">▶ プレイする ↗</span>
+                            <span id="tn-progress-badge" class="badge progress-badge hidden"></span>
+                            <span id="tn-complete-badge" class="badge complete-badge hidden">🌈 COMPLETE</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="takane_no_tori/index.html" target="_blank" rel="noopener noreferrer" class="work-card-link">
+                    <div class="work-card">
+                        <div class="emblem">🐦</div>
+                        <h3>高嶺の鳥、見つけに行こう</h3>
+                        <p class="work-desc">野鳥観察をきっかけに始まる、静かで丁寧な恋物語。双眼鏡越しに見つけた小さな奇跡から、彼女たちとの距離が少しずつ縮まっていく——シリーズ第2弾、全9人のヒロインが登場。</p>
+                        <div class="badge-row">
+                            <span class="badge play-badge">▶ プレイする ↗</span>
+                            <span id="tt-progress-badge" class="badge progress-badge hidden"></span>
+                            <span id="tt-complete-badge" class="badge complete-badge hidden">🌈 COMPLETE</span>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <footer class="site-footer">
             <p>&copy; 2026 はぜる</p>
         </footer>
     </div>
+
+    <script>
+        // 各インタラクティブノベルの読了進捗を、ゲーム側のlocalStorageから同期して表示する。
+        // ゲーム本体と同一オリジンであることが前提。
+        function syncProgressBadge(saveKey, totalRoutes, progressBadgeId, completeBadgeId){
+            try{
+                var raw = localStorage.getItem(saveKey);
+                if(!raw) return;
+                var save = JSON.parse(raw);
+                var cleared = save.clearedRoutes || {};
+                var count = 0;
+                Object.keys(cleared).forEach(function(k){
+                    if(cleared[k].A) count++;
+                    if(cleared[k].B) count++;
+                });
+
+                var progressBadge = document.getElementById(progressBadgeId);
+                var completeBadge = document.getElementById(completeBadgeId);
+
+                if(count >= totalRoutes){
+                    completeBadge.classList.remove('hidden');
+                } else if(count > 0){
+                    progressBadge.textContent = count + '/' + totalRoutes + ' ルート読了';
+                    progressBadge.classList.remove('hidden');
+                }
+            }catch(e){
+                // localStorageが使えない/セーブデータが壊れている場合は静かに無視
+            }
+        }
+
+        // 異世界パラダイス幸福度クロニクル: 9人 × 2ルート(A/B)。ヒロインが増えたらここも更新すること。
+        syncProgressBadge('isekai_paradise_save_v1', 18, 'ip-progress-badge', 'ip-complete-badge');
+
+        // 灰の国で、恋を知る: 9人 × 2ルート(A/B)。ヒロインが増えたらここも更新すること。
+        syncProgressBadge('haiiro_no_kuni_save_v1', 18, 'hk-progress-badge', 'hk-complete-badge');
+
+        // 崩れゆく国で、明日を灯す: 9人 × 2ルート(A/B)。ヒロインが増えたらここも更新すること。
+        syncProgressBadge('kuzureyuku_kuni_save_v1', 18, 'kk-progress-badge', 'kk-complete-badge');
+
+        // 異世界ダメ人間計画: 11ゲスト × 2ルート(A/B)。ゲストが増えたらここも更新すること。
+        syncProgressBadge('isekai_dame_ningen_save_v1', 22, 'dn-progress-badge', 'dn-complete-badge');
+
+        // 高嶺の星、見つけに行こう: 9人 × 2ルート(A/B)。ヒロインが増えたらここも更新すること。
+        syncProgressBadge('takane_no_hoshi_save_v1', 18, 'tn-progress-badge', 'tn-complete-badge');
+
+        // 高嶺の鳥、見つけに行こう: 9人 × 2ルート(A/B)。ヒロインが増えたらここも更新すること。
+        syncProgressBadge('takane_no_tori_save_v1', 18, 'tt-progress-badge', 'tt-complete-badge');
+    </script>
 </body>
 </html>
