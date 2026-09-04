@@ -1,0 +1,3048 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>異世界ダメ人間計画：今夜もVIPを瓢箪します!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#28323d;
+    --ink-light:#e7f1fb;
+    --paper:#ffffff;
+    --gold:#f0b429;
+    --glow:#fff6df;
+    --citrus:#ff8a3d;
+    --ice:#3fb8e0;
+    --line: rgba(35,49,63,0.12);
+    --tier0-1:#0e1b2e; --tier0-2:#1a3352;
+    --tier1-1:#0e1b2e; --tier1-2:#1f3d63;
+    --tier2-1:#0c1928; --tier2-2:#245e8f;
+    --tier3-1:#0c1928; --tier3-2:#2b74ad;
+    --tier4-1:#0c1928; --tier4-2:#f0b429;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    color:var(--ink);
+    background: radial-gradient(circle at 20% 0%, var(--tier0-2), var(--tier0-1) 60%);
+    transition: background 1.4s ease;
+    overflow-x:hidden;
+    position:relative;
+  }
+  body[data-tier="1"]{background: radial-gradient(circle at 20% 0%, var(--tier1-2), var(--tier1-1) 60%);}
+  body[data-tier="2"]{background: radial-gradient(circle at 20% 0%, var(--tier2-2), var(--tier2-1) 60%);}
+  body[data-tier="3"]{background: radial-gradient(circle at 20% 0%, var(--tier3-2), var(--tier3-1) 60%);}
+  body[data-tier="4"]{background: radial-gradient(circle at 30% 0%, var(--tier4-2), var(--tier4-1) 55%);}
+
+  .stars{
+    position:fixed; inset:0; pointer-events:none; opacity:0.7;
+    background-image:
+      radial-gradient(1.8px 1.8px at 10% 20%, var(--ice), transparent),
+      radial-gradient(1.8px 1.8px at 80% 10%, var(--gold), transparent),
+      radial-gradient(1.3px 1.3px at 40% 60%, var(--citrus), transparent),
+      radial-gradient(1.8px 1.8px at 70% 80%, var(--ice), transparent),
+      radial-gradient(1.3px 1.3px at 90% 50%, var(--gold), transparent),
+      radial-gradient(1.3px 1.3px at 25% 85%, var(--citrus), transparent);
+    background-repeat:no-repeat;
+  }
+
+  .wrap{
+    max-width:720px; margin:0 auto; padding:32px 20px 80px;
+    position:relative; z-index:1;
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; letter-spacing:0.22em; text-transform:uppercase;
+    color:var(--citrus); opacity:0.9; text-align:center; margin-bottom:6px;
+  }
+  h1.title{
+    font-family:'Shippori Mincho', serif;
+    font-weight:800;
+    font-size:clamp(24px,5.6vw,36px);
+    text-align:center; margin:0 0 6px;
+    letter-spacing:0.02em;
+    background: linear-gradient(90deg, var(--citrus), var(--gold) 55%, var(--ice));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter: drop-shadow(0 0 18px rgba(240,180,41,0.4));
+  }
+  .lede{
+    text-align:center; font-size:13.5px; color:var(--ink-light); opacity:0.75;
+    margin:0 0 34px; line-height:1.7;
+  }
+
+  /* --- select screen --- */
+  .total-happiness{
+    text-align:center; font-family:'JetBrains Mono',monospace; font-size:13px;
+    color:var(--citrus); opacity:0.9; letter-spacing:0.05em; margin-bottom:18px;
+  }
+  .char-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:520px){ .char-grid{grid-template-columns:1fr;} }
+  .char-card{
+    background:#ffffff;
+    border:1px solid var(--line); border-radius:18px;
+    padding:22px 18px; text-align:center; cursor:pointer;
+    box-shadow:0 10px 30px -14px rgba(4,10,20,0.65);
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .char-card:hover{ transform:translateY(-4px); border-color:var(--card-color,var(--gold)); box-shadow:0 14px 30px -14px var(--card-color,var(--gold)); }
+  }
+  .emblem{
+    width:78px; height:78px; margin:0 auto 14px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--glow-c,var(--glow)), var(--card-color,var(--gold)) 70%);
+    box-shadow:0 6px 20px -6px var(--card-color,var(--gold));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Shippori Mincho',serif; font-weight:800; font-size:26px; color:#2a1f14;
+  }
+  .char-card h3{ font-family:'Shippori Mincho',serif; font-size:19px; margin:0 0 4px; }
+  .char-card p{ font-size:12px; opacity:0.6; margin:0 0 14px; line-height:1.6;}
+  .char-progress{ font-family:'JetBrains Mono',monospace; font-size:11px; opacity:0.7; }
+
+  .char-card.locked{
+    opacity:0.55; cursor:default; filter:grayscale(0.5);
+    box-shadow:none;
+  }
+  .char-card.locked:hover{ transform:none; border-color:var(--line); box-shadow:none; }
+  .locked-emblem{
+    background: radial-gradient(circle at 35% 30%, #ffffff, rgba(35,49,63,0.06) 70%);
+    box-shadow:none; color:var(--ink); opacity:0.6;
+  }
+
+  .reset-save-btn{
+    display:block; margin:28px auto 0; background:none; border:none;
+    color:var(--ink-light); opacity:0.55; font-size:11px; font-family:'Zen Kaku Gothic New',sans-serif;
+    text-decoration:underline; cursor:pointer;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .reset-save-btn:hover{ opacity:0.9; }
+  }
+
+  .zukan-btn{
+    display:block; margin:26px auto 0; background:#ffffff;
+    border:1px solid var(--line); color:var(--ink); opacity:0.9;
+    font-size:12.5px; font-family:'Zen Kaku Gothic New',sans-serif;
+    padding:10px 20px; border-radius:100px; cursor:pointer;
+    box-shadow:0 8px 22px -12px rgba(4,10,20,0.5);
+    transition: opacity .2s, border-color .2s;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .zukan-btn:hover{ opacity:1; border-color:var(--citrus); }
+  }
+
+  .zukan-list{ display:flex; flex-direction:column; gap:12px; margin-top:18px; }
+  .zukan-card{
+    border:1px solid var(--line); border-radius:16px; padding:18px 20px;
+    background:#ffffff;
+    box-shadow:0 2px 14px -10px rgba(35,49,63,0.15);
+  }
+  .zukan-card.locked{ opacity:0.5; filter:grayscale(0.6); box-shadow:none; }
+  .zukan-card .zname{
+    font-family:'Shippori Mincho',serif; font-weight:700; font-size:17px;
+    margin-bottom:2px;
+  }
+  .zukan-card .zreading{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; opacity:0.55; margin-bottom:10px;
+  }
+  .zukan-card .zrow{ font-size:12.5px; opacity:0.8; margin-bottom:4px; line-height:1.6; }
+  .zukan-card .zrow b{ color:var(--citrus); opacity:0.95; font-weight:700; }
+  .zukan-card .znote{ font-size:12.5px; opacity:0.75; line-height:1.8; margin-top:8px; }
+
+  /* --- game screen --- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:18px; gap:12px;
+  }
+  .backbtn{
+    background:#ffffff; border:1px solid var(--line); color:var(--ink);
+    font-family:'Zen Kaku Gothic New',sans-serif; font-size:12px;
+    padding:8px 14px; border-radius:100px; cursor:pointer; opacity:0.8;
+    transition:opacity .2s, border-color .2s;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .backbtn:hover{ opacity:1; border-color:var(--citrus); }
+  }
+
+  .who{ display:flex; align-items:center; gap:10px; }
+  .who .dot{ width:34px; height:34px; border-radius:50%; background:var(--card-color,var(--gold)); box-shadow:0 4px 14px -3px var(--card-color,var(--gold)); flex:none; }
+  .who .name{ font-family:'Shippori Mincho',serif; font-weight:700; font-size:15px; color:var(--ink-light); }
+  .who .rank{ font-size:10.5px; opacity:0.75; color:var(--ink-light); font-family:'JetBrains Mono',monospace; letter-spacing:0.05em; }
+
+  .gauge-shell{
+    border:1px solid rgba(255,255,255,0.18); border-radius:100px; height:12px;
+    overflow:hidden; background:rgba(255,255,255,0.08); margin-bottom:4px;
+  }
+  .gauge-fill{
+    height:100%; border-radius:100px;
+    background:linear-gradient(90deg, var(--citrus), var(--gold), #ffe9a8);
+    width:0%; transition: width 1s cubic-bezier(.2,.9,.25,1);
+    box-shadow:0 0 10px 0 rgba(240,180,41,0.5);
+  }
+  .gauge-num{
+    text-align:right; font-family:'JetBrains Mono',monospace; font-size:11px; opacity:0.8; color:var(--ink-light);
+    margin-bottom:22px;
+  }
+
+  .scene{
+    position:relative;
+    border:1px solid var(--line);
+    background:#ffffff;
+    box-shadow:0 14px 40px -18px rgba(4,10,20,0.7);
+    border-radius:20px; padding:26px 24px 22px;
+    margin-bottom:18px;
+  }
+  .scene::before{
+    content:""; position:absolute; top:14px; left:14px; width:16px; height:16px;
+    border-top:2px solid var(--card-color,var(--gold)); border-left:2px solid var(--card-color,var(--gold));
+    opacity:0.7;
+  }
+  .scene::after{
+    content:""; position:absolute; bottom:14px; right:14px; width:16px; height:16px;
+    border-bottom:2px solid var(--card-color,var(--gold)); border-right:2px solid var(--card-color,var(--gold));
+    opacity:0.7;
+  }
+  .scene-label{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.15em;
+    text-transform:uppercase; color:var(--card-color,var(--gold)); margin-bottom:10px; opacity:0.95;
+    text-shadow:0 0 10px var(--card-color,var(--gold));
+  }
+  .scene-text{
+    font-size:15.5px; line-height:1.95; white-space:pre-wrap;
+  }
+
+  .beat-fade{ animation: beatFadeIn .5s ease both; }
+  @keyframes beatFadeIn{
+    from{ opacity:0; transform:translateY(6px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .beat-sfx{
+    display:block; text-align:center; font-family:'Shippori Mincho',serif; font-weight:700;
+    font-size:26px; letter-spacing:0.25em; margin:18px 0; color:var(--card-color,var(--gold));
+    text-shadow:0 2px 10px rgba(35,49,63,0.12);
+  }
+  .flash-overlay{
+    position:fixed; inset:0; pointer-events:none; z-index:40;
+    background:var(--card-glow, #fff3d0); opacity:0;
+  }
+  .flash-overlay.play{ animation: climaxFlash .55s ease-out; }
+  @keyframes climaxFlash{
+    0%{ opacity:0; } 12%{ opacity:0.65; } 100%{ opacity:0; }
+  }
+  .beat-continue-btn{
+    margin-top:14px; align-self:center;
+    background:#ffffff; border:1px solid var(--card-color,var(--gold));
+    color:var(--card-color,var(--gold)); padding:10px 20px; border-radius:100px;
+    font-family:'Zen Kaku Gothic New',sans-serif; font-size:13px; font-weight:700; cursor:pointer;
+    transition: background .2s;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .beat-continue-btn:hover{ background:rgba(35,49,63,0.05); }
+  }
+
+  .choices{ display:flex; flex-direction:column; gap:10px; }
+  .choice-btn{
+    position:relative; overflow:hidden;
+    text-align:left; padding:15px 18px; border-radius:14px;
+    border:1px solid var(--line); background:#fff7e6;
+    color:var(--ink); font-family:'Zen Kaku Gothic New',sans-serif; font-size:14px;
+    cursor:pointer; transition: border-color .2s, background .2s, transform .15s, box-shadow .2s;
+    line-height:1.5;
+    box-shadow: 0 0 0 1px rgba(63,184,224,0.14), 0 3px 14px -9px rgba(63,184,224,0.45);
+  }
+  .choice-btn::after{
+    content:"";
+    position:absolute; top:0; left:-60%; width:35%; height:100%;
+    background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.85) 45%, transparent 100%);
+    transform: skewX(-20deg);
+    animation: choiceShine 2.4s ease 0.15s 1 both;
+    pointer-events:none;
+  }
+  @keyframes choiceShine{
+    0%{ left:-60%; opacity:0; }
+    18%{ opacity:0.9; }
+    55%{ opacity:0.4; }
+    100%{ left:130%; opacity:0; }
+  }
+  @media (hover:hover) and (pointer:fine){
+    .choice-btn:hover{
+      border-color:var(--card-color,var(--gold)); background:#ffffff;
+      box-shadow: 0 0 0 1px rgba(63,184,224,0.3), 0 4px 16px -10px rgba(35,49,63,0.2), 0 0 16px -4px rgba(63,184,224,0.5);
+      transform:translateX(2px);
+    }
+  }
+  .choice-btn:active{
+    border-color:var(--card-color,var(--gold)); background:#ffffff;
+    box-shadow: 0 0 0 1px rgba(63,184,224,0.3), 0 0 16px -4px rgba(63,184,224,0.5);
+    transform:scale(0.98);
+  }
+  .choice-btn .delta-hint{
+    display:block; margin-top:5px; font-family:'JetBrains Mono',monospace; font-size:10.5px; opacity:0.5;
+  }
+  .continue-btn{
+    margin-top:4px; align-self:flex-end;
+    background:linear-gradient(90deg, var(--citrus), var(--gold));
+    color:#2a1f0a; border:none; padding:12px 22px; border-radius:100px;
+    font-weight:700; font-size:13px; cursor:pointer;
+    box-shadow:0 8px 20px -10px rgba(240,138,61,0.55);
+  }
+
+  .burst-layer{
+    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+    pointer-events:none; z-index:50;
+  }
+  .burst{
+    font-family:'JetBrains Mono',monospace; font-weight:800;
+    font-size:48px;
+    background:linear-gradient(90deg, var(--citrus), var(--gold));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter: drop-shadow(0 0 22px rgba(240,180,41,0.55));
+    opacity:0; transform:scale(0.4);
+  }
+  .burst.play{ animation: burstpop 1.5s cubic-bezier(.2,1.4,.3,1) forwards; }
+  @keyframes burstpop{
+    0%{ opacity:0; transform:scale(0.3) translateY(20px);}
+    18%{ opacity:1; transform:scale(1.15) translateY(0);}
+    30%{ transform:scale(1);}
+    75%{ opacity:1; }
+    100%{ opacity:0; transform:scale(1) translateY(-30px);}
+  }
+  .rankup-banner{
+    position:fixed; left:0; right:0; top:26%; text-align:center; z-index:51;
+    pointer-events:none; opacity:0;
+  }
+  .rankup-banner.play{ animation: bannerslide 2.2s ease forwards; }
+  @keyframes bannerslide{
+    0%{ opacity:0; transform:translateY(-14px) scale(0.96);}
+    14%{ opacity:1; transform:translateY(0) scale(1);}
+    80%{ opacity:1;}
+    100%{ opacity:0; transform:translateY(-6px) scale(1);}
+  }
+  .rankup-banner .lbl{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    letter-spacing:0.2em; color:var(--glow); background:rgba(255,255,255,0.12);
+    backdrop-filter: blur(6px);
+    border:1px solid var(--gold); padding:5px 14px; border-radius:100px; margin-bottom:10px;
+  }
+  .rankup-banner .big{
+    font-family:'Shippori Mincho',serif; font-weight:800; font-size:clamp(26px,6.6vw,42px);
+    background:linear-gradient(90deg, var(--citrus), var(--gold), #d98f0f);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter: drop-shadow(0 0 20px rgba(240,180,41,0.5));
+  }
+
+  .ending{
+    text-align:center; padding:40px 10px;
+  }
+  .ending h2{ font-family:'Shippori Mincho',serif; font-size:24px; margin-bottom:10px; }
+  .ending p{ font-size:14px; opacity:0.75; line-height:1.9; max-width:480px; margin:0 auto 22px; }
+  .ending .final-num{
+    font-family:'JetBrains Mono',monospace; font-size:38px; color:var(--citrus); margin-bottom:6px;
+  }
+  #screen-ending.is-max .scene{
+    background: linear-gradient(160deg, #142744, #0c1928 65%);
+    border-color: var(--card-color, var(--gold));
+    box-shadow:0 20px 60px -20px var(--card-color, var(--gold)), inset 0 0 40px -18px var(--card-color, var(--gold));
+  }
+  #screen-ending.is-max #end-label{
+    color: var(--glow);
+    font-weight:700;
+    text-shadow:0 0 14px var(--card-color, var(--gold));
+    opacity:1;
+  }
+  #screen-ending.is-max #end-title{
+    background: linear-gradient(90deg, var(--ice), var(--card-color,var(--gold)), var(--citrus));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter: drop-shadow(0 0 18px var(--card-color, var(--gold)));
+  }
+  #screen-ending.is-max #end-num{
+    color:var(--citrus); text-shadow:0 0 16px rgba(255,138,61,0.6);
+  }
+  #screen-ending.is-max #end-text{
+    color:var(--ink-light); opacity:0.92;
+  }
+
+  .finale-title{
+    font-family:'Shippori Mincho',serif; font-weight:800;
+    font-size:clamp(24px,6vw,32px); text-align:center; margin:2px 0 18px;
+    background: linear-gradient(90deg, #ff8a3d, #f0b429, #ffb454, #3fb8e0, #2f8fd8);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .finale-intro{
+    text-align:center; font-size:14px; opacity:0.85; line-height:1.9;
+    max-width:520px; margin:0 auto 28px; color:var(--ink-light);
+  }
+  .finale-vignettes{
+    display:flex; flex-direction:column; gap:14px; margin-bottom:30px;
+  }
+  .finale-card{
+    border:1px solid var(--line); border-left:3px solid var(--vc, var(--gold));
+    border-radius:14px; padding:16px 18px;
+    background:#ffffff;
+    box-shadow:0 10px 30px -16px rgba(4,10,20,0.6);
+  }
+  .finale-card .fname{
+    font-family:'Shippori Mincho',serif; font-weight:700; font-size:14px;
+    color:var(--vc, var(--gold)); margin-bottom:6px;
+  }
+  .finale-card .ftext{
+    font-size:13.5px; line-height:1.85; opacity:0.85;
+  }
+  .finale-closing{
+    text-align:center; font-size:14px; line-height:2.1; opacity:0.9; color:var(--ink-light);
+    max-width:480px; margin:0 auto 26px; white-space:pre-wrap;
+  }
+
+  .hidden{ display:none !important; }
+
+  .mute-btn{
+    position:fixed; top:16px; right:16px; z-index:60;
+    width:42px; height:42px; border-radius:50%;
+    border:1px solid rgba(255,255,255,0.3); background:rgba(255,255,255,0.14);
+    color:var(--glow); font-size:17px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter: blur(8px);
+    box-shadow:0 6px 18px -8px rgba(4,10,20,0.5);
+    transition: border-color .2s, transform .15s;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .mute-btn:hover{ border-color:var(--gold); transform:scale(1.06); }
+  }
+
+  #screen-title{
+    min-height:72vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    cursor:pointer;
+  }
+  #screen-title .lede{ max-width:440px; }
+  .tap-start{
+    margin-top:46px; display:flex; flex-direction:column;
+    align-items:center; gap:14px;
+  }
+  .tap-circle{
+    width:64px; height:64px; border-radius:50%;
+    border:1px solid var(--gold);
+    background:#ffffff;
+    box-shadow:0 6px 20px -10px rgba(240,180,41,0.4);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--citrus); font-size:19px; padding-left:4px;
+    animation: pulseRing 2.2s ease-in-out infinite;
+  }
+  @keyframes pulseRing{
+    0%,100%{ box-shadow:0 0 0 0 rgba(240,180,41,0.35); transform:scale(1); }
+    50%{ box-shadow:0 0 0 16px rgba(240,180,41,0); transform:scale(1.06); }
+  }
+  .tap-label{
+    font-family:'JetBrains Mono',monospace; font-size:11px;
+    letter-spacing:0.3em; color:var(--citrus); opacity:0.9;
+  }
+
+  /* --- ズケーン(おもてなしメニュー図鑑)画面の背景: 爽やかな青空とシトラスの泡 --- */
+  #screen-zukan{ background:#eaf7ff; }
+  #screen-zukan .icebg{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+  #screen-zukan .icebg .base{
+    position:absolute; inset:-10%;
+    background:
+      radial-gradient(ellipse at 20% 15%, rgba(63,184,224,0.22), transparent 50%),
+      radial-gradient(ellipse at 80% 75%, rgba(240,180,41,0.16), transparent 55%),
+      linear-gradient(160deg, #f5fbff 0%, #ffffff 55%, #fff7e6 100%);
+  }
+  #screen-zukan .bubble{
+    position:absolute; border-radius:50%;
+    background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.95), rgba(63,184,224,0.28) 65%, transparent 74%);
+    box-shadow:0 2px 8px -2px rgba(63,184,224,0.25);
+    animation: bubbleFloat var(--dur,9s) ease-in-out infinite;
+    animation-delay: var(--delay,0s);
+    opacity:var(--op,0.6);
+  }
+  @keyframes bubbleFloat{
+    0%,100%{ transform:translateY(0) scale(1); }
+    50%{ transform:translateY(-18px) scale(1.08); }
+  }
+  #screen-zukan .zukan-card{
+    background:rgba(255,255,255,0.82);
+    border:1px solid var(--line);
+    backdrop-filter: blur(6px);
+    position:relative; z-index:2;
+  }
+  #screen-zukan .eyebrow, #screen-zukan .title, #screen-zukan #zukan-progress, #screen-zukan .backbtn{
+    position:relative; z-index:2;
+  }
+  #screen-zukan #zukan-progress{ color:var(--ink); opacity:0.75; }
+</style>
+</head>
+<body data-tier="0">
+<audio id="bgm" loop preload="auto"></audio>
+<button class="mute-btn" id="mute-btn" title="BGMのオン/オフ">🔊</button>
+<div class="stars"></div>
+<div class="wrap">
+
+  <!-- TITLE SCREEN -->
+  <div id="screen-title">
+    <div class="eyebrow">Otherworld VIP Hospitality Chronicle</div>
+    <h1 class="title">異世界ダメ人間計画<br>今夜もVIPを瓢箪します!</h1>
+    <p class="lede">外は蒸し暑い異世界の夏。だが「俺の城」だけは別次元の快適さを誇る。……のに、一人で堪能してもだんだん虚しい。よし、今夜も異世界のVIPを瓢箪(ひょうたん)して、この城の凄さをレビューしてもらおう。</p>
+    <div class="tap-start" id="tap-start">
+      <div class="tap-circle">▶</div>
+      <div class="tap-label">TAP TO START</div>
+    </div>
+  </div>
+
+  <!-- SELECT SCREEN -->
+  <div id="screen-select" class="hidden">
+    <div class="eyebrow">Guest List</div>
+    <div class="total-happiness" id="total-happiness">総堕落ポイント: 0</div>
+    <div class="char-grid" id="char-grid"></div>
+    <button class="zukan-btn" id="btn-zukan">🍹 おもてなしメニュー図鑑を見る</button>
+    <button class="reset-save-btn" id="btn-reset-save">セーブデータをリセット</button>
+  </div>
+
+  <!-- ZUKAN (MENU GUIDE) SCREEN -->
+  <div id="screen-zukan" class="hidden">
+    <div class="icebg" aria-hidden="true">
+      <div class="base"></div>
+      <div class="bubble" style="left:8%; top:14%; width:18px; height:18px; --dur:8.5s; --delay:-1s; --op:0.55;"></div>
+      <div class="bubble" style="left:22%; top:62%; width:10px; height:10px; --dur:7.2s; --delay:-3s; --op:0.4;"></div>
+      <div class="bubble" style="left:38%; top:28%; width:14px; height:14px; --dur:9.8s; --delay:-2s; --op:0.5;"></div>
+      <div class="bubble" style="left:55%; top:78%; width:22px; height:22px; --dur:10.5s; --delay:-4s; --op:0.35;"></div>
+      <div class="bubble" style="left:70%; top:18%; width:12px; height:12px; --dur:7.8s; --delay:-1.5s; --op:0.5;"></div>
+      <div class="bubble" style="left:83%; top:55%; width:16px; height:16px; --dur:9.2s; --delay:-2.6s; --op:0.45;"></div>
+      <div class="bubble" style="left:92%; top:30%; width:9px; height:9px; --dur:6.8s; --delay:-0.6s; --op:0.4;"></div>
+      <div class="bubble" style="left:15%; top:85%; width:13px; height:13px; --dur:8.9s; --delay:-3.4s; --op:0.4;"></div>
+      <div class="bubble" style="left:48%; top:10%; width:11px; height:11px; --dur:7.5s; --delay:-2.2s; --op:0.45;"></div>
+      <div class="bubble" style="left:64%; top:48%; width:19px; height:19px; --dur:9.6s; --delay:-1.8s; --op:0.4;"></div>
+    </div>
+    <div class="topbar">
+      <button class="backbtn" id="btn-zukan-back">← ゲスト選択に戻る</button>
+    </div>
+    <div class="eyebrow">MENU GUIDE</div>
+    <h1 class="title" style="font-size:24px;">おもてなしメニュー図鑑</h1>
+    <p class="lede" id="zukan-progress"></p>
+    <div class="zukan-list" id="zukan-list"></div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="screen-game" class="hidden">
+    <div class="topbar">
+      <button class="backbtn" id="btn-back">← ゲスト選択に戻る</button>
+    </div>
+    <div class="who">
+      <div class="dot" id="who-dot"></div>
+      <div>
+        <div class="name" id="who-name"></div>
+        <div class="rank" id="who-rank"></div>
+      </div>
+    </div>
+    <div style="height:14px;"></div>
+    <div class="gauge-shell"><div class="gauge-fill" id="gauge-fill"></div></div>
+    <div class="gauge-num" id="gauge-num">堕落ポイント 0</div>
+
+    <div class="scene">
+      <div class="scene-label" id="scene-label">SCENE</div>
+      <div class="scene-text" id="scene-text"></div>
+    </div>
+
+    <div class="choices" id="choices"></div>
+  </div>
+
+  <!-- ENDING SCREEN -->
+  <div id="screen-ending" class="hidden">
+    <div class="scene ending">
+      <div class="scene-label" id="end-label">EPILOGUE</div>
+      <h2 id="end-title"></h2>
+      <div class="final-num" id="end-num"></div>
+      <p id="end-text"></p>
+      <button class="continue-btn" id="btn-ending-back" style="float:none;">ゲスト選択に戻る</button>
+    </div>
+  </div>
+
+  <!-- FINALE SCREEN -->
+  <div id="screen-finale" class="hidden">
+    <div class="eyebrow">SPECIAL EPILOGUE COLLECTION</div>
+    <h2 class="finale-title">それからの日々</h2>
+    <p class="finale-intro" id="finale-intro"></p>
+    <div class="finale-vignettes" id="finale-vignettes"></div>
+    <p class="finale-closing" id="finale-closing"></p>
+    <button class="continue-btn" id="btn-finale-back" style="float:none;">ゲスト選択に戻る</button>
+  </div>
+
+</div>
+
+<div class="burst-layer">
+  <div class="burst" id="burst"></div>
+</div>
+<div class="flash-overlay" id="flash-overlay"></div>
+<div class="rankup-banner" id="rankup-banner">
+  <div class="lbl">RANK UP</div>
+  <div class="big" id="rankup-text"></div>
+</div>
+
+<script>
+/* --- 堕落ランク定義: 数値が上がるほど「ダメ人間」に近づく --- */
+const RANKS = [
+  {min:0,   name:"警戒MAX(誘拐犯だと思っている)"},
+  {min:50,  name:"困惑(状況が飲み込めない)"},
+  {min:100, name:"骨抜き(この城の虜)"},
+  {min:180, name:"依存気味(禁断症状ちらほら)"},
+  {min:250, name:"国宝級ダメ人間(完全に堕ちた)"}
+];
+
+/* --- ゲストデータ ---
+   tier:1 は常時解放。tier2以上を増やす場合はTIER_THRESHOLDSに閾値を追加すること。
+   1人につき: event1(邂逅シーン、共通) → routes.A/B(それぞれ7シーン+最終シーン)を用意する。 */
+const DATA = {
+  nostia: {
+    name:"ノースティア",
+    subtitle:"エイセレブ王国 第一王女。生真面目すぎる激務系お姫様",
+    emblem:"王",
+    color:"#3f8fc4",
+    glow:"#bfe8ff",
+    tier:1,
+    event1:{
+      label:"SCENE 01 — 瓢箪、開幕",
+      text:"深夜、政務に潰れかけていたエイセレブ王国第一王女ノースティアの寝室に、闇より昏い扉が出現した。\n\n現れたのは、やたら緩い服(ジャージ)を着た正体不明の男。腰の細剣に手をかけかけるが、溢れ出る桁外れの魔力にすくみ、抗う術もなく城の主(俺)に連れ去られる。\n\n覚悟していたのは処刑か、人質か。だが通された部屋に足を踏み入れた瞬間、全身を包んだのは、信じられないほど心地よい涼気だった。\n\n『……涼しい……なにこれ、生き返るぅ……』\n\n促されるまま腰を下ろしたソファに、王女の身体はずぶずぶと沈んでいく。威厳も警戒も、雲のような座り心地の前に早くも風前の灯火だ。\n\nさて、これからの一手をどうするか。",
+      choices:[
+        { label:"「そのまま何も考えず、力を抜いてください」と優しく促す", delta:100, route:"A",
+          result:"何も急かされないことに、かえって毒気を抜かれたのか、ノースティアはますますソファに沈み込んでいく。\n『こ、これが……異世界の技術……』\nまだレビューシートの説明もしていないのに、早くも骨抜きの気配が漂っていた。" },
+        { label:"「まずはレビューシートの説明からしますね」と事務的に切り出す", delta:75, route:"B",
+          result:"ノースティアは弾かれたように居住まいを正した。\n『れ、レビューシート……そう、これは公務よ。決して寛いでいるわけではないわ』\n涼しい顔で言い張るものの、視線はちらちらとソファの座り心地に泳いでいた。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"即堕ちルート",
+        events:[
+          { label:"SCENE 02 — おしぼりに陥落", celestialId:"oshibori",
+            text:"『次はこれ、目に当ててみてください』\n手渡された、ほのかに柑橘の香る温かいおしぼり。言われるまま目元に当てた瞬間、ノースティアの口からはしたない声が漏れた。\n『……あぁ、っ……政務で凝り固まった目の奥が、溶けていく……』",
+            choices:[
+              { label:"何も言わず、しばらくそのまま休ませる", delta:10, result:"ノースティアは声もなく、ただじっとおしぼりの温もりに身を委ねていた。政務の重圧が、少しずつ抜けていくのが分かった。" },
+              { label:"「随分お気に召したみたいですね」とニヤける", delta:40, result:"薄目を開けたノースティアがジト目をよこすが、すぐにまたおしぼりの心地よさに屈服する。『……うるさいわね。でも、否定はしないわ』" }
+            ]
+          },
+          { label:"SCENE 03 — 帰巣本能の喪失", celestialId:"sofa",
+            text:"すっかり油断したノースティアの身体が、さらに深くソファに沈んでいく。\n『ちょっと待って……これ、まさか二度と立ち上がれない構造になってない!?』\n遅まきながらの警戒だったが、もはや抜け出す気力はどこにもないようだった。",
+            choices:[
+              { label:"「大丈夫です、朝にはちゃんと立てます」と適当に請け合う", delta:10, result:"『……その適当さが、逆に安心するわね』謎の納得をされ、ノースティアはさらに脱力した。" },
+              { label:"「立てなくなっても、責任は取りますよ」と冗談めかす", delta:45, result:"ノースティアは思わず噴き出した。『随分、神様らしからぬ発言ね』王女としての仮面が外れた、初めての素の笑顔だった。" }
+            ]
+          },
+          { label:"SCENE 04 — レビューシートの正体",
+            text:"星5つのレビューシートを渡され、ノースティアは眉をひそめた。\n『本当に、感想を書くだけでいいの?国の宝でも差し出せと言われる方が、まだ納得できるのだけれど』",
+            choices:[
+              { label:"「そうです、正直な気持ちだけで十分です」", delta:10, result:"『……本当に、それだけでいいのね』半信半疑のまま、ノースティアはシートを大事そうに膝の上に置いた。" },
+              { label:"「王女としてじゃなく、ただのノースティアさんの言葉が欲しいんです」", delta:45, result:"ノースティアは一瞬言葉に詰まり、視線を落とした。『……そんな風に言われたのは、初めてだわ』" }
+            ]
+          },
+          { label:"SCENE 05 — 束の間の弱音",
+            text:"涼しさに緩んだ心のせいか、ノースティアの表情に影が差した。\n『干ばつの被害、増税への陳情、隣国との国境問題……お父様の体調も優れないし、私がしっかりしないと、って……』\n愚痴のようなそれを漏らしてから、はっと我に返り口をつぐんだ。",
+            choices:[
+              { label:"「今だけは何も考えなくていいですよ」と静かに促す", delta:15, result:"ノースティアは詰めていた息をゆっくり吐き、また目を閉じた。何も返さなかったことが、正解だったらしい。" },
+              { label:"「王女じゃなくて、今夜だけはただのノースティアさんとして過ごしてください」", delta:50, result:"ノースティアは虚をつかれたように黙り込み、それからそっと目を潤ませた。『……そんな許可、生まれて初めてもらったわ』" }
+            ]
+          },
+          { label:"SCENE 06 — 特製瓢箪パフェ、実食", celestialId:"parfait",
+            beats:[
+              { text:"ガラスの器に盛られた、きらびやかな一品が目の前に置かれる。白い山のようなクリーム、艶やかな果実のソース、そして底には冷たい氷の結晶。\n『……食べて、いいの?』ノースティアが恐る恐る尋ねた。" },
+              { text:"『どうぞ、スプーンで下まで一気にすくって食べてみてください』\nおそるおそるスプーンを口に運んだ瞬間、ノースティアの手が止まった。" },
+              { text:"言葉が出ない様子で、彼女はもう一度、もう一口とスプーンを動かし始めた。" },
+              { text:"ガツガツ、と行儀作法もかなぐり捨てた音が響く。", type:"sfx" },
+              { text:"『美味しい……美味しすぎるわ!王宮の宮廷料理人が作るお菓子なんて、これに比べたらただの泥よ!』", climax:true },
+              { text:"王女としての礼儀作法など、この暴力的な美味しさの前ではとうに意味を成していなかった。目には、うっすらと涙まで浮かんでいる。" }
+            ],
+            choices:[
+              { label:"何も言わず、夢中で食べる彼女をただ見守る", delta:15, result:"ノースティアはパフェを食べ終えるまで、一言も口をきかなかった。それだけ本気で味わっていた証拠だった。" },
+              { label:"「そんなに気に入ってもらえるとは思いませんでした」と伝える", delta:35, result:"ノースティアはスプーンを咥えたまま、恨めしそうにこちらを睨んだ。『……笑うところじゃないでしょう』耳が赤いのは、涼しさのせいだけではなさそうだった。" },
+              { label:"「その顔だけで、今夜あなたを瓢箪してよかったと思えます」と伝える", delta:70, result:"ノースティアの手が止まった。『……ずるいわ、そんな時に言うなんて』顔を背けた頬が、夜目にもわかるほど赤らんでいた。" }
+            ]
+          },
+          { label:"SCENE 07 — 涙腺を狙うバラード", celestialId:"bgm_ballad",
+            text:"オーディオから、前世の歌姫が歌う静かなバラードが流れ出す。\n吟遊詩人の騒がしいリュートとはまるで違う、繊細で宇宙のように広い音の重なり。\n気づけばノースティアの目から、ぽろぽろと涙がこぼれていた。\n『……音楽というものは、こんなにも気高いものだったのね……』",
+            choices:[
+              { label:"何も言わず、静かに音楽が終わるのを待つ", delta:15, result:"ノースティアはソファに深くもたれ、涙を拭うこともせず、旋律に身を委ね続けていた。" },
+              { label:"「よかったら、次来た時もこの曲かけますよ」と伝える", delta:55, result:"ノースティアは涙を拭いながら小さく笑った。『……次、って。もう次があるみたいな言い方するのね』咎める声に、拒む響きはどこにもなかった。" }
+            ]
+          },
+          { label:"SCENE 08 — 国宝、誕生", final:true,
+            text:"すっかり夜も更け、震える手でレビューシートに星5つを書き終えたノースティアに、俺は最後の一言を投げかけた。\n『さて、そろそろお帰りの時間です。今夜はどうでした?』",
+            choices:[
+              { label:"「また来てくださいね、いつでも」と軽く送り出す", delta:20, result:"ノースティアは名残惜しそうにソファを一撫でしてから頷いた。『……ええ、また来るわ、きっと』" },
+              { label:"「今夜からあなたは、うちの正式な常連客です」と告げる", delta:85, result:"ノースティアの表情が、一瞬で崩れた。取り繕う余裕もなく、両手で顔を覆って俯く。\n『……ずるいわ、そんなの、断れるわけないでしょう』\n指の隙間から漏れた声は、涙で濡れていた。エイセレブ王国『完璧な王女』の、初めての決壊だった。" }
+            ],
+            endingText:"王宮に戻ったノースティアは、しばらく放心したように天井を見上げていた。『……あれは、絶対に神だったわ』誰にともなく呟くその声には、国家の重責を一身に背負う『完璧な第一王女』らしからぬ、恍惚とした響きが混じっていた。密かな祈りの相手が、また一人増えた夜だった。"
+          }
+        ],
+        epilogueText:"後日譚。政務の合間、ノースティアはこっそりと瓢箪されにくる『常連』になっていた。\n『今夜は真面目な話、聞いてくれる?』王女の顔ではなく、ただの一人の女性としての愚痴を、ソファに沈みながら零す夜が増えていく。\n『……ここに来るためだけに、日中の仕事を頑張ってる気がするわ』\n国が誇る第一王女は、誰も知らないところで、着々とダメ人間への道を突き進んでいた。"
+      },
+      B:{
+        routeLabel:"虚勢を張り続けるルート",
+        events:[
+          { label:"SCENE 02 — 建前とおしぼり", celestialId:"oshibori",
+            text:"『次はこれ、目に当ててみてください』\n差し出された温かいおしぼりを、ノースティアは訝しみながらも受け取った。\n『……これも、調査の一環かしら』\n言い聞かせるように呟きながら目元に当てた瞬間、彼女の肩から力が抜けた。\n『……っ、あ……悪くない、わね……』",
+            choices:[
+              { label:"「無理に感想を言わなくて大丈夫ですよ」と流す", delta:10, result:"ノースティアはほっとしたように、それ以上何も言わずおしぼりの温もりに浸っていた。" },
+              { label:"「素直に気持ちよさそうな顔してますよ」と指摘する", delta:40, result:"ノースティアは慌てて表情を引き締めようとしたが、うまくいかず、結局頬を赤らめて黙り込んだ。" }
+            ]
+          },
+          { label:"SCENE 03 — 崩れる虚勢", celestialId:"sofa",
+            text:"ソファに座り直そうとしたノースティアの体が、意思に反してさらに深く沈んでいく。\n『な、なぜ姿勢を正そうとするほど沈むの……!?これは何かの罠?』\n必死に威厳を保とうとするほど、ソファに屈服していく皮肉な構造だった。",
+            choices:[
+              { label:"「諦めて身を任せた方が楽ですよ」と助言する", delta:10, result:"ノースティアはしばし葛藤していたが、やがて観念したように脱力した。『……悔しいけれど、その通りみたいね』" },
+              { label:"「意地を張るあなたも見ものです」とからかう", delta:45, result:"ノースティアはキッと睨みつけてきたが、その顔はソファに半分埋もれていて、まるで迫力がなかった。" }
+            ]
+          },
+          { label:"SCENE 04 — レビューシートへの反発",
+            text:"星5つのレビューシートを渡され、ノースティアは細い眉を吊り上げた。\n『冗談じゃないわ。一国の王女に、こんな軽々しい紙切れ一枚で感想を書けと?』\n言葉は強気だったが、手はしっかりとシートを握りしめていた。",
+            choices:[
+              { label:"「書きたくなければ、無理にとは言いません」と引く", delta:10, result:"ノースティアは毅然と頷いたが、シートを手放そうとはしなかった。" },
+              { label:"「本音を隠したいなら、それはそれで一つの答えです」と返す", delta:45, result:"ノースティアは息を呑んだ。『……本音、ね』独り言のように呟く声は、思ったより弱々しかった。" }
+            ]
+          },
+          { label:"SCENE 05 — 素顔が滲む瞬間",
+            text:"ふとした沈黙の合間、ノースティアの表情に疲労が滲んだ。\n『……この国はもう、私がいないと回らないの。誰かに弱音を吐くことすら、許されない立場だから』\n言ってから、しまったというように口をつぐんだ。",
+            choices:[
+              { label:"聞かなかったふりをして、話題を変える", delta:15, result:"ノースティアはほっとしたように肩の力を抜いた。追及されないことが、今の彼女には救いだったようだ。" },
+              { label:"「ここでは、王女の仮面を外してもいいですよ」と静かに告げる", delta:50, result:"ノースティアは目を見開き、それからゆっくりと俯いた。『……そんな場所、初めてもらったわ』声が、微かに震えていた。" }
+            ]
+          },
+          { label:"SCENE 06 — 意地の限界、パフェの前で", celestialId:"parfait",
+            beats:[
+              { text:"目の前に置かれた芸術品のようなパフェを前に、ノースティアは平静を装って言った。『別に、この程度の菓子で驚いたりしないわ』" },
+              { text:"そう言いながらも、スプーンを手に取る指先は、隠しきれないほど震えていた。" },
+              { text:"一口運んだ瞬間、ノースティアの表情筋が完全に崩壊した。" },
+              { text:"ガツガツ、と行儀作法をかなぐり捨てた音が響いた。", type:"sfx" },
+              { text:"『っ……美味しい……美味しすぎるわ!こんなの、王宮では絶対に出てこない味よ!』", climax:true },
+              { text:"取り繕う余裕はもう、どこにも残っていなかった。頬を紅潮させ、夢中でスプーンを動かし続ける姿は、さっきまでの虚勢が嘘のようだった。" }
+            ],
+            choices:[
+              { label:"何も言わず、彼女のプライドが完全に崩れるのを見届ける", delta:15, result:"ノースティアは最後の一口まで、一言も強がりを口にしなかった。それが何よりの答えだった。" },
+              { label:"「さっきまでの『驚かない』はどこ行きました?」とからかう", delta:35, result:"ノースティアはスプーンを咥えたまま固まり、それから顔を赤くして『……忘れなさい』と絞り出した。" },
+              { label:"「意地を張らなくていい顔の方が、俺は好きですよ」と伝える", delta:70, result:"ノースティアの動きが止まった。『……ずるいわ、そんな時に』顔を背けた耳が、夜目にもわかるほど赤らんでいた。" }
+            ]
+          },
+          { label:"SCENE 07 — 涙は仮面の下から", celestialId:"bgm_ballad",
+            text:"静かなバラードが流れ出す。ノースティアは涙をこらえるように唇を結んでいたが、やがて堪えきれず、頬を伝った。\n『……変ね。泣くようなことなんて、何もないはずなのに』\n強がりの言葉とは裏腹に、涙は止まらなかった。",
+            choices:[
+              { label:"何も言わず、そっとハンカチを差し出す", delta:15, result:"ノースティアは無言でハンカチを受け取り、静かに涙を拭った。感謝の言葉はなかったが、拒む素振りもなかった。" },
+              { label:"「我慢しなくても、ここでは誰も見てませんよ」と伝える", delta:55, result:"ノースティアは声を殺して泣き出した。溜め込んでいたものが、堰を切ったように溢れ出していた。" }
+            ]
+          },
+          { label:"SCENE 08 — 崩れた仮面、それから", final:true,
+            text:"震える手でレビューシートに星5つを書き終えたノースティアに、俺は最後の一言を投げかけた。\n『さて、そろそろお帰りの時間です。今夜はどうでした?』",
+            choices:[
+              { label:"「無理に本音を認めなくても大丈夫ですよ」と伝える", delta:20, result:"ノースティアは小さく頷いた。『……ありがとう。今夜のことは、忘れないわ』静かな声だった。" },
+              { label:"「もう意地を張らなくていいこと、分かってますよね」と告げる", delta:85, result:"ノースティアの表情が、堰を切ったように崩れた。\n『……分かってる、よ。分かってるから、そんな風に言わないで』\n涙声のまま、それでも小さく笑っていた。エイセレブ王国『完璧な王女』が、初めて見せた素顔だった。" }
+            ],
+            endingText:"王宮に戻ったノースティアは、鏡の前で自分の頬をそっと撫でた。『……次は、意地を張らずに行こうかしら』虚勢を張り続けていたはずのその横顔から、素直な緩みが消えないまま、彼女は静かに微笑んでいた。"
+          }
+        ],
+        epilogueText:"後日譚。政務の合間、ノースティアはこっそりと瓢箪されにくる『常連』になっていた。\n最初こそ『これは公務よ』と言い張っていた強がりも、いつしか鳴りを潜めていた。\n『……今夜も、寛がせてもらうわよ』\n強がりの仮面の下に隠していた素顔を、誰よりも早く見せてくれるようになっていた。"
+      }
+    }
+  },
+  kings:{
+    name:"エイセレブ王＆ハイドランジア王",
+    subtitle:"国境問題で一触即発中の、隣国同士の国王コンビ",
+    emblem:"杯",
+    color:"#c9862f",
+    glow:"#ffe0a0",
+    tier:1,
+    event1:{
+      label:"SCENE 01 — 二人同時瓢箪、開幕",
+      text:"国境問題で一触即発だったエイセレブ王国の隠密会議室のど真ん中に、闇より昏い扉が出現した。\n\n『な、何事だっ!』『刺客か!?空間魔法だと!?』\n\n護衛の剣聖たちが剣を抜く間もなく、溢れ出た規格外の魔力にその場へ崩れ落ちる。エイセレブ王とハイドランジア王、二人の最高権力者は、有無を言わさず襟首を掴まれ、扉の向こうへ引きずり込まれた。\n\n『……ふぁっ!?』『な、なんだこの涼しさは!?』\n\n通されたのは、ジャズが流れる大人のバーカウンター。汗はすっと引き、さっきまでの一触即発の空気はどこかへ消えていた。\n\nさて、この二人にはどちらから手をつけるか。",
+      choices:[
+        { label:"問答無用で「これでも飲んで落ち着いてください」とお酒を勧める", delta:100, route:"A",
+          result:"二人は毒気を抜かれたようにグラスを受け取った。\n『……毒ではないな?』『ここまでの化け物が、今更毒など使う意味がない』\n警戒しつつも、喉の渇きには勝てなかったらしい。" },
+        { label:"「せっかくなので、まずゲームで白黒つけてみません?」とカードを取り出す", delta:75, route:"B",
+          result:"二人は顔を見合わせた。\n『……ほう、腕試しというわけか』\n一国の王としてのプライドに火がついたのか、警戒より先に好奇心が勝ったようだった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"酒で丸め込むルート",
+        events:[
+          { label:"SCENE 02 — 特製フローズンエール", celestialId:"frozen_ale",
+            text:"出されたのは、表面がシャリシャリに凍りついた、透明感のある黄金の液体。\nごくり、と二人が同時に喉を鳴らした瞬間、揃って声を上げた。\n『美味い……ッ!!なんだこの喉越しは!?』\n普段飲んでいる、ぬるくて酸っぱい高級(笑)エールとは次元が違ったらしい。",
+            choices:[
+              { label:"何も言わず、おかわりのグラスを用意しておく", delta:10, result:"二人は無言のまま、おかわりのグラスに次々と手を伸ばした。よほど気に入ったようだった。" },
+              { label:"「口に合いました?」とニヤけながら煽る", delta:40, result:"エイセレブ王がバツが悪そうに咳払いした。『……悪くはない、というレベルだ』耳の赤さが答えを物語っていた。" }
+            ]
+          },
+          { label:"SCENE 03 — 王の重圧",
+            text:"エールで少し緩んだのか、エイセレブ王がぽつりとこぼした。\n『……最近、隣国との会談続きで胃が痛くてな。ハゲそうなくらいだ』\nハイドランジア王も苦笑いで頷く。『それはお互い様だ』",
+            choices:[
+              { label:"「今夜くらい、忘れて楽しんでください」と流す", delta:10, result:"二人は顔を見合わせ、小さく笑った。忘れる許可が欲しかっただけなのかもしれない。" },
+              { label:"「胃を痛めてまで守るものが、お二人にはあるんですね」と返す", delta:45, result:"二人は一瞬黙り込み、それから照れ隠しのようにグラスを掲げた。『……当然だ』声が揃っていた。" }
+            ]
+          },
+          { label:"SCENE 04 — 前世のゲーム『ポーカー』", celestialId:"poker",
+            text:"『じゃあ、これで白黒つけましょう。前世の伝統的なゲーム『ポーカー』です』\nカードを配りながらルールを説明すると、二人は目を輝かせた。\n『……要するに、高度な心理戦だな。国を率いる我らにふさわしい』",
+            choices:[
+              { label:"「そうです、ただのお遊びですけどね」と軽く流す", delta:10, result:"『お遊びとはいえ、負けるつもりはない』二人とも早くも真剣な顔でカードを見つめていた。" },
+              { label:"「外交と一緒で、駆け引きが全てのゲームですよ」と焚き付ける", delta:45, result:"二人の目つきが変わった。『……面白い。乗った』完全に火がついてしまったようだった。" }
+            ]
+          },
+          { label:"SCENE 05 — 探り合いの初手",
+            text:"最初のハンドから、二人は早くも腹の探り合いを始めていた。\n『……その顔、ブラフだな?』\n『さあ、どうかな。ハイドランジア王こそ余裕そうだが』\n国境会談さながらの緊張感が、カードテーブルの上で再現されていた。",
+            choices:[
+              { label:"「熱いですね」と観戦に徹する", delta:15, result:"二人はますますヒートアップし、こちらの存在などとうに忘れているようだった。" },
+              { label:"「その駆け引き、会議室でもやればよかったのに」とからかう", delta:50, result:"二人は同時にこちらを見て、それから気まずそうに笑った。『……それは、一理あるな』" }
+            ]
+          },
+          { label:"SCENE 06 — オールインとブラフ看破", celestialId:"bluff_showdown",
+            beats:[
+              { text:"『ワンペア……いや、我が国はこれほど弱気ではいかん!オールイン(全賭け)だ!』エイセレブ王がチップを一気に押し出した。" },
+              { text:"ハイドランジア王の顔に、一瞬だけ動揺が走る。だが、すぐに余裕の表情を作り直した。" },
+              { text:"『なにっ!?……くっ、その余裕の表情、ハイドランジア王、貴様ブラフだな!?勝負だ!』" },
+              { text:"バン、とカードがテーブルに叩きつけられる音が響いた。", type:"sfx" },
+              { text:"『はっはっは!外交とは常に騙し合いよ!……おい店主、この『ぽーかー』とかいうやつ、めちゃくちゃ面白いぞ!エールもう一杯!』", climax:true },
+              { text:"国境問題で睨み合っていたはずの二人が、少年のように笑い合っていた。カードゲーム一つで、これほど打ち解けるとは誰も予想していなかっただろう。" }
+            ],
+            choices:[
+              { label:"何も言わず、笑い合う二人におかわりを出す", delta:15, result:"二人は礼も言わずグラスを差し出してきたが、その顔はすっかり上機嫌だった。" },
+              { label:"「お二人とも、思ったより似た者同士ですね」と伝える", delta:35, result:"二人は同時に『似てない』と言い張ったが、視線を交わして噴き出した。まんざらでもなさそうだった。" },
+              { label:"「その笑い方、さっきまでの一触即発が嘘みたいですね」と伝える", delta:70, result:"二人は一瞬黙り込み、それからバツが悪そうに頭を掻いた。『……否定はせん』エイセレブ王がぼそりと呟いた。" }
+            ]
+          },
+          { label:"SCENE 07 — 不毛な土地の奪い合い",
+            text:"エールが進むにつれ、二人の口調はどんどん砕けていった。\n『……なぁ、エイセレブ王よ。そもそも、あの不毛な土地の奪い合い、不毛じゃね?』\n『うむ。我が国が農作物を輸出し、そちらの鉱石を輸入すれば、汗を流して戦う必要などないのではないか?』",
+            choices:[
+              { label:"何も言わず、二人の話し合いを見守る", delta:15, result:"二人は誰に促されるでもなく、自分たちだけで和平の糸口を見つけ始めていた。" },
+              { label:"「それ、素面の会議室で言えばよかったのに」と茶々を入れる", delta:55, result:"二人は同時にこちらを睨んだが、すぐに肩をすくめて笑った。『……耳が痛いな』" }
+            ]
+          },
+          { label:"SCENE 08 — 神のサロン、それから", final:true, celestialId:"canned_beer_cards",
+            text:"すっかり打ち解けた二人にレビューシートを渡すと、震える手ではなく、上機嫌な手で星5つが書き込まれた。\n『さて、そろそろお帰りの時間です。お土産にトランプと、冷えた缶ビールをどうぞ』",
+            choices:[
+              { label:"「また揉め事があったら、ここで話し合ってくださいね」と軽く送り出す", delta:20, result:"二人は顔を見合わせて笑った。『……次は、揉める前に来た方が早そうだな』" },
+              { label:"「今夜からこの部屋を、第二の王宮ということにしておきましょう」と告げる", delta:85, result:"二人は同時に破顔した。『それはいい!』『異議なしだ!』\n国境問題で睨み合っていたはずの二人の王は、すっかり意気投合した様子で、缶ビール片手に固い握手を交わしていた。" }
+            ],
+            endingText:"城に戻った二人の国王は、その足で早速つまみと酒を用意させ、夜通しポーカーの続きをせがんだ。護衛の剣聖たちは、『陛下方がついに何かに目覚めてしまわれた……』と、揃って頭を抱えるのだった。"
+          }
+        ],
+        epilogueText:"後日譚。エイセレブ王とハイドランジア王は、国境の会談のたびにこっそり示し合わせて『視察』と称し、この部屋に瓢箪されにきている。\n今日も『かんびーる』片手にポーカーで盛り上がる二人の傍らで、剣聖たちは今日も置いてけぼりのまま首をかしげている。"
+      },
+      B:{
+        routeLabel:"カードで語らせるルート",
+        events:[
+          { label:"SCENE 02 — 意地の心理戦、開幕", celestialId:"poker",
+            text:"『じゃあ、これで白黒つけましょう。前世の伝統的なゲーム『ポーカー』です』\n二人は訝しみながらもカードを手に取った。\n『……国を率いる者として、負けるわけにはいかんな』\nまだ笑顔はどこにもなかった。",
+            choices:[
+              { label:"「そんなに気負わなくても、ただのお遊びですよ」と流す", delta:10, result:"二人は聞く耳を持たず、真剣な顔でカードを睨み続けていた。" },
+              { label:"「外交の駆け引きそのままですよ」と焚き付ける", delta:40, result:"二人の目つきが鋭くなった。『……面白い言い方をする』火に油を注いでしまったようだった。" }
+            ]
+          },
+          { label:"SCENE 03 — 国境線を賭けた勝負",
+            text:"『この一戦、国境線の行方を賭けようではないか』\nエイセレブ王が物々しく宣言すると、ハイドランジア王も鼻で笑って応じた。\n『望むところだ』\nバーカウンターは、いつしか本物の外交の場のような緊張感に包まれていた。",
+            choices:[
+              { label:"「せっかくなので気楽にやりましょう」と場を和ませようとする", delta:10, result:"二人はちらとこちらを見たが、真剣な表情は崩れなかった。" },
+              { label:"「本気で睨み合うくらいなら、初めから仲良くすればいいのに」とぼそっと呟く", delta:45, result:"二人は同時にむっとした顔をしたが、反論の言葉は出てこなかった。" }
+            ]
+          },
+          { label:"SCENE 04 — 緊張をほぐすフローズンエール", celestialId:"frozen_ale",
+            text:"張り詰めた空気の中、俺はそっとグラスを差し出した。『まぁまぁ、これでも飲んで一息ついてください』\n渋々口をつけた瞬間、二人の表情が同時に崩れた。\n『……美味い……ッ!!なんだこの喉越しは!?』",
+            choices:[
+              { label:"何も言わず、二人が落ち着くのを待つ", delta:10, result:"二人はしばらく無言でグラスを傾け続けていた。強張っていた肩から、少しずつ力が抜けていく。" },
+              { label:"「そんなに睨み合わなくても、逃げませんよ」と茶化す", delta:45, result:"二人は同時に噴き出した。『……確かに、逃げようがないな』張り詰めていた空気が、少しだけ緩んだ。" }
+            ]
+          },
+          { label:"SCENE 05 — 本音がこぼれる瞬間",
+            text:"エールの効果か、エイセレブ王がぽつりと弱音をこぼした。\n『……正直、最近は会談続きで胃が痛くてな。ハゲそうなくらいだ』\nハイドランジア王も驚いたように目を見開いた。『……お前もか』",
+            choices:[
+              { label:"聞かなかったふりをして、話を逸らす", delta:15, result:"二人はほっとしたように、それ以上は何も言わなかった。" },
+              { label:"「お二人とも、同じ悩みを抱えてたんですね」と指摘する", delta:50, result:"二人は顔を見合わせ、それから同時にため息をついた。『……皮肉なものだな』初めて、二人の間に共感めいた空気が流れた。" }
+            ]
+          },
+          { label:"SCENE 06 — 崩れる真剣勝負", celestialId:"bluff_showdown",
+            beats:[
+              { text:"『ワンペア……いや、我が国はこれほど弱気ではいかん!オールイン(全賭け)だ!』真剣そのものの声で、エイセレブ王がチップを押し出した。" },
+              { text:"ハイドランジア王も表情を変えないまま、静かにコールする。国境会談さながらの緊迫感だった。" },
+              { text:"だが手札を開いた瞬間、二人は同時に呆気に取られた顔をした。" },
+              { text:"バン、とテーブルを叩く音が響いた。", type:"sfx" },
+              { text:"『はっはっは!……なんだ、この程度の手で、そこまで気負っていたのか!』エイセレブ王が思わず吹き出した。", climax:true },
+              { text:"張り詰めていた真剣勝負が、あっけない結末で緩んだ瞬間、二人は堪えきれずに笑い出していた。国境問題の緊張感は、もうどこにも残っていなかった。" }
+            ],
+            choices:[
+              { label:"何も言わず、笑い出した二人を見守る", delta:15, result:"二人はしばらく笑い続け、ようやく落ち着いた頃には、すっかり肩の力が抜けていた。" },
+              { label:"「そんなに気負わなくても、良かったんじゃないですか?」と伝える", delta:35, result:"二人は気まずそうに視線を逸らした。『……分かっている。分かっているさ』" },
+              { label:"「意地を張り合う二人より、今の二人の方がいいですね」と伝える", delta:70, result:"二人は同時に黙り込み、それから照れくさそうに笑った。『……否定はせん』ハイドランジア王が先に折れた。" }
+            ]
+          },
+          { label:"SCENE 07 — 不毛な土地の奪い合い",
+            text:"すっかり打ち解けた二人の口から、自然と本音がこぼれ始めた。\n『……なぁ、エイセレブ王よ。そもそも、あの不毛な土地の奪い合い、不毛じゃね?』\n『うむ。我が国が農作物を輸出し、そちらの鉱石を輸入すれば、汗を流して戦う必要などないのではないか?』",
+            choices:[
+              { label:"何も言わず、二人の話し合いを見守る", delta:15, result:"二人は誰に促されるでもなく、自分たちだけで和平の糸口を見つけ始めていた。" },
+              { label:"「最初から、そう言い合えばよかったのに」とぼそっと呟く", delta:55, result:"二人は同時にこちらを睨んだが、反論できずに黙り込んだ。図星だったらしい。" }
+            ]
+          },
+          { label:"SCENE 08 — 神のサロン、それから", final:true, celestialId:"canned_beer_cards",
+            text:"すっかり打ち解けた二人にレビューシートを渡すと、上機嫌な手つきで星5つが書き込まれた。\n『さて、そろそろお帰りの時間です。お土産にトランプと、冷えた缶ビールをどうぞ』",
+            choices:[
+              { label:"「意地を張り合うより、今夜みたいな方が楽ですよね」と伝える", delta:20, result:"二人は顔を見合わせて苦笑した。『……肝に銘じておこう』" },
+              { label:"「今夜からこの部屋を、第二の王宮ということにしておきましょう」と告げる", delta:85, result:"二人は同時に破顔した。『それはいい!』『異議なしだ!』\n真剣勝負のはずが、いつの間にか固い握手と笑顔に変わっていた。" }
+            ],
+            endingText:"城に戻った二人の国王は、それぞれの執務室で『あの店主、次はいつ呼んでくれるのだろうか』とひとりごちていた。国境問題はすっかり棚上げになり、代わりにポーカーの必勝法が二人の頭を占めていた。"
+          }
+        ],
+        epilogueText:"後日譚。エイセレブ王とハイドランジア王は、国境の会談のたびにこっそり示し合わせて『視察』と称し、この部屋に瓢箪されにきている。\n最初こそ真剣勝負を装っていた二人だが、今ではすっかり缶ビール片手のポーカー仲間だ。剣聖たちは今日も置いてけぼりのまま首をかしげている。"
+      }
+    }
+  },
+  viola:{
+    name:"剣聖ヴィオラ",
+    subtitle:"エイセレブ王国近衛剣聖筆頭。表向きは氷のような無表情武人",
+    emblem:"剣",
+    color:"#4f6e8c",
+    glow:"#eaf3ff",
+    tier:1,
+    event1:{
+      label:"SCENE 01 — 剣聖、まさかの推薦",
+      text:"推薦ボックスに入っていたのは、エイセレブ王からの一筆だった。\n『いつも我々を守ってくれている近衛剣聖筆頭、ヴィオラを労ってやってほしい。あれはもう10年以上笑った顔を見せたことがない』\n\n深夜、王城の見張り塔。近衛剣聖筆頭ヴィオラは、微動だにせず闇を睨んでいた。\n\n『……何者だ』\n\n出現した黒い扉に、彼女は瞬時に鯉口を切った。国最強の剣士と謳われる彼女の斬撃は、音速すら超えるという。だが、扉から溢れる魔力の圧に、その剣先はぴたりと止まった。\n\n『……この魔力量……剣で斬れる相手ではない、な』\n\n冷静な分析と共に、彼女は静かに剣を鞘に納めた。\n\n『夜分失礼しまーす。近衛剣聖筆頭ヴィオラさんですね。国王陛下のご紹介でーす。ちょっと扉の向こうへどうぞ』\n\n『……抵抗は無意味、ということか。良かろう、供をしよう』\n\n顔色一つ変えず、ヴィオラは扉をくぐった。\n\nさて、この鉄仮面をどう崩すか。",
+      choices:[
+        { label:"「今夜だけは剣も肩書きも置いて、素のあなたでいてください」と伝える", delta:100, route:"A",
+          result:"ヴィオラの表情が、一瞬だけ止まった。\n『……素の、私……?』\n呟いた声のトーンが、心なしかさっきより一段階高くなっていた。何かのスイッチが入りかけている。" },
+        { label:"「まずは肩慣らしに、一杯やりながら話しましょう」とドリンクを勧める", delta:75, route:"B",
+          result:"ヴィオラは怪訝そうにグラスを一瞥した。\n『……毒見は不要か。良かろう、いただこう』\n生真面目な所作でグラスを傾けるその姿は、まだ完全に『剣聖』のままだった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"秒で仮面が剥がれるルート",
+        events:[
+          { label:"SCENE 02 — 未知の物体、タピオカ", celestialId:"tapioca",
+            text:"『はい、まずはこれどうぞ。タピオカミルクティーです』\n黒くて丸い物体が沈んだ甘い飲み物を見て、ヴィオラは眉をひそめた。\n『……これは、何かの毒キノコの一種か?』\n訝しみながらもストローを咥え、一気に吸い上げた瞬間、彼女の目が見開かれた。\n『……んっ!?なにこの食感、もちもちしてる……うまいんだが!?』",
+            choices:[
+              { label:"何も言わず、おかわりを差し出す", delta:10, result:"ヴィオラは無言でおかわりのカップを受け取り、勢いよくストローに口をつけた。既に無表情ではなくなっていた。" },
+              { label:"「素の感想、出ちゃってますよ」と指摘する", delta:40, result:"ヴィオラはハッとして口元を押さえたが、もう遅かった。『……今のはノーカンだ』語尾が、心なしか砕けていた。" }
+            ]
+          },
+          { label:"SCENE 03 — 私服という名の変身", celestialId:"gal_fashion",
+            text:"『ついでに、こっちの服に着替えてみません?』\n渡したのは、前世のカジュアルな私服一式。ヴィオラは訝しみながらも、更衣室代わりのカーテンの奥へ消えていった。\n数分後、現れた彼女は――甲冑ではなく、フリルとレースをまとった私服姿だった。\n『……なんか、変な感じ……いや待って、これめっちゃかわいくない?』",
+            choices:[
+              { label:"「似合ってますよ」と素直に褒める", delta:10, result:"ヴィオラは鏡の前でくるりと回った。『でしょ?ってかあーし、こんな格好したことないんだけど』一人称が『私』から『あーし』に変わっていた。" },
+              { label:"「剣聖様の私服、貴重ですね」とニヤける", delta:45, result:"『いや剣聖とか呼ぶのやめて、今キャラ違うから』ヴィオラは頬を赤らめながら、慣れない仕草でスカートの裾を整えた。" }
+            ]
+          },
+          { label:"SCENE 04 — 未知の魔道具『プリクラ』", celestialId:"purikura",
+            text:"『次はこれ、プリクラってやつです。一緒に写真撮りましょ』\n光る箱の中に押し込まれ、戸惑うヴィオラに俺がピースサインを教える。\n『……こう、か?』\nぎこちなくピースをした瞬間、フラッシュが焚かれ、可愛らしい落書き付きの写真が印刷された。",
+            choices:[
+              { label:"「いい写真撮れましたね」と見せる", delta:15, result:"写真を覗き込んだヴィオラは、絶句した。『……これ、あーしがこんな可愛い顔できるの……?』何かが完全に決壊しかけていた。" },
+              { label:"「次は変顔でもう一枚撮りましょ」と煽る", delta:50, result:"『は?変顔?余裕でできるし』ヴィオラは謎の対抗心を燃やし、渾身の変顔を披露した。国最強の剣士の威厳は、もうどこにもなかった。" }
+            ]
+          },
+          { label:"SCENE 05 — 剣聖という名の孤独",
+            text:"ひとしきりはしゃいだ後、ふとヴィオラの表情に影が差した。\n『……あーしさ、物心ついた頃から「剣聖候補」で、ずっと剣振ってばっかだったんだよね。友達と遊ぶとか、そういう普通のこと、したことなくて』\n言ってから、しまったというように口をつぐんだ。",
+            choices:[
+              { label:"何も言わず、静かに話の続きを待つ", delta:15, result:"ヴィオラはぽつぽつと、剣の稽古に明け暮れた子供時代の話を続けた。誰かに聞いてもらうのは、初めてのようだった。" },
+              { label:"「今夜は、その『普通のこと』をたくさんしましょう」と伝える", delta:50, result:"ヴィオラは目を丸くして、それからくしゃっと笑った。『……うん、なんか、そういうのいいかも』国最強の剣士の顔からは想像もつかない、あどけない笑顔だった。" }
+            ]
+          },
+          { label:"SCENE 06 — 魔導カラオケ、絶唱", celestialId:"karaoke",
+            beats:[
+              { text:"『じゃあ最後は、このカラオケで一曲。マイク持って、好きに歌っていいですよ』ヴィオラは戸惑いながらもマイクを握った。" },
+              { text:"前奏が流れ始めた瞬間、彼女の目の色が変わった。『……この曲、知ってる。いや、知ってる気がする……なんで……!?』" },
+              { text:"一小節目を歌い出した瞬間、堰を切ったようにヴィオラの声量が跳ね上がった。" },
+              { text:"「あーしら最強かよー!今夜はとことん行くっしょー!」", type:"sfx" },
+              { text:"『あはは!超楽しいんだけどぉぉぉ!!』", climax:true },
+              { text:"国最強と謳われた剣聖は、もはや見る影もなかった。マイクを握りしめ、ノリノリで踊りながら熱唱するその姿は、どこにでもいる普通の女の子そのものだった。" }
+            ],
+            choices:[
+              { label:"何も言わず、ノリノリの彼女に合わせて手拍子する", delta:15, result:"ヴィオラは手拍子に気づくと、さらにテンションを上げて歌い続けた。『いいねいいね!盛り上がってきたー!』" },
+              { label:"「その喋り方、癖になりそうですね」と伝える", delta:35, result:"『え、マジ?ウケる』ヴィオラはケラケラと笑いながら、マイクを俺に向けてきた。『次あんたの番ね』" },
+              { label:"「そのキャラの方が、俺は素敵だと思いますよ」と伝える", delta:70, result:"ヴィオラの動きが一瞬止まった。『……は?何言ってんの、今更』そっぽを向いた頬が、照明のせいだけでなく赤く染まっていた。" }
+            ]
+          },
+          { label:"SCENE 07 — 剥がれた仮面、その先",
+            text:"熱唱を終え、息を切らしたヴィオラが、ソファにどさっと座り込んだ。\n『……なんか、めっちゃスッキリした。こんな気持ち、久しぶりっていうか、初めてかも』\n剣聖としての鉄仮面は、もうどこにも見当たらなかった。",
+            choices:[
+              { label:"何も言わず、隣で一緒に飲み物を飲む", delta:15, result:"ヴィオラは隣に座る俺をちらりと見て、小さく笑った。何も言わなくても、それで十分伝わっているようだった。" },
+              { label:"「その顔、城の誰にも見せなくていいですからね」と伝える", delta:55, result:"ヴィオラは一瞬驚いた顔をして、それから照れくさそうに頷いた。『……うん。ここだけの、秘密ね』" }
+            ]
+          },
+          { label:"SCENE 08 — 剣聖、二重生活のはじまり", final:true,
+            text:"すっかりくつろいだヴィオラにレビューシートを渡すと、彼女は普段の達筆な字とは違う、丸文字で感想を書き込んだ。\n『さて、そろそろお帰りの時間です。今夜はどうでした?』",
+            choices:[
+              { label:"「また息抜きしたくなったら、いつでもどうぞ」と軽く送り出す", delta:20, result:"ヴィオラは名残惜しそうにマイクを一撫でしてから頷いた。『……うん、また来る。絶対来る』" },
+              { label:"「今夜からあなたは、うちの正式な常連客です」と告げる", delta:85, result:"ヴィオラの表情が、一瞬で崩れた。『……マジ?やば、うれしすぎるんだけど』国最強の剣士は、年相応の少女のような笑顔で、両手でガッツポーズを作っていた。" }
+            ],
+            endingText:"見張り塔に戻ったヴィオラは、いつも通りの無表情で闇を睨んでいた。ただ、ポケットの中でこっそり握りしめたプリクラのシートだけが、彼女に『あーし』の時間があったことを静かに物語っていた。"
+          }
+        ],
+        epilogueText:"後日譚。城の見張り塔で、ヴィオラは今日も微動だにせず闇を睨んでいる。ただ、非番の夜になると、こっそりこの部屋に瓢箪されにきては、カラオケでマイクを握りしめているらしい。『……剣聖としての私と、あーしは、別に矛盾しなくてよくない?』そう呟く彼女の顔は、誰も知らないくらい柔らかかった。"
+      },
+      B:{
+        routeLabel:"酔うほど仮面が剥がれるルート",
+        events:[
+          { label:"SCENE 02 — 毒見という名の建前", celestialId:"tapioca",
+            text:"『まずはこれ、タピオカミルクティーです』\n差し出された飲み物を、ヴィオラは訝しみながらも受け取った。\n『……毒見の意味も込めて、いただこう』\n一口含んだ瞬間、彼女の眉がぴくりと動いた。\n『……この食感は、何だ……悪くない、な』\n表情筋はまだ、ほとんど動いていなかった。",
+            choices:[
+              { label:"「無理に顔に出さなくても大丈夫ですよ」と流す", delta:10, result:"ヴィオラは小さく頷き、それ以上は何も言わずカップに口をつけ続けた。" },
+              { label:"「口元、ちょっと緩んでますよ」と指摘する", delta:40, result:"ヴィオラは慌てて口元を引き締めた。『……気のせいだ』だが耳が赤くなっているのは、隠しきれていなかった。" }
+            ]
+          },
+          { label:"SCENE 03 — 私服への抵抗", celestialId:"gal_fashion",
+            text:"『せっかくなので、こっちの服にも着替えてみません?』\n渡されたフリルとレースの私服を前に、ヴィオラは眉をひそめた。\n『……剣聖たる者、そのような軽薄な格好は……』\n言いながらも、彼女は結局カーテンの奥へと消えていった。",
+            choices:[
+              { label:"「似合わなそうなら無理にとは言いません」と引く", delta:10, result:"ヴィオラはムッとした顔で戻ってきた。『……似合わない、とは言っていない』しっかり着替えていた。" },
+              { label:"「剣聖様にも、可愛いものへの憧れ、あるんですね」と指摘する", delta:45, result:"ヴィオラは顔を赤くして黙り込んだ。図星を突かれたことを、否定する言葉が出てこないようだった。" }
+            ]
+          },
+          { label:"SCENE 04 — プリクラへの葛藤", celestialId:"purikura",
+            text:"『次はこれ、プリクラってやつです。一緒に撮りましょ』\nヴィオラは光る箱を前に固まった。\n『……このような、記録媒体に姿を残すのは、些か……』\n言いつつも、俺に急かされるまま箱の中に押し込まれていった。",
+            choices:[
+              { label:"「嫌なら消しますよ」と気を遣う", delta:10, result:"『……いや、別に消さなくていい』ヴィオラはぼそりと呟いた。案外まんざらでもなかったらしい。" },
+              { label:"「意外と楽しんでません?」とからかう", delta:45, result:"ヴィオラはキッと睨んできたが、その手には、しっかりプリクラのシートが握られていた。" }
+            ]
+          },
+          { label:"SCENE 05 — 素顔を見せられない理由",
+            text:"ふとした沈黙の合間、ヴィオラの表情に疲れが滲んだ。\n『……剣聖は、常に完璧でなければならない。弱さも、隙も、見せてはならないと、ずっとそう教えられてきた』\n言ってから、しまったというように口をつぐんだ。",
+            choices:[
+              { label:"聞かなかったふりをして、話題を変える", delta:15, result:"ヴィオラはほっとしたように肩の力を抜いた。追及されないことが、今の彼女には救いだったようだ。" },
+              { label:"「ここでは、剣聖の仮面を外してもいいですよ」と静かに告げる", delta:50, result:"ヴィオラは目を見開き、それからゆっくりと俯いた。『……そんな場所、生まれて初めて頂いた』声が、微かに震えていた。" }
+            ]
+          },
+          { label:"SCENE 06 — 意地の限界、マイクの前で", celestialId:"karaoke",
+            beats:[
+              { text:"『最後はこれ、カラオケです。一曲どうぞ』差し出されたマイクを、ヴィオラは硬い表情で受け取った。『……剣聖として、恥ずかしい真似はできんな』" },
+              { text:"そう言いながらも、前奏が流れ始めた瞬間、彼女の目の色がわずかに変わった。" },
+              { text:"一小節目を歌い出した瞬間、ヴィオラの声から、それまでの硬さが嘘のように抜け落ちた。" },
+              { text:"「あーしら最強かよー!今夜はとことん行くっしょー!」", type:"sfx" },
+              { text:"『あはは!超楽しいんだけどぉぉぉ!!』", climax:true },
+              { text:"取り繕う余裕はもう、どこにも残っていなかった。国最強の剣士は、マイクを握りしめてノリノリで踊る、どこにでもいる普通の女の子になっていた。" }
+            ],
+            choices:[
+              { label:"何も言わず、彼女の豹変を見届ける", delta:15, result:"ヴィオラは最後の一小節まで、一度も我に返らなかった。それが何よりの答えだった。" },
+              { label:"「さっきまでの『恥ずかしい真似はできん』はどこ行きました?」とからかう", delta:35, result:"ヴィオラはマイクを持ったまま固まり、それから顔を赤くして『……忘れろ』と絞り出した。" },
+              { label:"「意地を張らなくていい顔の方が、俺は好きですよ」と伝える", delta:70, result:"ヴィオラの動きが止まった。『……は?何言ってんの、今更』そっぽを向いた頬が、照明のせいだけでなく赤く染まっていた。" }
+            ]
+          },
+          { label:"SCENE 07 — 剥がれた仮面、それから",
+            text:"熱唱を終え、息を切らしたヴィオラが、ソファにどさっと座り込んだ。\n『……なんか、めっちゃスッキリした。こんな気持ち、初めてかも』\n剣聖としての鉄仮面は、もうどこにも見当たらなかった。",
+            choices:[
+              { label:"何も言わず、そっと飲み物を差し出す", delta:15, result:"ヴィオラは無言でグラスを受け取り、静かに喉を潤した。感謝の言葉はなかったが、拒む素振りもなかった。" },
+              { label:"「我慢しなくても、ここでは誰も見てませんよ」と伝える", delta:55, result:"ヴィオラは声を殺して少し泣いた。溜め込んでいたものが、堰を切ったように溢れ出していた。" }
+            ]
+          },
+          { label:"SCENE 08 — 剣聖、二重生活のはじまり", final:true,
+            text:"すっかりくつろいだヴィオラにレビューシートを渡すと、彼女は普段の達筆な字とは違う、丸文字で感想を書き込んだ。\n『さて、そろそろお帰りの時間です。今夜はどうでした?』",
+            choices:[
+              { label:"「無理に本音を認めなくても大丈夫ですよ」と伝える", delta:20, result:"ヴィオラは小さく頷いた。『……ありがとう。今夜のことは、忘れない』静かな声だった。" },
+              { label:"「もう意地を張らなくていいこと、分かってますよね」と告げる", delta:85, result:"ヴィオラの表情が、堰を切ったように崩れた。『……分かってる、って。分かってるから、そんな風に言うな』涙声のまま、それでも小さく笑っていた。国最強の剣士が、初めて見せた素顔だった。" }
+            ],
+            endingText:"見張り塔に戻ったヴィオラは、剣を握る手をじっと見つめていた。『……剣聖としてのあーしも、素のあーしも、別に矛盾しなくてよくない?』誰にともなく呟いたその声は、いつもより少しだけ軽やかだった。"
+          }
+        ],
+        epilogueText:"後日譚。城の見張り塔で、ヴィオラは今日も微動だにせず闇を睨んでいる。ただ、非番の夜になると、こっそりこの部屋に瓢箪されにきては、カラオケでマイクを握りしめているらしい。最初こそ『剣聖として』と言い張っていた強がりも、いつしか鳴りを潜めていた。『……今夜も、あーしを解放させてもらうから』"
+      }
+    }
+  },
+  elphi:{
+    name:"第四王女エルフィリア",
+    subtitle:"極度の本の虫。異世界の物語に娯楽性を求める理屈屋の読書家",
+    emblem:"本",
+    color:"#8a6fae",
+    glow:"#f2e6ff",
+    tier:1,
+    event1:{
+      label:"SCENE 01 — 書庫からの強制連行",
+      text:"推薦ボックスに入っていたのは、ノースティア王女からの一筆だった。\n『我が妹である第四王女エルフィリアを推薦します。彼女は極度の本の虫で、四六時中書庫に引きこもって古い歴史書ばかり読んでいます。本以外のものには一切興味を示さない偏屈者ですが、どうか彼女に新しい世界の光を見せてやってください』\n\nエイセレブ王国・王立大書庫の最奥。第四王女エルフィリアは、分厚い眼鏡の位置を直しながら、埃っぽい魔導書の解読に没頭していた。\n\n『……100年前の英雄譚。どれもこれも「そして英雄は神となった」で終わる。事実の羅列で退屈、心理描写が浅すぎます。この世界の読み物は、どうしてこうも娯楽性に欠けるのかしら……』\n\nそんな独り言をこぼした瞬間、書庫の空間が歪み、不気味な黒い扉が現れた。\n\n『な、何事ですか!?空間転移……!』\n\n扉から現れたのは、部屋着姿の俺だ。エルフィリアは本能的な恐怖で身体を硬直させた。\n\n『夜分失礼しまーす。第四王女エルフィリアさんですね。ノースティア王女のご紹介でーす。ちょっと扉の向こうへ来てもらいます』\n\n『くっ……(逆らえばこの貴重な書庫ごと消される……)。わかりました。その代わり、本を読む時間は保証してください!』\n\n『あ、むしろ本を読んでもらうために呼んだんで、お気になさらずー』\n\nさて、この理屈屋の読書家に、何から差し出すか。",
+      choices:[
+        { label:"何も説明せず、いきなり本を一冊手渡す", delta:100, route:"A",
+          result:"エルフィリアは怪訝そうに本を受け取ったが、表紙を捲った瞬間には、もう俺の存在などお構いなしにページに没頭し始めていた。\n『……なっ、何ですかこの独特の文体は……!』\n毒気を抜かれる暇もなく、彼女は完全に本の世界へ引きずり込まれていた。" },
+        { label:"「まずはこの世界の物語について、少し語らせてください」と前置きする", delta:75, route:"B",
+          result:"エルフィリアは腕を組み、値踏みするような目を向けてきた。\n『……随分と自信がおありのようですね。良いでしょう、聞かせていただきます』\n知的好奇心と、一流の批評家気取りの上から目線が、同時に顔を出していた。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"即読書沼ルート",
+        events:[
+          { label:"SCENE 02 — 冷たいミルクティーとスコーン", celestialId:"milk_tea_scone",
+            text:"『はい、まずはこれどうぞ。冷たいミルクティーとスコーンです』\n差し出された軽食に、エルフィリアは本から目を離さないまま、手探りでスコーンを一口齧った。\n『……ん、美味しい、ですね。この生地の軽さ、この世界の菓子にはない食感です』\n視線は最後まで本のページから離れなかった。",
+            choices:[
+              { label:"何も言わず、彼女の読書を邪魔しないよう静かにする", delta:10, result:"エルフィリアは一言の礼も言わず、ただ黙々とページをめくり続けた。それだけ本の世界に没頭している証拠だった。" },
+              { label:"「お口に合ったみたいで何よりです」と声をかける", delta:40, result:"エルフィリアは片手だけ軽く上げて応じたが、目線は一切本から動かなかった。『……今、話しかけないでください』手厳しい返事だった。" }
+            ]
+          },
+          { label:"SCENE 03 — 前世のライトノベル", celestialId:"light_novel",
+            text:"『……な、何ですか、この独特の文体は!三人称ではなく、主人公の一人称視点で語られるテンポの良さ……。それに、この挿絵の女の子、信じられないほど可愛い……ッ!』\n本のタイトルは『オレに任せて先に行け!』。エルフィリアの目が、完全にガチのモードへ切り替わっていた。",
+            choices:[
+              { label:"「気に入ってもらえたみたいで良かったです」と伝える", delta:10, result:"エルフィリアは顔も上げずに頷いた。『……続き、あるんですよね?』声には、抑えきれない期待が滲んでいた。" },
+              { label:"「これ、全15巻あるんですよ」と煽る", delta:45, result:"エルフィリアの手が止まった。『……15巻。15巻ですって?』眼鏡の奥の瞳が、獲物を見つけた獣のように光った。" }
+            ]
+          },
+          { label:"SCENE 04 — 週刊少年漫画という文化", celestialId:"manga_jump",
+            text:"ラノベの合間に、俺は少年漫画雑誌をそっと差し出した。\n『こっちも読んでみます?絵と文字が一緒になった『漫画』ってジャンルです』\nエルフィリアはページをめくった瞬間、絶句した。\n『……これ、まさか、絵だけで感情まで伝わってくる……!?この国のどんな絵画にも、こんな表現力はありません!』",
+            choices:[
+              { label:"「気に入った巻は、後でお持ち帰りできますよ」と伝える", delta:15, result:"エルフィリアはがばっと顔を上げた。『……本当ですか?全巻、全巻お願いします!』普段の理屈っぽさはどこにもなかった。" },
+              { label:"「その熱量、書庫にいた頃には見せなかったですよね」とからかう", delta:50, result:"エルフィリアは一瞬固まり、それから恥ずかしそうに眼鏡を押し上げた。『……知りません。今は関係ないでしょう』誤魔化しきれていなかった。" }
+            ]
+          },
+          { label:"SCENE 05 — 退屈な物語への渇望",
+            text:"ふと本から顔を上げたエルフィリアが、ぽつりとこぼした。\n『……この国の物語は、いつも「そして英雄は神となった」で終わるんです。心が動く前に、話が終わってしまう。ずっと、そのことに飢えていたのかもしれません』",
+            choices:[
+              { label:"何も言わず、静かに続きのページを差し出す", delta:15, result:"エルフィリアは黙って本を受け取り、貪るようにページをめくり始めた。言葉より、本の方が雄弁だったようだ。" },
+              { label:"「今夜、その渇きが少しでも癒えたら嬉しいです」と伝える", delta:50, result:"エルフィリアは本から顔を上げ、初めてまっすぐにこちらを見た。『……ええ、もう十分すぎるくらい』瞳がわずかに潤んでいた。" }
+            ]
+          },
+          { label:"SCENE 06 — オレに任せて先に行け!", celestialId:"climax_crying",
+            beats:[
+              { text:"物語がクライマックスの第3巻に突入した。かつて自分を裏切った仲間たちが危機に陥り、主人公が一人、押し寄せる魔獣の大群の前に立ちはだかるシーンだ。" },
+              { text:"『――おい。お前たちは、先に行け。ここは俺が食い止める』" },
+              { text:"『安心しろ……俺の盾は、お前たちを守るためにあるんだからな』" },
+              { text:"ページをめくる指が、震え始めていた。", type:"sfx" },
+              { text:"『う、嘘でしょ……!?ダメ、ダメだよ置いていっちゃぁあああ!死んじゃう、主人公死んじゃうよぉおおお!わーん!』", climax:true },
+              { text:"エルフィリアは、大粒の涙をボロボロと流しながら、大声で号泣し始めた。異世界のカチコチな歴史書しか知らなかった少女にとって、その破壊力は絶大だった。" }
+            ],
+            choices:[
+              { label:"何も言わず、そっとハンカチを差し出す", delta:15, result:"エルフィリアは無言でハンカチを受け取り、涙を拭いながらもページをめくる手は止めなかった。" },
+              { label:"「大丈夫、ちゃんとハッピーエンドですから」と伝える", delta:35, result:"『ほ、本当ですか……?本当に、生きてるんですか……?』エルフィリアは涙目のまま、縋るように顔を上げた。" },
+              { label:"「その泣き顔、本気で物語を読んでる証拠ですね」と伝える", delta:70, result:"エルフィリアは真っ赤な顔で俯いた。『……っ、見ないでください、こんな姿……』だが本を閉じる気配は、微塵もなかった。" }
+            ]
+          },
+          { label:"SCENE 07 — 涙の合間の告白",
+            text:"号泣がひとしきり落ち着いた頃、エルフィリアは涙を拭いながら呟いた。\n『……こんなに物語に感情を揺さぶられたのは、生まれて初めてです。私、ずっと「賢い王女」でいなければと思っていたのに……』\nしゃくり上げる声には、隠していた本音がにじんでいた。",
+            choices:[
+              { label:"何も言わず、静かに続きの巻を手渡す", delta:15, result:"エルフィリアは涙を拭う間も惜しむように、次の巻を受け取り読み始めた。それが何よりの返事だった。" },
+              { label:"「賢さより今の顔の方が、俺は好きですよ」と伝える", delta:55, result:"エルフィリアは息を呑み、それから眼鏡の奥の目を潤ませた。『……ずるい人ですね、貴方』小さな声だった。" }
+            ]
+          },
+          { label:"SCENE 08 — 王女、ラノベ作家を目指す", final:true,
+            text:"すっかり夜も更け、目を真っ赤に腫らしたエルフィリアが、震える手でレビューシートに星5つを書き終えた。\n『さて、そろそろお帰りの時間です。今夜はどうでした?』",
+            choices:[
+              { label:"「また新刊が出たら呼びますね」と軽く送り出す", delta:20, result:"エルフィリアは本を胸に抱きしめながら頷いた。『……ええ、絶対に。約束ですよ』" },
+              { label:"「今夜からあなたは、うちの正式な常連客です」と告げる", delta:85, result:"エルフィリアの顔が、くしゃっと崩れた。『……はい。喜んで。私、貴方の物語の続きを、ずっと待っています』眼鏡の奥の瞳から、また一筋、涙がこぼれていた。" }
+            ],
+            endingText:"書庫に戻ったエルフィリアは、震える手で一冊の本を胸に抱きしめた。『……英雄が神になって終わる話より、ずっと良い話を、私は知ってしまいました』誰に言うでもなく呟く声には、確かな熱がこもっていた。"
+          }
+        ],
+        epilogueText:"後日譚。大書庫の隅に、いつしか『エルフィリア専用棚』ができていた。歴史書の合間に、ラノベと漫画がぎっしりと詰め込まれている。司書たちは首を傾げているが、エルフィリア本人は気にも留めない。『……次はどんな物語を読ませてくれるのかしら』本を抱きしめる横顔は、以前よりずっと生き生きしていた。"
+      },
+      B:{
+        routeLabel:"疑いから始まる読書沼ルート",
+        events:[
+          { label:"SCENE 02 — 品定めのミルクティー", celestialId:"milk_tea_scone",
+            text:"『まずはこれ、冷たいミルクティーとスコーンです』\nエルフィリアは疑わしげにスコーンを一口かじった。\n『……悪くはない、ですね。この軽い食感は、この世界の菓子にはない技術です』\n評価するような口調は崩れなかった。",
+            choices:[
+              { label:"「お口に合って何よりです」と流す", delta:10, result:"エルフィリアは小さく頷き、それ以上の感想は述べずお茶に口をつけ続けた。" },
+              { label:"「随分と手厳しい評価ですね」と指摘する", delta:40, result:"『……批評とは、そういうものです』エルフィリアは澄まし顔で返したが、スコーンのおかわりにはしっかり手を伸ばしていた。" }
+            ]
+          },
+          { label:"SCENE 03 — 娯楽への懐疑",
+            text:"『「新しい世界の光」とやら、随分と大きく出ましたね。私はこれでも、王立図書館の蔵書はほとんど読破しています』\nエルフィリアは腕を組み、値踏みするような目でこちらを見た。",
+            choices:[
+              { label:"「読んでから判断してくれれば十分です」と受け流す", delta:10, result:"エルフィリアは鼻を鳴らしたが、結局差し出された本を手に取った。" },
+              { label:"「その自信、崩してみせますよ」と挑発する", delta:45, result:"エルフィリアの眉がぴくりと動いた。『……面白いことを言いますね。受けて立ちましょう』プライドに火がついたようだった。" }
+            ]
+          },
+          { label:"SCENE 04 — 崩れる批評家気取り", celestialId:"light_novel",
+            text:"『三人称ではなく、主人公の一人称視点……ふむ、この語り口は確かに新しい、かも……』\n最初は評論めいた口調だったエルフィリアだが、ページをめくる速度は次第に上がっていった。\n『……ちょっと、次のページ、早くめくらないと』",
+            choices:[
+              { label:"「評論はもういいんですか?」とからかう", delta:15, result:"『うるさいですね、集中してるんです』エルフィリアは顔を上げずに言い返したが、明らかに動揺していた。" },
+              { label:"「続き、気になってます?」と煽る", delta:50, result:"『……っ、気になっていません。ただの資料的な確認です』本を持つ手が、小刻みに震えていた。" }
+            ]
+          },
+          { label:"SCENE 05 — 漫画への抵抗", celestialId:"manga_jump",
+            text:"『こっちの『漫画』ってジャンルも読んでみます?』\nエルフィリアは眉をひそめた。\n『……絵物語など、児童向けの読み物でしょう。私には必要ありません』\n言いながらも、ちらちらと表紙に視線を送っていた。",
+            choices:[
+              { label:"「無理にとは言いません」と引く", delta:15, result:"エルフィリアは澄まし顔で頷いたが、視線は最後まで漫画の表紙から離れなかった。" },
+              { label:"「意外と絵物語、侮れないですよ」と手渡す", delta:50, result:"渋々受け取ったエルフィリアは、数ページで表情を失った。『……これ、絵だけで感情まで伝わってくるじゃないですか』批評家の仮面は、もう剥がれかけていた。" }
+            ]
+          },
+          { label:"SCENE 06 — 崩壊する批評家の仮面", celestialId:"climax_crying",
+            beats:[
+              { text:"物語がクライマックスの第3巻に突入した。かつて自分を裏切った仲間たちが危機に陥り、主人公が一人、押し寄せる魔獣の大群の前に立ちはだかるシーンだ。" },
+              { text:"『……この程度の展開、先が読めます』エルフィリアはそう呟きながらも、ページをめくる指先は震えていた。" },
+              { text:"『――おい。お前たちは、先に行け。ここは俺が食い止める』" },
+              { text:"本を持つ手が、小刻みに震え始めた。", type:"sfx" },
+              { text:"『う、嘘でしょ……!?ダメ、ダメだよ置いていっちゃぁあああ!死んじゃう、主人公死んじゃうよぉおおお!わーん!』", climax:true },
+              { text:"『この程度の展開』と言い放ったはずのエルフィリアは、大粒の涙をボロボロと流しながら号泣していた。批評家気取りの仮面は、もうどこにも残っていなかった。" }
+            ],
+            choices:[
+              { label:"何も言わず、彼女の号泣を見届ける", delta:15, result:"エルフィリアは涙で頁を濡らしながらも、最後まで本を手放さなかった。" },
+              { label:"「さっきまでの『先が読めます』はどこ行きました?」とからかう", delta:35, result:"エルフィリアは涙目のまま睨んできた。『……忘れてください』声が震えていた。" },
+              { label:"「意地を張らなくていい顔の方が、俺は好きですよ」と伝える", delta:70, result:"エルフィリアは真っ赤な顔で俯いた。『……っ、見ないでください、こんな姿……』だが本を閉じる気配は、微塵もなかった。" }
+            ]
+          },
+          { label:"SCENE 07 — 涙の合間の告白",
+            text:"号泣がひとしきり落ち着いた頃、エルフィリアは涙を拭いながら呟いた。\n『……こんなに物語に感情を揺さぶられたのは、生まれて初めてです。ずっと「賢い王女」として、隙のない自分でいなければと思っていたのに』\nしゃくり上げる声には、隠していた本音がにじんでいた。",
+            choices:[
+              { label:"聞かなかったふりをして、話題を変える", delta:15, result:"エルフィリアはほっとしたように涙を拭った。追及されないことが、今の彼女には救いだったようだ。" },
+              { label:"「ここでは、賢い王女の仮面を外してもいいですよ」と静かに告げる", delta:55, result:"エルフィリアは目を見開き、それからゆっくりと俯いた。『……そんな場所、生まれて初めて頂きました』声が、微かに震えていた。" }
+            ]
+          },
+          { label:"SCENE 08 — 王女、ラノベ作家を目指す", final:true,
+            text:"すっかり夜も更け、目を真っ赤に腫らしたエルフィリアが、震える手でレビューシートに星5つを書き終えた。\n『さて、そろそろお帰りの時間です。今夜はどうでした?』",
+            choices:[
+              { label:"「無理に認めなくても大丈夫ですよ」と伝える", delta:20, result:"エルフィリアは小さく頷いた。『……ありがとうございます。今夜のことは、忘れません』静かな声だった。" },
+              { label:"「もう批評家気取りの仮面、外していいこと分かってますよね」と告げる", delta:85, result:"エルフィリアの表情が、堰を切ったように崩れた。『……分かって、います。分かっているから、そんな風に言わないでください』涙声のまま、それでも小さく笑っていた。理屈屋の王女が、初めて見せた素顔だった。" }
+            ],
+            endingText:"書庫に戻ったエルフィリアは、渡された本を抱えたまま、しばらく動けずにいた。『……批評する側のつもりが、まさかここまで感情移入するとは』毅然としていたはずの声は、いつもより少しだけ弱々しかった。"
+          }
+        ],
+        epilogueText:"後日譚。大書庫の隅に、いつしか『エルフィリア専用棚』ができていた。歴史書の合間に、ラノベと漫画がぎっしりと詰め込まれている。最初こそ『資料的な確認です』と言い張っていた強がりも、いつしか鳴りを潜めていた。『……次はどんな物語を読ませてくれるのかしら』本を抱きしめる横顔は、以前よりずっと生き生きしていた。"
+      }
+    }
+  },
+  eleonora:{
+    name:"王妃エレオノーラ",
+    subtitle:"エイセレブ王国王妃。お肌のハリと若さに、夜な夜な鏡の前でため息をつく",
+    emblem:"鏡",
+    color:"#c97fa0",
+    glow:"#ffe6f0",
+    tier:1,
+    event1:{
+      label:"SCENE 01 — 王妃、鏡の前の絶望",
+      text:"推薦ボックスに入っていたのは、エルフィリア王女からの一筆だった。\n『神様、素晴らしい聖書(ラノベ)をありがとうございました。今回は、我が母である王妃エレオノーラを推薦いたします。母は最近、お肌のハリが失われてきたと夜な夜な鏡の前でため息をつき、城の美容師たちを怯えさせております』\n\nエイセレブ王国の王妃エレオノーラの私室。彼女は高級な羊乳を使った特製クリームを顔に塗りたくりながら、鏡を見て深くため息をついていた。\n\n『ああ……目元にまた一本、不吉な線が……。明日は隣国の貴婦人たちとの夜会だというのに、このくすんだ肌ではエイセレブの威厳が保てませんわ』\n\n王妃としてのプライド、そして一人の女性としての焦燥感。彼女はストレスで爆発寸前だった。\n\nゴゴゴゴゴ……。\n\n寝室の壁に『漆黒の重厚な扉』が出現した。\n\n『な、何事ですの!?まさか、夫や娘たちが言っていた「神の扉」!?』\n\nガチャリと開き、現れたのは白衣(※エステティシャン風に形から入ってみた)を着た俺だ。\n\n『夜分お邪魔しまーす。王妃エレオノーラさんですね。エルフィリア王女のご紹介でーす。ちょっと今から、お肌と髪のフルコースメンテナンスを行いますので、こちらへどうぞ』\n\n『え、ええっ?メンテナンス……?(これが、あの噂の圧倒的な魔力……逆らうのは不可能ですわね。でも、お肌のメンテナンスって何かしら……?)』\n\n美への執念が恐怖を上回り、王妃は二つ返事で扉をくぐった。\n\nさて、この焦燥をどこから解いていくか。",
+      choices:[
+        { label:"何も説明せず、いきなり施術ベッドに案内する", delta:100, route:"A",
+          result:"エレオノーラは戸惑いながらも、ふかふかのベッドに横たわった瞬間、期待に瞳を輝かせた。\n『……あら、これだけで、もう肌が喜んでいる気がしますわ』\n施術の内容も分からないまま、彼女はすっかり乗り気になっていた。" },
+        { label:"「今夜のコースを、順番にご説明しますね」と前置きする", delta:75, route:"B",
+          result:"エレオノーラは腕を組み、値踏みするような目を向けてきた。\n『……随分と手順を踏むのですわね。良いでしょう、聞かせていただきますわ』\n王妃としての貫禄と、一人の女性としての期待が、同時に顔を出していた。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"即陥落ルート",
+        events:[
+          { label:"SCENE 02 — 炭酸ナノバブルクレンジング", celestialId:"nano_bubble",
+            text:"『まずはクレンジングから。前世の最新技術を魔法で再現した炭酸ナノバブルです』\nシュワシュワとした微細な泡が、エレオノーラの顔を覆う。\n『な、何これ!?毛穴の奥が……奥がシュワシュワして、汚れが根こそぎ浮き上がっていくような感覚……!気持ちいい、気持ちいいですわ!』",
+            choices:[
+              { label:"何も言わず、丁寧に泡を馴染ませていく", delta:10, result:"エレオノーラは声もなく、うっとりとした表情で泡の感触に身を委ねていた。" },
+              { label:"「毛穴の汚れ、根こそぎ落ちてますよ」と伝える", delta:40, result:"『まぁ、そんなに汚れていましたの……?』エレオノーラは複雑そうな顔をしつつも、気持ちよさには抗えないようだった。" }
+            ]
+          },
+          { label:"SCENE 03 — ナノスチーマーの奇跡", celestialId:"nano_steamer",
+            text:"『次はナノスチーマーです。温かい霧が、肌の奥まで届きますよ』\n温かい超微細な霧が、彼女の顔を優しく包み込む。\n『温かい霧……?嘘、これ、肌の奥まで水が染み込んでいくのがわかりますわ!我が国の水魔法の最高峰でも、こんな繊細な霧は出せません!』",
+            choices:[
+              { label:"何も言わず、じっくりと蒸気を当て続ける", delta:10, result:"エレオノーラは目を閉じたまま、深く息を吸い込んでいた。肌だけでなく、心までほぐれているようだった。" },
+              { label:"「王妃様の驚く顔、初めて見ました」と伝える", delta:45, result:"『……あら、そんなにはしたない顔をしていまして?』エレオノーラは慌てて表情を整えようとしたが、緩んだ頬は元に戻らなかった。" }
+            ]
+          },
+          { label:"SCENE 04 — 特製ピチピチ泥パック", celestialId:"pichipichi_pack",
+            text:"『仕上げに、特製ピチピチ泥パックです。頭皮のマッサージも一緒にしますね』\nコラーゲンとヒアルロン酸を魔力で超精製した泥パックを塗り、頭皮を優しく揉みほぐす。\n『ほうぇぇ……』\nエレオノーラの口から、王妃らしからぬ気の抜けた声が漏れた。",
+            choices:[
+              { label:"何も言わず、ゆっくりとマッサージを続ける", delta:15, result:"エレオノーラはすっかり緊張の糸が切れた様子で、されるがままになっていた。" },
+              { label:"「その声、貴婦人たちには内緒にしておきますね」とからかう", delta:50, result:"エレオノーラは目を見開き、それから諦めたように笑った。『……ええ、お願いしますわ。これは、私だけの秘密ですもの』" }
+            ]
+          },
+          { label:"SCENE 05 — 若さへの焦り",
+            text:"パックが馴染むのを待つ間、エレオノーラがぽつりとこぼした。\n『……娘を産んでから、鏡を見るのが少し怖くなりましたの。母として、王妃として、いつまでも綺麗でいなければと思うのに、時間だけが過ぎていくようで』",
+            choices:[
+              { label:"何も言わず、静かに耳を傾ける", delta:15, result:"エレオノーラはしばらく黙り込んだ後、また小さく胸の内を続けた。誰かに聞いてもらえることが、救いのようだった。" },
+              { label:"「今夜だけでも、その焦りを忘れてください」と伝える", delta:50, result:"エレオノーラは目を潤ませ、それからふっと微笑んだ。『……ありがとう。そう言ってもらえるだけで、少し楽になりますわ』" }
+            ]
+          },
+          { label:"SCENE 06 — マイナスイオンドライヤーと鏡の奇跡", celestialId:"hair_treatment",
+            beats:[
+              { text:"『最後は髪です。特製トリートメントを塗って、マイナスイオンドライヤーでブローしますね』アルガンオイルっぽいトリートメントを馴染ませ、丁寧に乾かしていく。" },
+              { text:"異世界のゴワゴワしたブラシと生ぬるい風とは違う。乾かすだけで、髪がみるみるうちに絹のような輝きを取り戻していく。" },
+              { text:"『鏡を、鏡を見せてちょうだい!』施術が終わり、ドレッサーの前に立ったエレオノーラが、自分の顔を見て絶句した。" },
+              { text:"鏡に映る自分の顔を、何度も確かめるように触れる音だけが響いた。", type:"sfx" },
+              { text:"『……これが、私……?嘘よ、娘を産む前の瑞々しさが戻っているわ!お肌が指に吸い付くようにピチピチですわ!髪も天使の輪ができていますわ!』", climax:true },
+              { text:"王妃は自分の頬を何度も触り、少女のように狂喜乱舞した。焦燥に潰されかけていた表情は、もうどこにもなかった。" }
+            ],
+            choices:[
+              { label:"何も言わず、鏡を見て喜ぶ彼女を見守る", delta:15, result:"エレオノーラは鏡の前から離れず、いつまでも自分の顔を確かめ続けていた。" },
+              { label:"「明日の夜会、完全に王妃様の勝ちですね」と伝える", delta:35, result:"エレオノーラはぱっと顔を輝かせた。『ええ、ええ!今夜という今夜は、誰にも文句を言わせませんわ!』" },
+              { label:"「その笑顔の方が、鏡の中の顔より綺麗ですよ」と伝える", delta:70, result:"エレオノーラの手が止まった。『……まぁ、お上手ですこと』顔を赤らめながらも、まんざらでもなさそうだった。" }
+            ]
+          },
+          { label:"SCENE 07 — 若さより大切なもの",
+            text:"鏡から少し離れ、エレオノーラがソファに腰を下ろした。\n『……不思議ですわね。肌が若返ったこと以上に、今夜こうして誰かに丁寧に扱ってもらえたことの方が、ずっと嬉しく感じますの』\n王妃としての気の張った表情が、すっかり緩んでいた。",
+            choices:[
+              { label:"何も言わず、隣で一緒にお茶を飲む", delta:15, result:"エレオノーラは隣に座る俺をちらりと見て、小さく微笑んだ。何も言わなくても、十分に伝わっているようだった。" },
+              { label:"「その顔、夜会の誰にも見せなくていいですからね」と伝える", delta:55, result:"エレオノーラは一瞬驚いた顔をして、それから照れくさそうに頷いた。『……ええ。ここだけの、秘密にしておきますわ』" }
+            ]
+          },
+          { label:"SCENE 08 — 神のサロン、それから", final:true,
+            text:"すっかりくつろいだエレオノーラにレビューシートを渡すと、震える手ではなく、上機嫌な手で星5つが書き込まれた。\n『さて、そろそろお帰りの時間です。今夜はどうでした?』",
+            choices:[
+              { label:"「また肌のお手入れをしたくなったら、いつでもどうぞ」と軽く送り出す", delta:20, result:"エレオノーラは名残惜しそうに鏡を一撫でしてから頷いた。『……ええ、また来るわ、きっと』" },
+              { label:"「今夜からあなたは、うちの正式な常連客です」と告げる", delta:85, result:"エレオノーラの表情が、くしゃっと崩れた。『……本当に?嬉しい、嬉しすぎますわ』王妃としての貫禄はどこへやら、両手を合わせて少女のように喜んでいた。" }
+            ],
+            endingText:"私室に戻ったエレオノーラは、鏡に映る自分の顔を何度も確かめた。『……これで、明日の夜会は私の圧勝ですわ』ほくそ笑む声には、若さを取り戻した以上の、確かな自信が滲んでいた。"
+          }
+        ],
+        epilogueText:"後日譚。隣国の貴婦人たちを招いた夜会で、エレオノーラのお肌と髪の輝きは、その場の全員を沈黙させた。『……これはちょっとした「神のサロン」の秘密ですの』と優越感に浸る王妃は、今日もこっそりこの部屋に瓢箪されにきている。『……次はどんな魔法を見せてくれるのかしら』鏡を覗き込む横顔は、以前よりずっと明るかった。"
+      },
+      B:{
+        routeLabel:"品定めから始まる陥落ルート",
+        events:[
+          { label:"SCENE 02 — 品定めのクレンジング", celestialId:"nano_bubble",
+            text:"『まずはクレンジングから。炭酸ナノバブルクレンジングです』\nエレオノーラは疑わしげに泡を頬に受けた。\n『……悪くはない感触ですわね。ですが、この程度で驚くほど、私も初心ではありませんの』\n評価するような口調は崩れなかった。",
+            choices:[
+              { label:"「お口に合って何よりです」と流す", delta:10, result:"エレオノーラは小さく頷き、それ以上の感想は述べず泡の感触に身を委ねていた。" },
+              { label:"「随分と手厳しい評価ですね」と指摘する", delta:40, result:"『……美の追求とは、そういうものですわ』エレオノーラは澄まし顔で返したが、泡が肌を包むたびに小さく息を漏らしていた。" }
+            ]
+          },
+          { label:"SCENE 03 — 美への懐疑",
+            text:"『「フルコースメンテナンス」とやら、随分と大きく出ましたわね。私はこれでも、王国随一の美容師たちを何人も見てきましたの』\nエレオノーラは腕を組み、値踏みするような目でこちらを見た。",
+            choices:[
+              { label:"「効果を見てから判断してくれれば十分です」と受け流す", delta:10, result:"エレオノーラは鼻を鳴らしたが、結局施術ベッドに横たわった。" },
+              { label:"「その自信、崩してみせますよ」と挑発する", delta:45, result:"エレオノーラの眉がぴくりと動いた。『……面白いことを言いますわね。受けて立ちましょう』プライドに火がついたようだった。" }
+            ]
+          },
+          { label:"SCENE 04 — 崩れる余裕の表情", celestialId:"nano_steamer",
+            text:"『次はナノスチーマーです。温かい霧が、肌の奥まで届きますよ』\n最初は澄まし顔だったエレオノーラだが、温かい霧に包まれた瞬間、表情が緩んでいった。\n『……っ、これは……我が国の水魔法の最高峰でも、出せない繊細さですわ……』",
+            choices:[
+              { label:"「余裕の表情、少し崩れてますよ」とからかう", delta:15, result:"『……気のせいですわ』エレオノーラは顔を上げずに言い返したが、明らかに動揺していた。" },
+              { label:"「気持ちよさそうですね」と煽る", delta:50, result:"『……っ、そんなことは……』エレオノーラの声が、尻すぼみに小さくなっていった。" }
+            ]
+          },
+          { label:"SCENE 05 — 泥パックへの抵抗", celestialId:"pichipichi_pack",
+            text:"『仕上げに、特製ピチピチ泥パックです』\nエレオノーラは眉をひそめた。\n『……泥、ですって?王妃たる者、そのような泥遊びのようなものは……』\n言いながらも、結局施術を受け入れる。",
+            choices:[
+              { label:"「無理にとは言いません」と引く", delta:15, result:"エレオノーラは澄まし顔で頷いたが、パックが馴染むと同時にほうっと息を吐いていた。" },
+              { label:"「王妃様にも、素直に喜ぶ権利ありますよ」と伝える", delta:50, result:"エレオノーラは顔を赤らめた。『……っ、そう、かもしれませんわね』余裕の仮面は、もうほとんど剥がれかけていた。" }
+            ]
+          },
+          { label:"SCENE 06 — マイナスイオンドライヤーと鏡の奇跡", celestialId:"hair_treatment",
+            beats:[
+              { text:"『最後は髪です。特製トリートメントを塗って、マイナスイオンドライヤーでブローしますね』エレオノーラは『この程度で』と余裕の表情を崩さなかった。" },
+              { text:"だが乾かしていくうちに、髪が絹のような輝きを取り戻していくのを、鏡越しに彼女自身が気づいてしまう。" },
+              { text:"『鏡を、鏡を見せてちょうだい!』施術が終わり、ドレッサーの前に立ったエレオノーラが、自分の顔を見て絶句した。" },
+              { text:"鏡に映る自分の顔を、何度も確かめるように触れる音だけが響いた。", type:"sfx" },
+              { text:"『……これが、私……?嘘よ、娘を産む前の瑞々しさが戻っているわ!お肌が指に吸い付くようにピチピチですわ!』", climax:true },
+              { text:"『この程度で』と言い放ったはずのエレオノーラは、少女のように鏡の前ではしゃいでいた。余裕の仮面は、もうどこにも残っていなかった。" }
+            ],
+            choices:[
+              { label:"何も言わず、鏡を見てはしゃぐ彼女を見守る", delta:15, result:"エレオノーラは鏡の前から離れず、いつまでも自分の顔を確かめ続けていた。" },
+              { label:"「さっきまでの『この程度で』はどこ行きました?」とからかう", delta:35, result:"エレオノーラは頬を赤らめて睨んできた。『……忘れてちょうだい』声が上ずっていた。" },
+              { label:"「その笑顔の方が、鏡の中の顔より綺麗ですよ」と伝える", delta:70, result:"エレオノーラの手が止まった。『……まぁ、お上手ですこと』顔を赤らめながらも、まんざらでもなさそうだった。" }
+            ]
+          },
+          { label:"SCENE 07 — 若さより大切なもの",
+            text:"鏡から少し離れ、エレオノーラがソファに腰を下ろした。\n『……不思議ですわね。肌が若返ったこと以上に、今夜こうして誰かに丁寧に扱ってもらえたことの方が、ずっと嬉しく感じますの』\n王妃としての気の張った表情が、すっかり緩んでいた。",
+            choices:[
+              { label:"聞かなかったふりをして、話題を変える", delta:15, result:"エレオノーラはほっとしたように肩の力を抜いた。追及されないことが、今の彼女には救いだったようだ。" },
+              { label:"「ここでは、王妃の仮面を外してもいいですよ」と静かに告げる", delta:55, result:"エレオノーラは目を見開き、それからゆっくりと俯いた。『……そんな場所、生まれて初めて頂きましたわ』声が、微かに震えていた。" }
+            ]
+          },
+          { label:"SCENE 08 — 神のサロン、それから", final:true,
+            text:"すっかりくつろいだエレオノーラにレビューシートを渡すと、上機嫌な手つきで星5つが書き込まれた。\n『さて、そろそろお帰りの時間です。今夜はどうでした?』",
+            choices:[
+              { label:"「無理に認めなくても大丈夫ですよ」と伝える", delta:20, result:"エレオノーラは小さく頷いた。『……ありがとう。今夜のことは、忘れませんわ』静かな声だった。" },
+              { label:"「もう余裕の仮面、外していいこと分かってますよね」と告げる", delta:85, result:"エレオノーラの表情が、堰を切ったように崩れた。『……分かって、いますわ。分かっているから、そんな風に言わないで』涙声のまま、それでも小さく笑っていた。王妃が、初めて見せた素顔だった。" }
+            ],
+            endingText:"私室に戻ったエレオノーラは、鏡の前で小さく笑った。『……この程度で、と思っていたのに』余裕ぶっていたはずの声は、今はすっかり素直な喜びに変わっていた。"
+          }
+        ],
+        epilogueText:"後日譚。隣国の貴婦人たちを招いた夜会で、エレオノーラのお肌と髪の輝きは、その場の全員を沈黙させた。最初こそ『この程度で』と言い張っていた余裕も、いつしか鳴りを潜めていた。『……次はどんな魔法を見せてくれるのかしら』鏡を覗き込む横顔は、以前よりずっと明るかった。"
+      }
+    }
+  },
+  lumina:{
+    name:"聖女ルミナ",
+    subtitle:"国教会所属の聖女。人を癒す手が、誰にも癒やされたことがない",
+    emblem:"癒",
+    color:"#7fae8a",
+    glow:"#eaffef",
+    tier:1,
+    event1:{
+      label:"SCENE 01 — 癒す者の悲鳴なき悲鳴",
+      text:"推薦ボックスに入っていたのは、王妃エレオノーラからの一筆だった。\n『近頃、教会の聖女様が随分と根を詰めて祈祷を続けていると耳にしました。連日の治癒魔法の行使で、お身体もお心も限界のはず。どうか、彼女の魂も労ってあげてくださいな』\n\n深夜、国教会の祈祷堂。聖女ルミナは、最後の祈祷者を見送った後、誰もいない聖堂の隅でようやく肩を落とした。\n\n『……今日だけで何十人、癒しの光を送っただろう。指の感覚が、もうほとんどない』\n\n人々を癒す聖女の手は、荒れて、震えていた。誰かに癒してもらう、という発想自体が、彼女の中には存在しなかった。\n\nゴゴゴゴゴ……。\n\n祈祷堂の壁に、闇より昏い扉が出現した。\n\n『……何者、ですか』\n\n身構えようとした瞬間、指先に力が入らないことに気づく。限界だったのは、心だけでなく体もだったらしい。\n\n扉から現れたのは、部屋着姿の俺だ。\n\n『夜分失礼しまーす。聖女ルミナさんですね。王妃様のご紹介でーす。ちょっと扉の向こうへどうぞ』\n\n『……教会に、何か御用でしょうか。私にできることでしたら』\n\n『いや、今夜はあなたに何かしてもらう必要は一切ないんで。むしろ、される専門でお願いします』\n\n『……される、専門?』\n\n聖女は、生まれて初めて聞く言葉のように、その響きを繰り返した。\n\nさて、癒し疲れたこの手を、どこから解いていくか。",
+      choices:[
+        { label:"何も聞かず、まずお風呂に案内する", delta:100, route:"A",
+          result:"ルミナは戸惑いながらも、湯船に浸かった瞬間、詰めていた息を全部吐き出した。\n『……あ、ぁ……こんなに力を抜いていいものなんですか……』\n生まれて初めて、誰かに世話をされる側になった聖女は、毒気を抜かれたように瞳を潤ませていた。" },
+        { label:"「今夜は何もしなくていいんです」とまず言葉で伝える", delta:75, route:"B",
+          result:"ルミナは困惑した表情を浮かべた。\n『……何も、しない?それは、その……怠惰ということでは』\n聖職者としての戒律が、体の力を抜くことすら躊躇わせているようだった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"即癒されルート",
+        events:[
+          { label:"SCENE 02 — 生まれて初めての湯浴み", celestialId:"onsen_bath",
+            text:"『ゆっくり浸かってください。何も考えなくていいので』\nルミナは、ほのかに花の香りが漂う湯に身を沈めた。\n『……温かい……いえ、それだけじゃない。この香り、心まで解れていくような……』\n聖女としての気を張った表情が、少しずつ緩んでいくのが分かった。",
+            choices:[
+              { label:"何も言わず、そっと退室してゆっくりさせる", delta:10, result:"ルミナはしばらく一人、静かに湯に浸かり続けていた。誰にも気を遣わずに済む時間が、よほど貴重だったらしい。" },
+              { label:"「今日くらい、聖女様じゃなくていいですよ」と声をかける", delta:40, result:"ルミナは湯の中で目を閉じたまま、小さく頷いた。『……はい。今だけは、そうさせてもらいます』声に、微かな安堵が滲んでいた。" }
+            ]
+          },
+          { label:"SCENE 03 — 癒しの手を、癒す番", celestialId:"healing_massage",
+            text:"『次はマッサージです。うつ伏せになってください』\nルミナの背に手を当てた瞬間、俺は絶句した。指の関節も、肩も、信じられないほど硬く強張っている。\n『……こんなに凝ってるの、初めて見ました』\n『……そう、なのですか?毎日のことなので、これが普通だと思っていました』",
+            choices:[
+              { label:"何も言わず、丁寧にほぐしていく", delta:10, result:"ルミナの口から、堪えきれない声が漏れた。『……あぁ……そこ、そこです……』聖女らしからぬ、素の声だった。" },
+              { label:"「その手で、これまで何人癒してきたんです?」と尋ねる", delta:45, result:"ルミナは少し考えてから答えた。『……数えたことは、ありません』それだけの人を癒し続けてきた手が、今、初めて労わられていた。" }
+            ]
+          },
+          { label:"SCENE 04 — アロマキャンドルの灯り", celestialId:"aroma_candle",
+            text:"施術の合間、俺は小さな炎を灯したキャンドルをそっと置いた。\n『これ、アロマキャンドルって言って、火を灯すと良い香りが広がるんです』\nルミナは炎をじっと見つめた。\n『……教会の蝋燭とは、まるで違う香り。優しくて、それでいて、どこか懐かしいような』",
+            choices:[
+              { label:"「気に入ったら、お土産に持って帰ってください」と伝える", delta:15, result:"ルミナは目を輝かせた。『……本当に、いただいてもよろしいのですか?』炎を見つめる横顔が、少女のように無邪気だった。" },
+              { label:"「教会の蝋燭よりリラックスできてます?」と聞く", delta:50, result:"『……ええ、正直に言うと、はるかに』ルミナは苦笑した。聖職者らしからぬ本音が、するりとこぼれ出ていた。" }
+            ]
+          },
+          { label:"SCENE 05 — 与えるだけの人生",
+            text:"ヒーリング音楽が静かに流れる中、ルミナがぽつりとこぼした。\n『……物心ついた頃から、人に癒しを与えることばかり教えられてきました。誰かに何かをしてもらう、という発想自体、今夜初めて知った気がします』",
+            choices:[
+              { label:"何も言わず、静かに耳を傾ける", delta:15, result:"ルミナはしばらく黙り込んだ後、また小さく続きを話し始めた。誰かに聞いてもらえることが、それだけで救いのようだった。" },
+              { label:"「今夜だけは、あなたが癒される番です」と伝える", delta:50, result:"ルミナは目を見開き、それからゆっくりと微笑んだ。『……その言葉だけで、もう十分癒されている気がします』瞳が、わずかに潤んでいた。" }
+            ]
+          },
+          { label:"SCENE 06 — 断食の戒律、陥落", celestialId:"cheese_fondue",
+            beats:[
+              { text:"『最後はこれ、チーズフォンデュです。二人で串を持って、一緒にどうぞ』とろけたチーズの鍋が、ことこと湯気を立てていた。" },
+              { text:"『……私、実は先月から断食の戒律中でして。この香りだけで、少し目眩が』ルミナは困ったように眉を下げた。" },
+              { text:"それでも俺が差し出した串を、彼女はおずおずと受け取った。" },
+              { text:"パンの欠片をとろけたチーズにくぐらせる音が、静かに響く。", type:"sfx" },
+              { text:"『……美味しい……美味しすぎます……!戒律を破ってしまった罪悪感すら、幸福感で塗り替えられていきます……!』", climax:true },
+              { text:"聖女としての戒律も自制も、とろけるチーズの前ではとうに意味を成していなかった。頬を紅潮させ、無我夢中で串を動かし続ける姿は、どこにでもいる一人の女性そのものだった。" }
+            ],
+            choices:[
+              { label:"何も言わず、夢中で食べる彼女をただ見守る", delta:15, result:"ルミナは最後の一切れまで、一言も戒律について触れなかった。それだけ本気で味わっていた証拠だった。" },
+              { label:"「戒律より、今の顔の方が幸せそうですね」と伝える", delta:35, result:"ルミナは頬を赤らめながら、恨めしそうにこちらを見た。『……そういうことは、言わない約束です』だが手は止まらなかった。" },
+              { label:"「今夜だけは、聖女様も一人の女性でいいんですよ」と伝える", delta:70, result:"ルミナの手が止まった。『……ずるい、です。そんな言葉、反則です』顔を背けた頬が、湯気のせいだけでなく赤らんでいた。" }
+            ]
+          },
+          { label:"SCENE 07 — 静かな告白",
+            text:"満腹になったルミナが、ソファに深くもたれかかった。\n『……戒律を破ってしまいました。でも、不思議と後悔がありません。こんなに満たされた気持ちになったのは、初めてかもしれません』\n聖女としての凛とした表情から、力が抜けていた。",
+            choices:[
+              { label:"何も言わず、隣で静かに寄り添う", delta:15, result:"ルミナは隣に座る俺をちらりと見て、小さく微笑んだ。何も言わなくても、十分に伝わっているようだった。" },
+              { label:"「その顔、教会の誰にも見せなくていいですからね」と伝える", delta:55, result:"ルミナは一瞬驚いた顔をして、それから照れくさそうに頷いた。『……はい。ここだけの、秘密にしておきます』" }
+            ]
+          },
+          { label:"SCENE 08 — 癒される権利", final:true,
+            text:"すっかりくつろいだルミナにレビューシートを渡すと、彼女は普段の祈祷文のような達筆ではなく、少し震えた丸文字で感想を書き込んだ。\n『さて、そろそろお帰りの時間です。今夜はどうでした?』",
+            choices:[
+              { label:"「また疲れが溜まったら、いつでもどうぞ」と軽く送り出す", delta:20, result:"ルミナはキャンドルを大事そうに抱えながら頷いた。『……はい。今度は、もう少し早く来てもいいですか?』" },
+              { label:"「今夜からあなたは、うちの正式な常連客です」と告げる", delta:85, result:"ルミナの表情が、くしゃっと崩れた。『……よろしいのですか?私にも、癒される権利が』涙ぐみながら、それでも柔らかく微笑んでいた。" }
+            ],
+            endingText:"祈祷堂に戻ったルミナは、そっとアロマキャンドルに火を灯した。『……癒しは、与えるだけのものじゃなかったのですね』呟く声は、誰かに祈りを捧げるときよりも、ずっと柔らかかった。"
+          }
+        ],
+        epilogueText:"後日譚。祈祷堂の隅に、いつしか小さなアロマキャンドルが灯るようになっていた。祈祷の合間、ルミナはそっと目を閉じ、その香りに浸る時間を作っている。『……癒しは、与えるだけのものじゃなかったんですね』灯る炎を見つめる横顔は、以前よりずっと穏やかだった。"
+      },
+      B:{
+        routeLabel:"戒律を手放せないルート",
+        events:[
+          { label:"SCENE 02 — 戒律とお風呂", celestialId:"onsen_bath",
+            text:"『まずはお風呂にどうぞ。何も考えず、ゆっくり浸かってください』\nルミナは戸惑いながらも湯に足を入れた。\n『……いえ、こんな贅沢、聖職者としてどうかと。すぐに上がります』\n言いながらも、肩まで浸かった瞬間、詰めていた息が漏れた。『……っ、あ……』",
+            choices:[
+              { label:"「無理に上がらなくて大丈夫ですよ」と流す", delta:10, result:"ルミナはほっとしたように、それ以上何も言わず湯に浸かり続けた。" },
+              { label:"「素直に気持ちよさそうな顔してますよ」と指摘する", delta:40, result:"ルミナは慌てて表情を引き締めようとしたが、うまくいかず、結局頬を赤らめて黙り込んだ。" }
+            ]
+          },
+          { label:"SCENE 03 — 施術への抵抗", celestialId:"healing_massage",
+            text:"『次はマッサージです。うつ伏せになってください』\nルミナは眉をひそめた。\n『……聖職者たる者、自らの肉体の快楽を求めるのは、いささか……』\n言いながらも、結局うつ伏せになってしまう。",
+            choices:[
+              { label:"「快楽じゃなくて治療ですよ」と理屈で押す", delta:10, result:"『……治療。そう考えれば、問題ありませんね』ルミナは自分に言い聞かせるように頷いた。" },
+              { label:"「その手、こんなに凝ってるの見ないふりできませんよ」と指摘する", delta:45, result:"ルミナは黙り込んだ。図星を突かれたことを、否定する言葉が出てこないようだった。" }
+            ]
+          },
+          { label:"SCENE 04 — 香りへの困惑", celestialId:"aroma_candle",
+            text:"『これ、アロマキャンドルです。良い香りがしますよ』\nルミナは炎を見つめながらも、警戒した口調で言った。\n『……教会の香とは、明らかに違う香りですね。何か、誘惑の魔法でも……』\n言いつつも、深く息を吸い込んでいた。",
+            choices:[
+              { label:"「ただの良い香りですよ」と安心させる", delta:15, result:"ルミナは少し安堵したように肩の力を抜いた。『……そう、ですか。確かに、悪くない香りです』" },
+              { label:"「魔法じゃなくて、素直に気持ちいいだけですよ」と指摘する", delta:50, result:"ルミナは頬を赤らめた。『……っ、そう、かもしれません』警戒心はもう、ほとんど残っていなかった。" }
+            ]
+          },
+          { label:"SCENE 05 — 弱音を許されない立場",
+            text:"ふとした沈黙の合間、ルミナの表情に疲労が滲んだ。\n『……聖女は、常に穏やかで、常に人を癒す側でなければならないのです。弱音を吐くことすら、許されない立場ですから』\n言ってから、しまったというように口をつぐんだ。",
+            choices:[
+              { label:"聞かなかったふりをして、話題を変える", delta:15, result:"ルミナはほっとしたように肩の力を抜いた。追及されないことが、今の彼女には救いだったようだ。" },
+              { label:"「ここでは、聖女の仮面を外してもいいですよ」と静かに告げる", delta:50, result:"ルミナは目を見開き、それからゆっくりと俯いた。『……そんな場所、生まれて初めて頂きました』声が、微かに震えていた。" }
+            ]
+          },
+          { label:"SCENE 06 — 戒律の限界、チーズフォンデュの前で", celestialId:"cheese_fondue",
+            beats:[
+              { text:"『最後はこれ、チーズフォンデュです』とろけたチーズの鍋を前に、ルミナは毅然と言った。『……私は先月から断食の戒律中です。匂いだけで失礼させていただきます』" },
+              { text:"そう言いながらも、鍋から漂う香りに、彼女の視線は釘付けになっていた。" },
+              { text:"『……少しだけ、なら』震える手で、ルミナは串を手に取った。" },
+              { text:"パンの欠片をとろけたチーズにくぐらせる音が、静かに響く。", type:"sfx" },
+              { text:"『……美味しい……美味しすぎます……!戒律を破ってしまった罪悪感すら、幸福感で塗り替えられていきます……!』", climax:true },
+              { text:"取り繕う余裕はもう、どこにも残っていなかった。頬を紅潮させ、夢中で串を動かし続ける姿は、さっきまでの毅然とした聖女が嘘のようだった。" }
+            ],
+            choices:[
+              { label:"何も言わず、戒律が崩れる瞬間を見届ける", delta:15, result:"ルミナは最後の一切れまで、一度も戒律について口にしなかった。それが何よりの答えだった。" },
+              { label:"「さっきまでの『匂いだけで失礼』はどこ行きました?」とからかう", delta:35, result:"ルミナは串を持ったまま固まり、それから顔を赤くして『……忘れてください』と絞り出した。" },
+              { label:"「今夜だけは、聖女様も一人の女性でいいんですよ」と伝える", delta:70, result:"ルミナの手が止まった。『……ずるい、です。そんな言葉、反則です』顔を背けた頬が、湯気のせいだけでなく赤らんでいた。" }
+            ]
+          },
+          { label:"SCENE 07 — 静かな告白",
+            text:"満腹になったルミナが、ソファに深くもたれかかった。\n『……戒律を破ってしまいました。でも、不思議と後悔がありません。こんなに満たされた気持ちになったのは、初めてかもしれません』\n聖女としての凛とした表情から、力が抜けていた。",
+            choices:[
+              { label:"何も言わず、そっと水を差し出す", delta:15, result:"ルミナは無言で水を受け取り、静かに喉を潤した。感謝の言葉はなかったが、拒む素振りもなかった。" },
+              { label:"「我慢しなくても、ここでは誰も見てませんよ」と伝える", delta:55, result:"ルミナは声を殺して少し泣いた。溜め込んでいたものが、堰を切ったように溢れ出していた。" }
+            ]
+          },
+          { label:"SCENE 08 — 癒される権利", final:true,
+            text:"すっかりくつろいだルミナにレビューシートを渡すと、彼女は普段の祈祷文のような達筆ではなく、少し震えた丸文字で感想を書き込んだ。\n『さて、そろそろお帰りの時間です。今夜はどうでした?』",
+            choices:[
+              { label:"「無理に認めなくても大丈夫ですよ」と伝える", delta:20, result:"ルミナは小さく頷いた。『……ありがとうございます。今夜のことは、忘れません』静かな声だった。" },
+              { label:"「もう戒律の仮面、外していいこと分かってますよね」と告げる", delta:85, result:"ルミナの表情が、堰を切ったように崩れた。『……分かって、います。分かっているから、そんな風に言わないでください』涙声のまま、それでも柔らかく微笑んでいた。聖女が、初めて見せた素顔だった。" }
+            ],
+            endingText:"祈祷堂に戻ったルミナは、震える指で戒律の書をそっと閉じた。『……一度くらいの過ちは、神様もお許しくださるはずです』誰にともなく呟くその声には、確かな安堵が滲んでいた。"
+          }
+        ],
+        epilogueText:"後日譚。祈祷堂の隅に、いつしか小さなアロマキャンドルが灯るようになっていた。最初こそ『聖職者たる者』と言い張っていた強がりも、いつしか鳴りを潜めていた。『……癒しは、与えるだけのものじゃなかったんですね』灯る炎を見つめる横顔は、以前よりずっと穏やかだった。"
+      }
+    }
+  },
+  lily:{
+    name:"第七王女リリィ",
+    subtitle:"エイセレブ王国最年少、6歳の甘えん坊。『お城は退屈!』が口癖の末っ子王女",
+    emblem:"花",
+    color:"#d9578f",
+    glow:"#fff0f5",
+    tier:1,
+    event1:{
+      label:"SCENE 01 — 退屈な王女と、お菓子の扉",
+      text:"推薦ボックスに入っていたのは、ノースティア王女からの一筆だった。\n『神様、いつもありがとうございます。今回は、我が妹である第七王女リリィを推薦します。あの子はまだ6歳ですが、近頃「お城は退屈!」と毎日ぐずっており、侍女たちも困り果てております。どうか、あの子にお腹いっぱいの夢を見せてやってください』\n\n深夜、エイセレブ王国の子供部屋。第七王女リリィは、ベッドのクッションをぽかぽかと叩いていた。\n\n『もーう!お城なんてだいきらい!お勉強ばっかりで、お外にも行けないんだもん!』\n\nまだ6歳。遊びたい盛りの彼女には、王族としてのお勉強ばかりの毎日が、退屈で仕方なかった。\n\nゴゴゴゴゴ……。\n\nおもちゃ箱の横の壁に、お菓子のようなピンク色の装飾が施された『可愛い扉』が、ぬっと出現した。\n\n『わあ……!なにこれ、お菓子のトビラ……?』\n\n恐怖心など微塵もなく、リリィは目を輝かせて扉に駆け寄った。\n\nガチャリと扉が開き、中から現れたのは、部屋着姿の俺だ。\n\n『ハロー、リリィちゃん。お城の毎日は退屈かな?今夜は世界で一番楽しい秘密の場所に招待しちゃうぞ』\n\n『わあ……!いくいく!』\n\nさて、この無邪気な王女に、何から見せてあげようか。",
+      choices:[
+        { label:"手を引いて、まずモフモフたちのいる部屋に案内する", delta:100, route:"A",
+          result:"部屋に足を踏み入れた瞬間、リリィの目が輝いた。\n『ふぁあああ……っ!なにここ!すっごく涼しい!それに、可愛いがいっぱい!』\n何の躊躇いもなく、リリィは部屋の中へ飛び込んでいった。" },
+        { label:"「怖くないから、ゆっくりおいで」と優しく声をかける", delta:75, route:"B",
+          result:"リリィは扉の前で少しだけ足を止めた。\n『……知らない人だから、ちょっとだけ、どきどきする……』\n人見知りな一面をちらりと覗かせながらも、好奇心には勝てないようだった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"全開ではしゃぐルート",
+        events:[
+          { label:"SCENE 02 — 焼きたてパンケーキ", celestialId:"strawberry_milk_pancake",
+            text:"『おもてなし、特製いちごミルクと、焼きたてパンケーキだよ。どうぞ!』\nリリィはパンケーキを一口頬張った瞬間、目をまん丸にした。\n『おいしい……!なにこれ、ふわふわでお口の中でとけちゃう!』",
+            choices:[
+              { label:"何も言わず、おかわりを用意しておく", delta:10, result:"リリィは無言でパクパクと食べ進め、あっという間にお皿を空にしていた。" },
+              { label:"「たくさん食べて、大きくなってね」と伝える", delta:40, result:"リリィは口をいっぱいにしたまま、こくこくと頷いた。『んー!おっきくなるー!』満面の笑みだった。" }
+            ]
+          },
+          { label:"SCENE 03 — モフモフの楽園", celestialId:"mofmof_petcafe",
+            text:"パンケーキを頬張るリリィの足元に、ミー、と小さく鳴きながら、白くてモフモフの子猫たちがすり寄ってきた。\n『きゃああっ!かわいい!モフモフさんだーっ!』\nお城では『危ないから』と動物に触らせてもらえなかったリリィは、天使のような笑顔で子猫たちを撫で回した。",
+            choices:[
+              { label:"何も言わず、モフモフたちと戯れる彼女を見守る", delta:10, result:"リリィはケラケラと笑いながら、いつまでも子猫や子ウサギを撫で続けていた。" },
+              { label:"「優しく撫でてあげてね」と声をかける", delta:45, result:"『うん!やさしく、やさしくね!』リリィは真剣な顔で頷き、そっと子猫を抱き上げた。とても丁寧な手つきだった。" }
+            ]
+          },
+          { label:"SCENE 04 — 喋る特大クマのぬいぐるみ", celestialId:"giant_plush",
+            text:"『次はこれ、喋る特大クマのぬいぐるみだよ』\n自分の背丈より大きなクマのぬいぐるみを前に、リリィは目を丸くした。\n『わあ!おっきい!……あ、しゃべった!?』\nクマのぬいぐるみに抱きついたリリィは、その温かさにすっかりうっとりしていた。",
+            choices:[
+              { label:"何も言わず、抱きつく彼女を見守る", delta:15, result:"リリィはクマのぬいぐるみにぎゅっと抱きついたまま、しばらく離れようとしなかった。" },
+              { label:"「気に入ったら、お土産に持って帰っていいよ」と伝える", delta:50, result:"リリィは目を輝かせた。『ほんと!?やったー!ずっと一緒にいられる!』クマを抱きしめる力が、さらに強くなった。" }
+            ]
+          },
+          { label:"SCENE 05 — 「お城、たいくつなの」",
+            text:"モフモフに囲まれながら、リリィがぽつりとこぼした。\n『……お城にいると、いつもお勉強とマナーばっかりで、お友達と遊ぶ暇もないの。動物さんも、危ないからって触らせてもらえないし』\n無邪気な口調の奥に、小さな寂しさが滲んでいた。",
+            choices:[
+              { label:"何も言わず、優しく話を聞く", delta:15, result:"リリィはぽつぽつと、退屈な毎日の話を続けた。誰かに聞いてもらえるのが嬉しいようだった。" },
+              { label:"「今夜だけは、思いっきり遊んでいいからね」と伝える", delta:50, result:"リリィは目をキラキラさせた。『ほんと!?じゃあ、いっぱい遊ぶ!』満面の笑みが咲いた。" }
+            ]
+          },
+          { label:"SCENE 06 — 魔法のゲーム機、初体験", celestialId:"game_console",
+            beats:[
+              { text:"『さあ、お次はこれだ。魔法のゲーム機だよ』大画面に、色鮮やかな大自然を可愛いキャラクターが駆け回る映像が映し出された。" },
+              { text:"『このボタンを押すと、画面のキャラクターがジャンプするよ』俺がコントローラーの握り方を教えると、リリィの小さな手がボタンの上にセットされた。" },
+              { text:"『えいっ!……わっ!動いた!』" },
+              { text:"ボタンを連打する小さな指の音が、部屋に響いた。", type:"sfx" },
+              { text:"『動いたよお兄ちゃん!わたし、いま飛んでるよ!』", climax:true },
+              { text:"椅子から飛び上がり、コントローラーを全身で振り回しながら笑うリリィの姿は、まさに初めてゲーム機に触れた子供そのものだった。" }
+            ],
+            choices:[
+              { label:"何も言わず、夢中で遊ぶ彼女を見守る", delta:15, result:"リリィは画面に向かって、いつまでも夢中でボタンを押し続けていた。" },
+              { label:"「筋がいいね、上手だよ」と褒める", delta:50, result:"リリィは得意げに胸を張った。『えへへ、リリィ、上手でしょ!』目をキラキラさせながら、さらにボタンを連打していた。" }
+            ]
+          },
+          { label:"SCENE 07 — 眠そうな笑顔",
+            text:"はしゃぎ疲れたのか、リリィがクマのぬいぐるみを抱えたまま、うとうとと船を漕ぎ始めた。\n『……お兄ちゃん、リリィ、今夜すっごく楽しかった……』\n眠そうな声にも、幸せそうな響きが滲んでいた。",
+            choices:[
+              { label:"何も言わず、そっと毛布をかけてあげる", delta:15, result:"リリィは安心しきった様子で、すやすやと寝息を立て始めた。" },
+              { label:"「また今度、たくさん遊ぼうね」と伝える", delta:55, result:"リリィは眠りかけの目を細めて笑った。『……うん、やくそく……』小さな指切りをして、そのまま眠りに落ちた。" }
+            ]
+          },
+          { label:"SCENE 08 — お土産と、明日への活力", final:true,
+            text:"すっかり眠そうなリリィに、俺はそっと声をかけた。\n『そろそろお家に帰る時間だよ。最後にこの紙に、ハナマルか何か書いてくれるかな?』\nリリィは眠い目をこすりながら、一生懸命大きなハナマルを描いた。",
+            choices:[
+              { label:"「クマのぬいぐるみ、大事にしてね」と軽く送り出す", delta:20, result:"リリィはクマをぎゅっと抱きしめて頷いた。『うん!ずっと一緒にいる!』" },
+              { label:"「このゲーム機も、お土産にあげるね」と伝える", delta:85, result:"リリィは目を見開いた。『ほんとに!?やったー!いっぱい練習して、上手になる!』満面の笑みで、ゲーム機をぎゅっと抱きしめていた。" }
+            ],
+            endingText:"翌朝、王宮の朝食会。いつもは『お勉強行きたくない!』とぐずっていたリリィが、大きなクマのぬいぐるみを引きずりながら、満面の笑みで現れた。『お父様、お姉様!リリィ、昨日ね、神様の秘密の遊園地に行ったの!モフモフさんとゲームしたんだよ!』誰に隠すこともなく、リリィは今朝の出来事を誇らしげに話し続けていた。"
+          }
+        ],
+        epilogueText:"後日譚。リリィの部屋には、あの夜もらったゲーム機が大切に飾られている。毎日少しずつ練習を重ね、いつの間にか誰よりも上手にボタンを操るようになっていた。『いつか、お兄ちゃんともう一回勝負するんだ!』クマのぬいぐるみを抱きしめながら、リリィは今日も無邪気に笑っていた。"
+      },
+      B:{
+        routeLabel:"人見知りから始まるルート",
+        events:[
+          { label:"SCENE 02 — 少しずつ慣れていくおやつ", celestialId:"strawberry_milk_pancake",
+            text:"『おもてなし、特製いちごミルクと、焼きたてパンケーキだよ。どうぞ』\nリリィは少し警戒しながらも、そっとパンケーキを一口かじった。\n『……あ、おいしい……』\n小さな声だったが、頬は緩んでいた。",
+            choices:[
+              { label:"何も言わず、静かに見守る", delta:10, result:"リリィは少しずつ警戒を解きながら、パンケーキを食べ進めていった。" },
+              { label:"「怖くないよ、ゆっくり食べてね」と優しく伝える", delta:40, result:"リリィはこくんと頷き、それから少しだけ笑顔を見せた。『……うん』小さいけれど、確かな笑顔だった。" }
+            ]
+          },
+          { label:"SCENE 03 — おそるおそるのモフモフ", celestialId:"mofmof_petcafe",
+            text:"『次はこっち。モフモフの子猫さんたちがいるよ』\nリリィは最初、少し後ずさりしていた。\n『……どうぶつさん、お城では触っちゃダメって言われてるの……』\nだが子猫がすり寄ってきた瞬間、恐る恐る手を伸ばしていた。",
+            choices:[
+              { label:"「大丈夫、優しい子ばかりだよ」と伝える", delta:15, result:"リリィはおずおずと子猫を撫で、次第に表情が緩んでいった。『……ふわふわ……』小さな声で呟いていた。" },
+              { label:"何も言わず、そっと見守る", delta:50, result:"リリィは自分のペースで少しずつ子猫に触れ、やがて『きゃっ、かわいい!』と声を弾ませ始めた。" }
+            ]
+          },
+          { label:"SCENE 04 — おっきなクマさん", celestialId:"giant_plush",
+            text:"『これ、喋る特大クマのぬいぐるみだよ』\n自分の背丈より大きなクマを前に、リリィは目を丸くした。\n『わあ……おっきい……』\n最初は遠巻きに眺めていたが、やがてそっと近づき、抱きついていた。",
+            choices:[
+              { label:"何も言わず、そっと見守る", delta:15, result:"リリィはクマにぎゅっと抱きついたまま、しばらく離れようとしなかった。人見知りは、もうすっかり消えていた。" },
+              { label:"「気に入ったら、お土産に持って帰っていいよ」と伝える", delta:50, result:"リリィは目を輝かせた。『ほんと!?やったー!』最初の警戒心は、もうどこにも見当たらなかった。" }
+            ]
+          },
+          { label:"SCENE 05 — 「お城、たいくつなの」",
+            text:"すっかり打ち解けたリリィが、ぽつりとこぼした。\n『……お城にいると、いつもお勉強とマナーばっかりで、お友達と遊ぶ暇もないの。知らない人はちょっと怖いけど、お兄ちゃんは、なんだか怖くないから、不思議』",
+            choices:[
+              { label:"何も言わず、優しく話を聞く", delta:15, result:"リリィはぽつぽつと、退屈な毎日の話を続けた。誰かに聞いてもらえるのが嬉しいようだった。" },
+              { label:"「今夜だけは、思いっきり遊んでいいからね」と伝える", delta:50, result:"リリィは目をキラキラさせた。『ほんと!?じゃあ、いっぱい遊ぶ!』人見知りはすっかり消え、満面の笑みが咲いた。" }
+            ]
+          },
+          { label:"SCENE 06 — 魔法のゲーム機、初体験", celestialId:"game_console",
+            beats:[
+              { text:"『さあ、お次はこれだ。魔法のゲーム機だよ』大画面に、色鮮やかな大自然を可愛いキャラクターが駆け回る映像が映し出された。" },
+              { text:"リリィは最初、コントローラーを恐る恐る受け取った。『……これ、どうやって使うの?』" },
+              { text:"『このボタンを押すと、画面のキャラクターがジャンプするよ』教えられた通り、リリィの小さな指がボタンを押す。" },
+              { text:"ボタンを連打する小さな指の音が、部屋に響いた。", type:"sfx" },
+              { text:"『わっ!動いた!……動いたよお兄ちゃん!わたし、いま飛んでるよ!』", climax:true },
+              { text:"椅子から飛び上がり、コントローラーを全身で振り回しながら笑うリリィの姿からは、最初の人見知りな様子はすっかり消えていた。" }
+            ],
+            choices:[
+              { label:"何も言わず、夢中で遊ぶ彼女を見守る", delta:15, result:"リリィは画面に向かって、いつまでも夢中でボタンを押し続けていた。" },
+              { label:"「筋がいいね、上手だよ」と褒める", delta:50, result:"リリィは得意げに胸を張った。『えへへ、リリィ、上手でしょ!』最初の緊張は、もうどこにもなかった。" }
+            ]
+          },
+          { label:"SCENE 07 — 眠そうな笑顔",
+            text:"はしゃぎ疲れたのか、リリィがクマのぬいぐるみを抱えたまま、うとうとと船を漕ぎ始めた。\n『……お兄ちゃん、リリィ、今夜すっごく楽しかった……最初はどきどきしたけど』\n眠そうな声にも、幸せそうな響きが滲んでいた。",
+            choices:[
+              { label:"何も言わず、そっと毛布をかけてあげる", delta:15, result:"リリィは安心しきった様子で、すやすやと寝息を立て始めた。" },
+              { label:"「また今度、たくさん遊ぼうね」と伝える", delta:55, result:"リリィは眠りかけの目を細めて笑った。『……うん、やくそく……』小さな指切りをして、そのまま眠りに落ちた。" }
+            ]
+          },
+          { label:"SCENE 08 — お土産と、明日への活力", final:true,
+            text:"すっかり眠そうなリリィに、俺はそっと声をかけた。\n『そろそろお家に帰る時間だよ。最後にこの紙に、ハナマルか何か書いてくれるかな?』\nリリィは眠い目をこすりながら、一生懸命大きなハナマルを描いた。",
+            choices:[
+              { label:"「クマのぬいぐるみ、大事にしてね」と軽く送り出す", delta:20, result:"リリィはクマをぎゅっと抱きしめて頷いた。『うん!ずっと一緒にいる!』" },
+              { label:"「このゲーム機も、お土産にあげるね」と伝える", delta:85, result:"リリィは目を見開いた。『ほんとに!?やったー!いっぱい練習して、上手になる!』最初の人見知りが嘘のような、満面の笑みだった。" }
+            ],
+            endingText:"翌朝、王宮の朝食会。いつもは『お勉強行きたくない!』とぐずっていたリリィが、大きなクマのぬいぐるみを引きずりながら、満面の笑みで現れた。『お父様、お姉様!リリィ、昨日ね、神様の秘密の遊園地に行ったの!モフモフさんとゲームしたんだよ!』誰に隠すこともなく、リリィは今朝の出来事を誇らしげに話し続けていた。"
+          }
+        ],
+        epilogueText:"後日譚。リリィの部屋には、あの夜もらったゲーム機が大切に飾られている。毎日少しずつ練習を重ね、いつの間にか誰よりも上手にボタンを操るようになっていた。最初は人見知りだったことなど、もう誰も覚えていない。『いつか、お兄ちゃんともう一回勝負するんだ!』クマのぬいぐるみを抱きしめながら、リリィは今日も無邪気に笑っていた。"
+      }
+    }
+  },
+  rainhardt:{
+    name:"ハイドランジア第一王子ラインハルト",
+    subtitle:"隣国エイセレブへの対抗心を燃やす王子。まさかの幼女相手に、ゲームで完敗を重ねる",
+    emblem:"冠",
+    color:"#6a7fc9",
+    glow:"#e0e6ff",
+    tier:2,
+    event1:{
+      label:"SCENE 01 — 隣国からの、まさかの依頼",
+      text:"推薦ボックスに入っていたのは、ハイドランジア王からの一筆だった。\n\n『恥を忍んで頼む。息子のラインハルトが、近頃隣国エイセレブへの対抗心をこじらせて手がつけられん。負けず嫌いも大概にしてほしいのだが、頭ごなしに叱っても意地を張るだけでな……どうか、あれの意地っ張りを、うまく解いてやってくれないだろうか』\n\n『……王様直々の依頼か。よし、じゃあ今夜は助っ人を呼びますか』\n\n俺の脳裏に浮かんだのは、先日までこの城で全力ではしゃいでいた、エイセレブ王国の末っ子王女リリィの顔だった。\n\n『ゲームなら、あの子に敵う大人はそういないからな……』\n\n深夜、ハイドランジア王国の執務室。第一王子ラインハルトは、隣国から届く報告書に目を通しながら、苛立たしげに眉根を寄せていた。\n\n『……最近、やけにエイセレブが栄えている気がする。一体どういうことだ』\n\nゴゴゴゴゴ……。\n\n執務室の壁に、闇より昏い扉が出現した。\n\n『な、何者だ!……この魔力量、まさかエイセレブの陰にいる存在とはこれか……!?』\n\n扉から現れたのは、部屋着姿の俺だ。ラインハルトは腰の剣に手をかけたが、溢れる魔力の圧に膝が笑った。\n\n『夜分失礼しまーす。ハイドランジア第一王子ラインハルトさんですね。お父上のご依頼でーす。ちょっと扉の向こうへどうぞ』\n\n『……くっ、父上が!?正体を暴いてやる、案内しろ!』\n\n有無を言わさず扉に引きずり込まれたラインハルトを待っていたのは、涼しい部屋と……小さな人影だった。\n\n『あ!新しいお客さんだ!リリィと勝負しよ!』\n\nソファに座り込んでいたのは、エイセレブ王国の第七王女、まだあどけなさの残る幼女リリィだった。ゲーム機のコントローラーを両手に抱え、目をキラキラさせている。\n\n『な……なぜ、エイセレブの王女がここに……!』\n\nラインハルトは絶句した。まさか敵国の幼い王女と鉢合わせるとは、想定の埒外だったらしい。\n\n『まぁまぁ、細かいことはいいから。この子、ゲームならお兄さんより強いですよ』\n\n『……幼女如きに、負けるわけがなかろう』\n\nラインハルトは鼻を鳴らしたが、その言葉が盛大なフラグになるとは、まだ気づいていなかった。\n\nさて、この対抗心の塊に、どう挑ませるか。",
+      choices:[
+        { label:"何も言わず、いきなり一戦やらせてみる", delta:100, route:"A",
+          result:"『行くよー、せーの!』リリィが無邪気にボタンを連打した瞬間、ラインハルトの操作するキャラクターがあっさり吹き飛んだ。\n『……は?』\n呆気に取られる王子をよそに、リリィは『やったー!』と無邪気に喜んでいた。" },
+        { label:"「お手柔らかにお願いしますね」とラインハルトに気を遣わせる", delta:75, route:"B",
+          result:"ラインハルトは鼻で笑った。『……幼女相手に手加減など、当然の配慮だ』\n余裕綽々のその態度が、この後どれほど脆いものだったか、まだ誰も知らなかった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"秒で本気になるルート",
+        events:[
+          { label:"SCENE 02 — まさかの完敗", celestialId:"fighting_game",
+            text:"『もう一戦!もう一戦やろ!』\nリリィにせがまれるまま、ラインハルトは二戦目に臨んだ。しかし結果は同じく完敗。\n『……ば、馬鹿な。なぜ幼女に、この俺が……』\nプライドをへし折られた王子の目が、みるみる真剣な色を帯びていった。",
+            choices:[
+              { label:"何も言わず、二人の対戦を見守る", delta:10, result:"ラインハルトは無言でコントローラーを握り直した。負けず嫌いの本能が、完全に子供相手のゲームへ向けられていた。" },
+              { label:"「幼女相手に、本気になってません?」とからかう", delta:40, result:"『……っ、な、なっていない!ただの手加減不足だ!』ラインハルトは慌てて言い訳したが、耳まで赤くなっていた。" }
+            ]
+          },
+          { label:"SCENE 03 — 幼女、次元の違う才能", celestialId:"rhythm_game",
+            text:"『次はこっち!リズムのやつ!』\nリリィが画面に合わせて楽しそうにボタンを叩く。何の努力も気負いもないのに、その正確さはラインハルトを凌駕していた。\n『……なぜだ。なぜ何の訓練も積んでいない子供に……!』",
+            choices:[
+              { label:"「天才には理屈が通じないものですよ」と伝える", delta:10, result:"ラインハルトは項垂れた。『……理屈が通じないのは、貴様の理論も同じだったな』諦めたような苦笑いだった。" },
+              { label:"「悔しいなら、もっと練習しますか?」と煽る", delta:45, result:"ラインハルトの目つきが変わった。『……ああ、練習してやる。今夜だけで、この差を埋めてみせる』対抗心の矛先が、完全にゲームへ移っていた。" }
+            ]
+          },
+          { label:"SCENE 04 — 幼女と分け合うゲーセン飯", celestialId:"arcade_snacks",
+            text:"『休憩!から揚げ食べよ!』\nリリィがから揚げを頬張りながら、ラインハルトにも一つ差し出した。\n『……もらう。感謝する』\n毒気を抜かれたように、王子は幼女の隣で大人しくから揚げを齧っていた。",
+            choices:[
+              { label:"何も言わず、二人の様子を見守る", delta:15, result:"ラインハルトとリリィは、いつの間にか敵国同士であることも忘れ、他愛のないお喋りに興じていた。" },
+              { label:"「随分と懐かれてますね」とからかう", delta:50, result:"『……別に、懐かれてなどいない』ラインハルトはそう言い張ったが、リリィが差し出す二つ目のから揚げを、素直に受け取っていた。" }
+            ]
+          },
+          { label:"SCENE 05 — 「おにいちゃん、かなしいの?」",
+            text:"ゲームの合間、リリィが不意にラインハルトの顔を覗き込んだ。\n『……おにいちゃん、かなしいの?なんかいつも、こわい顔してる』\nラインハルトは虚を突かれたように黙り込んだ。\n『……物心ついた頃から、常にエイセレブと比較され続けてきた。だから、何か一つでも勝てるものが欲しかった』",
+            choices:[
+              { label:"何も言わず、静かに耳を傾ける", delta:15, result:"リリィは黙って話を聞いていたが、やがて『じゃあ、リリィと遊んでる時は、勝ち負けかんがえなくていいよ!』と無邪気に笑った。" },
+              { label:"「今夜くらいは、比較を忘れて楽しんでください」と伝える", delta:50, result:"ラインハルトは目を見開き、それから小さく笑った。『……そうだな。今だけは、そうさせてもらおう』肩の力が抜けていた。" }
+            ]
+          },
+          { label:"SCENE 06 — 王子、子供に還る", celestialId:"final_showdown",
+            beats:[
+              { text:"『よーし、さいごの勝負!』リリィが元気いっぱいにコントローラーを構えた。ラインハルトも、もう格好をつける余裕はなかった。" },
+              { text:"開始直後から、二人とも真剣そのものの表情でボタンを連打する。年齢も国境も、そこにはもう関係なかった。" },
+              { text:"体力ゲージが、ぎりぎりの均衡を保ったまま試合が進んでいく。" },
+              { text:"最後の一撃が、画面に鋭く突き刺さる音を立てた。", type:"sfx" },
+              { text:"『……く、また負けた……!だが、こんなに笑ったのは、生まれて初めてかもしれん!』ラインハルトは涙目のまま、子供のように大笑いしていた。", climax:true },
+              { text:"エイセレブへの対抗心に燃えていたはずの王子は、今はただ、一人の子供のように無邪気にはしゃいでいた。" }
+            ],
+            choices:[
+              { label:"何も言わず、二人の笑い声を聞いている", delta:15, result:"ラインハルトとリリィは、しばらく二人で笑い転げていた。国も肩書きも、そこには何の意味も持たないようだった。" },
+              { label:"「負けても、その顔は最高でしたよ」と伝える", delta:35, result:"『……ふん、お世辞を言うな』ラインハルトはそっぽを向いたが、口元は緩みっぱなしだった。" },
+              { label:"「エイセレブもハイドランジアも関係なく、いい遊び相手でしたね」と伝える", delta:70, result:"ラインハルトの表情が緩んだ。『……そうだな。国がどうとか、今は関係ない気がする』対抗心の代わりに、清々しい笑顔が浮かんでいた。" }
+            ]
+          },
+          { label:"SCENE 07 — 比較の先にあったもの",
+            text:"熱戦を終え、ラインハルトはリリィと並んでソファに座り込んだ。\n『……不思議だな。エイセレブに勝ちたかったはずなのに、今は一人の子供と本気で笑い合えたことの方が、ずっと嬉しく感じる』\n隣でリリィが『またやろうね!』と眠そうに笑いかけていた。",
+            choices:[
+              { label:"何も言わず、隣で一緒に見守る", delta:15, result:"ラインハルトはリリィの頭を優しく撫でた。敵国の王子とは思えない、穏やかな表情だった。" },
+              { label:"「その顔、国に帰ったら誰にも見せなくていいですからね」と伝える", delta:55, result:"ラインハルトは一瞬驚いた顔をして、それから照れくさそうに頷いた。『……ああ。ここだけの、秘密にしておこう』" }
+            ]
+          },
+          { label:"SCENE 08 — 王子、ライバル視をやめる", final:true,
+            text:"すっかりくつろいだラインハルトにレビューシートを渡すと、彼は堂々とした筆致で星5つを書き込んだ。隣でリリィも、大きなハナマルを書き添えていた。\n『さて、そろそろお帰りの時間です。今夜はどうでした?』",
+            choices:[
+              { label:"「また対戦したくなったら、いつでもどうぞ」と軽く送り出す", delta:20, result:"ラインハルトはコントローラーを名残惜しそうに置いた。『……ああ、次はリリィにリベンジさせてもらう』" },
+              { label:"「今夜からあなたは、うちの正式な常連客です」と告げる", delta:85, result:"ラインハルトの表情が、くしゃっと崩れた。『……本当か?エイセレブの敵国の人間だぞ、それでもいいのか』縋るような声に、リリィが『いいよー!』と無邪気に答えていた。" }
+            ],
+            endingText:"執務室に戻ったラインハルトは、山積みの書類を前に、なぜか楽しそうに鼻歌を歌っていた。護衛の兵士たちは、『殿下がついにおかしくなられたのでは……』と、本気で心配し始めるのだった。"
+          }
+        ],
+        epilogueText:"後日譚。ハイドランジア王国の執務室に、いつしか小さなゲーム機が置かれるようになっていた。政務の合間、ラインハルトはこっそり一人で対戦相手を求めてこの部屋に瓢箪されにきているらしい。『……エイセレブに勝ちたいんじゃない。ただ、あの日の続きがしたいだけだ』コントローラーを握る横顔は、以前よりずっと晴れやかだった。"
+      },
+      B:{
+        routeLabel:"沽券にこだわるルート",
+        events:[
+          { label:"SCENE 02 — 沽券にかけた敗北", celestialId:"fighting_game",
+            text:"『行くよー、せーの!』\nリリィが無邪気にボタンを連打した瞬間、手加減していたはずのラインハルトのキャラクターが、あっさり吹き飛んだ。\n『……な、これは手加減のしすぎだ。もう一戦だ』\n負けを認めたくない王子の言い訳が、早くも始まっていた。",
+            choices:[
+              { label:"「言い訳、みっともないですよ」と指摘する", delta:10, result:"『……うるさい。次は本気を出す』ラインハルトはムッとした顔でコントローラーを握り直した。" },
+              { label:"「沽券にこだわってる場合ですか?」とからかう", delta:40, result:"『……っ、沽券の問題ではない、これは分析だ』ラインハルトは苦しい言い訳を重ねたが、目は真剣そのものだった。" }
+            ]
+          },
+          { label:"SCENE 03 — 崩れる言い訳", celestialId:"rhythm_game",
+            text:"『次はこっち!リズムのやつ!』\nリリィが楽しそうにボタンを叩く。ラインハルトは『幼女相手に本気を出すなど沽券に関わる』と呟きながらも、指先は本気そのものだった。\n『……くっ、なぜだ。なぜ何の訓練も積んでいない子供に……!』",
+            choices:[
+              { label:"「沽券より先に、悔しさが出てますよ」と指摘する", delta:15, result:"『……っ、うるさい』ラインハルトは画面を睨みつけたまま言い返したが、耳は真っ赤だった。" },
+              { label:"「悔しいなら、もっと練習しますか?」と煽る", delta:50, result:"ラインハルトの目つきが変わった。『……ああ、練習してやる。今夜だけで、この差を埋めてみせる』沽券もプライドも、もうどこかへ消えていた。" }
+            ]
+          },
+          { label:"SCENE 04 — 幼女への警戒", celestialId:"arcade_snacks",
+            text:"『休憩!から揚げ食べよ!』\nリリィがから揚げを頬張りながら、ラインハルトにも一つ差し出した。\n『……幼女から施しを受けるとは、王子として如何なものか』\n言いながらも、結局受け取って口に運んでいた。",
+            choices:[
+              { label:"「素直に美味しいって言っていいんですよ」と指摘する", delta:15, result:"『……悪くはない』ラインハルトはそっぽを向きながらも、二つ目のから揚げにしっかり手を伸ばしていた。" },
+              { label:"「随分と懐かれてますね」とからかう", delta:50, result:"『……別に、懐かれてなどいない』ラインハルトはそう言い張ったが、リリィが隣に座り直すのを、拒みはしなかった。" }
+            ]
+          },
+          { label:"SCENE 05 — 「おにいちゃん、かなしいの?」",
+            text:"ゲームの合間、リリィが不意にラインハルトの顔を覗き込んだ。\n『……おにいちゃん、かなしいの?なんかいつも、こわい顔してる』\nラインハルトは虚を突かれたように黙り込んだ。\n『……物心ついた頃から、常にエイセレブと比較され続けてきた。だから、何か一つでも勝てるものが欲しかった』",
+            choices:[
+              { label:"聞かなかったふりをして、話題を変える", delta:15, result:"ラインハルトはほっとしたように肩の力を抜いた。追及されないことが、今の彼には救いだったようだ。" },
+              { label:"「ここでは、王子の仮面を外してもいいですよ」と静かに告げる", delta:55, result:"ラインハルトは目を見開き、それからゆっくりと俯いた。『……そんな場所、生まれて初めて頂いた』隣でリリィが、きょとんとした顔で二人を見比べていた。" }
+            ]
+          },
+          { label:"SCENE 06 — 沽券を捨てた最終決戦", celestialId:"final_showdown",
+            beats:[
+              { text:"『よーし、さいごの勝負!』リリィが元気いっぱいにコントローラーを構えた。ラインハルトはもう、沽券もプライドも取り繕う余裕がなかった。" },
+              { text:"開始直後から、二人とも真剣そのものの表情でボタンを連打する。年齢も国境も、そこにはもう関係なかった。" },
+              { text:"体力ゲージが、ぎりぎりの均衡を保ったまま試合が進んでいく。" },
+              { text:"最後の一撃が、画面に鋭く突き刺さる音を立てた。", type:"sfx" },
+              { text:"『……く、また負けた……!だが、こんなに笑ったのは、生まれて初めてかもしれん!』ラインハルトは涙目のまま、子供のように大笑いしていた。", climax:true },
+              { text:"『沽券に関わる』と言い張っていたはずの王子は、今はただ、一人の子供のように無邪気にはしゃいでいた。" }
+            ],
+            choices:[
+              { label:"何も言わず、二人の笑い声を聞いている", delta:15, result:"ラインハルトとリリィは、しばらく二人で笑い転げていた。国も肩書きも、そこには何の意味も持たないようだった。" },
+              { label:"「さっきまでの『沽券に関わる』はどこ行きました?」とからかう", delta:35, result:"ラインハルトは顔を赤くして唸った。『……忘れろ』声が上ずっていた。" },
+              { label:"「エイセレブもハイドランジアも関係なく、いい遊び相手でしたね」と伝える", delta:70, result:"ラインハルトの表情が緩んだ。『……そうだな。国がどうとか、今は関係ない気がする』対抗心の代わりに、清々しい笑顔が浮かんでいた。" }
+            ]
+          },
+          { label:"SCENE 07 — 比較の先にあったもの",
+            text:"熱戦を終え、ラインハルトはリリィと並んでソファに座り込んだ。\n『……不思議だな。貴様に沽券を保つつもりが、気づけば本気で笑い合っていた。エイセレブに勝ちたかったはずなのに、今は一人の子供と本気で向き合えたことの方が、ずっと嬉しく感じる』",
+            choices:[
+              { label:"何も言わず、隣で一緒に見守る", delta:15, result:"ラインハルトはリリィの頭を優しく撫でた。敵国の王子とは思えない、穏やかな表情だった。" },
+              { label:"「もう沽券の仮面、外していいこと分かってますよね」と告げる", delta:55, result:"ラインハルトの表情が、堰を切ったように崩れた。『……分かって、いる。分かっているから、そんな風に言うな』声を震わせながら、それでも小さく笑っていた。" }
+            ]
+          },
+          { label:"SCENE 08 — 王子、ライバル視をやめる", final:true,
+            text:"すっかりくつろいだラインハルトにレビューシートを渡すと、彼は堂々とした筆致で星5つを書き込んだ。隣でリリィも、大きなハナマルを書き添えていた。\n『さて、そろそろお帰りの時間です。今夜はどうでした?』",
+            choices:[
+              { label:"「無理に認めなくても大丈夫ですよ」と伝える", delta:20, result:"ラインハルトは小さく頷いた。『……感謝する。今夜のことは、忘れない』静かな声だった。" },
+              { label:"「今夜からあなたは、うちの正式な常連客です」と告げる", delta:85, result:"ラインハルトの表情が、堰を切ったように崩れた。『……本当か?エイセレブの敵国の人間だぞ、それでもいいのか』縋るような声に、リリィが『いいよー!』と無邪気に答えていた。" }
+            ],
+            endingText:"執務室に戻ったラインハルトは、報告書の隅にこっそり小さな落書きを描いていた。負けず嫌いの血筋は健在のまま、その表情だけが、以前よりずっと柔らかくなっていた。"
+          }
+        ],
+        epilogueText:"後日譚。ハイドランジア王国の執務室に、いつしか小さなゲーム機が置かれるようになっていた。最初こそ『沽券に関わる』と言い張っていた強がりも、いつしか鳴りを潜めていた。『……エイセレブに勝ちたいんじゃない。ただ、あの日の続きがしたいだけだ』コントローラーを握る横顔は、以前よりずっと晴れやかだった。"
+      }
+    }
+  },
+  mireille:{
+    name:"賢者ミレイユ＆剣聖ヴィオラ",
+    subtitle:"ハイドランジア宮廷賢者と、まさかの再登場を果たすエイセレブ剣聖の相席",
+    emblem:"杖",
+    color:"#9a8fc9",
+    glow:"#f0ecff",
+    tier:2,
+    event1:{
+      label:"SCENE 01 — 賢者、まさかの相席",
+      text:"推薦ボックスに入っていたのは、ラインハルト王子からの一筆だった。\n『我が国の宮廷賢者ミレイユが、最近「エイセレブの繁栄の陰にいる存在」とやらの正体を突き止めようと根を詰めている。放っておくと過労で倒れかねん。……ついでに、噂に聞くエイセレブの剣聖とやらも一緒に呼んでやってくれ。あの浮かれた王女たちが揃って「あの人がいると場が和む」と言っていたのでな』\n\nハイドランジア王国、深夜の魔導研究塔。宮廷賢者ミレイユは、山積みの魔導書に埋もれながら、羽根ペンを走らせていた。\n\n『……この空間歪曲の痕跡、明らかに未知の魔法体系。肉体派の剣士などに構っている暇はないというのに、なぜ私がこんな雑務を』\n\n独り言をこぼした瞬間、研究塔の壁に、闇より昏い扉が出現した。\n\n『……っ、これは!私が調べていた歪曲反応と、完全に一致する……!』\n\n興奮した様子で扉に駆け寄るミレイユ。しかしその直後、扉のすぐ横にもう一枚、見覚えのある人影が音もなく現れた。\n\n『……あんたも呼ばれたんだ?久しぶり』\n\n気軽に声をかけてきたのは、エイセレブ王国近衛剣聖筆頭ヴィオラだった。すっかり寛いだ様子で、私服姿のまま欠伸をしている。\n\n『……何故、貴国の剣聖がこの場に。しかも、随分と……くだけた雰囲気ですね』\n\nミレイユは眉をひそめた。噂に聞く『国最強の剣聖』とは、似ても似つかない気安さだった。\n\n扉から現れたのは、部屋着姿の俺だ。\n\n『夜分失礼しまーす。賢者ミレイユさんですね。ラインハルト王子のご紹介でーす。ヴィオラさんはもう常連なんで、勝手についてきてもらいました』\n\n『……常連?この剣聖が?』\n\nミレイユの疑念を余所に、ヴィオラは既に扉の向こうへ足を踏み入れていた。\n\n『……付き合いましょう。この歪曲現象の正体、私の目で確かめてやります』\n\nさて、この理知的な賢者に、何をぶつけるか。",
+      choices:[
+        { label:"ヴィオラに任せて、二人のペースに委ねる", delta:100, route:"A",
+          result:"ヴィオラが慣れた様子でミレイユの手を引き、ソファに座らせた。\n『まぁまぁ、細かいことはいいからさ。ここ、マジで最高だから』\nミレイユは戸惑いながらも、その気安さに毒気を抜かれていくのが分かった。" },
+        { label:"「まずは、その歪曲現象について説明させてください」と理屈から入る", delta:75, route:"B",
+          result:"ミレイユは満足そうに頷いた。\n『……ええ、それでこそ。感情論ではなく、まずは理論的な説明を求めます』\n隣で欠伸をするヴィオラを一瞥し、彼女は小さくため息をついていた。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"秒で意気投合ルート",
+        events:[
+          { label:"SCENE 02 — 未知の飲料、再び", celestialId:"tapioca",
+            text:"『はい、ミレイユもこれ飲んでみ。タピオカミルクティー』\nヴィオラが慣れた手つきで差し出す。ミレイユは訝しみながらもストローを咥えた。\n『……この食感、学術的に非常に興味深いですね。もちもちとした弾力の正体は、一体……』\n分析しながらも、既に二杯目に手を伸ばしていた。",
+            choices:[
+              { label:"何も言わず、二人のやり取りを見守る", delta:10, result:"ヴィオラが『でしょ?』と得意げに笑い、ミレイユは仕方なさそうに、それでいてどこか楽しそうに相槌を打っていた。" },
+              { label:"「賢者様も、素直に美味しいって言っていいんですよ」と伝える", delta:40, result:"ミレイユは頬を赤らめた。『……っ、美味しいですよ、悪いですか』開き直ったような早口だった。ヴィオラが横で盛大に笑った。" }
+            ]
+          },
+          { label:"SCENE 03 — 賢者、私服を勧められる", celestialId:"gal_fashion",
+            text:"『次、これ着替えてみ。似合うと思うよ』\nヴィオラが軽い調子で私服一式を差し出す。ミレイユは面食らった。\n『……賢者たる者、そのような軽薄な装いは……いえ、貴女がそれを言いますか』\n呆れながらも、結局カーテンの奥へ消えていった。",
+            choices:[
+              { label:"「似合ってますよ」と素直に褒める", delta:10, result:"戻ってきたミレイユは、まんざらでもなさそうに裾を整えていた。『……賢者の威厳とは無関係の感想ですが、悪くはありません』" },
+              { label:"「賢者様にも可愛いもの好きの一面、あるんですね」と指摘する", delta:45, result:"ミレイユは顔を赤くして黙り込んだ。隣でヴィオラが『ほらね』と得意げに笑っていた。" }
+            ]
+          },
+          { label:"SCENE 04 — 二人で撮る未知の魔道具", celestialId:"purikura",
+            text:"『次、プリクラ撮ろ。二人で』\nヴィオラに引っ張られるまま、ミレイユは光る箱に押し込まれた。\n『……こ、こうですか?』ぎこちなくピースをするミレイユの隣で、ヴィオラが満面の笑みでピースを重ねる。\nフラッシュが焚かれ、二人の笑顔が印刷された。",
+            choices:[
+              { label:"「いい写真ですね」と見せる", delta:15, result:"ミレイユは写真を覗き込み、絶句した。『……私が、こんな顔で笑うことがあるとは』驚いたように、しかし嬉しそうに呟いた。" },
+              { label:"「賢者様、思ったより表情豊かですね」と伝える", delta:50, result:"『……普段は、抑えているだけです』ミレイユはそう言い張ったが、写真を大事そうに懐にしまっていた。" }
+            ]
+          },
+          { label:"SCENE 05 — 賢者という名の孤独",
+            text:"ひとしきりはしゃいだ後、ミレイユがぽつりとこぼした。\n『……宮廷賢者は、常に理性的で、感情に流されてはならないと教えられてきました。誰かとこんな風に笑い合うこと自体、久しくなかった気がします』\nヴィオラが隣で、何も言わずに肩を寄せた。",
+            choices:[
+              { label:"何も言わず、静かに話の続きを待つ", delta:15, result:"ミレイユはぽつぽつと、研究に明け暮れた日々の話を続けた。ヴィオラは相槌も打たず、ただ隣で耳を傾け続けていた。" },
+              { label:"「今夜くらいは、理性を脇に置いてもいいですよ」と伝える", delta:50, result:"ミレイユは目を見開き、それからくしゃっと笑った。『……そう、ですね。今だけは、そうさせてもらいます』ヴィオラが嬉しそうに頷いていた。" }
+            ]
+          },
+          { label:"SCENE 06 — 賢者、まさかのデュエット", celestialId:"karaoke",
+            beats:[
+              { text:"『最後はこれ、カラオケ。ミレイユも一緒に歌お』ヴィオラがマイクを二本用意し、片方をミレイユに押し付けた。" },
+              { text:"『……私は、歌など嗜んだことは』ミレイユは戸惑いながらもマイクを受け取った。" },
+              { text:"前奏が流れ始めると、ヴィオラが慣れた様子で歌い出す。つられるように、ミレイユの唇もわずかに動き始めた。" },
+              { text:"「あーしら最強かよー!今夜はとことん行くっしょー!」", type:"sfx" },
+              { text:"『……っ、あはは!これ、思ったより楽しいですね……!』ミレイユは自分でも驚いたように声を弾ませた。", climax:true },
+              { text:"理知的な賢者と、あーし化した剣聖が、肩を並べて熱唱する光景は、両国の誰も想像していないものだった。" }
+            ],
+            choices:[
+              { label:"何も言わず、二人のデュエットに手拍子する", delta:15, result:"ヴィオラとミレイユは顔を見合わせて笑い、さらに声を張り上げた。息はすっかり合っていた。" },
+              { label:"「賢者様も、すっかり打ち解けましたね」と伝える", delta:35, result:"ミレイユは照れくさそうに笑った。『……否定はしません。悪くない夜です』隣でヴィオラが誇らしげに胸を張っていた。" },
+              { label:"「お二人、すっかりいいコンビですね」と伝える", delta:70, result:"二人は同時に顔を見合わせ、それから同時に噴き出した。『……否定は、しませんね』『でしょ?』国境を越えた妙な連帯感が、そこに生まれていた。" }
+            ]
+          },
+          { label:"SCENE 07 — 国境を越えた友情",
+            text:"熱唱を終え、二人はソファに並んで座り込んだ。\n『……不思議なものですね。貴女とは本来、敵国同士のはずなのに』ミレイユがぽつりと呟く。\n『まぁ、ここでは関係なくない?』ヴィオラが軽く肩をぶつけて笑った。\nミレイユも、釣られるように小さく笑った。",
+            choices:[
+              { label:"何も言わず、二人のやり取りを見守る", delta:15, result:"二人はしばらく他愛のない話で盛り上がっていた。国も肩書きも、そこには何の意味も持たないようだった。" },
+              { label:"「お二人みたいな関係、両国にとっても良い前例になりそうですね」と伝える", delta:55, result:"二人は顔を見合わせ、それから同時に頷いた。『……それは、悪くない未来ですね』ミレイユが静かに微笑んだ。" }
+            ]
+          },
+          { label:"SCENE 08 — 賢者と剣聖、お揃いの証", final:true, celestialId:"friendship_bracelet",
+            text:"すっかりくつろいだ二人にレビューシートを渡すと、ミレイユは達筆な字で、ヴィオラは丸文字で、それぞれ星5つを書き込んだ。\n『さて、そろそろお帰りの時間です。今夜はどうでした?』",
+            choices:[
+              { label:"「また二人で遊びに来てくださいね」と軽く送り出す", delta:20, result:"二人は顔を見合わせて頷いた。『……ええ、また誘ってください』『あーしも付き合うし』息の合った返事だった。" },
+              { label:"「今夜からお二人は、うちの正式な常連コンビです」と告げる", delta:85, result:"二人は同時に顔を輝かせた。『……光栄です』『まぁ、あーしも一緒なら悪くないかな』普段は敵国同士のはずの二人が、揃って柔らかく笑っていた。" }
+            ],
+            endingText:"研究塔に戻ったミレイユは、机の端にそっとブレスレットを置いた。『……敵国の剣聖と友人になるなど、理論的にはあり得ない話のはずなのですが』呟く声には、確かな喜びが滲んでいた。"
+          }
+        ],
+        epilogueText:"後日譚。ハイドランジア王国とエイセレブ王国、国境を越えて、賢者ミレイユと剣聖ヴィオラの奇妙な友情が続いている。研究の合間、ミレイユはこっそりこの部屋に瓢箪されにきては、ヴィオラとお揃いのブレスレットを眺めて微笑んでいるらしい。『……敵国の剣聖と友人になるとは、我ながら理解し難い』そう呟く声は、どこか嬉しそうだった。"
+      },
+      B:{
+        routeLabel:"理論武装から始まる友情ルート",
+        events:[
+          { label:"SCENE 02 — 理論武装したはずの一杯", celestialId:"tapioca",
+            text:"『まずはこれを説明させてください。タピオカミルクティーという飲料です。黒い粒は――』\nミレイユは俺の説明に真剣に耳を傾けながら、ストローを咥えた。\n『……もちもちとした弾力……なるほど、興味深い』分析するように呟きながらも、既に二口目を含んでいた。",
+            choices:[
+              { label:"「理屈より先に、美味しいですよね」と流す", delta:10, result:"『……ええ、まぁ。美味であることは否定しません』ミレイユは澄まし顔で頷いたが、カップは着実に減っていた。" },
+              { label:"「素直に美味しいって言っていいんですよ」と指摘する", delta:40, result:"『……美味しいですよ、悪いですか』ミレイユは早口で言い返した。隣でヴィオラが盛大に笑っていた。" }
+            ]
+          },
+          { label:"SCENE 03 — 剣聖への疑念",
+            text:"『……そもそも、貴女は本当に常連なのですか。国最強の剣聖という肩書きと、この気安さが結びつきません』\nミレイユはヴィオラを値踏みするように見た。ヴィオラは飄々と肩をすくめる。\n『まぁ、来ればわかるって』",
+            choices:[
+              { label:"「見ていれば分かりますよ」と受け流す", delta:10, result:"ミレイユは鼻を鳴らしたが、結局ヴィオラの隣に腰を下ろした。" },
+              { label:"「その理論武装、崩れるの時間の問題ですよ」と挑発する", delta:45, result:"ミレイユの眉がぴくりと動いた。『……面白いことを言いますね。受けて立ちましょう』プライドに火がついたようだった。" }
+            ]
+          },
+          { label:"SCENE 04 — 崩れる理論武装", celestialId:"gal_fashion",
+            text:"『次、これ着替えてみ。似合うと思うよ』\nヴィオラが軽い調子で私服一式を差し出す。ミレイユは眉をひそめた。\n『……賢者たる者、そのような軽薄な装いは……』\n言いながらも、結局カーテンの奥へ消えていく。",
+            choices:[
+              { label:"「似合わなそうなら無理にとは言いません」と引く", delta:15, result:"ミレイユはムッとした顔で戻ってきた。『……似合わない、とは言っていません』しっかり着替えていた。" },
+              { label:"「賢者様にも可愛いもの好きの一面、あるんですね」と指摘する", delta:50, result:"ミレイユは顔を赤くして黙り込んだ。隣でヴィオラが『ほらね』と得意げに笑っていた。" }
+            ]
+          },
+          { label:"SCENE 05 — プリクラへの理論的拒絶", celestialId:"purikura",
+            text:"『次、プリクラ撮ろ。二人で』\nミレイユは光る箱を前に固まった。\n『……このような記録媒体に、感情の乱れた表情を残すのは、些か……』\n言いつつも、ヴィオラに引っ張られるまま箱の中へ押し込まれていく。",
+            choices:[
+              { label:"「嫌なら消しますよ」と気を遣う", delta:15, result:"『……いえ、別に消さなくて結構です』ミレイユはぼそりと呟いた。案外まんざらでもなかったらしい。" },
+              { label:"「意外と楽しんでません?」とからかう", delta:50, result:"ミレイユはキッと睨んできたが、その手には、しっかりプリクラのシートが握られていた。" }
+            ]
+          },
+          { label:"SCENE 06 — 理論武装の限界、デュエット", celestialId:"karaoke",
+            beats:[
+              { text:"『最後はこれ、カラオケ。ミレイユも一緒に歌お』ヴィオラがマイクを二本用意し、片方をミレイユに押し付けた。" },
+              { text:"『……理性ある賢者として、そのような真似は……』ミレイユは戸惑いながらもマイクを受け取ってしまう。" },
+              { text:"前奏が流れ始めると、ヴィオラが慣れた様子で歌い出す。つられるように、ミレイユの唇もわずかに動き始めた。" },
+              { text:"「あーしら最強かよー!今夜はとことん行くっしょー!」", type:"sfx" },
+              { text:"『……っ、あはは!これ、思ったより楽しいですね……!』ミレイユは自分でも驚いたように声を弾ませた。", climax:true },
+              { text:"『理性ある賢者として』と言い放ったはずのミレイユは、あーし化した剣聖と肩を並べて熱唱していた。理論武装は、もうどこにも残っていなかった。" }
+            ],
+            choices:[
+              { label:"何も言わず、二人のデュエットに手拍子する", delta:15, result:"ヴィオラとミレイユは顔を見合わせて笑い、さらに声を張り上げた。息はすっかり合っていた。" },
+              { label:"「さっきまでの『理性ある賢者として』はどこ行きました?」とからかう", delta:35, result:"ミレイユはマイクを持ったまま固まり、それから顔を赤くして『……忘れてください』と絞り出した。" },
+              { label:"「お二人、すっかりいいコンビですね」と伝える", delta:70, result:"二人は同時に顔を見合わせ、それから同時に噴き出した。『……否定は、しませんね』『でしょ?』国境を越えた妙な連帯感が、そこに生まれていた。" }
+            ]
+          },
+          { label:"SCENE 07 — 国境を越えた友情",
+            text:"熱唱を終え、二人はソファに並んで座り込んだ。\n『……不思議なものですね。貴女とは本来、敵国同士のはずなのに』ミレイユがぽつりと呟く。\n『まぁ、ここでは関係なくない?』ヴィオラが軽く肩をぶつけて笑った。\nミレイユも、釣られるように小さく笑った。",
+            choices:[
+              { label:"聞かなかったふりをして、話題を変える", delta:15, result:"ミレイユはほっとしたように肩の力を抜いた。追及されないことが、今の彼女には救いだったようだ。" },
+              { label:"「ここでは、賢者の仮面を外してもいいですよ」と静かに告げる", delta:55, result:"ミレイユは目を見開き、それからゆっくりと俯いた。『……そんな場所、生まれて初めて頂きました』隣でヴィオラが優しく肩を抱いた。" }
+            ]
+          },
+          { label:"SCENE 08 — 賢者と剣聖、お揃いの証", final:true, celestialId:"friendship_bracelet",
+            text:"すっかりくつろいだ二人にレビューシートを渡すと、ミレイユは達筆な字で、ヴィオラは丸文字で、それぞれ星5つを書き込んだ。\n『さて、そろそろお帰りの時間です。今夜はどうでした?』",
+            choices:[
+              { label:"「無理に認めなくても大丈夫ですよ」と伝える", delta:20, result:"ミレイユは小さく頷いた。『……感謝します。今夜のことは、忘れません』静かな声だった。" },
+              { label:"「もう理論武装、外していいこと分かってますよね」と告げる", delta:85, result:"ミレイユの表情が、堰を切ったように崩れた。『……分かって、います。分かっているから、そんな風に言わないでください』涙声のまま、それでも小さく笑っていた。理知的な賢者が、初めて見せた素顔だった。" }
+            ],
+            endingText:"研究塔に戻ったミレイユは、山積みの魔導書を前に、珍しく筆が進まずにいた。頭の中を占めているのは、空間歪曲魔法の正体ではなく、あの夜の熱唱の音程だった。"
+          }
+        ],
+        epilogueText:"後日譚。ハイドランジア王国とエイセレブ王国、国境を越えて、賢者ミレイユと剣聖ヴィオラの奇妙な友情が続いている。最初こそ『理性ある賢者として』と言い張っていた強がりも、いつしか鳴りを潜めていた。『……敵国の剣聖と友人になるとは、我ながら理解し難い』そう呟く声は、どこか嬉しそうだった。"
+      }
+    }
+  },
+  chancellors:{
+    name:"宰相バルドゥール＆ハイドランジア宰相ゲアハルト",
+    subtitle:"両国の財政を一身に背負う、胃薬が手放せない数字馬鹿コンビ",
+    emblem:"算",
+    color:"#8a7048",
+    glow:"#f5e9cf",
+    tier:1,
+    event1:{
+      label:"SCENE 01 — 二人の宰相、同時瓢箪",
+      text:"推薦ボックスには、2通の手紙が入っていた。\n\n一通目は、王妃エレオノーラから。『神様、先日は素晴らしい美の奇跡をありがとうございました。今回は、我が国の財務と政務を一身に背負う宰相「バルドゥール」を推薦いたします。真面目すぎるあまり、毎日胃薬片手に数字と戦っております』\n\nもう一通は、ラインハルト王子から。『我が国にも、似たような貧乏くじを引いている男がいる。宰相ゲアハルトだ。あれも数字馬鹿でな、たまには息抜きさせてやってくれ』\n\n『……お、これは面白くなりそうだ。数字馬鹿同士、まとめて瓢箪しちゃおう』\n\n深夜、エイセレブ王国の執務室。宰相バルドゥールは、胃を押さえながら書類の山と格闘していた。\n\n『……この項目も削る……予算が、予算が足りんのだ……』\n\n同じ頃、国境を越えたハイドランジア王国の執務室でも、宰相ゲアハルトが同じように胃薬片手に唸っていた。\n\n『……この歳出、削れるものなら削りたいが……くそ、どちらの案も一長一短か……』\n\nゴゴゴゴゴ……。\n\n二つの執務室に、同時に闇より昏い扉が出現した。\n\n『な、何事だ!?』『……この魔力、まさか噂の……』\n\n扉から現れたのは、部屋着姿の俺だ。\n\n『夜分お疲れ様でーす。宰相バルドゥールさん、宰相ゲアハルトさん。それぞれのご主人様たちのご紹介でーす。ちょっとお疲れのようですので、今夜はまとめて休んでもらいます』\n\n有無を言わさず、二人の宰相は同時に扉の向こうへ引きずり込まれた。\n\nさて、この数字馬鹿二人に、何をぶつけるか。",
+      choices:[
+        { label:"何も言わず、いきなり焼き鳥と生ビールを振る舞う", delta:100, route:"A",
+          result:"二人は毒気を抜かれたようにジョッキを受け取った。\n『……ば、馬鹿な。こんな深夜に、これほど新鮮な肉を焼くだと……!』\n警戒よりも先に、空腹と疲労が二人の理性を上回っていた。" },
+        { label:"「まず自己紹介からしましょう」と対面させる", delta:75, route:"B",
+          result:"バルドゥールとゲアハルトは、互いを値踏みするように見つめ合った。\n『……貴殿が、噂のハイドランジアの宰相か』『そちらこそ、随分と胃を痛めていそうな顔色だな』\n数字馬鹿同士、早くも謎の対抗意識が芽生えていた。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"秒で意気投合ルート",
+        events:[
+          { label:"SCENE 02 — 炭火焼き鳥と生ビール", celestialId:"yakitori_beer",
+            text:"『まずはこれ、炭火焼き鳥盛り合わせと、キンキンに冷えた生ビールです』\nドン、と置かれた黄金色のジョッキに、二人は同時に口をつけた。\n『――ぶはっっっ!!!!美味い……!美味すぎる……!』\n胃の痛みが、冷気とアルコールで麻痺していくようだった。",
+            choices:[
+              { label:"何も言わず、おかわりを注いでおく", delta:10, result:"二人は無言でジョッキを空にし続けた。よほど溜まっていたものがあったらしい。" },
+              { label:"「胃の痛み、少しは楽になりました?」と尋ねる", delta:40, result:"『……ああ、嘘のようだ』『ふむ……これほど心地よい酒は初めてだな。国庫で買い付けられないものか、後で試算してみるか』二人は顔を見合わせ、初めて笑みを交わした。" }
+            ]
+          },
+          { label:"SCENE 03 — 魔道具『冷蔵庫』の衝撃", celestialId:"fridge_wonder",
+            text:"『これ、魔石で動く「冷蔵庫」って魔道具です。放り込んでおけば、いつでも食べ物が冷え冷えで長持ちしますよ』\n二人は同時に身を乗り出した。\n『な、なんだと!?食べ物が腐らない魔道具……!それがあれば、冬の備蓄も、行軍の兵糧問題も……!』",
+            choices:[
+              { label:"「売り物じゃないんで、諦めてください」と釘を刺す", delta:10, result:"二人は同時にがっくりと肩を落とした。『……国家予算の半分を積んでも、ダメか』息の合った落胆ぶりだった。" },
+              { label:"「両国で共同研究でもしてみます?」と提案する", delta:45, result:"二人は目を見合わせ、同時に身を乗り出した。『……それだ!』『両国合同の魔道具研究、悪くない話だ!』数字馬鹿同士、早くも新しい政策の種が芽生えていた。" }
+            ]
+          },
+          { label:"SCENE 04 — 前世のゲーム『将棋』", celestialId:"shogi_game",
+            text:"『次はこれで遊びましょう。「将棋」っていう、前世の盤上ゲームです』\nルールを説明すると、二人とも一瞬で理解した。\n『……兵を動かし、敵の総大将を詰むゲームか。取った敵の駒を「自分の兵」として再利用できるとは、なんという奥深いルールだ!』",
+            choices:[
+              { label:"何も言わず、二人の対局を見守る", delta:15, result:"二人は無言のまま、恐ろしいほど真剣な表情で盤面を睨み続けていた。" },
+              { label:"「お二人とも、筋がいいですね」と褒める", delta:50, result:"『当然だ、数字を読むのが仕事だからな』『なるほどな……盤面を数式に見立てれば、次の一手も自ずと絞られる。悪くない鍛錬だ』二人は誇らしげに胸を張っていた。" }
+            ]
+          },
+          { label:"SCENE 05 — 数字馬鹿同士の共感",
+            text:"将棋の合間、バルドゥールがぽつりとこぼした。\n『……「1ペルも無駄にできない」が口癖でな。数字を見ていないと、逆に落ち着かなくなってしまった』\nゲアハルトも深く頷いた。\n『……分かる。私も同じだ。休むということ自体を、忘れていた気がする』",
+            choices:[
+              { label:"何も言わず、二人の会話を見守る", delta:15, result:"二人はしばらく、お互いの激務っぷりを語り合っていた。同業者同士、通じるものがあるようだった。" },
+              { label:"「今夜くらいは、数字のことを忘れてくださいね」と伝える", delta:50, result:"二人は顔を見合わせ、同時に頷いた。『……そうだな。今夜だけは』肩の力が抜けていくのが分かった。" }
+            ]
+          },
+          { label:"SCENE 06 — 将棋とチェス、交流戦", celestialId:"chess_game",
+            beats:[
+              { text:"『バルドゥール殿、将棋とやらは見事だが、我が国にも「チェス」という盤上遊戯がある。一手、指南させてもらおう』ゲアハルトがチェス盤を取り出した。" },
+              { text:"『ほう、面白い。ならば私も、将棋の奥深さを見せてやろう』バルドゥールが不敵に笑った。" },
+              { text:"テーブルに将棋盤とチェス盤を並べ、互いに相手の得意なゲームで挑み合う。将棋盤ではバルドゥールが、チェス盤ではゲアハルトが、それぞれ手ほどきする側として盤を挟んだ。" },
+              { text:"二つの盤で同時に、駒がぶつかり合う音と唸り声が交互に響いた。", type:"sfx" },
+              { text:"『クハハハ!そちらのビショップ、随分と大胆な一手だな!だが甘い!』チェス盤を挟むゲアハルトが哄笑する。\n『ぬかせ、そちらの飛車こそ、私の罠にかかっているぞ!』将棋盤を挟むバルドゥールが不敵に笑い返す。", climax:true },
+              { text:"国境を挟んで数字と睨めっこしていたはずの二人は、今はただ、二つの盤上の勝負に夢中な少年のような顔をしていた。" }
+            ],
+            choices:[
+              { label:"何も言わず、二人の熱戦を見守る", delta:15, result:"二人はいつまでも駒を握ったまま、真剣勝負を繰り広げていた。" },
+              { label:"「お二人とも、すっかり意気投合してますね」と伝える", delta:35, result:"『……ふん、これはあくまで知的な鍛錬だ』『ふむ、遊びと呼ぶには些か白熱しすぎたな。次はハンデをつけて臨むとしよう』二人は同時に澄まし顔で言い張ったが、口元は緩みっぱなしだった。" },
+              { label:"「両国の宰相がこんなに気が合うとは、思いませんでした」と伝える", delta:70, result:"二人は顔を見合わせ、同時に噴き出した。『……否定はせん』『なるほどな……存外、数字馬鹿同士というのは馬が合うものらしい』国境を越えた妙な連帯感が、盤上に生まれていた。" }
+            ]
+          },
+          { label:"SCENE 07 — 数字の先にあったもの",
+            text:"熱戦を終え、二人はソファに並んで座り込んだ。\n『……不思議なものだな。貴殿とは本来、予算獲得を競う間柄のはずなのに』ゲアハルトがぽつりと呟く。\n『ふむ……存外、悪くない話だ。今度の会談では、貴殿の意見も一度聞いてみたいものだな』バルドゥールも小さく笑った。",
+            choices:[
+              { label:"何も言わず、二人のやり取りを見守る", delta:15, result:"二人はしばらく、両国の経済政策について、驚くほど和やかに語り合っていた。" },
+              { label:"「お二人みたいな関係、両国の経済にとっても良い前例になりそうですね」と伝える", delta:55, result:"二人は顔を見合わせ、それから同時に頷いた。『……それは、悪くない未来だ』ゲアハルトが静かに微笑んだ。" }
+            ]
+          },
+          { label:"SCENE 08 — 二人の宰相、それから", final:true, celestialId:"bonsai_gift",
+            text:"すっかりくつろいだ二人にレビューシートを渡すと、バルドゥールもゲアハルトも、それぞれ達筆な字で星5つを書き込んだ。\n『さて、そろそろお帰りの時間です。今夜はどうでした?あ、最後にこれ、お土産にどうぞ』\n差し出したのは、小さな盆栽だった。数字馬鹿の二人には、手間暇かけて育てる楽しみが性に合うかもしれない。\n『……ほう、これは。剪定の記録をつければ、さぞ几帳面な趣味になりそうだ』二人は同時に、意外なほど真剣な目で盆栽を見つめていた。",
+            choices:[
+              { label:"「また息抜きしたくなったら、いつでもどうぞ」と軽く送り出す", delta:20, result:"二人は顔を見合わせて頷いた。『……ああ、また誘ってくれ』『ふむ、次は将棋とチェスの合同トーナメントでも企画してみるか』息の合った返事だった。" },
+              { label:"「今夜からお二人は、うちの正式な常連コンビです」と告げる", delta:85, result:"二人は同時に顔を輝かせた。『……光栄だ』『なるほどな、悪くない肩書きだ。ならば次回までに、もう少し腕を磨いておくとしよう』本来は予算獲得を競う間柄のはずの二人が、揃って柔らかく笑っていた。" }
+            ],
+            endingText:"執務室に戻ったバルドゥールは、早速盆栽の剪定記録をつけ始めた。几帳面な性格は健在のまま、その顔には数字と睨めっこしていた頃にはなかった余裕が浮かんでいた。"
+          }
+        ],
+        epilogueText:"後日譚。エイセレブとハイドランジア、両国の財務会議のたびに、バルドゥールとゲアハルトはこっそり示し合わせて『視察』と称し、この部屋に瓢箪されにきているらしい。将棋盤とチェス盤を並べる机の端には、あの夜もらった小さな盆栽が二鉢、几帳面に手入れされて並んでいる。『……数字馬鹿同士、案外いいコンビだな』"
+      },
+      B:{
+        routeLabel:"牽制から始まる意気投合ルート",
+        events:[
+          { label:"SCENE 02 — 牽制し合う乾杯", celestialId:"yakitori_beer",
+            text:"『まずはこれ、炭火焼き鳥盛り合わせと、キンキンに冷えた生ビールです』\n二人は互いを一瞥してから、同時にジョッキを掲げた。\n『……貴殿に、負けるつもりはない』『そちらこそ』\n乾杯というより、まるで決闘の合図のようだった。",
+            choices:[
+              { label:"「そんなに構えなくても、ただの食事ですよ」と流す", delta:10, result:"二人は鼻を鳴らしたが、結局同時にジョッキを空けていた。" },
+              { label:"「お二人とも、意外と負けず嫌いですね」と指摘する", delta:40, result:"『……当然だ、数字を扱う者として当然の姿勢だ』『ふむ、そちらも随分と負けず嫌いと見える。次の一杯で決着をつけようではないか』二人は同時に澄まし顔で頷いたが、その顔は緩みきっていた。" }
+            ]
+          },
+          { label:"SCENE 03 — 魔道具への闘争心", celestialId:"fridge_wonder",
+            text:"『これ、魔石で動く「冷蔵庫」って魔道具です』\n二人は同時に前のめりになった。\n『……我が国が先に導入すれば、経済的優位に立てる』『いや、我が国こそ先に手に入れるべきだ』\n数字馬鹿らしい闘争心が、思わぬ形で燃え上がっていた。",
+            choices:[
+              { label:"「売り物じゃないですよ」と釘を刺す", delta:10, result:"二人は同時にがっくりと肩を落とした。息の合った落胆ぶりに、俺は思わず笑ってしまった。" },
+              { label:"「両国で取り合うより、共同研究してみます?」と提案する", delta:45, result:"二人は顔を見合わせ、しばし沈黙した後、同時に頷いた。『……それも、一理あるな』対抗心が、いつの間にか協力の芽に変わっていた。" }
+            ]
+          },
+          { label:"SCENE 04 — 品定めの一局", celestialId:"shogi_game",
+            text:"『次はこれで遊びましょう。「将棋」という盤上ゲームです』\nバルドゥールが説明を始めると、ゲアハルトは腕を組んで聞いていた。\n『……この程度のゲーム、すぐに理解できよう』\n言葉とは裏腹に、その目は真剣に盤面を追っていた。",
+            choices:[
+              { label:"「お手柔らかにお願いしますね」と流す", delta:15, result:"二人は鼻を鳴らしたが、結局本気で盤面を睨み合っていた。" },
+              { label:"「随分と自信ありげですね」と指摘する", delta:50, result:"『……当然だ、数字を読む頭脳に二流はない』ゲアハルトは澄まし顔で返したが、盤から目を離せずにいた。" }
+            ]
+          },
+          { label:"SCENE 05 — 数字馬鹿同士の共感",
+            text:"将棋の合間、バルドゥールがぽつりとこぼした。\n『……「1ペルも無駄にできない」が口癖でな。数字を見ていないと、逆に落ち着かなくなってしまった』\nゲアハルトは驚いたように顔を上げた。\n『……奇遇だな。私も、同じ言葉をよく口にする』",
+            choices:[
+              { label:"聞かなかったふりをして、話題を変える", delta:15, result:"二人はほっとしたように肩の力を抜いた。追及されないことが、今の二人には救いだったようだ。" },
+              { label:"「お二人とも、思ったより似た者同士ですね」と指摘する", delta:50, result:"二人は同時に『似ていない』と言い張ったが、視線を交わして小さく笑った。まんざらでもなさそうだった。" }
+            ]
+          },
+          { label:"SCENE 06 — 牽制の限界、交流戦", celestialId:"chess_game",
+            beats:[
+              { text:"『バルドゥール殿、将棋とやらは見事だが、我が国にも「チェス」という盤上遊戯がある。この程度、負けはせん』ゲアハルトがチェス盤を取り出した。" },
+              { text:"『……面白い。ならば私も、将棋の奥深さを見せてやろう』バルドゥールも不敵に笑い返した。" },
+              { text:"最初は互いを出し抜こうとする牽制だったはずが、テーブルに将棋盤とチェス盤を並べ、互いに相手の得意なゲームで挑み合う、いつしか純粋な二面勝負へと変わっていった。" },
+              { text:"二つの盤で同時に、駒がぶつかり合う音と唸り声が交互に響いた。", type:"sfx" },
+              { text:"『クハハハ!そちらのビショップ、随分と大胆な一手だな!だが甘い!』チェス盤を挟むゲアハルトが哄笑する。\n『ぬかせ、そちらの飛車こそ、私の罠にかかっているぞ!』将棋盤を挟むバルドゥールが不敵に笑い返す。", climax:true },
+              { text:"牽制し合っていたはずの二人は、今はただ、二つの盤上の勝負に夢中な少年のような顔をしていた。" }
+            ],
+            choices:[
+              { label:"何も言わず、二人の熱戦を見守る", delta:15, result:"二人はいつまでも駒を握ったまま、真剣勝負を繰り広げていた。" },
+              { label:"「さっきまでの牽制はどこ行きました?」とからかう", delta:35, result:"二人は同時に顔を赤くして唸った。『……忘れてくれ』息の合った返答だった。" },
+              { label:"「両国の宰相がこんなに気が合うとは、思いませんでした」と伝える", delta:70, result:"二人は顔を見合わせ、同時に噴き出した。『……否定はせん』『なるほどな……存外、数字馬鹿同士というのは馬が合うものらしい』国境を越えた妙な連帯感が、盤上に生まれていた。" }
+            ]
+          },
+          { label:"SCENE 07 — 数字の先にあったもの",
+            text:"熱戦を終え、二人はソファに並んで座り込んだ。\n『……不思議なものだな。貴殿とは本来、予算獲得を競う間柄のはずなのに』ゲアハルトがぽつりと呟く。\n『ふむ……存外、悪くない話だ。今度の会談では、貴殿の意見も一度聞いてみたいものだな』バルドゥールも小さく笑った。",
+            choices:[
+              { label:"聞かなかったふりをして、話題を変える", delta:15, result:"二人はほっとしたように肩の力を抜いた。追及されないことが、今の二人には救いだったようだ。" },
+              { label:"「ここでは、宰相の仮面を外してもいいですよ」と静かに告げる", delta:55, result:"二人は目を見開き、それからゆっくりと頷いた。『……そんな場所、生まれて初めて頂いた』声が、微かに震えていた。" }
+            ]
+          },
+          { label:"SCENE 08 — 二人の宰相、それから", final:true, celestialId:"bonsai_gift",
+            text:"すっかりくつろいだ二人にレビューシートを渡すと、バルドゥールもゲアハルトも、それぞれ達筆な字で星5つを書き込んだ。\n『さて、そろそろお帰りの時間です。今夜はどうでした?あ、最後にこれ、お土産にどうぞ』\n差し出したのは、小さな盆栽だった。数字馬鹿の二人には、手間暇かけて育てる楽しみが性に合うかもしれない。\n『……ほう、これは。剪定の記録をつければ、さぞ几帳面な趣味になりそうだ』二人は同時に、意外なほど真剣な目で盆栽を見つめていた。",
+            choices:[
+              { label:"「無理に認めなくても大丈夫ですよ」と伝える", delta:20, result:"二人は小さく頷いた。『……感謝する。今夜のことは、忘れない』息の合った静かな声だった。" },
+              { label:"「もう牽制の仮面、外していいこと分かってますよね」と告げる", delta:85, result:"二人の表情が、同時に崩れた。『……分かって、いる』『ふむ……ならば、これからは腹を割って話すとしよう』それぞれ小さく笑いながら、本来は競う間柄のはずの二人が、初めて素顔を見せていた。" }
+            ],
+            endingText:"執務室に戻ったゲアハルトは、将棋の定跡書を早速取り寄せていた。『……次こそは、負けん』誰にともなく呟くその声には、かつての牽制ではなく、純粋な闘志だけが滲んでいた。"
+          }
+        ],
+        epilogueText:"後日譚。エイセレブとハイドランジア、両国の財務会議のたびに、バルドゥールとゲアハルトはこっそり示し合わせて『視察』と称し、この部屋に瓢箪されにきているらしい。最初こそ牽制し合っていた二人だが、今ではすっかり将棋盤とチェス盤を挟んだ良き好敵手だ。机の端には、あの夜もらった小さな盆栽が二鉢、几帳面に手入れされて並んでいる。『……数字馬鹿同士、案外いいコンビだな』"
+      }
+    }
+  },
+  elvira:{
+    name:"ハイドランジア王妃エルヴィラ",
+    subtitle:"ラインハルト王子の母君。息子が近頃妙に丸くなった理由を探りにきた",
+    emblem:"扇",
+    color:"#a06bc4",
+    glow:"#f5e9ff",
+    tier:2,
+    event1:{
+      label:"SCENE 01 — 母、真相を確かめに行く",
+      text:"ハイドランジア王国、王妃エルヴィラの私室。彼女は息子ラインハルトの様子がどうにも解せずにいた。\n\n『……近頃、あの子ときたら。エイセレブへの対抗心はどこへやら、部屋に妙な光る機械を持ち込んではニヤニヤしているし、宰相ゲアハルトまで盆栽の手入れに夢中だとか……。一体、何が起きているというの』\n\n夫である国王からも、隣国との国境問題が驚くほど円満に解決したと聞かされている。あんなに睨み合っていたはずなのに、どうしてこうなったのか。\n\nゴゴゴゴゴ……。\n\n私室の壁に、闇より昏い扉が出現した。\n\n『な、何事ですの……!?まさか、これが噂の……』\n\n扉から現れたのは、部屋着姿の俺だ。エルヴィラは身構えたが、溢れる魔力の圧に、それ以上の抵抗を諦めた。\n\n『夜分お邪魔しまーす。ハイドランジア王妃エルヴィラさんですね。今夜は特別編、エイセレブとハイドランジアの親睦パーティーにご招待でーす』\n\n『……親睦、パーティー?』\n\n扉をくぐった先に広がっていたのは、いつもの小さな部屋ではなかった。大広間に飾り付けが施され、あちこちに見覚えのある顔ぶれが集まっている。\n\n『……これは、一体……』\n\nエルヴィラは絶句した。エイセレブとハイドランジア、本来は睨み合っていたはずの両国の人間たちが、同じ会場で笑い合っている。\n\nさて、この困惑した王妃を、どちらから案内するか。",
+      choices:[
+        { label:"「まずは右手のコーナーからご案内しますね」と右回りに促す", delta:100, route:"A",
+          result:"エルヴィラは戸惑いながらも、案内されるまま歩き出した。\n『……ひとまず、様子を見せてもらいましょう』\n困惑と好奇心が入り混じった表情だった。" },
+        { label:"「まずは奥のコーナーからご案内しますね」と左回りに促す", delta:75, route:"B",
+          result:"エルヴィラは奥のコーナーに目をやり、小さく頷いた。\n『……あちらから、ということは、何か理由があるのかしら』\n慎重な性格が、覗いていた。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"右回りルート",
+        events:[
+          { label:"SCENE 02 — 乾杯コーナー、国王たちの変貌",
+            text:"最初に案内されたのは、乾杯コーナーだった。\n『おお、エルヴィラ殿ではないか!まぁまぁ、これでも飲んで見ていきなさい』\nフローズンエール片手にご機嫌なのは、他ならぬ我が国とエイセレブ、両方の国王だった。トランプを片手に、少年のように笑い合っている。\n『……陛下たちが、あんなに楽しそうに……』\nエルヴィラは目を疑った。",
+            choices:[
+              { label:"何も言わず、二人の国王を見守る", delta:10, result:"エルヴィラはただ黙って、二人の国王が意気投合する様子を見つめ続けていた。" },
+              { label:"「お二人、すっかり仲良しですね」と声をかける", delta:40, result:"『……信じられませんわ。あんなに睨み合っていたはずなのに』エルヴィラは呆然と呟いたが、その顔に嫌悪の色はなかった。" }
+            ]
+          },
+          { label:"SCENE 03 — スイーツコーナー、王女の給仕",
+            text:"次に案内されたのは、スイーツコーナーだった。\n『いかがですか、特製パフェです』\nにこやかにパフェを配って回っていたのは、エイセレブ第一王女ノースティアだった。すっかり手慣れた様子で、まるで常連のような振る舞いだ。\n『……あの気高いエイセレブの王女様が、給仕を?』\nエルヴィラは困惑しながらも、差し出されたパフェを一口味わい、目を見開いた。『……美味しいですわ』",
+            choices:[
+              { label:"何も言わず、パフェを味わう彼女を見守る", delta:10, result:"エルヴィラは無言でスプーンを動かし続け、いつの間にかお皿を空にしていた。" },
+              { label:"「この国の人たちとは思えないくらい、気さくですね」と伝える", delta:45, result:"『……ええ、本当に』ノースティアが横で微笑んだ。『最初は、私もこうなるとは思っていませんでしたわ』" }
+            ]
+          },
+          { label:"SCENE 04 — ゲーム&カラオケコーナー、賑やかな一角",
+            text:"一番賑やかなのは、ゲーム&カラオケコーナーだった。\n『よーし、リリィに勝つぞー!』我が息子ラインハルトが、幼い王女リリィ相手に本気で対戦ゲームに興じている。\n隣では、剣聖ヴィオラと賢者ミレイユが肩を並べてマイクを握り、熱唱している。\n『……ラインハルト、あなた、あんなに楽しそうな顔……』\nエルヴィラは言葉を失っていた。",
+            choices:[
+              { label:"何も言わず、息子の様子を見守る", delta:15, result:"エルヴィラはしばらく、ラインハルトの笑顔から目を離せずにいた。" },
+              { label:"「息子さん、すっかり子供みたいな顔してますね」と伝える", delta:50, result:"『……ええ。あんな顔、久しく見ていませんでしたわ』エルヴィラの声に、確かな喜びが滲んでいた。" }
+            ]
+          },
+          { label:"SCENE 05 — 美容&癒しコーナー、艶々の証",
+            text:"美容&癒しコーナーでは、エイセレブ王妃エレオノーラが自慢げに肌を見せびらかしていた。\n『ごらんなさい、このお肌の艶。ここのエステは本当に奇跡ですのよ』\n隣では聖女ルミナが、アロマの香りに包まれてうっとりと微笑んでいる。\n『……エレオノーラ様、随分とお若く……』\nエルヴィラは思わず自分の頬に触れていた。",
+            choices:[
+              { label:"何も言わず、二人の様子を見守る", delta:15, result:"エルヴィラはしばらく、羨望の眼差しでエレオノーラの肌を見つめていた。" },
+              { label:"「エルヴィラ様にも、後でぜひ体験していただきたいですね」と伝える", delta:50, result:"『……ぜひ、お願いしたいですわ』エルヴィラは前のめりに頷いた。困惑はいつの間にか好奇心に変わっていた。" }
+            ]
+          },
+          { label:"SCENE 06 — 図書コーナー、静かな読書家",
+            text:"図書コーナーでは、第四王女エルフィリアが一人、静かにラノベのページをめくっていた。\n『……ああ、すみません。つい夢中になってしまって』\n会場の賑やかさをよそに、彼女だけは変わらぬ読書家の顔でそこにいた。\n『……こちらは、随分と落ち着いた一角なのね』\nエルヴィラは少しほっとしたように微笑んだ。",
+            choices:[
+              { label:"何も言わず、静かな一角を味わう", delta:15, result:"エルヴィラはしばらく、賑やかな会場の中の静けさに心を休めていた。" },
+              { label:"「賑やかな中にも、こういう場所があるのはいいですね」と伝える", delta:50, result:"エルフィリアが顔を上げて微笑んだ。『……ええ、私もここが一番落ち着きます』二人は静かに笑い合った。" }
+            ]
+          },
+          { label:"SCENE 07 — 盤上遊戯コーナー、几帳面な友情",
+            text:"最後のコーナーでは、宰相バルドゥールとゲアハルトが、将棋盤とチェス盤を挟んで真剣勝負を繰り広げていた。傍らには、丹精込めて手入れされた盆栽が二鉢。\n『……ゲアハルト、あなたまで、こんなに寛いだ顔で』\nエルヴィラは呆然と呟いた。数字にしか興味のなかったはずの宰相が、今は心から楽しそうに笑っている。",
+            choices:[
+              { label:"何も言わず、二人の対局を見守る", delta:15, result:"エルヴィラはしばらく、盤上の攻防に見入っていた。" },
+              { label:"「両国の宰相があんなに仲良くなるなんて、思いませんでした」と伝える", delta:55, result:"『……ええ、私もです』ゲアハルトが顔を上げて苦笑した。『だが、悪くない縁だと思っていますよ』" }
+            ]
+          },
+          { label:"SCENE 08 — 大団円、合同乾杯", final:true, celestialId:"alliance_toast",
+            beats:[
+              { text:"会場を一通り回り終えたエルヴィラを、俺は最後に会場の中央へと案内した。" },
+              { text:"『……こんなにたくさんの人が、国境も肩書きも関係なく笑い合っている。信じられませんわ』エルヴィラは、しみじみと会場を見渡していた。" },
+              { text:"エイセレブ王とハイドランジア王が、同時にグラスを掲げた。『さぁ、両国の未来に、乾杯といこうではないか!』" },
+              { text:"会場中から、グラスを重ねる音と笑い声が響いた。", type:"sfx" },
+              { text:"『……あんなに仲が悪かったはずなのに、どうしてこうなったのかしら』エルヴィラはそう呟きながらも、気づけば自分もグラスを掲げていた。", climax:true },
+              { text:"『……ふふ、悪くありませんわね、こういうのも』国境も肩書きも関係なく笑い合う会場の空気に、エルヴィラの表情から、いつしか困惑の色は消えていた。" }
+            ],
+            choices:[
+              { label:"何も言わず、彼女がグラスを掲げるのを見守る", delta:15, result:"エルヴィラは静かに、しかし確かな笑顔でグラスを掲げていた。" },
+              { label:"「これが、同盟というものかもしれませんね」と伝える", delta:35, result:"エルヴィラは目を見開き、それからゆっくりと頷いた。『……ええ、本当に。悪くない形の同盟ですわ』" },
+              { label:"「エルヴィラ様も、今夜からこの輪の一員です」と伝える", delta:70, result:"エルヴィラの表情が、くしゃっと崩れた。『……光栄ですわ。まさか、この歳になってこんな夜が訪れるとは』涙ぐみながらも、晴れやかな笑顔だった。" }
+            ],
+            endingText:"王宮に戻ったエルヴィラは、夫である国王に開口一番こう告げた。『……あなた、来月からは私も同盟国の視察とやらに、ぜひ同行させていただくわ』有無を言わさぬその声に、国王は苦笑いで頷くしかなかった。"
+          }
+        ],
+        epilogueText:"後日譚。エイセレブとハイドランジア、両国は正式な同盟条約を締結した。祝賀の宴には、あの夜出会った顔ぶれが揃って参列している。『……あんなに仲が悪かったはずなのに、どうしてこうなったのかしら』エルヴィラは今でも時々そう呟くが、その声はいつも笑っている。"
+      },
+      B:{
+        routeLabel:"左回りルート",
+        events:[
+          { label:"SCENE 02 — 盤上遊戯コーナー、几帳面な友情",
+            text:"最初に案内されたのは、盤上遊戯コーナーだった。宰相バルドゥールとゲアハルトが、将棋盤とチェス盤を挟んで真剣勝負を繰り広げている。傍らには、丹精込めて手入れされた盆栽が二鉢。\n『……ゲアハルト、あなたがこんなに寛いだ顔をしているなんて』\nエルヴィラは驚いたように立ち尽くしていた。",
+            choices:[
+              { label:"何も言わず、二人の対局を見守る", delta:10, result:"エルヴィラはしばらく、盤上の攻防に見入っていた。" },
+              { label:"「両国の宰相があんなに仲良くなるなんて、思いませんでした」と伝える", delta:40, result:"『……ええ、私もです』ゲアハルトが顔を上げて苦笑した。『だが、悪くない縁だと思っていますよ』" }
+            ]
+          },
+          { label:"SCENE 03 — 図書コーナー、静かな読書家",
+            text:"次に案内されたのは、図書コーナーだった。第四王女エルフィリアが一人、静かにラノベのページをめくっている。\n『……ああ、すみません。つい夢中になってしまって』\n会場の賑やかさをよそに、彼女だけは変わらぬ読書家の顔でそこにいた。",
+            choices:[
+              { label:"何も言わず、静かな一角を味わう", delta:10, result:"エルヴィラはしばらく、賑やかな会場の中の静けさに心を休めていた。" },
+              { label:"「賑やかな中にも、こういう場所があるのはいいですね」と伝える", delta:45, result:"エルフィリアが顔を上げて微笑んだ。『……ええ、私もここが一番落ち着きます』二人は静かに笑い合った。" }
+            ]
+          },
+          { label:"SCENE 04 — 美容&癒しコーナー、艶々の証",
+            text:"美容&癒しコーナーでは、エイセレブ王妃エレオノーラが自慢げに肌を見せびらかしていた。\n『ごらんなさい、このお肌の艶。ここのエステは本当に奇跡ですのよ』\n隣では聖女ルミナが、アロマの香りに包まれてうっとりと微笑んでいる。\n『……エレオノーラ様、随分とお若く……』\nエルヴィラは思わず自分の頬に触れていた。",
+            choices:[
+              { label:"何も言わず、二人の様子を見守る", delta:15, result:"エルヴィラはしばらく、羨望の眼差しでエレオノーラの肌を見つめていた。" },
+              { label:"「エルヴィラ様にも、後でぜひ体験していただきたいですね」と伝える", delta:50, result:"『……ぜひ、お願いしたいですわ』エルヴィラは前のめりに頷いた。困惑はいつの間にか好奇心に変わっていた。" }
+            ]
+          },
+          { label:"SCENE 05 — ゲーム&カラオケコーナー、賑やかな一角",
+            text:"一番賑やかなのは、ゲーム&カラオケコーナーだった。息子ラインハルトが、幼い王女リリィ相手に本気で対戦ゲームに興じている。\n隣では、剣聖ヴィオラと賢者ミレイユが肩を並べてマイクを握り、熱唱している。\n『……ラインハルト、あなた、あんなに楽しそうな顔……』\nエルヴィラは言葉を失っていた。",
+            choices:[
+              { label:"何も言わず、息子の様子を見守る", delta:15, result:"エルヴィラはしばらく、ラインハルトの笑顔から目を離せずにいた。" },
+              { label:"「息子さん、すっかり子供みたいな顔してますね」と伝える", delta:50, result:"『……ええ。あんな顔、久しく見ていませんでしたわ』エルヴィラの声に、確かな喜びが滲んでいた。" }
+            ]
+          },
+          { label:"SCENE 06 — スイーツコーナー、王女の給仕",
+            text:"スイーツコーナーでは、エイセレブ第一王女ノースティアが、にこやかにパフェを配って回っていた。\n『いかがですか、特製パフェです』\nすっかり手慣れた様子で、まるで常連のような振る舞いだ。\n『……あの気高いエイセレブの王女様が、給仕を?』\nエルヴィラは困惑しながらも、差し出されたパフェを一口味わい、目を見開いた。『……美味しいですわ』",
+            choices:[
+              { label:"何も言わず、パフェを味わう彼女を見守る", delta:15, result:"エルヴィラは無言でスプーンを動かし続け、いつの間にかお皿を空にしていた。" },
+              { label:"「この国の人たちとは思えないくらい、気さくですね」と伝える", delta:55, result:"『……ええ、本当に』ノースティアが横で微笑んだ。『最初は、私もこうなるとは思っていませんでしたわ』" }
+            ]
+          },
+          { label:"SCENE 07 — 乾杯コーナー、国王たちの変貌",
+            text:"最後のコーナーは、乾杯コーナーだった。\n『おお、エルヴィラ殿ではないか!まぁまぁ、これでも飲んで見ていきなさい』\nフローズンエール片手にご機嫌なのは、他ならぬ我が国とエイセレブ、両方の国王だった。トランプを片手に、少年のように笑い合っている。\n『……陛下たちが、あんなに楽しそうに……』\nエルヴィラは目を疑った。",
+            choices:[
+              { label:"何も言わず、二人の国王を見守る", delta:15, result:"エルヴィラはただ黙って、二人の国王が意気投合する様子を見つめ続けていた。" },
+              { label:"「お二人、すっかり仲良しですね」と声をかける", delta:55, result:"『……信じられませんわ。あんなに睨み合っていたはずなのに』エルヴィラは呆然と呟いたが、その顔に嫌悪の色はなかった。" }
+            ]
+          },
+          { label:"SCENE 08 — 大団円、合同乾杯", final:true, celestialId:"alliance_toast",
+            beats:[
+              { text:"会場を一通り回り終えたエルヴィラを、俺は最後に会場の中央へと案内した。" },
+              { text:"『……こんなにたくさんの人が、国境も肩書きも関係なく笑い合っている。信じられませんわ』エルヴィラは、しみじみと会場を見渡していた。" },
+              { text:"エイセレブ王とハイドランジア王が、同時にグラスを掲げた。『さぁ、両国の未来に、乾杯といこうではないか!』" },
+              { text:"会場中から、グラスを重ねる音と笑い声が響いた。", type:"sfx" },
+              { text:"『……あんなに仲が悪かったはずなのに、どうしてこうなったのかしら』エルヴィラはそう呟きながらも、気づけば自分もグラスを掲げていた。", climax:true },
+              { text:"『……ふふ、悪くありませんわね、こういうのも』国境も肩書きも関係なく笑い合う会場の空気に、エルヴィラの表情から、いつしか困惑の色は消えていた。" }
+            ],
+            choices:[
+              { label:"何も言わず、彼女がグラスを掲げるのを見守る", delta:15, result:"エルヴィラは静かに、しかし確かな笑顔でグラスを掲げていた。" },
+              { label:"「これが、同盟というものかもしれませんね」と伝える", delta:35, result:"エルヴィラは目を見開き、それからゆっくりと頷いた。『……ええ、本当に。悪くない形の同盟ですわ』" },
+              { label:"「エルヴィラ様も、今夜からこの輪の一員です」と伝える", delta:70, result:"エルヴィラの表情が、くしゃっと崩れた。『……光栄ですわ。まさか、この歳になってこんな夜が訪れるとは』涙ぐみながらも、晴れやかな笑顔だった。" }
+            ],
+            endingText:"王宮に戻ったエルヴィラは、寝る前にこっそり日記帳を開いた。『本日、生まれて初めて敵国の乾杯に加わる。……悪くない夜だった』と一行だけ記し、静かに微笑んで筆を置いた。"
+          }
+        ],
+        epilogueText:"後日譚。エイセレブとハイドランジア、両国は正式な同盟条約を締結した。祝賀の宴には、あの夜出会った顔ぶれが揃って参列している。最初は困惑していたエルヴィラも、今ではすっかりこの同盟を楽しんでいるようだ。『……あんなに仲が悪かったはずなのに、どうしてこうなったのかしら』そう呟く声は、いつも笑っている。"
+      }
+    }
+  }
+};
+
+/* --- おもてなしメニュー図鑑データ ---
+   ゲストとの物語中に discoveredされたものだけが図鑑に開示される。
+   まだ誰にも提供されていない未来のメニューも先に仕込んでおける(???表示のまま温存される)。 */
+const MENU_DATA = {
+  oshibori:{ name:"神域のおしぼり", reading:"ただの温タオルではない",
+    scene:"来訪直後、まず警戒を解くための一投目。柑橘系の香り付き。",
+    timing:"来訪ごとに毎回提供される、いわば接待の挨拶代わりの一品。",
+    difficulty:"温度管理と香り付けの両立は、この世界の技術ではまず再現不可能。",
+    next:"次回来訪時も、まず間違いなく最初に提供される鉄板メニュー。",
+    rarity:"警戒心を溶かす、接待の基本にして奥義",
+    note:"どんなVIPも、これ一枚でまず口数が減る。" },
+  sofa:{ name:"人をダメにするソファ", reading:"高反発ウレタン+魔力錬成の禁断アイテム",
+    scene:"入室後、真っ先に案内される特等席。",
+    timing:"一度座れば、次回来訪時も真っ先にここへ吸い込まれる。",
+    difficulty:"異世界の毛皮文化ではまず再現不可能な、沈み込む座り心地。",
+    next:"「二度と立ち上がれない」と評判が広まりつつある、要注意物件。",
+    rarity:"座った瞬間に帰巣本能を奪う、堕落装置の代名詞",
+    note:"警戒心の強いゲストほど、深く沈む傾向がある(要出典)。" },
+  parfait:{ name:"特製瓢箪パフェ", reading:"王宮の宮廷料理人も匙を投げる完成度",
+    scene:"涼しさに慣れた頃合いを見て、満を持して提供される看板メニュー。",
+    timing:"心の緊張がほぐれ始めたタイミングで出すと効果は絶大。",
+    difficulty:"調味料も製法も、この世界にはまだ存在しない未知の菓子。",
+    next:"次回来訪時は限定フレーバーが増えている可能性あり。",
+    rarity:"一口目で無言になる、接待の核弾頭",
+    note:"レビューの星の数は、大抵このパフェで確定する。" },
+  bgm_ballad:{ name:"前世の歌姫のバラード", reading:"異世界初上陸のポータブル音楽体験",
+    scene:"心がほぐれきったタイミングで満を持して流す、最後の一押し。",
+    timing:"張り詰めた緊張と孤独を洗い流す、涙腺直撃の一曲。",
+    difficulty:"吟遊詩人のリュートとは次元の違う録音技術で、再現は不可能。",
+    next:"お土産のポータブル再生機があれば、帰還後もいつでも聴ける。",
+    rarity:"レビュー評価を確定づける、最後の一押し",
+    note:"泣かせたら勝ち、というのがこの城の暗黙のルールらしい。" },
+  frozen_ale:{ name:"特製フローズンエール", reading:"表面シャリシャリの黄金の液体",
+    scene:"大人の密談&カジノBarルームで、まず場を和ませる一杯目として提供。",
+    timing:"緊張した相手の毒気を抜くため、対話や勝負の前に出すのが定石。",
+    difficulty:"凍結と炭酸、コクの三立は、この世界の醸造技術ではまず再現不可能。",
+    next:"お土産の缶ビールがあれば、帰還後もしばらく冷えたまま楽しめる。",
+    rarity:"一触即発の空気ごと溶かす、大人の接待の切り札",
+    note:"睨み合っていた二人の国王も、これ一杯でだいぶ丸くなった。" },
+  poker:{ name:"前世のゲーム『ポーカー』", reading:"トランプ一組で国境問題すら解決するゲーム",
+    scene:"「白黒つけましょう」の一言と共に、対立中のゲストへ提供される定番演目。",
+    timing:"打ち解けさせたいタイミングよりも、まだ緊張感が残るうちに切り出すのがコツ。",
+    difficulty:"カード自体は単純な代物だが、心理戦としての奥深さはこの世界にまだない概念。",
+    next:"お土産のトランプ一式があれば、帰還後も勝手に盛り上がってくれる。",
+    rarity:"対立していた者同士を、いつの間にか仲間に変える魔性のゲーム",
+    note:"国境問題より白熱していたのは、間違いなくこのゲームの方だった。" },
+  bluff_showdown:{ name:"オールインとブラフ看破", reading:"一触即発が大爆笑に変わる瞬間",
+    scene:"ポーカーで緊張が最高潮に達したところで訪れる、勝敗を分ける一手。",
+    timing:"お互いの本音がぶつかり合う、対話が最も盛り上がるクライマックス。",
+    difficulty:"駆け引きの緊張と、その後の脱力するような笑いの落差は、狙って作れるものではない。",
+    next:"一度経験した相手は、次回もついこの緊張感を求めてしまうらしい。",
+    rarity:"睨み合いを笑いに変える、接待の最終奥義",
+    note:"国境で睨み合っていた二人が、これで完全に意気投合してしまった。" },
+  canned_beer_cards:{ name:"缶ビール&トランプのお土産セット", reading:"魔法の冷気袋入り、第二の王宮の必需品",
+    scene:"満足しきったゲストを送り出す、最後の一押しとして手渡される定番のお土産。",
+    timing:"帰還後もこの城の余韻を持ち帰ってもらうための、締めの一品。",
+    difficulty:"冷気を保ったまま持ち帰れる魔法の袋は、この世界の技術ではまだ再現不可能。",
+    next:"次回来訪時は、もう少し多めに持たせてあげてもいいかもしれない。",
+    rarity:"帰ってもなお『常連客』を続けさせる、地味に一番のダメ人間化装置",
+    note:"護衛の剣聖たちだけが、いまだにこの部屋の正体を知らないままである。" },
+  tapioca:{ name:"未知の飲料タピオカミルクティー", reading:"もちもちの黒い物体の正体は謎のまま",
+    scene:"来訪直後、まず毒見という建前で差し出される看板ドリンク。",
+    timing:"緊張をほぐす一杯目として、どのゲストにもまず提供される。",
+    difficulty:"もちもち食感の再現は、この世界の製粉・製菓技術ではまず不可能。",
+    next:"次回来訪時はフレーバー違いを用意しておきたいところ。",
+    rarity:"一口で素の感想が漏れる、油断大敵の一杯",
+    note:"毒見のつもりが、気づけば一番おかわりする羽目になる。" },
+  gal_fashion:{ name:"私服という名の変身セット", reading:"甲冑からフリルとレースへ、完全着せ替え",
+    scene:"飲み物で少し緊張がほぐれた頃合いに提案される、お着替えタイム。",
+    timing:"素の自分を引き出したいタイミングで、控えめに切り出すのがコツ。",
+    difficulty:"この世界の縫製技術では出せない、軽やかなフリルの質感。",
+    next:"次回来訪時は、コーディネートのバリエーションを増やしたい。",
+    rarity:"着替えた瞬間に一人称が変わる、変身魔法顔負けの一着",
+    note:"鎧を脱いだ瞬間、肩書きも一緒に脱げてしまうものらしい。" },
+  purikura:{ name:"未知の魔道具『プリクラ』", reading:"光る箱に押し込まれて撮る謎の肖像画",
+    scene:"着替えの後、記念にと軽い気持ちで案内される撮影ブース。",
+    timing:"警戒心がまだ少し残っているうちに切り出すと、ギャップが際立つ。",
+    difficulty:"一瞬で仕上がる技術は、この世界の魔法体系にも存在しない。",
+    next:"次回来訪時はシートのデザインを増やしておきたい。",
+    rarity:"『こんな顔もできるのか』と自分自身に驚かせる、殺傷力の高い一枚",
+    note:"撮り終えた後、みんな無言でシートを大事そうに懐にしまう。" },
+  karaoke:{ name:"魔導カラオケ、絶唱タイム", reading:"仮面が完全に剥がれ落ちる最終兵器",
+    scene:"心も体もほぐれきったタイミングで満を持して提供される、締めの演目。",
+    timing:"素が出かけている時に渡すと、一瞬でリミッターが外れる。",
+    difficulty:"曲も機材も、この世界にはまだ存在しない未知の娯楽体系。",
+    next:"次回来訪時は十八番が増えていることだろう。",
+    rarity:"国最強の剣士すら年相応の少女に戻す、接待の最終奥義",
+    note:"マイクを握った瞬間の豹変ぶりは、もはや様式美である。" },
+  milk_tea_scone:{ name:"冷たいミルクティーとスコーン", reading:"読書のお供にちょうどいい軽食セット",
+    scene:"来訪直後、本から目を離させないよう配慮した軽食として提供。",
+    timing:"読書に集中させたいゲストには、あえて控えめに差し出すのがコツ。",
+    difficulty:"軽い食感のスコーンは、この世界の製粉技術ではまず再現不可能。",
+    next:"次回来訪時はフレーバーティーのバリエーションを増やしたい。",
+    rarity:"読書の邪魔をしない、縁の下の力持ち的なおもてなし",
+    note:"感想を言う暇も惜しんで、ページをめくる指だけが動き続ける。" },
+  light_novel:{ name:"前世のライトノベル『オレに任せて先に行け!』", reading:"全15巻、涙腺破壊の自己犠牲ストーリー",
+    scene:"読書家気取りのゲストにこそ刺さる、一人称視点の物語として提供。",
+    timing:"知的好奇心が疑いを上回った瞬間に手渡すと、一気に沼へ引きずり込める。",
+    difficulty:"挿絵付きで一人称視点、というジャンルそのものがこの世界にまだ存在しない。",
+    next:"次回来訪時は続刊を持たせてあげたいところ。",
+    rarity:"理屈屋の批評家すら本気で号泣させる、涙腺への核弾頭",
+    note:"『この程度の展開』と言った口が、数ページ後には号泣している。" },
+  manga_jump:{ name:"週刊少年漫画誌", reading:"絵と文字が一体化した未知の表現媒体",
+    scene:"ラノベに慣れてきた頃合いで、追加のご馳走として差し出される一冊。",
+    timing:"「絵物語なんて」という侮りが強いうちに読ませると、ギャップが際立つ。",
+    difficulty:"一コマで感情まで伝える表現技法は、この世界の絵画にはまだない概念。",
+    next:"次回来訪時はバックナンバーを何冊か持たせてあげたい。",
+    rarity:"『児童向け』という先入観を、数ページで粉砕する破壊力",
+    note:"読み終える頃には、全巻お迎えしたいと目を輝かせている。" },
+  climax_crying:{ name:"「オレに任せて先に行け!」名シーン", reading:"号泣不可避、自己犠牲の王道シーン",
+    scene:"物語がクライマックスに差し掛かる第3巻で訪れる、涙腺崩壊の瞬間。",
+    timing:"本の世界にどっぷり浸かりきったタイミングで訪れる、最大の見せ場。",
+    difficulty:"ベタな展開と分かっていても涙が止まらない、その塩梅はこの世界にまだない技術。",
+    next:"次回来訪時は、また新しい『泣ける話』を用意しておきたい。",
+    rarity:"批評家気取りの仮面を、一瞬で粉砕する接待の核弾頭",
+    note:"『先が読める』はずの展開に、みんな平等に号泣させられる。" },
+  onsen_bath:{ name:"花の香り漂う湯浴み", reading:"誰かに世話をされる側という、初めての体験",
+    scene:"来訪直後、まず心身の緊張をほぐすために案内される特等席。",
+    timing:"「される専門」という新しい役割を受け入れさせる、最初の一歩として提供。",
+    difficulty:"香りと湯温の絶妙な調合は、この世界の入浴文化ではまず再現不可能。",
+    next:"次回来訪時は香りのバリエーションを増やしておきたい。",
+    rarity:"聖職者の戒律すら緩める、一番風呂の破壊力",
+    note:"『上がらなくていい』と言われた瞬間、みんな長湯になる。" },
+  healing_massage:{ name:"癒しの手を癒すマッサージ", reading:"与える手が、初めて受け取る番",
+    scene:"入浴でほぐれた心身に、さらに追い打ちをかける施術タイム。",
+    timing:"日々酷使している部位ほど、ほぐした時の反応が大きい。",
+    difficulty:"この世界の治療魔法にはない、指先の繊細な技術で再現される極上の一手。",
+    next:"次回来訪時は、より念入りな全身コースを用意したい。",
+    rarity:"何百人と癒してきた手を、初めて労わる特別な一手",
+    note:"施術中に出る声は、聖女も国王も、みんな似たり寄ったりである。" },
+  aroma_candle:{ name:"アロマキャンドル", reading:"灯すたびに、あの夜を思い出す小さな炎",
+    scene:"施術の合間、緊張が緩んだタイミングでさりげなく灯される演出。",
+    timing:"警戒心が薄れ始めた頃合いに置くと、香りの効果がより際立つ。",
+    difficulty:"香料の精製と燃焼時間の調整は、この世界の蝋燭作りにはまだない技術。",
+    next:"お土産として持ち帰れば、帰還後もいつでもあの夜を再現できる。",
+    rarity:"灯すたびに常連化が進む、地味に一番のダメ人間化装置",
+    note:"教会の蝋燭とは似ても似つかない、けれど手放せない香り。" },
+  cheese_fondue:{ name:"チーズフォンデュ", reading:"戒律も自制も、とろけて崩れる魔性の鍋",
+    scene:"心も体もほぐれきったタイミングで満を持して提供される、締めの一皿。",
+    timing:"断食や戒律を抱えたゲストほど、陥落した時の反応が大きい。",
+    difficulty:"とろけるチーズの温度管理と香りの配合は、この世界の食文化にまだない技術。",
+    next:"次回来訪時は具材のバリエーションを増やしておきたい。",
+    rarity:"聖女の戒律すら陥落させる、接待の最終奥義",
+    note:"『少しだけ』のはずが、気づけば鍋の底が見えている。" },
+  nano_bubble:{ name:"炭酸ナノバブルクレンジング", reading:"毛穴の奥まで根こそぎ持っていく魔性の泡",
+    scene:"来訪直後、まず肌をまっさらにするために提供される洗顔メニュー。",
+    timing:"美容へのプライドが高いゲストほど、最初の一手として効果を実感しやすい。",
+    difficulty:"微細な泡を均一に発生させる技術は、この世界の魔法体系にはまだ存在しない。",
+    next:"次回来訪時は泡の種類を増やしておきたいところ。",
+    rarity:"『この程度で』という余裕の表情を、真っ先に崩す一手",
+    note:"洗い上がりの一言目は、大抵『気持ちいい』で統一されている。" },
+  nano_steamer:{ name:"魔石駆動ナノスチーマー", reading:"肌の奥まで届く、超微細な温かい霧",
+    scene:"クレンジングの後、肌に潤いを与えるために案内される施術。",
+    timing:"警戒心がまだ少し残っているうちに当てると、緩み方のギャップが際立つ。",
+    difficulty:"この世界の水魔法の最高峰でも出せない、繊細な霧の粒子。",
+    next:"次回来訪時は蒸気に香りを添えてみたい。",
+    rarity:"『我が国の魔法でも出せない』と言わしめる、技術力の見せ場",
+    note:"霧を浴びた瞬間、みんな一様に緊張が緩んでいく。" },
+  pichipichi_pack:{ name:"特製ピチピチ泥パック", reading:"コラーゲンとヒアルロン酸を魔力で超精製した一品",
+    scene:"仕上げの施術として、頭皮マッサージと合わせて提供される看板メニュー。",
+    timing:"心も体もほぐれきったタイミングで提供すると、緊張の糸が完全に切れる。",
+    difficulty:"美容成分の超精製技術は、この世界の錬金術ではまだ再現できない領域。",
+    next:"次回来訪時はより効果を高めたブレンドを用意したい。",
+    rarity:"『泥遊びのようなもの』という侮りを、一瞬で覆す一皿",
+    note:"施術中に漏れる声は、大抵『ほうぇぇ』で統一されている。" },
+  hair_treatment:{ name:"マイナスイオンドライヤーと鏡の奇跡", reading:"乾かすだけで絹のような輝きを取り戻す仕上げ",
+    scene:"フルコース施術の最後を締めくくる、鏡の前でのお披露目タイム。",
+    timing:"すべての施術が終わり、緊張が完全にほぐれた頃合いで訪れるクライマックス。",
+    difficulty:"ゴワゴワしたブラシと生ぬるい風しかないこの世界では、まず再現不可能な仕上がり。",
+    next:"次回来訪時はスタイリングのバリエーションを増やしたい。",
+    rarity:"鏡を見た瞬間、余裕の仮面を完全に粉砕する接待の最終奥義",
+    note:"鏡の前ではしゃぐ姿は、身分に関係なくみんな同じくらい可愛らしい。" },
+  fighting_game:{ name:"対戦格闘ゲーム", reading:"画面の中の分身同士がぶつかり合う未知の娯楽",
+    scene:"来訪直後、対抗意識の強いゲストにこそ刺さる導入として提供。",
+    timing:"警戒心を『勝負』というフレームに変換できる、最初の一手。",
+    difficulty:"リアルタイムで駆け引きが成立する映像技術は、この世界にまだ存在しない。",
+    next:"次回来訪時はキャラクターの数を増やしておきたい。",
+    rarity:"敵対心すら『いい勝負』に変換する、接待の柔術",
+    note:"『余興になど付き合ってられるか』と言った口が、数戦後には本気になっている。" },
+  rhythm_game:{ name:"リズムゲーム", reading:"指先の駆け引きだけで高揚する未知の感覚",
+    scene:"格闘ゲームで温まった後、さらに熱中させる追加の一手として提供。",
+    timing:"『分析』のつもりが、いつの間にか本気になっているのがこのゲームの真骨頂。",
+    difficulty:"リズムと反応速度を同時に競わせる仕組みは、この世界にまだない娯楽体系。",
+    next:"次回来訪時は難易度の高い曲を増やしておきたい。",
+    rarity:"評論家気取りの分析を、指先から粉砕する隠れた実力者",
+    note:"『子供じみている』と言った王子ほど、気づけば本気で指を動かしている。" },
+  arcade_snacks:{ name:"ゲーセン飯(から揚げ&ラムネ)", reading:"対戦の合間に染み渡る背徳の味",
+    scene:"ゲームの合間、休憩がてらに提供される軽食セット。",
+    timing:"警戒心が残っているうちに差し出すと、匂いに釣られて陥落しやすい。",
+    difficulty:"揚げたてのジューシーさとラムネの清涼感の両立は、この世界の食文化にまだない技術。",
+    next:"次回来訪時はメニューのバリエーションを増やしておきたい。",
+    rarity:"『毒見も無しに』と言っていた警戒心を、一口で溶かす一皿",
+    note:"気づけばおかわりを要求してくるのが、このメニューの通例である。" },
+  final_showdown:{ name:"最後の死闘", reading:"対抗心が清々しい笑顔に変わる最終決戦",
+    scene:"ゲームで盛り上がった末に訪れる、締めくくりの真剣勝負。",
+    timing:"心も体も温まりきったタイミングで訪れる、最大の見せ場。",
+    difficulty:"勝敗を超えた爽快感を生み出す駆け引きの塩梅は、狙って作れるものではない。",
+    next:"次回来訪時は、リベンジマッチが待っているかもしれない。",
+    rarity:"国同士の対抗心すら、一戦の清々しさに変えてしまう接待の最終奥義",
+    note:"負けてもなお、晴れやかな顔で握手を求めてくるのがこの一戦の証。" },
+  friendship_bracelet:{ name:"お揃いの友情ブレスレット", reading:"敵国同士が国境を越える、小さな証",
+    scene:"すっかり打ち解けた二人を送り出す、最後の一押しとして手渡される特別なお土産。",
+    timing:"友情が本物になった瞬間を締めくくる、最後の演出として提供。",
+    difficulty:"魔力を編み込んだ紐の同調技術は、この世界の宝飾工房にはまだない加工法。",
+    next:"次回来訪時は、お揃いのデザインを増やしておきたい。",
+    rarity:"国境も肩書きも越える、接待が生んだ本物の友情の証",
+    note:"身につけている限り、どちらの国にいても相手を近くに感じられるらしい。" },
+  strawberry_milk_pancake:{ name:"特製いちごミルク&焼きたてパンケーキ", reading:"ふわふわの幸せ、お子様も夢中の一皿",
+    scene:"来訪直後、まず心を和ませるために提供されるおやつセット。",
+    timing:"人見知りの子でも、甘い香りには案外あっさり陥落するもの。",
+    difficulty:"ふわふわの食感と絶妙な甘さの両立は、この世界の製菓技術ではまず再現不可能。",
+    next:"次回来訪時はトッピングのバリエーションを増やしておきたい。",
+    rarity:"どんな人見知りも、一口でにっこりさせる魔法のおやつ",
+    note:"食べ終わる頃には、大抵お代わりをねだられる。" },
+  mofmof_petcafe:{ name:"モフモフ子猫・子ウサギカフェ", reading:"お城では触れない、夢のふれあい体験",
+    scene:"おやつの後、動物と触れ合わせるために案内される特等席。",
+    timing:"『危ないから』と遠ざけられてきたゲストほど、目を輝かせる瞬間。",
+    difficulty:"人懐っこく安全な魔獣の赤ちゃんを揃える技術は、この世界にはまだない。",
+    next:"次回来訪時は新しい仲間が増えているかもしれない。",
+    rarity:"どんな人見知りも、モフモフの前では武装解除されてしまう",
+    note:"優しく撫でる小さな手つきは、いつ見ても微笑ましい。" },
+  giant_plush:{ name:"喋る特大クマのぬいぐるみ", reading:"抱きつくと離れられなくなる、もふもふの巨体",
+    scene:"モフモフカフェの後、さらに大きな安心感を与えるために登場する一体。",
+    timing:"心が緩みきったタイミングで抱きしめさせると、すっかり離れなくなる。",
+    difficulty:"喋る仕掛けと、抱き心地の良さの両立は、この世界の職人技ではまず不可能。",
+    next:"お土産として持ち帰れば、帰還後もずっと一緒にいられる。",
+    rarity:"どんな寂しさも埋めてしまう、もふもふの守護者",
+    note:"一度抱きついたら、最後まで離れないのがお約束。" },
+  game_console:{ name:"魔法のゲーム機、初体験", reading:"初めてのジャンプに世界がひっくり返る瞬間",
+    scene:"はしゃぎ疲れる前の最後の見せ場として登場する、大画面の娯楽。",
+    timing:"心を開ききったタイミングで手渡すと、夢中になる速度が段違い。",
+    difficulty:"魔力で映像と操作を同期させる技術は、この世界にはまだ存在しない。",
+    next:"お土産として持ち帰れば、練習を重ねてどんどん上達していくだろう。",
+    rarity:"初めての『動いた!』の瞬間を作り出す、接待の最終兵器",
+    note:"この夜の一投が、後にどれほどの腕前へと化けるかは、まだ誰も知らない。" },
+  yakitori_beer:{ name:"炭火焼き鳥&生ビール", reading:"深夜の胃に染み渡る、罪深い組み合わせ",
+    scene:"来訪直後、疲れ切ったゲストの毒気を抜くために提供される定番セット。",
+    timing:"胃薬が手放せないタイプのゲストほど、一杯目の効き目が段違い。",
+    difficulty:"炭火の香ばしさと生ビールの鮮度を同時に保つ技術は、この世界の飲食文化にまだない。",
+    next:"次回来訪時は部位のバリエーションを増やしておきたい。",
+    rarity:"胃痛持ちの心すら一瞬で緩める、接待の定番中の定番",
+    note:"数字馬鹿ほど、一杯目で真っ先に相好を崩す。" },
+  fridge_wonder:{ name:"魔道具『冷蔵庫』", reading:"食べ物が腐らないという、財政官僚垂涎の発明",
+    scene:"食事の合間、ついでに紹介される魔道具として提供。",
+    timing:"予算や兵站に頭を悩ませているゲストほど、食いつきが良い。",
+    difficulty:"低温保存の技術は、この世界の魔法体系にはまだ存在しない領域。",
+    next:"次回来訪時は共同研究の話が進んでいるかもしれない。",
+    rarity:"国家予算の使い道すら変えかねない、地味に一番の経済兵器",
+    note:"『国家予算の半分を積んでも』と食い下がるのが、このメニューの通例である。" },
+  shogi_game:{ name:"前世のゲーム『将棋』", reading:"取った駒を自軍にできる、奥深い盤上遊戯",
+    scene:"食事で緊張がほぐれた後、頭脳戦として提供される定番の一戦。",
+    timing:"数字に強いゲストほど、ルールの理解も対局への没頭も早い。",
+    difficulty:"取った駒を再利用する仕組みは、この世界の盤上遊戯にはまだない概念。",
+    next:"次回来訪時は上級者向けの定跡を教えてあげたい。",
+    rarity:"数字馬鹿の闘争心を、盤上へ丸ごと移し替える一戦",
+    note:"『負けてなるものか』の一言と共に、大抵徹夜コースになる。" },
+  chess_game:{ name:"前世のゲーム『チェス』", reading:"将棋とはまた違う、駒それぞれの個性が光る頭脳戦",
+    scene:"将棋で温まった後、さらに交流を深めるための追加の一戦として提供。",
+    timing:"異なる盤上遊戯を教え合うことで、国境を越えた交流が一気に進む。",
+    difficulty:"将棋とは異なる駒の動きと戦略性は、この世界にまだない知的娯楽の体系。",
+    next:"次回来訪時は将棋とチェスの合同トーナメントもできるかもしれない。",
+    rarity:"牽制し合っていた者同士を、いつの間にか好敵手に変える一戦",
+    note:"気づけば互いの得意ゲームを教え合う、妙な師弟関係が生まれている。" },
+  bonsai_gift:{ name:"手土産の盆栽", reading:"前世の異国文化、丹精込めて育てる小さな庭",
+    scene:"帰り際、最後の一押しとして手渡される、意外性のあるお土産。",
+    timing:"几帳面で数字に強いゲストほど、手入れの奥深さに惹き込まれやすい。",
+    difficulty:"小さな鉢の中に景色を凝縮させる剪定技術は、この世界の造園術にはまだない発想。",
+    next:"次回来訪時は、育て方のコツをもう少し詳しく教えてあげたい。",
+    rarity:"帰ってもなお、丹精込める楽しみを持ち帰らせる地味な一押し",
+    note:"数字にうるさい者ほど、几帳面に剪定の記録をつけたがるらしい。" },
+  alliance_toast:{ name:"両国合同の乾杯", reading:"睨み合っていたはずの二国が、同じグラスを掲げる瞬間",
+    scene:"親睦パーティーの締めくくりとして、会場全体で行われる特別な乾杯。",
+    timing:"全てのコーナーを巡り終え、心がすっかりほぐれたタイミングで訪れる大団円。",
+    difficulty:"国境も肩書きも越えて笑い合う空気を作る技術は、政治力学だけでは到底再現できない。",
+    next:"次回の親睦パーティーでは、もっと多くの国が参加しているかもしれない。",
+    rarity:"この城が生み出した、最大にして最も平和なダメ人間化装置",
+    note:"乾杯の音頭を取るのが両国の国王だった、というのがこの城らしい締めくくりである。" },
+  aircon_kekkai:{ name:"???", reading:"まだ誰にも提供されていないメニュー",
+    scene:"???", timing:"???", difficulty:"???", next:"???", rarity:"???", note:"???" },
+  hyoutan_furo:{ name:"???", reading:"まだ誰にも提供されていないメニュー",
+    scene:"???", timing:"???", difficulty:"???", next:"???", rarity:"???", note:"???" }
+};
+
+let state = { charKey:null, affection:{}, route:{}, clearedRoutes:{}, characterTotal:{}, eventIndex:0, awaitingContinue:false, discoveredCelestials:{}, beatIndex:0, inBeatMode:false };
+Object.keys(DATA).forEach(k => { state.affection[k] = 0; state.route[k] = null; state.clearedRoutes[k] = {}; state.characterTotal[k] = 0; });
+
+/* --- セーブデータ(localStorage) --- */
+const SAVE_KEY = 'isekai_dame_ningen_save_v1';
+function loadSave(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    if(data.clearedRoutes){
+      Object.keys(data.clearedRoutes).forEach(k=>{ if(state.clearedRoutes[k]){ Object.assign(state.clearedRoutes[k], data.clearedRoutes[k]); } });
+    }
+    if(data.characterTotal){
+      Object.keys(data.characterTotal).forEach(k=>{ if(k in state.characterTotal){ state.characterTotal[k] = data.characterTotal[k]; } });
+    }
+    if(data.discoveredCelestials){
+      Object.assign(state.discoveredCelestials, data.discoveredCelestials);
+    }
+  }catch(e){ console.warn('セーブデータの読み込みに失敗しました', e); }
+}
+function saveGame(){
+  try{
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
+      clearedRoutes: state.clearedRoutes,
+      characterTotal: state.characterTotal,
+      discoveredCelestials: state.discoveredCelestials
+    }));
+  }catch(e){ console.warn('セーブデータの保存に失敗しました', e); }
+}
+function resetSave(){
+  try{ localStorage.removeItem(SAVE_KEY); }catch(e){}
+  try{ localStorage.removeItem('dame_ningen_keikaku_complete'); }catch(e){}
+  Object.keys(DATA).forEach(k => { state.clearedRoutes[k] = {}; state.characterTotal[k] = 0; });
+  state.discoveredCelestials = {};
+  renderSelect();
+}
+loadSave();
+
+/* --- 解放システム(累計堕落ポイントによるゲスト解放) ---
+   tier:1は常時解放。ゲストを増やす場合はここに閾値を追加すること。 */
+const TIER_THRESHOLDS = { 2: 5000 };
+function grandTotal(){
+  return Object.values(state.characterTotal).reduce((a,b)=>a+b, 0);
+}
+function isCharUnlocked(key){
+  const t = DATA[key].tier || 1;
+  if(t <= 1) return true;
+  const need = TIER_THRESHOLDS[t];
+  return need === undefined ? true : grandTotal() >= need;
+}
+
+/* --- 特別編(全ゲスト読了で解放されるエピローグ集) --- */
+function clearedRouteCount(){
+  return Object.keys(DATA).reduce((n,k)=>{
+    const c = state.clearedRoutes[k] || {};
+    return n + (c.A ? 1 : 0) + (c.B ? 1 : 0);
+  }, 0);
+}
+function isFinaleUnlocked(){
+  return Object.keys(DATA).every(k=>{
+    const c = state.clearedRoutes[k] || {};
+    return c.A && c.B;
+  });
+}
+/* FINALE_VIGNETTES: DATAと同じキー名で、1人につき1パラグラフの後日談を書く。 */
+const FINALE_VIGNETTES = {
+  nostia:"エイセレブ王国、深夜の執務室。今日もノースティアは眉間に皺を寄せながら書類と向き合っている。ただ、時折こっそり取り出すポータブル再生機のイヤホンと、限界を迎える直前に浮かべる何かを堪える笑みだけは、以前の彼女にはなかったものだ。『今夜も、瓢箪されにいくのが待ち遠しいわ……』",
+  kings:"エイセレブ王国とハイドランジア国、両国の国境には、今日も穏やかな空気が流れている。定例の会談のたびに、二人の国王はどこか浮かれた顔で城を出ていく。護衛の剣聖たちは未だに、あの夜何が起きたのかを知らないままだ。『……また『視察』とやらに行かれるので?』『うむ、大事な外交の一環だ』",
+  viola:"城の見張り塔に立つヴィオラは、今日も一切の表情を崩さない。国最強の剣士としての威厳は、以前と変わらず健在だ。ただ、非番の夜になると、こっそりマイクを握りしめに来ては、誰も知らないもう一つの人格を全開にしているらしい。『……剣聖のあーしも、素のあーしも、どっちも本当のあーしだから』",
+  elphi:"大書庫の隅、いつしか『エルフィリア専用棚』ができていた。歴史書の合間に、色とりどりの背表紙が並んでいる。司書たちは首を傾げているが、本人は気にも留めない。『……次はどんな物語を読ませてくれるのかしら』本を抱きしめる横顔は、以前よりずっと生き生きしている。",
+  eleonora:"隣国の貴婦人たちを招いた夜会で、エレオノーラの肌と髪の輝きは、今日も周囲を沈黙させている。『……これはちょっとした「神のサロン」の秘密ですの』と優越感に浸る王妃は、定期的にこっそりこの部屋に瓢箪されにきているらしい。鏡を覗き込む横顔は、以前よりずっと明るい。",
+  lumina:"祈祷堂の隅、いつしか小さなアロマキャンドルが灯るようになっていた。祈祷の合間、ルミナはそっと目を閉じ、その香りに浸る時間を作っている。教会の誰も、彼女が『癒される側』の顔を知らないままだ。『……癒しは、与えるだけのものじゃなかったんですね』",
+  rainhardt:"ハイドランジア王国の執務室、いつしか小さなゲーム機が置かれるようになっていた。政務の合間、ラインハルトはこっそり対戦相手を求めてこの部屋に瓢箪されにきているらしい。『……エイセレブに勝ちたいんじゃない。ただ、あの一戦の続きがしたいだけだ』コントローラーを握る横顔は、以前よりずっと晴れやかだ。",
+  mireille:"ハイドランジア王国の魔導研究塔、いつしか机の端にお揃いのブレスレットが置かれるようになっていた。研究の合間、ミレイユはそっとそれを眺め、微笑む時間を作っている。『……敵国の剣聖と友人になるとは、我ながら理解し難いですね』そう呟く声には、確かな親しみが滲んでいた。",
+  lily:"リリィの部屋には、あの夜もらったゲーム機が大切に飾られている。毎日少しずつ練習を重ね、いつの間にか誰よりも上手にボタンを操るようになっていた。『いつか、お兄ちゃんともう一回勝負するんだ!』クマのぬいぐるみを抱きしめながら、リリィは今日も無邪気に笑っている。",
+  chancellors:"エイセレブとハイドランジア、両国の財務会議のたびに、バルドゥールとゲアハルトはこっそり示し合わせて『視察』と称し、この部屋に瓢箪されにきているらしい。将棋盤とチェス盤を並べる机の端には、あの夜もらった小さな盆栽が二鉢、几帳面に手入れされて並んでいる。『……数字馬鹿同士、案外いいコンビだな』",
+  elvira:"エイセレブとハイドランジア、両国は正式な同盟条約を締結した。祝賀の宴には、あの夜出会った顔ぶれが揃って参列している。『……あんなに仲が悪かったはずなのに、どうしてこうなったのかしら』エルヴィラは今でも時々そう呟くが、その声はいつも笑っている。"
+};
+function showFinale(){
+  window.scrollTo(0, 0);
+  document.getElementById('screen-select').classList.add('hidden');
+  document.getElementById('screen-game').classList.add('hidden');
+  document.getElementById('screen-ending').classList.add('hidden');
+  document.getElementById('screen-finale').classList.remove('hidden');
+  document.getElementById('finale-intro').textContent =
+    '深夜、瓢箪の的にされた者たちは、みな一様に同じ感想を漏らす。「もう一度、あそこに行きたい」と。';
+  const box = document.getElementById('finale-vignettes');
+  box.innerHTML = '';
+  Object.keys(DATA).forEach(key=>{
+    const c = DATA[key];
+    const card = document.createElement('div');
+    card.className = 'finale-card';
+    card.style.setProperty('--vc', c.color);
+    card.innerHTML = `<div class="fname">${c.name}</div><div class="ftext">${FINALE_VIGNETTES[key] || ''}</div>`;
+    box.appendChild(card);
+  });
+  document.getElementById('finale-closing').textContent =
+    '国も、身分も関係ない。ダメ人間になる資格は、誰にでも平等にある。\n今宵も『俺の城』のルーレットが、次の獲物を選び続ける。\n\nThank you for playing.';
+  playBgm('finale_bgm.mp3');
+}
+
+function rankFor(v){
+  let r = RANKS[0], idx = 0;
+  RANKS.forEach((rk,i)=>{ if(v>=rk.min){ r=rk; idx=i; } });
+  return {name:r.name, idx};
+}
+function tierFor(v){ return rankFor(v).idx; }
+
+function showZukan(){
+  window.scrollTo(0, 0);
+  document.body.setAttribute('data-tier', '0');
+  document.getElementById('screen-select').classList.add('hidden');
+  document.getElementById('screen-zukan').classList.remove('hidden');
+  const ids = Object.keys(MENU_DATA);
+  const foundCount = ids.filter(id => state.discoveredCelestials[id]).length;
+  document.getElementById('zukan-progress').textContent =
+    `これまでの瓢箪で提供してきたおもてなしの記録。体験済み ${foundCount} / ${ids.length}品`;
+  const list = document.getElementById('zukan-list');
+  list.innerHTML = '';
+  ids.forEach(id=>{
+    const b = MENU_DATA[id];
+    const found = !!state.discoveredCelestials[id];
+    const card = document.createElement('div');
+    card.className = found ? 'zukan-card' : 'zukan-card locked';
+    if(found){
+      card.innerHTML = `
+        <div class="zname">${b.name}</div>
+        <div class="zreading">${b.reading}</div>
+        <div class="zrow"><b>提供シーン</b> ${b.scene}</div>
+        <div class="zrow"><b>提供タイミング</b> ${b.timing}</div>
+        <div class="zrow"><b>異世界再現難易度</b> ${b.difficulty}</div>
+        <div class="zrow"><b>次回提供予定</b> ${b.next}</div>
+        <div class="zrow"><b>格付け</b> ${b.rarity}</div>
+        <div class="znote">${b.note}</div>
+      `;
+    } else {
+      card.innerHTML = `
+        <div class="zname">？？？</div>
+        <div class="zreading">まだ誰にも提供していないメニュー</div>
+      `;
+    }
+    list.appendChild(card);
+  });
+}
+document.getElementById('btn-zukan').addEventListener('click', showZukan);
+document.getElementById('btn-zukan-back').addEventListener('click', renderSelect);
+
+/* --- 隠しジェスチャー: ビート再生中のみ、左右フリックで前後に移動できる --- */
+(function(){
+  let touchStartX = null, touchStartY = null;
+  const gameScreen = document.getElementById('screen-game');
+  gameScreen.addEventListener('touchstart', (e)=>{
+    if(!state.inBeatMode) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, {passive:true});
+  gameScreen.addEventListener('touchend', (e)=>{
+    if(!state.inBeatMode || touchStartX === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    touchStartX = null;
+    if(Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    const events = getEventList(state.charKey);
+    const ev = events[state.eventIndex];
+    if(!ev.beats) return;
+    if(dx > 0){
+      if(state.beatIndex > 0){ state.beatIndex--; renderBeat(ev); }
+    } else {
+      if(state.beatIndex < ev.beats.length - 1){ state.beatIndex++; renderBeat(ev); }
+      else { renderChoiceButtons(ev); }
+    }
+  }, {passive:true});
+})();
+
+function getEventList(key){
+  const c = DATA[key];
+  if(c.routes){
+    const r = state.route[key];
+    if(r && c.routes[r]){ return [c.event1, ...c.routes[r].events]; }
+    return [c.event1];
+  }
+  return c.events;
+}
+function getEpilogueText(key){
+  const c = DATA[key];
+  if(c.routes && state.route[key] && c.routes[state.route[key]]){
+    return c.routes[state.route[key]].epilogueText;
+  }
+  return c.epilogueText;
+}
+function routeKeyFor(key){
+  return DATA[key].routes ? (state.route[key] || 'A') : 'main';
+}
+
+function setCardVars(el, color, glow){
+  el.style.setProperty('--card-color', color);
+  el.style.setProperty('--glow-c', glow);
+}
+
+/* --- BGM engine(音声ファイルは未同梱。再生に失敗しても静かに無視される) --- */
+const CHAR_KEYS = Object.keys(DATA);
+function charBgmFile(key){
+  const idx = CHAR_KEYS.indexOf(key) + 1;
+  return 'character_bgm' + String(idx).padStart(2,'0') + '.mp3';
+}
+const bgm = document.getElementById('bgm');
+const muteBtn = document.getElementById('mute-btn');
+let bgmMuted = false;
+let bgmFadeTimer = null;
+const BGM_VOLUME = 0.55;
+
+function fadeBgmTo(target, ms){
+  clearInterval(bgmFadeTimer);
+  const start = bgm.volume;
+  const steps = 20;
+  let i = 0;
+  bgmFadeTimer = setInterval(()=>{
+    i++;
+    bgm.volume = Math.max(0, Math.min(1, start + (target-start) * (i/steps)));
+    if(i>=steps){ clearInterval(bgmFadeTimer); }
+  }, ms/steps);
+}
+
+function playBgm(src){
+  if(bgm.getAttribute('data-src') === src){ return; }
+  bgm.setAttribute('data-src', src);
+  const doSwitch = ()=>{
+    bgm.src = src;
+    bgm.currentTime = 0;
+    bgm.volume = 0;
+    bgm.muted = bgmMuted;
+    bgm.play().then(()=>{ fadeBgmTo(bgmMuted ? 0 : BGM_VOLUME, 900); }).catch(()=>{ /* ユーザー操作待ち、または音源未同梱 */ });
+  };
+  if(bgm.src && !bgm.paused){
+    fadeBgmTo(0, 400);
+    setTimeout(doSwitch, 400);
+  } else {
+    doSwitch();
+  }
+}
+
+muteBtn.addEventListener('click', ()=>{
+  bgmMuted = !bgmMuted;
+  muteBtn.textContent = bgmMuted ? '🔇' : '🔊';
+  bgm.muted = bgmMuted;
+  fadeBgmTo(bgmMuted ? 0 : BGM_VOLUME, 300);
+  if(!bgmMuted && bgm.paused){ bgm.play().catch(()=>{}); }
+});
+
+function progressLabel(key){
+  const c = DATA[key];
+  const cleared = state.clearedRoutes[key] || {};
+  const total = state.characterTotal[key] || 0;
+  if(c.routes){
+    const a = cleared.A ? '既読' : '未読';
+    const b = cleared.B ? '既読' : '未読';
+    return `累計堕落ポイント ${total}　|　ルートA ${a} / ルートB ${b}`;
+  }
+  return `累計堕落ポイント ${total}　|　${cleared.main ? '既読' : '未読'}`;
+}
+
+/* --- 次回予告枠(未実装ゲストのプレースホルダー、クリック不可) --- */
+const COMING_SOON = [];
+
+function renderSelect(){
+  window.scrollTo(0, 0);
+  const grid = document.getElementById('char-grid');
+  grid.innerHTML = '';
+  const gt = grandTotal();
+  Object.keys(DATA).forEach(key=>{
+    const c = DATA[key];
+    const card = document.createElement('div');
+    const unlocked = isCharUnlocked(key);
+    if(!unlocked){
+      card.className = 'char-card locked';
+      const need = TIER_THRESHOLDS[c.tier];
+      card.innerHTML = `
+        <div class="emblem locked-emblem">🔒</div>
+        <h3>？？？</h3>
+        <p>総堕落ポイント ${need} で解放</p>
+        <div class="char-progress">現在の総堕落ポイント ${gt} / ${need}</div>
+      `;
+      grid.appendChild(card);
+      return;
+    }
+    card.className = 'char-card';
+    setCardVars(card, c.color, c.glow);
+    card.innerHTML = `
+      <div class="emblem">${c.emblem}</div>
+      <h3>${c.name}</h3>
+      <p>${c.subtitle}</p>
+      <div class="char-progress">${progressLabel(key)}</div>
+    `;
+    card.addEventListener('click', ()=> startGame(key));
+    grid.appendChild(card);
+  });
+
+  COMING_SOON.forEach(cs=>{
+    const card = document.createElement('div');
+    card.className = 'char-card locked';
+    card.innerHTML = `
+      <div class="emblem locked-emblem">🔒</div>
+      <h3>${cs.name}</h3>
+      <p>${cs.desc}</p>
+      <div class="char-progress">近日実装予定</div>
+    `;
+    grid.appendChild(card);
+  });
+
+  const finaleCard = document.createElement('div');
+  const finaleUnlocked = isFinaleUnlocked();
+  const doneCount = clearedRouteCount();
+  const totalRoutes = Object.keys(DATA).length * 2;
+  if(finaleUnlocked){
+    finaleCard.className = 'char-card finale-card-select';
+    finaleCard.style.setProperty('--card-color', '#ffce6b');
+    finaleCard.style.setProperty('--glow-c', '#fff3d0');
+    finaleCard.innerHTML = `
+      <div class="emblem">✦</div>
+      <h3>特別編</h3>
+      <p>それからの日々 — ゲストのエピローグ集</p>
+      <div class="char-progress">解放済み</div>
+    `;
+    finaleCard.addEventListener('click', showFinale);
+  } else {
+    finaleCard.className = 'char-card locked';
+    finaleCard.innerHTML = `
+      <div class="emblem locked-emblem">🔒</div>
+      <h3>特別編</h3>
+      <p>全ゲスト、両ルートを読了すると解放</p>
+      <div class="char-progress">読了 ${doneCount} / ${totalRoutes}</div>
+    `;
+  }
+  grid.appendChild(finaleCard);
+
+  document.getElementById('total-happiness').textContent = `総堕落ポイント: ${gt}`;
+  document.getElementById('screen-select').classList.remove('hidden');
+  document.getElementById('screen-game').classList.add('hidden');
+  document.getElementById('screen-ending').classList.add('hidden');
+  document.getElementById('screen-finale').classList.add('hidden');
+  document.getElementById('screen-zukan').classList.add('hidden');
+  playBgm('select_bgm.mp3');
+}
+
+function startGame(key){
+  window.scrollTo(0, 0);
+  state.charKey = key;
+  state.eventIndex = 0;
+  state.affection[key] = 0;
+  state.route[key] = null;
+  document.getElementById('screen-select').classList.add('hidden');
+  document.getElementById('screen-ending').classList.add('hidden');
+  document.getElementById('screen-game').classList.remove('hidden');
+  const c = DATA[key];
+  setCardVars(document.getElementById('screen-game'), c.color, c.glow);
+  document.getElementById('who-dot').style.background = c.color;
+  document.getElementById('who-dot').style.boxShadow = '0 0 16px -2px ' + c.color;
+  document.getElementById('who-name').textContent = c.name;
+  document.body.setAttribute('data-tier', tierFor(state.affection[key]));
+  playBgm(charBgmFile(key));
+  renderEvent();
+}
+
+function updateGauge(){
+  const key = state.charKey;
+  const aff = state.affection[key];
+  const rk = rankFor(aff);
+  document.getElementById('who-rank').textContent = '堕落ランク: ' + rk.name;
+  document.getElementById('gauge-num').textContent = '堕落ポイント ' + aff;
+  const nextRank = RANKS[rk.idx+1];
+  const span = nextRank ? (nextRank.min - RANKS[rk.idx].min) : 60;
+  const within = nextRank ? (aff - RANKS[rk.idx].min) : span;
+  const pct = nextRank ? Math.min(100, Math.round((within/span)*100)) : 100;
+  document.getElementById('gauge-fill').style.width = pct + '%';
+}
+
+/* シーン本文が切り替わるたびに、本文の先頭が見える位置までスクロールし直す。
+   前のシーンで選択肢ボタンが画面下部にあった場合、スクロール位置がそのまま
+   残ってしまい、新しい本文が下から始まっているように見えるのを防ぐため。 */
+function scrollSceneToTop(){
+  const scene = document.querySelector('#screen-game .scene');
+  if(!scene) return;
+  requestAnimationFrame(()=>{
+    scene.scrollIntoView({ behavior:'auto', block:'start' });
+  });
+}
+
+function renderEvent(){
+  const key = state.charKey;
+  const events = getEventList(key);
+  const ev = events[state.eventIndex];
+  document.getElementById('scene-label').textContent = ev.label;
+  if(ev.celestialId && !state.discoveredCelestials[ev.celestialId]){
+    state.discoveredCelestials[ev.celestialId] = true;
+    saveGame();
+  }
+  updateGauge();
+
+  if(ev.beats && ev.beats.length){
+    state.beatIndex = 0;
+    renderBeat(ev);
+  } else {
+    state.inBeatMode = false;
+    document.getElementById('scene-text').textContent = ev.text;
+    renderChoiceButtons(ev);
+  }
+  scrollSceneToTop();
+}
+
+function renderBeat(ev){
+  state.inBeatMode = true;
+  const beat = ev.beats[state.beatIndex];
+  const textEl = document.getElementById('scene-text');
+  textEl.innerHTML = '';
+  const span = document.createElement('div');
+  span.className = 'beat-fade' + (beat.type === 'sfx' ? ' beat-sfx' : '');
+  span.textContent = beat.text;
+  textEl.appendChild(span);
+
+  if(beat.climax){
+    const flash = document.getElementById('flash-overlay');
+    flash.classList.remove('play'); void flash.offsetWidth; flash.classList.add('play');
+  }
+
+  const box = document.getElementById('choices');
+  box.innerHTML = '';
+  const isLast = state.beatIndex === ev.beats.length - 1;
+  const btn = document.createElement('button');
+  btn.className = 'beat-continue-btn';
+  btn.textContent = '続きを読む →';
+  btn.addEventListener('click', ()=>{
+    if(isLast){ renderChoiceButtons(ev); }
+    else { state.beatIndex++; renderBeat(ev); }
+    scrollSceneToTop();
+  });
+  box.appendChild(btn);
+  scrollSceneToTop();
+}
+
+function renderChoiceButtons(ev){
+  state.inBeatMode = false;
+  const box = document.getElementById('choices');
+  box.innerHTML = '';
+  ev.choices.forEach(ch=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = `${ch.label}<span class="delta-hint">選択すると堕落ポイントが変化します</span>`;
+    btn.addEventListener('click', ()=> pickChoice(ev, ch));
+    box.appendChild(btn);
+  });
+}
+
+function pickChoice(ev, ch){
+  state.inBeatMode = false;
+  const key = state.charKey;
+  if(ch.route){ state.route[key] = ch.route; }
+  const before = state.affection[key];
+  const beforeRank = rankFor(before);
+  state.affection[key] = before + ch.delta;
+  const after = state.affection[key];
+  const afterRank = rankFor(after);
+
+  document.getElementById('scene-text').textContent = ch.result;
+  const box = document.getElementById('choices');
+  box.innerHTML = '';
+  const cont = document.createElement('button');
+  cont.className = 'continue-btn';
+  cont.textContent = ev.final ? 'エンディングへ →' : '次へ →';
+  cont.addEventListener('click', ()=>{
+    if(ev.final){ showEnding(); }
+    else { state.eventIndex++; renderEvent(); }
+  });
+  box.appendChild(cont);
+
+  updateGauge();
+  document.body.setAttribute('data-tier', afterRank.idx);
+  playBurst(ch.delta, afterRank.idx > beforeRank.idx ? afterRank.name : null);
+  scrollSceneToTop();
+}
+
+function playBurst(delta, rankUpName){
+  const burst = document.getElementById('burst');
+  burst.textContent = '+' + delta + ' 堕落ポイント';
+  burst.classList.remove('play'); void burst.offsetWidth; burst.classList.add('play');
+
+  if(rankUpName){
+    const banner = document.getElementById('rankup-banner');
+    document.getElementById('rankup-text').textContent = rankUpName;
+    banner.classList.remove('play'); void banner.offsetWidth; banner.classList.add('play');
+  }
+}
+
+function showEnding(){
+  window.scrollTo(0, 0);
+  const key = state.charKey;
+  const c = DATA[key];
+  const events = getEventList(key);
+  const ev = events[events.length-1];
+  const aff = state.affection[key];
+  const rk = rankFor(aff);
+  const isMax = rk.idx === RANKS.length - 1;
+  state.clearedRoutes[key][routeKeyFor(key)] = true;
+  state.characterTotal[key] = (state.characterTotal[key] || 0) + aff;
+  saveGame();
+  if(isFinaleUnlocked()){
+    try{ localStorage.setItem('dame_ningen_keikaku_complete', '1'); }catch(e){}
+  }
+  document.getElementById('screen-game').classList.add('hidden');
+  document.getElementById('screen-ending').classList.remove('hidden');
+  setCardVars(document.getElementById('screen-ending'), c.color, c.glow);
+  const routeTag = c.routes ? `【${c.routes[state.route[key]].routeLabel}】` : '';
+  document.getElementById('end-label').textContent = (isMax ? 'TRUE EPILOGUE — 堕落度MAX到達 ' : 'EPILOGUE ') + routeTag;
+  document.getElementById('end-title').textContent = c.name + ' — ' + rk.name;
+  document.getElementById('end-num').textContent = `今回の堕落ポイント +${aff} ・ 累計 ${state.characterTotal[key]}`;
+  document.getElementById('end-text').textContent = isMax ? getEpilogueText(key) : ev.endingText;
+  const box = document.getElementById('screen-ending');
+  box.classList.toggle('is-max', isMax);
+  if(isMax){
+    const banner = document.getElementById('rankup-banner');
+    document.getElementById('rankup-text').textContent = '堕落度MAX — TRUE EPILOGUE';
+    banner.classList.remove('play'); void banner.offsetWidth; banner.classList.add('play');
+  }
+}
+
+document.getElementById('btn-back').addEventListener('click', renderSelect);
+document.getElementById('btn-ending-back').addEventListener('click', renderSelect);
+document.getElementById('btn-finale-back').addEventListener('click', renderSelect);
+document.getElementById('btn-reset-save').addEventListener('click', ()=>{
+  if(confirm('セーブデータ(既読状態・累計堕落ポイント)を全て消去します。よろしいですか?')){
+    resetSave();
+  }
+});
+
+document.getElementById('screen-title').addEventListener('click', ()=>{
+  document.getElementById('screen-title').classList.add('hidden');
+  renderSelect();
+});
+</script>
+</body>
+</html>
