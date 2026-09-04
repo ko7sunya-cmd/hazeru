@@ -201,6 +201,75 @@
         }
         .hidden{ display:none !important; }
 
+        .soundtrack-player{ margin-bottom: 40px; }
+        .soundtrack-intro{
+            font-size: 12.5px; color: var(--ink-light); opacity:0.8;
+            margin: 0 0 16px; line-height:1.7;
+        }
+        .player-box{
+            background:#ffffff;
+            border:1px solid var(--line);
+            border-radius:18px;
+            padding: 20px 20px 22px;
+            box-shadow: 0 10px 30px -14px rgba(4,10,20,0.65);
+        }
+        .st-select{
+            width:100%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            background: #fdfdfd;
+            color: var(--ink);
+            font-family:'Zen Kaku Gothic New', sans-serif;
+            font-size: 13.5px;
+            margin-bottom: 16px;
+        }
+        .st-now-playing{
+            text-align:center;
+            margin-bottom: 16px;
+        }
+        .st-work{
+            font-family:'Shippori Mincho', serif;
+            font-size: 15px;
+            font-weight:700;
+            color: #241a10;
+            margin-bottom: 4px;
+        }
+        .st-track{
+            font-family:'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            color: var(--ink);
+            opacity:0.6;
+        }
+        .st-controls{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap: 16px;
+        }
+        .st-btn{
+            border: 1px solid var(--line);
+            background: #fdfdfd;
+            color: var(--ink);
+            font-size: 16px;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            cursor:pointer;
+            display:flex; align-items:center; justify-content:center;
+            transition: transform .15s, border-color .2s;
+        }
+        .st-btn-main{
+            width: 56px; height: 56px;
+            font-size: 20px;
+            background: linear-gradient(90deg, var(--citrus), var(--gold));
+            color: #2a1f0a;
+            border: none;
+        }
+        .st-btn:active{ transform: scale(0.92); }
+        @media (hover:hover) and (pointer:fine){
+            .st-btn:hover{ border-color: var(--citrus); }
+        }
+
         footer.site-footer{
             text-align:center;
             color: var(--ink-light);
@@ -313,6 +382,26 @@
             </div>
         </section>
 
+        <section class="soundtrack-player">
+            <h2 class="section-title">🎧 全作品サウンドトラック</h2>
+            <p class="soundtrack-intro">各作品のBGMをまとめて聴ける作業用プレイヤー。作品を選んで通しで聴くか、全作品シャッフルで流しっぱなしにできます。</p>
+
+            <div class="player-box">
+                <select id="st-select" class="st-select"></select>
+
+                <div class="st-now-playing">
+                    <div class="st-work" id="st-work">再生準備中…</div>
+                    <div class="st-track" id="st-track">-</div>
+                </div>
+
+                <div class="st-controls">
+                    <button id="st-prev" class="st-btn" title="前の曲">⏮</button>
+                    <button id="st-playpause" class="st-btn st-btn-main" title="再生/一時停止">▶</button>
+                    <button id="st-next" class="st-btn" title="次の曲">⏭</button>
+                </div>
+            </div>
+        </section>
+
         <footer class="site-footer">
             <p>&copy; 2026 はぜる</p>
         </footer>
@@ -364,6 +453,153 @@
 
         // 高嶺の鳥、見つけに行こう: 9人 × 2ルート(A/B)。ヒロインが増えたらここも更新すること。
         syncProgressBadge('takane_no_tori_save_v1', 18, 'tt-progress-badge', 'tt-complete-badge');
+
+        // ==================== 全作品サウンドトラックプレイヤー ====================
+        // 各作品フォルダの命名規則(character_bgm01〜N.mp3 / select_bgm.mp3 / finale_bgm.mp3)を前提に
+        // トラックリストを組み立てる。新しい作品を追加する場合はSOUNDTRACKSに1行足すだけでよい。
+        var SOUNDTRACKS = [
+            { title:'異世界パラダイス幸福度クロニクル', folder:'isekai_paradise', charCount:9 },
+            { title:'灰の国で、恋を知る',               folder:'haiiro_no_kuni',   charCount:9 },
+            { title:'崩れゆく国で、明日を灯す',           folder:'kuzureyuku_kuni',  charCount:9 },
+            { title:'異世界ダメ人間計画',                folder:'isekai_dame_ningen', charCount:11 },
+            { title:'高嶺の星、見つけに行こう',           folder:'takane_no_hoshi',  charCount:9 },
+            { title:'高嶺の鳥、見つけに行こう',           folder:'takane_no_tori',   charCount:9 }
+        ];
+
+        function buildTrackList(work){
+            var tracks = [];
+            tracks.push({ work:work.title, label:'セレクト画面', src: work.folder + '/select_bgm.mp3' });
+            for(var i=1; i<=work.charCount; i++){
+                var num = (i < 10 ? '0' + i : '' + i);
+                tracks.push({ work:work.title, label:'キャラクター' + i, src: work.folder + '/character_bgm' + num + '.mp3' });
+            }
+            tracks.push({ work:work.title, label:'フィナーレ', src: work.folder + '/finale_bgm.mp3' });
+            return tracks;
+        }
+
+        function shuffleArray(arr){
+            var a = arr.slice();
+            for(var i=a.length-1; i>0; i--){
+                var j = Math.floor(Math.random() * (i+1));
+                var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+            }
+            return a;
+        }
+
+        (function(){
+            var audio = new Audio();
+            audio.volume = 0.7;
+
+            var stSelect = document.getElementById('st-select');
+            var stWork = document.getElementById('st-work');
+            var stTrack = document.getElementById('st-track');
+            var stPlayPause = document.getElementById('st-playpause');
+            var stPrev = document.getElementById('st-prev');
+            var stNext = document.getElementById('st-next');
+
+            // ドロップダウンの選択肢を組み立て: 先頭に「全作品シャッフル」、続けて各作品
+            var shuffleOpt = document.createElement('option');
+            shuffleOpt.value = 'shuffle';
+            shuffleOpt.textContent = '🔀 全作品シャッフル';
+            stSelect.appendChild(shuffleOpt);
+
+            SOUNDTRACKS.forEach(function(work, idx){
+                var opt = document.createElement('option');
+                opt.value = 'work:' + idx;
+                opt.textContent = work.title;
+                stSelect.appendChild(opt);
+            });
+
+            var queue = [];
+            var queueIndex = 0;
+
+            function loadQueueForSelection(){
+                var val = stSelect.value;
+                if(val === 'shuffle'){
+                    var all = [];
+                    SOUNDTRACKS.forEach(function(work){ all = all.concat(buildTrackList(work)); });
+                    queue = shuffleArray(all);
+                } else {
+                    var idx = parseInt(val.split(':')[1], 10);
+                    queue = buildTrackList(SOUNDTRACKS[idx]);
+                }
+                queueIndex = 0;
+            }
+
+            function playCurrent(){
+                if(!queue.length) return;
+                var t = queue[queueIndex];
+                audio.src = t.src;
+                stWork.textContent = t.work;
+                stTrack.textContent = t.label;
+                audio.play().catch(function(){
+                    // 自動再生がブロックされた場合は、再生ボタンを押すまで待つ
+                    stPlayPause.textContent = '▶';
+                });
+            }
+
+            function goNext(){
+                if(!queue.length) return;
+                queueIndex++;
+                if(queueIndex >= queue.length){
+                    // シャッフルモードは末尾まで行ったら再シャッフル、通常モードは先頭に戻る
+                    if(stSelect.value === 'shuffle'){ loadQueueForSelection(); }
+                    else { queueIndex = 0; }
+                }
+                playCurrent();
+            }
+
+            function goPrev(){
+                if(!queue.length) return;
+                queueIndex--;
+                if(queueIndex < 0){ queueIndex = queue.length - 1; }
+                playCurrent();
+            }
+
+            stSelect.addEventListener('change', function(){
+                loadQueueForSelection();
+                playCurrent();
+                stPlayPause.textContent = '⏸';
+            });
+
+            stPlayPause.addEventListener('click', function(){
+                if(!queue.length){
+                    loadQueueForSelection();
+                    playCurrent();
+                    stPlayPause.textContent = '⏸';
+                    return;
+                }
+                if(audio.paused){
+                    audio.play().catch(function(){});
+                    stPlayPause.textContent = '⏸';
+                } else {
+                    audio.pause();
+                    stPlayPause.textContent = '▶';
+                }
+            });
+
+            stNext.addEventListener('click', function(){
+                goNext();
+                stPlayPause.textContent = '⏸';
+            });
+
+            stPrev.addEventListener('click', function(){
+                goPrev();
+                stPlayPause.textContent = '⏸';
+            });
+
+            audio.addEventListener('ended', goNext);
+
+            // 初期状態: 先頭(全作品シャッフル)を選択した状態で待機。実際の再生はボタン操作から開始する
+            // (自動再生はブラウザにブロックされることが多いため、ユーザー操作を起点にする)
+            stSelect.value = 'shuffle';
+            loadQueueForSelection();
+            var firstTrack = queue[0];
+            if(firstTrack){
+                stWork.textContent = firstTrack.work;
+                stTrack.textContent = firstTrack.label + '(▶を押して再生)';
+            }
+        })();
     </script>
 </body>
 </html>
