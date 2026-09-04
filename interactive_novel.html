@@ -512,6 +512,7 @@
 
             var queue = [];
             var queueIndex = 0;
+            var started = false; // 一度でも再生を開始したことがあるか(audio.srcが設定済みか)
 
             function loadQueueForSelection(){
                 var val = stSelect.value;
@@ -532,7 +533,10 @@
                 audio.src = t.src;
                 stWork.textContent = t.work;
                 stTrack.textContent = t.label;
-                audio.play().catch(function(){
+                started = true;
+                audio.play().then(function(){
+                    stPlayPause.textContent = '⏸';
+                }).catch(function(){
                     // 自動再生がブロックされた場合は、再生ボタンを押すまで待つ
                     stPlayPause.textContent = '▶';
                 });
@@ -559,19 +563,20 @@
             stSelect.addEventListener('change', function(){
                 loadQueueForSelection();
                 playCurrent();
-                stPlayPause.textContent = '⏸';
             });
 
             stPlayPause.addEventListener('click', function(){
-                if(!queue.length){
-                    loadQueueForSelection();
+                // まだ一度も再生していない(audio.srcが空)場合は、選択中のキューの先頭を読み込んで再生する。
+                // これで1回のクリックで確実に音が出る。
+                if(!started){
+                    if(!queue.length){ loadQueueForSelection(); }
                     playCurrent();
-                    stPlayPause.textContent = '⏸';
                     return;
                 }
                 if(audio.paused){
-                    audio.play().catch(function(){});
-                    stPlayPause.textContent = '⏸';
+                    audio.play().then(function(){
+                        stPlayPause.textContent = '⏸';
+                    }).catch(function(){});
                 } else {
                     audio.pause();
                     stPlayPause.textContent = '▶';
@@ -580,12 +585,10 @@
 
             stNext.addEventListener('click', function(){
                 goNext();
-                stPlayPause.textContent = '⏸';
             });
 
             stPrev.addEventListener('click', function(){
                 goPrev();
-                stPlayPause.textContent = '⏸';
             });
 
             audio.addEventListener('ended', goNext);
