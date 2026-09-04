@@ -1,0 +1,2730 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高嶺の鳥、見つけに行こう</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#f3ecd8;
+    --paper:#fbf6ea;
+    --slum-a:#221f2b;
+    --slum-b:#2f2a35;
+    --paradise-a:#3a2350;
+    --paradise-b:#e8b04b;
+    --gold:#e8b04b;
+    --glow:#ffe3a3;
+    --rose:#e8879a;
+    --line: rgba(243,236,216,0.16);
+    --tier0-1:#1c1a24;
+    --tier0-2:#2a2531;
+    --tier1-1:#211f34;
+    --tier1-2:#3a2f4d;
+    --tier2-1:#2a2140;
+    --tier2-2:#5a3a5e;
+    --tier3-1:#3a2246;
+    --tier3-2:#8a4e5a;
+    --tier4-1:#4a2340;
+    --tier4-2:#e8b04b;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    color:var(--ink);
+    background: radial-gradient(circle at 20% 0%, var(--tier0-2), var(--tier0-1) 60%);
+    transition: background 1.4s ease;
+    overflow-x:hidden;
+    position:relative;
+  }
+  body[data-tier="1"]{background: radial-gradient(circle at 20% 0%, var(--tier1-2), var(--tier1-1) 60%);}
+  body[data-tier="2"]{background: radial-gradient(circle at 20% 0%, var(--tier2-2), var(--tier2-1) 60%);}
+  body[data-tier="3"]{background: radial-gradient(circle at 20% 0%, var(--tier3-2), var(--tier3-1) 60%);}
+  body[data-tier="4"]{background: radial-gradient(circle at 30% 0%, var(--tier4-2), var(--tier4-1) 55%);}
+
+  .stars{
+    position:fixed; inset:0; pointer-events:none; opacity:0.5;
+    background-image:
+      radial-gradient(1.5px 1.5px at 10% 20%, var(--ink), transparent),
+      radial-gradient(1.5px 1.5px at 80% 10%, var(--ink), transparent),
+      radial-gradient(1px 1px at 40% 60%, var(--ink), transparent),
+      radial-gradient(1.5px 1.5px at 70% 80%, var(--ink), transparent),
+      radial-gradient(1px 1px at 90% 50%, var(--ink), transparent),
+      radial-gradient(1px 1px at 25% 85%, var(--ink), transparent);
+    background-repeat:no-repeat;
+  }
+
+  .wrap{
+    max-width:720px; margin:0 auto; padding:32px 20px 80px;
+    position:relative; z-index:1;
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; letter-spacing:0.22em; text-transform:uppercase;
+    color:var(--gold); opacity:0.85; text-align:center; margin-bottom:6px;
+  }
+  h1.title{
+    font-family:'Shippori Mincho', serif;
+    font-weight:800;
+    font-size:clamp(26px,6vw,38px);
+    text-align:center; margin:0 0 6px;
+    letter-spacing:0.02em;
+    background: linear-gradient(90deg, var(--glow), var(--gold) 60%, var(--rose));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .lede{
+    text-align:center; font-size:13.5px; color:var(--ink); opacity:0.65;
+    margin:0 0 34px; line-height:1.7;
+  }
+
+  /* --- select screen --- */
+  .total-happiness{
+    text-align:center; font-family:'JetBrains Mono',monospace; font-size:13px;
+    color:var(--gold); opacity:0.85; letter-spacing:0.05em; margin-bottom:18px;
+  }
+  .char-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:520px){ .char-grid{grid-template-columns:1fr;} }
+  .char-card{
+    background:linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+    border:1px solid var(--line); border-radius:18px;
+    padding:22px 18px; text-align:center; cursor:pointer;
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .char-card:hover{ transform:translateY(-4px); border-color:var(--card-color,var(--gold)); box-shadow:0 10px 30px -12px var(--card-color,var(--gold)); }
+  }
+  .emblem{
+    width:78px; height:78px; margin:0 auto 14px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--glow-c,var(--glow)), var(--card-color,var(--gold)) 70%);
+    box-shadow:0 0 30px -6px var(--card-color,var(--gold));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Shippori Mincho',serif; font-weight:800; font-size:26px; color:#241522;
+  }
+  .char-card h3{ font-family:'Shippori Mincho',serif; font-size:19px; margin:0 0 4px; }
+  .char-card p{ font-size:12px; opacity:0.6; margin:0 0 14px; line-height:1.6;}
+  .char-progress{ font-family:'JetBrains Mono',monospace; font-size:11px; opacity:0.75; }
+
+  .char-card.locked{
+    opacity:0.55; cursor:default; filter:grayscale(0.6);
+  }
+  @media (hover:hover) and (pointer:fine){
+    .char-card.locked:hover{ transform:none; border-color:var(--line); box-shadow:none; }
+  }
+  .locked-emblem{
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.15), rgba(255,255,255,0.03) 70%);
+    box-shadow:none; color:var(--ink); opacity:0.7;
+  }
+
+  .reset-save-btn{
+    display:block; margin:28px auto 0; background:none; border:none;
+    color:var(--ink); opacity:0.4; font-size:11px; font-family:'Zen Kaku Gothic New',sans-serif;
+    text-decoration:underline; cursor:pointer;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .reset-save-btn:hover{ opacity:0.7; }
+  }
+
+  .zukan-btn{
+    display:block; margin:26px auto 0; background:rgba(255,255,255,0.04);
+    border:1px solid var(--line); color:var(--ink); opacity:0.85;
+    font-size:12.5px; font-family:'Zen Kaku Gothic New',sans-serif;
+    padding:10px 20px; border-radius:100px; cursor:pointer;
+    transition: opacity .2s, border-color .2s;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .zukan-btn:hover{ opacity:1; border-color:var(--gold); }
+  }
+
+  .zukan-list{ display:flex; flex-direction:column; gap:12px; margin-top:18px; }
+  .zukan-card{
+    border:1px solid var(--line); border-radius:16px; padding:18px 20px;
+    background:linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01));
+  }
+  .zukan-card.locked{ opacity:0.45; filter:grayscale(0.7); }
+  .zukan-card .zname{
+    font-family:'Shippori Mincho',serif; font-weight:700; font-size:17px;
+    margin-bottom:2px;
+  }
+  .zukan-card .zreading{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; opacity:0.55; margin-bottom:10px;
+  }
+  .zukan-card .zrow{ font-size:12.5px; opacity:0.8; margin-bottom:4px; line-height:1.6; }
+  .zukan-card .zrow b{ color:var(--gold); opacity:0.9; font-weight:700; }
+  .zukan-card .znote{ font-size:12.5px; opacity:0.75; line-height:1.8; margin-top:8px; }
+
+  /* --- game screen --- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:18px; gap:12px;
+  }
+  .backbtn{
+    background:none; border:1px solid var(--line); color:var(--ink);
+    font-family:'Zen Kaku Gothic New',sans-serif; font-size:12px;
+    padding:8px 14px; border-radius:100px; cursor:pointer; opacity:0.75;
+    transition:opacity .2s, border-color .2s;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .backbtn:hover{ opacity:1; border-color:var(--gold); }
+  }
+
+  .who{ display:flex; align-items:center; gap:10px; }
+  .who .dot{ width:34px; height:34px; border-radius:50%; background:var(--card-color,var(--gold)); box-shadow:0 0 16px -2px var(--card-color,var(--gold)); flex:none; }
+  .who .name{ font-family:'Shippori Mincho',serif; font-weight:700; font-size:15px; }
+  .who .rank{ font-size:10.5px; opacity:0.6; font-family:'JetBrains Mono',monospace; letter-spacing:0.05em; }
+
+  .gauge-shell{
+    border:1px solid var(--line); border-radius:100px; height:12px;
+    overflow:hidden; background:rgba(0,0,0,0.25); margin-bottom:4px;
+  }
+  .gauge-fill{
+    height:100%; border-radius:100px;
+    background:linear-gradient(90deg, var(--rose), var(--gold), var(--glow));
+    width:0%; transition: width 1s cubic-bezier(.2,.9,.25,1);
+    box-shadow:0 0 12px 1px var(--gold);
+  }
+  .gauge-num{
+    text-align:right; font-family:'JetBrains Mono',monospace; font-size:11px; opacity:0.7;
+    margin-bottom:22px;
+  }
+
+  .scene{
+    position:relative;
+    border:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01));
+    border-radius:20px; padding:26px 24px 22px;
+    margin-bottom:18px;
+  }
+  .scene::before{
+    content:""; position:absolute; top:14px; left:14px; width:16px; height:16px;
+    border-top:2px solid var(--card-color,var(--gold)); border-left:2px solid var(--card-color,var(--gold));
+    opacity:0.7;
+  }
+  .scene::after{
+    content:""; position:absolute; bottom:14px; right:14px; width:16px; height:16px;
+    border-bottom:2px solid var(--card-color,var(--gold)); border-right:2px solid var(--card-color,var(--gold));
+    opacity:0.7;
+  }
+  .scene-label{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.15em;
+    text-transform:uppercase; color:var(--card-color,var(--gold)); margin-bottom:10px; opacity:0.85;
+  }
+  .scene-text{
+    font-size:15.5px; line-height:1.95; white-space:pre-wrap;
+  }
+
+  /* --- 高解像度ビート演出(scene-textの中身をビート単位で差し替える際に使用) --- */
+  .beat-fade{ animation: beatFadeIn .5s ease both; }
+  @keyframes beatFadeIn{
+    from{ opacity:0; transform:translateY(6px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .beat-sfx{
+    display:block; text-align:center; font-family:'Shippori Mincho',serif; font-weight:700;
+    font-size:26px; letter-spacing:0.25em; margin:18px 0; color:var(--card-color,var(--gold));
+    text-shadow:0 0 18px var(--card-glow, rgba(255,255,255,0.25));
+  }
+  .flash-overlay{
+    position:fixed; inset:0; pointer-events:none; z-index:40;
+    background:var(--card-glow, #ffffff); opacity:0;
+  }
+  .flash-overlay.play{ animation: climaxFlash .55s ease-out; }
+  @keyframes climaxFlash{
+    0%{ opacity:0; } 12%{ opacity:0.55; } 100%{ opacity:0; }
+  }
+  .beat-continue-btn{
+    margin-top:14px; align-self:center;
+    background:none; border:1px solid var(--card-color,var(--gold));
+    color:var(--card-color,var(--gold)); padding:10px 20px; border-radius:100px;
+    font-family:'Zen Kaku Gothic New',sans-serif; font-size:13px; font-weight:700; cursor:pointer;
+    transition: background .2s;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .beat-continue-btn:hover{ background:rgba(255,255,255,0.08); }
+  }
+
+  .choices{ display:flex; flex-direction:column; gap:10px; }
+  .choice-btn{
+    text-align:left; padding:15px 18px; border-radius:14px;
+    border:1px solid var(--line); background:rgba(255,255,255,0.03);
+    color:var(--ink); font-family:'Zen Kaku Gothic New',sans-serif; font-size:14px;
+    cursor:pointer; transition: border-color .2s, background .2s, transform .15s;
+    line-height:1.5;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .choice-btn:hover{ border-color:var(--card-color,var(--gold)); background:rgba(255,255,255,0.07); transform:translateX(2px); }
+  }
+  .choice-btn:active{ border-color:var(--card-color,var(--gold)); background:rgba(255,255,255,0.07); transform:scale(0.98) translateX(2px); }
+  .choice-btn .delta-hint{
+    display:block; margin-top:5px; font-family:'JetBrains Mono',monospace; font-size:10.5px; opacity:0.55;
+  }
+  .continue-btn{
+    margin-top:4px; align-self:flex-end;
+    background:linear-gradient(90deg, var(--gold), var(--rose));
+    color:#241522; border:none; padding:12px 22px; border-radius:100px;
+    font-weight:700; font-size:13px; cursor:pointer;
+    box-shadow:0 8px 20px -8px var(--gold);
+  }
+
+  /* --- popup burst --- */
+  .burst-layer{
+    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+    pointer-events:none; z-index:50;
+  }
+  .burst{
+    font-family:'JetBrains Mono',monospace; font-weight:700;
+    font-size:54px; color:var(--glow);
+    text-shadow:0 0 20px var(--gold), 0 0 50px var(--rose);
+    opacity:0; transform:scale(0.4);
+  }
+  .burst.play{ animation: burstpop 1.5s cubic-bezier(.2,1.4,.3,1) forwards; }
+  @keyframes burstpop{
+    0%{ opacity:0; transform:scale(0.3) translateY(20px);}
+    18%{ opacity:1; transform:scale(1.15) translateY(0);}
+    30%{ transform:scale(1);}
+    75%{ opacity:1; }
+    100%{ opacity:0; transform:scale(1) translateY(-30px);}
+  }
+  .rankup-banner{
+    position:fixed; left:0; right:0; top:26%; text-align:center; z-index:51;
+    pointer-events:none; opacity:0;
+  }
+  .rankup-banner.play{ animation: bannerslide 2.2s ease forwards; }
+  @keyframes bannerslide{
+    0%{ opacity:0; transform:translateY(-14px) scale(0.96);}
+    14%{ opacity:1; transform:translateY(0) scale(1);}
+    80%{ opacity:1;}
+    100%{ opacity:0; transform:translateY(-6px) scale(1);}
+  }
+  .rankup-banner .lbl{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    letter-spacing:0.2em; color:var(--glow); background:rgba(20,10,20,0.55);
+    border:1px solid var(--gold); padding:5px 14px; border-radius:100px; margin-bottom:10px;
+  }
+  .rankup-banner .big{
+    font-family:'Shippori Mincho',serif; font-weight:800; font-size:clamp(28px,7vw,44px);
+    background:linear-gradient(90deg, var(--glow), var(--gold), var(--rose));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 0 40px rgba(232,176,75,0.35);
+  }
+
+  /* --- ending --- */
+  .ending{
+    text-align:center; padding:40px 10px;
+  }
+  .ending h2{ font-family:'Shippori Mincho',serif; font-size:24px; margin-bottom:10px; }
+  .ending p{ font-size:14px; opacity:0.75; line-height:1.9; max-width:480px; margin:0 auto 22px; }
+  .ending .final-num{
+    font-family:'JetBrains Mono',monospace; font-size:40px; color:var(--gold); margin-bottom:6px;
+  }
+  #screen-ending.is-max .scene{
+    border-color: var(--card-color, var(--gold));
+    box-shadow:0 0 50px -14px var(--card-color, var(--gold)), inset 0 0 40px -20px var(--card-color, var(--gold));
+  }
+  #screen-ending.is-max #end-label{
+    color: var(--glow-c, var(--glow));
+    font-weight:700;
+    text-shadow:0 0 12px var(--card-color, var(--gold));
+  }
+  #screen-ending.is-max #end-title{
+    background: linear-gradient(90deg, var(--glow-c,var(--glow)), var(--card-color,var(--gold)));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  /* --- finale (epilogue collection) --- */
+  .finale-title{
+    font-family:'Shippori Mincho',serif; font-weight:800;
+    font-size:clamp(24px,6vw,32px); text-align:center; margin:2px 0 18px;
+    background: linear-gradient(90deg, #ffdf99, #ffc2d1, #bcdcff, #d9c2ff, #a8e8cf, #fff5d9);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .finale-intro{
+    text-align:center; font-size:14px; opacity:0.8; line-height:1.9;
+    max-width:520px; margin:0 auto 28px;
+  }
+  .finale-vignettes{
+    display:flex; flex-direction:column; gap:14px; margin-bottom:30px;
+  }
+  .finale-card{
+    border:1px solid var(--line); border-left:3px solid var(--vc, var(--gold));
+    border-radius:14px; padding:16px 18px;
+    background:linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+  }
+  .finale-card .fname{
+    font-family:'Shippori Mincho',serif; font-weight:700; font-size:14px;
+    color:var(--vc, var(--gold)); margin-bottom:6px;
+  }
+  .finale-card .ftext{
+    font-size:13.5px; line-height:1.85; opacity:0.85;
+  }
+  .finale-closing{
+    text-align:center; font-size:14px; line-height:2.1; opacity:0.85;
+    max-width:480px; margin:0 auto 26px; white-space:pre-wrap;
+  }
+
+  .hidden{ display:none !important; }
+
+  .mute-btn{
+    position:fixed; top:16px; right:16px; z-index:60;
+    width:42px; height:42px; border-radius:50%;
+    border:1px solid var(--line); background:rgba(20,15,25,0.55);
+    color:var(--ink); font-size:17px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter: blur(6px);
+    transition: border-color .2s, transform .15s;
+  }
+  @media (hover:hover) and (pointer:fine){
+    .mute-btn:hover{ border-color:var(--gold); transform:scale(1.06); }
+  }
+
+  /* --- title screen --- */
+  #screen-title{
+    min-height:72vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    cursor:pointer;
+  }
+  #screen-title .lede{ max-width:420px; }
+  .tap-start{
+    margin-top:46px; display:flex; flex-direction:column;
+    align-items:center; gap:14px;
+  }
+  .tap-circle{
+    width:64px; height:64px; border-radius:50%;
+    border:1px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--glow); font-size:19px; padding-left:4px;
+    animation: pulseRing 2.2s ease-in-out infinite;
+  }
+  @keyframes pulseRing{
+    0%,100%{ box-shadow:0 0 0 0 rgba(232,176,75,0.35); transform:scale(1); }
+    50%{ box-shadow:0 0 0 16px rgba(232,176,75,0); transform:scale(1.06); }
+  }
+  .tap-label{
+    font-family:'JetBrains Mono',monospace; font-size:11px;
+    letter-spacing:0.3em; color:var(--gold); opacity:0.85;
+  }
+</style>
+</head>
+<body data-tier="0">
+<audio id="bgm" loop preload="auto"></audio>
+<button class="mute-btn" id="mute-btn" title="BGMのオン/オフ">🔊</button>
+<div class="stars"></div>
+<div class="wrap">
+
+  <!-- TITLE SCREEN -->
+  <div id="screen-title">
+    <div class="eyebrow">Rare Bird Encounter Chronicle</div>
+    <h1 class="title">高嶺の鳥、見つけに行こう</h1>
+    <p class="lede">誰もが遠巻きに眺めるだけの「高嶺の花」。誘ってみたら、意外にも「ついていっていい?」と返ってきた。<br>カラスや鳩しか知らなかった日常に、渓流の宝石、幻の鳥、渡ってきたばかりの白鳥——彼女と二人だけで出会う、誰にも見せられない特別な景色が増えていく。</p>
+    <div class="tap-start" id="tap-start">
+      <div class="tap-circle">▶</div>
+      <div class="tap-label">TAP TO START</div>
+    </div>
+  </div>
+
+  <!-- SELECT SCREEN -->
+  <div id="screen-select" class="hidden">
+    <div class="eyebrow">Choose Your Story</div>
+    <div class="total-happiness" id="total-happiness">総幸福度: 0</div>
+    <div class="char-grid" id="char-grid"></div>
+    <button class="zukan-btn" id="btn-zukan">📖 野鳥図鑑を見る</button>
+    <button class="reset-save-btn" id="btn-reset-save">セーブデータをリセット</button>
+  </div>
+
+  <!-- ZUKAN (FIELD GUIDE) SCREEN -->
+  <div id="screen-zukan" class="hidden">
+    <div class="topbar">
+      <button class="backbtn" id="btn-zukan-back">← キャラクター選択に戻る</button>
+    </div>
+    <div class="eyebrow">FIELD GUIDE</div>
+    <h1 class="title" style="font-size:24px;">野鳥図鑑</h1>
+    <p class="lede" id="zukan-progress"></p>
+    <div class="zukan-list" id="zukan-list"></div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="screen-game" class="hidden">
+    <div class="topbar">
+      <button class="backbtn" id="btn-back">← キャラクター選択に戻る</button>
+    </div>
+    <div class="who">
+      <div class="dot" id="who-dot"></div>
+      <div>
+        <div class="name" id="who-name"></div>
+        <div class="rank" id="who-rank"></div>
+      </div>
+    </div>
+    <div style="height:14px;"></div>
+    <div class="gauge-shell"><div class="gauge-fill" id="gauge-fill"></div></div>
+    <div class="gauge-num" id="gauge-num">幸福度 0</div>
+
+    <div class="scene">
+      <div class="scene-label" id="scene-label">SCENE</div>
+      <div class="scene-text" id="scene-text"></div>
+    </div>
+
+    <div class="choices" id="choices"></div>
+  </div>
+
+  <!-- ENDING SCREEN -->
+  <div id="screen-ending" class="hidden">
+    <div class="scene ending">
+      <div class="scene-label" id="end-label">EPILOGUE</div>
+      <h2 id="end-title"></h2>
+      <div class="final-num" id="end-num"></div>
+      <p id="end-text"></p>
+      <button class="continue-btn" id="btn-ending-back" style="float:none;">キャラクター選択に戻る</button>
+    </div>
+  </div>
+
+  <!-- FINALE SCREEN -->
+  <div id="screen-finale" class="hidden">
+    <div class="eyebrow">SPECIAL EPILOGUE COLLECTION</div>
+    <h2 class="finale-title">それからの日々</h2>
+    <p class="finale-intro" id="finale-intro"></p>
+    <div class="finale-vignettes" id="finale-vignettes"></div>
+    <p class="finale-closing" id="finale-closing"></p>
+    <button class="continue-btn" id="btn-finale-back" style="float:none;">キャラクター選択に戻る</button>
+  </div>
+
+</div>
+
+<div class="burst-layer">
+  <div class="burst" id="burst"></div>
+</div>
+<div class="flash-overlay" id="flash-overlay"></div>
+<div class="rankup-banner" id="rankup-banner">
+  <div class="lbl">RANK UP</div>
+  <div class="big" id="rankup-text"></div>
+</div>
+
+<script>
+const RANKS = [
+  {min:0,   name:"警戒"},
+  {min:50,  name:"顔見知り"},
+  {min:100, name:"友達"},
+  {min:180, name:"親友"},
+  {min:250, name:"唯一無二の相棒"}
+];
+
+/* --- 図鑑データ(BIRD_DATA) ---
+   実在する野鳥の生態情報。シーンのbirdIdと同じキーで登録する。
+   新しいヒロイン/鳥を追加したら、ここにも必ずエントリを足すこと。
+   出典: 各種公的機関(国交省・県env等)・サントリー日本の鳥百科・野鳥図鑑サイト等の記述を要約。 */
+const BIRD_DATA = {
+  ooruri: {
+    name:"オオルリ", reading:"大瑠璃", habitat:"渓流沿いのよく茂った林(全国、南西諸島を除く)",
+    season:"夏鳥(4〜9月頃。渡りの時期は市街地の公園でも見られる)",
+    rarity:"日本三名鳥の一つ", note:"オスは頭から背中にかけて鮮やかな瑠璃色。透き通った美しいさえずりでも知られ、繁殖期には木のてっぺんで長時間鳴き続ける。"
+  },
+  akashoubin: {
+    name:"アカショウビン", reading:"赤翡翠", habitat:"渓流沿いのよく茂った森林、低地〜山地の広葉樹林",
+    season:"夏鳥(5月頃渡来、繁殖後は東南アジアへ渡り越冬)",
+    rarity:"「幻の鳥」「森の宝石」と呼ばれる稀少種", note:"全身が鮮やかな赤褐色で、大きな赤い嘴が特徴。カワセミの仲間だが水辺よりも森の中に重心を置いた生活をしており、鳴き声はすれど姿を見せることは少ない。"
+  },
+  ruribitaki: {
+    name:"ルリビタキ", reading:"瑠璃鶲", habitat:"夏は亜高山帯の針葉樹林、冬は低山や平地の暗い林・公園",
+    season:"漂鳥(季節によって標高を移動。冬に平地でも見られる)",
+    rarity:"「瑠璃三鳥」の一つ", note:"オスは全身が鮮やかな瑠璃色、脇腹にはオレンジ色の斑がある。縄張り意識が強く、一度見つけた場所にまた戻ってくることが多い。じっと待っていると向こうから近づいてくることもある。"
+  },
+  mejiro: {
+    name:"メジロ", reading:"目白", habitat:"平地から山地の林、公園、庭園など身近な場所",
+    season:"留鳥(地域によっては漂鳥。一年中見られる)",
+    rarity:"最も身近な野鳥の一つ", note:"目の周りの白いアイリングが名前の由来。花の蜜が大好物で、椿や梅、桜の花に集まってくる。「目白押し」という言葉は、枝に押し合うように並ぶこの鳥の習性から生まれた。"
+  },
+  kawasemi: {
+    name:"カワセミ", reading:"翡翠", habitat:"河川・池など標高900m程度までの水辺",
+    season:"留鳥(渡りをせず一年中同じ場所付近に生息)",
+    rarity:"「清流の宝石」と呼ばれる", note:"頭から背中にかけてのコバルトブルーが特徴。水面すれすれを飛び、小魚を狙って垂直に飛び込む姿はバードウォッチングの中でも屈指の名場面とされる。"
+  },
+  kohakuchou: {
+    name:"コハクチョウ", reading:"小白鳥", habitat:"湖沼・河川など。日本では新潟・島根など各地の湖が越冬地として知られる",
+    season:"冬鳥(10月中旬頃にシベリア方面から飛来し、翌春まで越冬)",
+    rarity:"日本で見られる代表的な渡り鳥", note:"オオハクチョウよりやや小型で、くちばしの黄色い部分が少ないのが見分けるポイント。毎年同じ越冬地に戻ってくる習性があり、年をまたいで「また会える」渡り鳥として親しまれている。"
+  },
+  oojishigi: {
+    name:"オオジシギ", reading:"大地鷸", habitat:"北海道の草原・牧草地。繁殖期は湿原周辺の開けた草地を好む",
+    season:"夏鳥(4〜9月頃。渡りの時期は本州以南の田や河川敷でも見られる)",
+    rarity:"「雷シギ」の異名を持つ", note:"求愛期のオスは上空50〜100mから急降下し、尾羽を震わせて雷のような羽音を立てる豪快なディスプレイ飛行で知られる。日本からオーストラリアまで6,000km近い渡りをすることでも知られ、準絶滅危惧種に指定されている。"
+  },
+  nobitaki: {
+    name:"ノビタキ", reading:"野鶲", habitat:"高原・草原・湿地周辺の草地。北海道では低地の草原にも広く生息",
+    season:"夏鳥(繁殖期は夏。渡りの時期は全国の草原や河川敷で見られる)",
+    rarity:"高原の代表的な夏鳥", note:"繁殖期のオスは黒い頭と橙色の胸のコントラストが鮮やか。低木の先端など見晴らしの良い場所に止まって縄張りを見張る習性がある。"
+  },
+  hamashigi: {
+    name:"ハマシギ", reading:"浜鷸", habitat:"干潟・河口・水田など全国の水辺",
+    season:"旅鳥・冬鳥(秋から春にかけて見られる)",
+    rarity:"日本で最も普通に見られるシギ類の一つ", note:"数百〜数千羽の大群で行動し、潮の満ち引きに合わせて一斉に飛び立つ様は壮観。標識調査により、群れの構成は毎年ほぼ同じ個体だと分かっている。"
+  },
+  tanchou: {
+    name:"タンチョウ", reading:"丹頂", habitat:"北海道東部、釧路湿原を中心とした地域",
+    season:"留鳥(日本のタンチョウは渡りをせず、冬は給餌場付近に群れで集まる)",
+    rarity:"国の特別天然記念物・国内希少野生動植物種", note:"日本産の鳥では最大級で、翼を広げると2m40cmに達する。明治期の乱獲と開発で一度絶滅したと思われたが、1924年に釧路湿原で十数羽が再発見され、保護活動により現在は1000羽以上まで回復した。名前の「丹頂」は赤い頭頂部に由来する。"
+  },
+  komadori: {
+    name:"コマドリ", reading:"駒鳥", habitat:"亜高山帯の渓谷沿いや、薄暗い針葉樹林・混交林の下草",
+    season:"夏鳥(春に山地へ渡来し、9月頃まで見られる)",
+    rarity:"「日本三鳴鳥」の一つ", note:"馬のいななきに似た「ヒンカラララ」という力強いさえずりが名前の由来。橙色の胸が特徴だが、藪の中に隠れがちで、声はすれど姿を見るのは難しい。"
+  },
+  raicho: {
+    name:"ライチョウ", reading:"雷鳥", habitat:"本州中部の日本アルプスなど、標高2,200m以上の高山帯(ハイマツ帯・岩場のある草地)",
+    season:"留鳥(一年を通して高山帯で生活。厳冬期のみ亜高山帯上部へ)",
+    rarity:"国の特別天然記念物・環境省レッドリスト絶滅危惧IB類", note:"氷河期の生き残りとされる種。夏は白黒茶のまだら模様、冬は全身ほぼ白色に変わる。人を恐れず近くを歩くことも多いが、生息数は減少傾向にあり2,000羽を下回るとも推定されている。"
+  },
+  sashiba: {
+    name:"サシバ", reading:"差羽", habitat:"里山の水田や林が接する環境。渡りの時期は伊良湖岬・佐多岬などの岬や山地上空",
+    season:"夏鳥(東北〜九州で繁殖、冬は南西諸島やフィリピンなどで越冬)",
+    rarity:"渡りの代表格として知られる猛禽類、絶滅危惧種", note:"秋の渡りの時期、上昇気流に乗って多数の個体が旋回する「鷹柱」と呼ばれる光景で知られる。里山環境に依存して暮らすため、その存在は生態系の健全さの指標ともされる。"
+  },
+  hoshigarasu: {
+    name:"ホシガラス", reading:"星鴉", habitat:"亜高山帯から高山帯のハイマツ帯・針葉樹林",
+    season:"留鳥(冬季にやや低い山麓へ移動する個体もいる)",
+    rarity:"日本の高山帯を代表するカラスの仲間", note:"体は黒褐色で、全身に白い斑点が散らばり星空のように見えることが名前の由来。松の種子を大量に貯食する習性があり、その一部が発芽することでハイマツの分布を広げる役割も担っている。"
+  },
+  umineko: {
+    name:"ウミネコ", reading:"海猫", habitat:"沿岸の岩礁・島嶼。全国の海岸で見られる",
+    season:"留鳥・夏鳥(繁殖期は春〜夏。大規模な集団繁殖地を作る)",
+    rarity:"日本の沿岸で最も身近なカモメの仲間", note:"猫のような「ミャーオ」という鳴き声が名前の由来。岩場に密集して営巣し、ヒナのために懸命に餌を運ぶ姿が観察できる。"
+  },
+  utou: {
+    name:"ウトウ", reading:"善知鳥", habitat:"離島の草地・断崖。地面に穴を掘って営巣する",
+    season:"夏鳥(春〜夏に繁殖のため飛来し、日中は海上で過ごし夜だけ巣に戻る)",
+    rarity:"日本近海の代表的な海鳥コロニーを作る種", note:"夜になると一斉に巣穴へ戻ってくる習性があり、その鳴き声と羽音は幻想的な光景として知られる。天敵を避けるため、夜行性に近い生活サイクルを持つ。"
+  },
+  oomizunagidori: {
+    name:"オオミズナギドリ", reading:"大水薙鳥", habitat:"太平洋沿岸の離島。渡りの時期は沖合を大群で移動する",
+    season:"夏鳥(春に繁殖のため飛来し、秋に南方へ渡る)",
+    rarity:"日本近海で見られる代表的な渡り性の海鳥", note:"細長い翼で水面すれすれを滑るように飛ぶ姿が特徴。繁殖地では夜間、不気味とも評される独特の鳴き声を響かせる。"
+  },
+  ahoudori: {
+    name:"アホウドリ", reading:"阿呆鳥", habitat:"伊豆諸島・鳥島など限られた離島の断崖",
+    season:"留鳥(繁殖地に定住し、非繁殖期は北太平洋を広く回遊)",
+    rarity:"国の特別天然記念物、かつて乱獲でほぼ絶滅したとされた種", note:"翼を広げると2mを超える大型の海鳥。羽毛採取のため乱獲され一時は絶滅したと考えられていたが、鳥島での保護活動により個体数が回復し、現在は他の島への分散も進められている。"
+  },
+  konohazuku: {
+    name:"コノハズク", reading:"木葉木菟", habitat:"低山から山地の落葉広葉樹林",
+    season:"夏鳥(春に渡来し、繁殖後は暖地へ移動)",
+    rarity:"日本最小級のフクロウの仲間", note:"「ブッ、ポウ、ソウ」と聞こえる涼やかな鳴き声で知られ、かつては別の鳥(仏法僧)の声だと誤解されていた歴史がある。木の葉のような小さな体で、見つけるのは非常に難しい。"
+  },
+  aobazuku: {
+    name:"アオバズク", reading:"青葉木菟", habitat:"社寺林や里山の大木。人里近くにも生息する",
+    season:"夏鳥(初夏に渡来し、秋には南方へ渡る)",
+    rarity:"人里に近いところで見られる数少ない夏フクロウ", note:"「ホッ、ホッ」という規則正しい鳴き声を繰り返すのが特徴。木の洞などに営巣し、社寺の境内で見られることも多い。"
+  },
+  torafuzuku: {
+    name:"トラフズク", reading:"虎斑木菟", habitat:"平地から低山の林。冬季は常緑樹に複数羽で集まって越冬する",
+    season:"留鳥・冬鳥(地域により移動。越冬期に集団ねぐらを形成する)",
+    rarity:"集団ねぐらを作る珍しい習性を持つフクロウ", note:"耳のように見える羽角が特徴。冬になると同じ木に十羽近くが身を寄せ合って眠ることがあり、その光景はバードウォッチャーの間でも人気が高い。"
+  },
+  fukurou: {
+    name:"フクロウ", reading:"梟", habitat:"平地から山地の森林。大木の洞を巣にする",
+    season:"留鳥(渡りをせず一年を通して同じ縄張りで生活する)",
+    rarity:"日本人にとって最も馴染み深いフクロウの仲間", note:"大きな目と音を立てずに飛べる柔らかい羽が特徴。古くから「不苦労」「福来朗」などの語呂合わせで縁起の良い鳥として親しまれてきた。"
+  },
+  onaga: {
+    name:"オナガ", reading:"尾長", habitat:"都市部の公園・住宅地の樹林。群れで生活する",
+    season:"留鳥(渡りをせず一年中同じ地域に生息)",
+    rarity:"身近だが意外と知られていない美しい鳥", note:"長い尾と、薄い水色がかった羽が特徴。ギャーギャーという大きな声で群れて移動するため気づかれやすいが、じっくり見ると非常に美しい配色をしている。"
+  },
+  goisagi: {
+    name:"ゴイサギ", reading:"五位鷺", habitat:"公園の池や河川。日中は樹上でじっとしていることが多い",
+    season:"留鳥・夏鳥(地域により移動。夜行性の生活サイクルを持つ)",
+    rarity:"身近な公園にいながら、夜行性のため気づかれにくい鳥", note:"夜になると水辺でじっと動かず獲物を待ち続ける忍耐強い狩りをする。名前は、宮中で五位の位を授かったという故事に由来すると言われている。"
+  },
+  kawau: {
+    name:"カワウ", reading:"川鵜", habitat:"河川・湖沼・沿岸部。集団でコロニーを作る",
+    season:"留鳥(地域による差はあるが基本的に渡りをしない)",
+    rarity:"都市部の河川でも普通に見られる潜水性の鳥", note:"長時間潜水して魚を捕らえる高い狩猟能力を持つ。羽に油を防水するための脂が少ないため、水から上がると翼を広げて乾かす独特の姿がよく見られる。"
+  },
+  mikoaisa: {
+    name:"ミコアイサ", reading:"巫女秋沙", habitat:"湖沼・河川・公園の池。越冬地として利用する",
+    season:"冬鳥(シベリア方面から飛来し、春には北へ渡る)",
+    rarity:"「パンダガモ」の愛称で知られる人気の高い冬鳥", note:"オスは白と黒のコントラストが目を引く独特の模様を持ち、その姿から愛好家の間で「パンダガモ」と呼ばれ親しまれている。都市部の公園の池にも姿を見せることがある。"
+  },
+  kaitsuburi: {
+    name:"カイツブリ", reading:"鳰", habitat:"湖沼・池・川など、水草の茂った水辺",
+    season:"留鳥(一年を通して同じ水域に生息することが多い)",
+    rarity:"日本最小級の潜水性の水鳥", note:"水草を集めて水面に浮かぶ巣を作る珍しい習性を持つ。水に浮いたまま卵を温め、危険を感じるとすぐに水中へ潜って姿を隠す。滋賀県の県鳥にも指定されている。"
+  },
+  karugamo: {
+    name:"カルガモ", reading:"軽鴨", habitat:"河川・池・湖沼など全国の水辺。都市部の公園でも見られる",
+    season:"留鳥(渡りをせず一年中同じ地域で暮らす)",
+    rarity:"日本で最も身近なカモの一つ", note:"母鳥のあとを雛が一列になってついて泳ぐ姿で知られ、都市部の川でもたびたび話題になる。初夏に見られるこの親子連れの姿は、日本の水辺の風物詩とも言われる。"
+  },
+  misago: {
+    name:"ミサゴ", reading:"鶚", habitat:"海岸・湖沼・河川など、魚が豊富な水辺",
+    season:"留鳥・冬鳥(地域により移動。世界中の水辺に広く分布する)",
+    rarity:"魚食に特化した猛禽類", note:"水面上でホバリングしたのち、脚から一気に飛び込んで魚を捕らえる豪快な狩りで知られる。足の裏に滑り止めの突起があり、濡れた魚を逃さず掴める体の構造を持つ。"
+  },
+  oshidori: {
+    name:"オシドリ", reading:"鴛鴦", habitat:"山地の湖沼・渓流。繁殖期は樹洞に営巣する",
+    season:"留鳥・冬鳥(地域により移動。越冬期に集団で見られることが多い)",
+    rarity:"「おしどり夫婦」の語源となった鳥", note:"繁殖期のオスは非常に鮮やかで複雑な羽色を持つ。つがいで行動することが多いことから仲睦まじい夫婦の象徴とされてきたが、実際には毎年パートナーを替えることも知られている。"
+  },
+  hibari: {
+    name:"ヒバリ", reading:"雲雀", habitat:"田畑・河川敷など開けた草地",
+    season:"留鳥・漂鳥(繁殖期は主に平地、冬は暖地へ移動する個体もいる)",
+    rarity:"春の田園風景を代表する鳥", note:"空高く舞い上がりながら鳴き続ける「揚げ雲雀」と呼ばれる習性で知られる。姿は見えにくいが、途切れることのない賑やかなさえずりで存在を知らせる。"
+  },
+  chuusagi: {
+    name:"チュウサギ", reading:"中鷺", habitat:"水田・湿地。夏に飛来し水辺で採餌する",
+    season:"夏鳥(春に渡来し、繁殖後は南方へ渡る)",
+    rarity:"水田環境に依存する代表的なサギ類", note:"首を長く伸ばし、獲物を見つけると微動だにせず狙いを定める忍耐強い狩りをする。水田耕作の減少に伴い生息数が減っている地域もある。"
+  },
+  mozu: {
+    name:"モズ", reading:"百舌鳥", habitat:"農耕地・河川敷・草地など見晴らしの良い環境",
+    season:"留鳥・漂鳥(秋によく鳴き声が目立つため季節の風物詩とされる)",
+    rarity:"「早贄(はやにえ)」の習性で知られる小型の猛禽的存在", note:"捕らえた獲物を木の枝先などに突き刺しておく「早贄」という独特の習性を持つ。秋に縄張りを主張して甲高く鳴く「モズの高鳴き」は季語にもなっている。"
+  },
+  kounotori: {
+    name:"コウノトリ", reading:"鸛", habitat:"水田・湿地。豊岡市などで野生復帰の取り組みが進む",
+    season:"留鳥(日本産の個体は基本的に渡りをしない)",
+    rarity:"国の特別天然記念物、一度は日本国内で野生絶滅した種", note:"1971年に日本産の野生個体は絶滅したが、飼育下繁殖と放鳥事業により兵庫県豊岡市を中心に野生復帰が進められている。大きな翼を広げて滑空する姿は、地域の環境再生の象徴ともされている。"
+  },
+  uguisu: {
+    name:"ウグイス", reading:"鶯", habitat:"里山・藪地。全国の低地から山地まで広く分布する",
+    season:"留鳥・漂鳥(繁殖期は山地、冬は低地の藪地へ移動する個体が多い)",
+    rarity:"日本三鳴鳥の一つで春の象徴とされる鳥", note:"「ホーホケキョ」というさえずりで古くから親しまれてきたが、姿は地味な緑褐色で藪の中に隠れがちなため、実際に見る機会は少ない。"
+  },
+  sankouchou: {
+    name:"サンコウチョウ", reading:"三光鳥", habitat:"薄暗い山地の森林。渓流沿いの林を好む",
+    season:"夏鳥(初夏に渡来し、繁殖後は東南アジアへ渡る)",
+    rarity:"日本三鳴鳥の一つとされることもある美しい鳥", note:"「ツキ、ヒ、ホシ、ホイホイホイ」と聞こえる独特のさえずりが名前の由来。オスは体長の何倍もある長い尾羽を持ち、林内を舞うように飛ぶ姿が美しい。"
+  },
+  magan: {
+    name:"マガン", reading:"真雁", habitat:"湖沼・水田。大規模な越冬地を形成する",
+    season:"冬鳥(シベリア方面から飛来し、春に北へ渡る)",
+    rarity:"日本で見られるガン類の代表種、天然記念物", note:"数百から数千羽の大群で行動し、朝夕に塒と餌場の間を編隊を組んで移動する姿は壮観。宮城県の伊豆沼・蕪栗沼などが代表的な越冬地として知られる。"
+  },
+  toki: {
+    name:"トキ", reading:"朱鷺", habitat:"新潟県佐渡島を中心とした水田・里山",
+    season:"留鳥(日本産の個体は絶滅し、中国産系統の個体が野生復帰事業により定着)",
+    rarity:"国の特別天然記念物、一度は日本国内で野生絶滅した種", note:"2003年に日本産最後の個体が死亡し野生絶滅したが、中国から譲り受けた個体の繁殖・放鳥事業により、佐渡島を中心に野生復帰が進んでいる。淡い羽の色は「朱鷺色」として日本の伝統色の名前にもなっている。"
+  }
+  /* 今後、新しいヒロイン/ロケーションを追加するたびに、ここに同じ形式でエントリを追加すること */
+};
+
+/*
+  ============================================================
+  DATA構造ガイド(このコメントブロックは実装に含めないこと)
+  ============================================================
+  各キャラは以下の形をとる:
+
+  charKey: {
+    name: "表示名",
+    subtitle: "1行の紹介文",
+    color: "#hexカラー",   glow: "#淡い色",  emblem: "漢字1文字",
+    tier: 1,  // 1=最初から解放 / 2以上=TIER_THRESHOLDSの値に到達で解放
+
+    event1: {                         // 全ルート共通の邂逅シーン
+      label: "SCENE 01 — 邂逅",
+      text: "状況описание...",
+      choices: [
+        { label:"選択肢A", delta:100, route:"A", result:"..." },
+        { label:"選択肢B", delta:75,  route:"B", result:"..." }
+      ]
+    },
+
+    routes: {
+      A: {
+        routeLabel: "ルートAの呼び名",
+        epilogueText: "幸福度MAXで到達する特別エンディング文",
+        events: [
+          { label:"SCENE 02 — ...", text:"...", choices:[
+              {label:"控えめな選択", delta:10, result:"..."},
+              {label:"踏み込む選択", delta:40, result:"..."}
+          ]},
+          // SCENE 03(15/55の2択)
+          // SCENE 04〜07: 春夏秋冬、3択(15/35/70)にすると読み応えが出る
+          // SCENE 08: 最後のシーン。final:true と endingText を必ず入れる
+          {
+            label:"SCENE 08 — これから", text:"...",
+            choices:[
+              {label:"控えめな選択", delta:20, result:"..."},
+              {label:"踏み込む選択", delta:85, result:"..."}
+            ],
+            final:true,
+            endingText:"幸福度が最大値に届かなかった場合のノーマルエンド文"
+          }
+        ]
+      },
+      B: { routeLabel:"ルートBの呼び名", epilogueText:"...", events: [ Aと同じ形で7シーン分続ける ] }
+    }
+  }
+
+  ポイント:
+  - event1のchoicesは必ず2つ、それぞれにroute:"A" / route:"B" を付ける
+  - 各ルートのeventsは7個(SCENE 02〜08)、最後だけ final:true + endingText
+  - deltaの目安: 邂逅=100/75前後、通常2択=10-15(控えめ)/40-60(踏み込む)、
+    季節3択=15(控えめ)/35(中間)/70(踏み込む)、最終=20(控えめ)/85(踏み込む)
+  - 好意度用語は「幸福度」で統一(このテンプレのUI文言も幸福度に合わせてある)
+  ============================================================
+*/
+
+const DATA = {
+  /* ============================================================
+     ロードマップ(9人予定・tier解放システムのための予約枠)
+     tier1(最初から解放): 紬 ← 現在実装済みはこの1人のみ
+     tier2以降: 未定(拡張時にキャラを追加し、TIER_THRESHOLDSも調整すること)
+     ============================================================ */
+  tsumugi: {
+    name:"紬",
+    subtitle:"文学部一の「高嶺の花」、ゼミの共同研究相手",
+    color:"#5a6b91", glow:"#cfe0f5", emblem:"紬", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"深山紬の名前を知らない学生は、この学部にはいない。\n毎回のゼミで的確な発言をし、教授からの信頼も厚く、それでいて誰にも深入りさせない、完璧な微笑みだけを浮かべている。\n「深山さんって、話しかけると全部その微笑みで返されて終わるんだよな」\n同じゼミの友人がそうぼやくのを、何度も聞いた。彼女の周りにだけ、いつも一枚、薄いガラスの壁があるような気がしていた。\n今学期の共同研究発表、くじ引きで組んだペアの相手が、その深山紬だった。\n資料集めのため約束の時間より少し早く、図書館奥の小さな自習室に着くと、扉の隙間から声が聞こえた。\n「……これじゃない、こう……」\n誰もいないと思っているのだろう。紬は机に広げた古い文庫本に向かって、小さな声でセリフをなぞりながら、ページの端に指で何か印をつけていた。いつもの隙のない微笑みは、そこにはなかった。",
+      choices:[
+        { label:"「その本、そんなに好きなんですか」と声をかける", delta:100, route:"A",
+          result:"紬の肩が、跳ねるように動いた。\n「……いつから、そこに」\n慌てて本を閉じようとした手が、途中で止まる。取り繕う言葉を探して、けれど何も出てこなかったのか、紬は諦めたように小さく息をついた。\n「……見た?今の、変なところ」\nいつもの微笑みではない、素の声だった。" },
+        { label:"気づかれないよう、静かに扉を閉めて廊下で待つ", delta:75, route:"B",
+          result:"そっと扉を閉め、何事もなかったように廊下で時間を潰した。約束の時刻ぴったりに改めてノックすると、紬はいつもの完璧な微笑みで迎えてくれた。\n「お待たせ、資料これでよかった?」\nいつも通りの声。けれど、ドアの隙間から一瞬だけこちらを見た目の奥に、微かな戸惑いの色があったことには、しばらく気づかなかった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"隠さなくていい素顔",
+        epilogueText:"「あの日、図書館で変なとこ見られてなかったら」\n最終発表を終えた帰り道、紬がぽつりと言う。「私、今でも学部中に完璧な微笑みだけ振りまいて、それで満足したふりをしてたと思う」\n「今は?」と聞くと、彼女は初めて出会った日には見せなかった顔で笑った。\n「今は、あなたの前でだけ、格好つけなくていいのが分かってる。それだけで、ずっと息がしやすい」\n「高嶺の花」と呼ばれ続けた横顔に、初めて誰かのためだけの温度が灯っていた。",
+        events:[
+          { label:"SCENE 02 — 約束", text:"気まずい沈黙の後、紬は資料の並んだ机に視線を落としたまま、小さく言った。\n「今の、誰にも言わないでもらえる?ゼミのみんなが知ってる私と、違いすぎるから」\n声は小さかったが、懇願に近い響きがあった。いつも人を寄せ付けない微笑みの下に、こんな不安げな顔が隠れているとは思わなかった。",
+            choices:[
+              {label:"「言わない。約束する」と静かに頷く", delta:10, result:"紬はほっとしたように、小さく息を吐いた。「……ありがとう」まだ完全に気は抜けていないようだったが、声には確かな安堵が滲んでいた。"},
+              {label:"「別に、隠すようなことじゃないと思うけどな」と本音で返す", delta:40, result:"紬は驚いた顔でこちらを見た。「……そんな風に言われたの、初めてかも」少しの沈黙のあと、彼女は小さく、けれど確かに笑った。作られたものじゃない、初めて見る笑い方だった。"}
+            ]},
+          { label:"SCENE 03 — 週に一度の自習室", text:"共同研究の作業は週に一度、同じ自習室で続くことになった。回数を重ねるうち、紬は少しずつ、資料以外の言葉も口にするようになっていた。\n「ねえ、ゼミの発表のとき、緊張してる顔、隠せてる自信ある?」\nからかうような口調は、ゼミ室で見せる完璧な微笑みとはまるで違う、素の距離感だった。",
+            choices:[
+              {label:"合わせて軽口を返し、当たり障りのない空気を保つ", delta:15, result:"紬は満足そうに笑い、それ以上踏み込んでくることはなかった。それでも、二人だけのこの空気は、確かに前より柔らかくなっていた。"},
+              {label:"「紬こそ、人前だとずっと同じ顔してるだろ」と踏み込んで聞く", delta:55, result:"紬の表情が、一瞬止まった。「……分かる?」観念したように小さく笑って、彼女は続けた。「小さい頃から『しっかりしてる』って言われ続けて、いつの間にか、崩せなくなっただけ」自分から明かした、初めての本音だった。"}
+            ]},
+          { label:"SCENE 04 — 渓流と、知らない世界", birdId:"ooruri",
+            beats:[
+              {text:"ゴールデンウィーク明け、共同研究の資料整理を終えたあと、思わず口を滑らせた。「明日、渓流に鳥を見に行くんだ」\n紬は資料を片付ける手を止め、怪訝な顔でこちらを見た。\n「……バードウォッチング?趣味、そんなのだったの」\n呆れられるかと思ったが、彼女はしばらく黙り込んだあと、意外なことを言った。\n「……ついていっても、いい?」\n完璧な微笑みの下から、初めて見る好奇心が覗いていた。"},
+              {text:"翌朝、渓流沿いの遊歩道で待ち合わせた紬は、いつもと違うラフな服装で少し居心地悪そうにしていた。\n「双眼鏡なんて、生まれて初めて覗いた」\n最初は勝手が分からず戸惑っていた紬も、水音を聞きながら岩に腰掛け、持参したお昼を広げる頃には、少しずつ肩の力が抜けていった。\n「こんな風に、何もしないでただ座ってる時間、いつぶりだろう」"},
+              {text:"昼食を終え、しばらく無言で川面を眺めていると、対岸の茂みが小さく揺れた。"},
+              {text:"双眼鏡を覗いた紬が、はっと息を呑む。\n「……青い、鳥」", climax:true},
+              {text:"瑠璃色の羽を持つオオルリが、一瞬こちらに姿を見せて、また茂みの奥へ消えていった。紬は双眼鏡を下ろし、頬を紅潮させたまま、こちらを見た。\n「……今の、見た?すごい、綺麗だった」\n人前で見せる作られた笑顔ではない、心から驚いたような、飾り気のない顔だった。"}
+            ],
+            choices:[
+              {label:"静かに、興奮する彼女の横顔をただ見守る", delta:15, result:"紬はしばらく興奮冷めやらぬ様子で、何度も同じ茂みを覗き込んでいた。何も言わなくても、その横顔を見ているだけで十分だった。"},
+              {label:"「紬がそんな顔するの、初めて見た」と伝える", delta:35, result:"紬は我に返ったように、慌てて表情を引き締めようとしたが、うまくいかず、結局照れ笑いを浮かべた。「……びっくりしただけ」"},
+              {label:"「その顔の方が、いつもよりずっと紬らしいと思う」と伝える", delta:70, result:"紬は一瞬固まり、それから消え入りそうな声で「……そんなの、ずるい」と呟いた。目を逸らした耳が、赤く染まっていた。"}
+            ]},
+          { label:"SCENE 05 — 幻の鳥を待つ、早朝", birdId:"akashoubin",
+            beats:[
+              {text:"夏、期末前の追い込みが一段落した早朝、紬の方から切り出した。\n「この前の続き、まだやってるんでしょう。今度は何を見に行くの」\n図鑑を差し出すと、紬は真剣な顔でページをめくり、一枚の写真に指を止めた。\n「……これ、綺麗。でも『幻の鳥』って書いてある」\nアカショウビン。声はすれど姿を見せることが稀な、森の宝石と呼ばれる鳥だった。"},
+              {text:"早朝の森で待つこと二時間、蒸し暑さと羽虫に紬の集中力も切れかけていた頃、遠くで甲高い鳴き声が響いた。"},
+              {text:"「今の……!」\n紬が声を上げかけた瞬間、こちらは唇に指を当てて静かにと合図した。"},
+              {text:"息を殺して待つこと数分。"},
+              {text:"朱色の鳥が、一瞬だけ枝に止まった。", climax:true},
+              {text:"それだけだった。次の瞬間には、また森の奥へ溶けるように消えていった。\n紬はしばらく放心したように、鳥が消えた方角を見つめていた。"}
+            ],
+            choices:[
+              {label:"「見れて良かったな」とだけ、静かに声をかける", delta:15, result:"紬はゆっくりとこちらを向き、小さく頷いた。「……うん。見れて良かった」いつもの完璧な微笑みとは違う、心からの言葉だった。"},
+              {label:"「二時間、よく我慢できたな」とからかう", delta:35, result:"紬は少しむっとした顔をしたあと、すぐに笑った。「……我慢した甲斐、あったから。文句ないよ」拗ねた顔も、素直な返しも、前より自然になっていた。"},
+              {label:"「紬が本気で何かに集中してる顔、初めて見た」と伝える", delta:70, result:"紬は虚をつかれたように黙り込み、それから小さく息を吐いた。「……気づかれてたんだ」誤魔化さず、静かにこちらの目を見て言った。"}
+            ]},
+          { label:"SCENE 06 — 渡り鳥の湖", birdId:"kohakuchou",
+            beats:[
+              {text:"秋、就職活動の話がゼミ内でちらほら出始めた頃、二人で湖のほとりを訪れた。この季節、北から渡ってきた鳥たちが羽を休める場所だった。"},
+              {text:"純白の大きな鳥が、水面に幾羽も浮かんでいた。長い首を優雅に折り畳み、時折くちばしで羽繕いをしている。コハクチョウだった。"},
+              {text:"「あの子たち、もうすぐまたどこかに飛んでいくんだよね」\n双眼鏡越しに水面の鳥を眺めながら、紬がぽつりと言った。声には、いつもの余裕がなかった。\n「……私たちも、来年にはそれぞれ別の場所に行くのかな、って。ふと思っただけ」\n渡り鳥を見上げるその横顔に、初めて不安げな影が差していた。"}
+            ],
+            choices:[
+              {label:"何も言わず、しばらく一緒に鳥を眺め続ける", delta:15, result:"紬は何かを確かめるように、長い間水面を見つめていた。言葉のない時間が、それでも彼女の不安を少しだけ和らげていくのが分かった。"},
+              {label:"「鳥は渡っても、また戻ってくるだろ」と軽く返す", delta:35, result:"紬は少し驚いた顔をしたあと、小さく笑った。「……そっか。そうだね」単純な言葉が、意外なほど彼女の力を抜いたようだった。"},
+              {label:"「紬がどこに行っても、俺は隣にいるつもりだけどな」と伝える", delta:70, result:"紬は息を呑み、目に涙を滲ませながらこちらを見た。「……そんなこと、今ここで言う?」声は震えていたが、拒む響きは少しもなかった。"}
+            ]},
+          { label:"SCENE 07 — 雪の中、小さな青い鳥", birdId:"ruribitaki",
+            beats:[
+              {text:"冬、期末レポートの提出を終えたあと、紬から誘ってきた。「最後に、もう一種類だけ見たい鳥がいる」\n雪の積もる公園で待つこと一時間、白い息を吐きながら、紬は震える手をポケットに突っ込んで我慢強く待ち続けていた。"},
+              {text:"ふいに、目の前の低木に、小さな影が降り立った。"},
+              {text:"オオルリよりずっと小さな体。けれど、確かに同じ瑠璃色をした羽が、雪明かりの中で静かに輝いていた。ルリビタキだった。", climax:true},
+              {text:"「……最初に見た鳥と、同じ色」\n紬は震える声でそう呟くと、雪の中でようやく安堵したように笑った。"}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒に鳥を見つめ続ける", delta:15, result:"紬は白い息を吐きながら、小さく微笑んだ。「一年かけて、色んな鳥を見てきたね」しみじみとした声だった。"},
+              {label:"「最初のオオルリと同じ色、覚えてたんだな」と伝える", delta:35, result:"紬は少し照れたように「……忘れるわけ、ないでしょ」と呟いた。その一言に、この一年の時間の重みが滲んでいた。"},
+              {label:"「来年も、紬と一緒に鳥を探しに行きたい」と伝える", delta:70, result:"紬は涙ぐみながら、小さく、けれど確かに頷いた。「……うん。来年も、再来年も」白い息の向こうで、その笑顔は誰にも見せたことのないものだった。"}
+            ]},
+          {
+            label:"SCENE 08 — ゼミ最終発表の夜", text:"一年が過ぎ、共同研究の最終発表を終えた夜。緊張から解放された帰り道、紬は珍しく素直な表情のまま、隣を歩いていた。\n「思えば、あの日図書館で変なとこ見られてから、ずっとこの調子だね」\n懐かしむように笑う紬の横顔は、出会った頃とはまるで違って見えた。",
+            choices:[
+              {label:"「これからも、紬の隣にいたい」と静かに伝える", delta:20, result:"紬は小さく頷いた。「……うん、それで十分」穏やかな声だった。"},
+              {label:"「紬のことが、ずっと前から好きだった」と正直に伝える", delta:85, result:"紬は長い沈黙のあと、目に涙を浮かべながら、けれど確かに頷いた。「……こんな不器用な私を好きになるなんて、物好きだよ」震える声が、そのまま答えだった。"}
+            ],
+            final:true,
+            endingText:"図書館の自習室に戻った紬は、今日も古い文庫本に書き込みをしている。ただ、そのページの端をふと見せてくるようになった。「ここ、好きな一文なんだけど」――誰にも見せなかった余白が、今は隣の誰かのために開かれている。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"そっと近づく距離",
+        epilogueText:"「あなたが、いつも急かさずに待っていてくれたから」\n最終発表を終えた帰り道、紬がぽつりと言う。「私、いつの間にか、素顔の方が楽だって思えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、『高嶺の花』なんて呼ばれるより、あなたの隣にいる自分の方が、ずっと好き」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、誰も近づけなかった距離を、確かに縮めていた。",
+        events:[
+          { label:"SCENE 02 — 呼び止められて", text:"翌週のゼミ帰り、紬の方から呼び止められた。\n「ねえ、この前、自習室に来るの早くなかった?」\n何気ない調子を装っていたが、目はまっすぐこちらを探るように見ていた。何かに気づかれている、そんな気配があった。",
+            choices:[
+              {label:"「たまたま早く着いただけだ」ととぼける", delta:10, result:"紬はしばらくこちらを見つめていたが、やがて「そう」とだけ言って引き下がった。疑いは晴れていないようだったが、それ以上は追及してこなかった。"},
+              {label:"「変なところ、見なかったって言ったら嘘になる」と正直に認める", delta:40, result:"紬は息を呑み、それから観念したように肩の力を抜いた。「……やっぱり。もういいや、正直に言うと恥ずかしい」初めて見せる、拗ねたような素顔だった。"}
+            ]},
+          { label:"SCENE 03 — 素顔の分だけ", text:"それからというもの、紬は共同研究の作業中、少しずつ気を抜いた顔を見せるようになっていた。\n「一つだけ見られたんだから、もう隠す意味ないよね」\n開き直ったような口調だったが、声には確かな安心が滲んでいた。",
+            choices:[
+              {label:"急かさず、彼女のペースに合わせる", delta:15, result:"紬はそれが心地よかったのか、少しずつ肩の力を抜いていった。言葉のない時間が、不思議と気まずくなかった。"},
+              {label:"「素顔の紬の方が、俺は話しやすい」と伝える", delta:55, result:"紬は驚いた顔をしたあと、俯いて小さく笑った。「……そういうこと、簡単に言うんだ」小さな声に、隠しきれない喜びが滲んでいた。"}
+            ]},
+          { label:"SCENE 04 — 植物園の白い目", birdId:"mejiro",
+            beats:[
+              {text:"春、共同研究の合間、紬がふと言った。\n「前から気になってたんだけど、双眼鏡で鳥を見るのって、実際どんな感じなの」\n誘った覚えもないのに、彼女の方から踏み込んできたのは初めてだった。\n放課後、大学の裏手にある植物園で待ち合わせると、紬は物珍しそうに双眼鏡を受け取り、慣れない手つきでピントを合わせていた。"},
+              {text:"「……あ、いた。目の周りが白い、小さいの」\n梅の枝にとまっていたのはメジロだった。目の周りだけくっきりと白く縁取られた、小さな緑がかった体が、花の蜜を吸おうと枝先で揺れている。"},
+              {text:"夢中でレンズを覗く紬の横顔に、角度を直そうと伸ばした手が、触れそうになる。", climax:true}
+            ],
+            choices:[
+              {label:"そっと手を引いて、彼女のペースに任せる", delta:15, result:"紬は気づかない様子で、夢中でレンズを覗き続けていた。急かさなくてよかった、と思える時間だった。"},
+              {label:"「筋、悪くないな」と素直に褒める", delta:35, result:"紬は双眼鏡から顔を上げ、少し誇らしげに笑った。「……初めてなんだから、当然でしょ」照れ隠しの強気な口調だった。"},
+              {label:"手を離さず、彼女の視界に合わせて双眼鏡の角度を調整してあげる", delta:70, result:"紬の肩が、びくりと強張った。「……ちょっと、近い」小さな声でそう言いながらも、身体を離そうとはしなかった。"}
+            ]},
+          { label:"SCENE 05 — 一瞬の青、渓流にて", birdId:"kawasemi",
+            beats:[
+              {text:"夏、紬は日焼け止めを念入りに塗りながら、渓流までの道を歩いていた。慣れない虫除けスプレーに顔をしかめながらも、弱音は吐かなかった。\n岩場に腰掛け、しばらく水音だけを聞いていた。都会の川とは違う、水底の石の輪郭までが透けて見える、冷たく澄んだ流れだった。"},
+              {text:"「……あそこ」\n紬が声を潜め、対岸にせり出した苔むした枝の先を指差す。\nそこに、その一羽は静止していた。\n体長はスズメほど。なのに、纏っている色の密度がおかしかった。頭から背にかけては、濁りのない深いコバルトブルー。光の角度が変わるたび、それは南の海のようなエメラルドグリーンにも、夜よりも深い紺碧にも表情を変える。お腹だけが、熟した柿のような鮮やかな橙色で、冷たい青の中にひとつだけ小さな炎が灯っているようだった。"},
+              {text:"チチッ", type:"sfx"},
+              {text:"短く鋭い金属音が、渓流の静寂を裂いた。"},
+              {text:"刹那、枝が跳ねる。\n青い体が、一筋の閃光となって、まっすぐ水面へ突き刺さった。", climax:true},
+              {text:"ピチャアン！", type:"sfx"},
+              {text:"ガラスが割れるような、硬く瑞々しい水音。朝の光を浴びた水しぶきが、無数の真珠のように宙へ弾けた。\n次の瞬間には、その閃光はすでに水面を蹴り、銀色に身をよじる小魚をくわえたまま、元の枝へと舞い戻っていた。濡れた羽が、光を受けてぎらりと反射する。"},
+              {text:"「……今の、一瞬すぎない?ちゃんと狙って捕まえてた」\n紬の唇から、興奮を隠しきれない声が漏れていた。その黒い瞳の奥に、今の水しぶきと青い軌跡が、まだそのまま焼き付いているように見えた。"}
+            ],
+            choices:[
+              {label:"「もう一回来るかもな」と、静かに次を待つことを提案する", delta:15, result:"紬は素直に頷き、川面から目を離さなかった。何かに夢中になっている紬を見るのは、悪くない気分だった。"},
+              {label:"「紬、そんなに前のめりになるの珍しいな」とからかう", delta:35, result:"紬はむっとした顔をしたあと、観念したように笑った。「……悪い?こんなの初めて見たんだから」拗ねながらも、隠す気はないようだった。"},
+              {label:"「その顔、もっと見たいから、また連れてきてもいいか」と伝える", delta:70, result:"紬は虚をつかれたように黙り込み、それから小さく、けれど確かに頷いた。「……勝手にすれば」そっぽを向いた耳が、赤く染まっていた。"}
+            ]},
+          { label:"SCENE 06 — 渡り鳥の湖", birdId:"kohakuchou",
+            beats:[
+              {text:"秋、就職活動の情報がゼミ内でちらほら共有され始めた頃、紬から誘われて湖のほとりを訪れた。北から渡ってきた鳥たちが羽を休める季節だという。"},
+              {text:"純白の大きな鳥が、水面に幾羽も浮かんでいた。コハクチョウだった。"},
+              {text:"双眼鏡越しに水面を眺めながら、紬がぽつりと言った。\n「渡り鳥って、毎年同じ場所に戻ってくるんだよね。……私たちは、来年もこうしていられるのかな」\nいつもの落ち着いた声ではない、迷子になった子どものような、頼りない声だった。"}
+            ],
+            choices:[
+              {label:"何も言わず、しばらく彼女の隣で水面を眺め続ける", delta:15, result:"紬は何かを確かめるように、長い間水面を見つめていた。答えを急がなくても、隣にいることだけは伝わっている気がした。"},
+              {label:"「戻ってくる場所があるって、悪くないことだろ」と返す", delta:35, result:"紬は少し驚いた顔をしたあと、小さく笑った。「……そうだね。悪くない」単純な言葉が、意外なほど彼女の力を抜いたようだった。"},
+              {label:"「紬がどこに行っても、俺は隣にいるつもりだけどな」と伝える", delta:70, result:"紬は息を呑み、目に涙を滲ませながらこちらを見た。「……そんなこと、今ここで言う?」声は震えていたが、拒む響きは少しもなかった。"}
+            ]},
+          { label:"SCENE 07 — 雪の中、辿り着いた色", birdId:"ruribitaki",
+            beats:[
+              {text:"冬、期末レポート提出後、紬の方から誘ってきた。\n「今年最後、私からもう一種類、鳥を見たいって言っていい?」\n雪の積もる公園で待つこと一時間、白い息を吐きながらも弱音一つこぼさなかった紬の根気強さに、いつの間にか感心していた。"},
+              {text:"ふいに、目の前の低木に、小さな影が降り立った。"},
+              {text:"小さいながらも、鮮やかな瑠璃色をした鳥だった。ルリビタキだった。", climax:true},
+              {text:"「……初めてメジロを見た日から、こんなに遠くまで来たんだね」\n紬は白い息の向こうで、震える声のままそう呟いた。"}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒に鳥を見つめ続ける", delta:15, result:"紬は白い息を吐きながら、小さく微笑んだ。「一年で、随分色んな鳥を見たね」しみじみとした声だった。"},
+              {label:"「メジロから始まって、随分遠くまで来たな」と伝える", delta:35, result:"紬は少し照れたように「……そうだね」と呟いた。短い言葉に、この一年の重みが滲んでいた。"},
+              {label:"「来年も、紬と一緒に鳥を探しに行きたい」と伝える", delta:70, result:"紬は涙ぐみながら、小さく、けれど確かに頷いた。「……うん。来年も、再来年も」白い息の向こうで、その笑顔は誰にも見せたことのないものだった。"}
+            ]},
+          {
+            label:"SCENE 08 — ゼミ最終発表の夜", text:"一年が過ぎ、紬は以前よりずっと自然な顔で笑うようになっていた。最終発表を終えた帰り道、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"紬は小さく頷いた。「……うん、それでいい」穏やかな声だった。"},
+              {label:"「隣にいるだけじゃなく、これからは正式に俺の彼女になってほしい」と伝える", delta:85, result:"紬は長い沈黙のあと、静かに涙をこぼしながら頷いた。「……『高嶺の花』なんて呼ばれてた私が、こんなに誰かを好きになるなんてね」"}
+            ],
+            final:true,
+            endingText:"ゼミ室に戻った紬は、今日も完璧な受け答えで教授の質問に応じている。ただ、雑談の合間にふと零れる素の相槌に、もう気を遣う素振りはない。「別に、隠すことでもないし」――最初に言われた言葉を、いつの間にか自分のものにしていた。"
+          }
+        ]
+      }
+    }
+  },
+  tsurumi: {
+    name:"舞",
+    subtitle:"新体操部のエース、学内で「舞姫」と呼ばれる存在",
+    color:"#b23a48", glow:"#fbeef0", emblem:"舞", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"鶴見舞の名前を知らない学生は、この大学にはいない。\n新体操部のエースとして、大会のたびに優雅な演技を披露し、学内では「舞姫」と呼ばれている。物腰は常に丁寧で、標準語のイントネーションも完璧、隙のない微笑みを絶やさない。\n教養科目の生態学、たまたま同じ班になった舞とは、これまで当たり障りのない会話しかしたことがなかった。\n課題のレポートを届けに、夜遅くの体育館へ向かうと、電気の消えた館内から、微かな物音がした。\n扉の隙間から覗くと、舞が一人、リボンを手に何度も同じ動きを繰り返していた。着地に失敗し、リボンが絡まって尻餅をついた瞬間。\n「……あーもう、なんもだべさ、これ!」\n聞いたことのない、訛りの強い声だった。いつもの完璧な標準語はどこにもなかった。",
+      choices:[
+        { label:"「大丈夫か」と声をかける", delta:100, route:"A",
+          result:"舞は弾かれたように振り返り、みるみるうちに顔を赤くした。\n「……っ、今の、聞いた?」\n取り繕おうと標準語に戻そうとしたが、動揺のせいかうまくいかず、しばらく訛りの抜けない早口で言い訳を並べていた。いつもの「舞姫」とはまるで違う、素の彼女がそこにいた。" },
+        { label:"気づかれないよう、そっと体育館の外に出る", delta:75, route:"B",
+          result:"そっと体育館を出て、何も見なかったことにした。翌日のゼミで会った舞は、いつもの完璧な微笑みだった。\n「昨日、体育館の近くにいた?」\n何気ない調子で聞かれ、曖昧に頷くと、彼女は一瞬だけ探るような目でこちらを見た。それ以上は何も言わなかったが、その視線の奥に、微かな戸惑いの色があった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"訛りも、そのままでいい",
+        epilogueText:"「あの日、体育館で変なとこ見られてなかったら」\n最後の練習を終えた帰り道、舞がぽつりと言う。「私、今でも標準語だけ喋って、『舞姫』のふりを続けてたと思う」\n「今は?」と聞くと、彼女は初めて出会った日には見せなかった顔で笑った。\n「今は、あんたの前でだけ、なまら気を抜いていいのが分かってる。それだけで、ずっと息がしやすい」\n『舞姫』と呼ばれ続けた横顔に、初めて誰かのためだけの温度が灯っていた。",
+        events:[
+          { label:"SCENE 02 — 約束", text:"気まずい沈黙のあと、舞は視線を逸らしたまま言った。\n「……このこと、誰にも言わないで。『舞姫』らしくない、なんて思われたくないから」\n標準語に戻ってはいたが、声にはまだ微かな震えが残っていた。",
+            choices:[
+              {label:"「言わない。約束する」と静かに頷く", delta:10, result:"舞はほっとしたように息をついた。「……ありがとう」"},
+              {label:"「別に、訛りくらい普通のことだろ」と本音で返す", delta:40, result:"舞は驚いた顔でこちらを見た。「……そんな風に言われたの、初めて」観念したように小さく笑った、作られたものじゃない笑顔だった。"}
+            ]},
+          { label:"SCENE 03 — 週に一度の課題", text:"生態学の課題は、週に一度のペースで集まることになった。回を重ねるうち、舞は時々、標準語じゃないイントネーションを滲ませるようになっていた。\n「……あ、今の、訛った?」\n自分で気づいて慌てて言い直す姿が、いつもの完璧な『舞姫』とはまるで違っていた。",
+            choices:[
+              {label:"気づかないふりをして、話を続ける", delta:15, result:"舞はほっとしたように、また課題の話に戻った。それでも、肩の力は抜けたままだった。"},
+              {label:"「無理に直さなくていいのに」と伝える", delta:55, result:"舞は虚をつかれたように黙り込み、それから小さく「……うん」と呟いた。それ以来、隠す努力は少しずつ減っていった。"}
+            ]},
+          { label:"SCENE 04 — 空から降る、懐かしい音", birdId:"oojishigi",
+            beats:[
+              {text:"春、生態学の課題で、大学近くの休耕田へフィールドワークに出かけることになった。舞は珍しく、自分から言い出した。\n「北海道にいた頃、春先の夕方になると、変な音が空から降ってくるの。それが好きだった」"},
+              {text:"夕暮れ、草地の上空から、奇妙な声と羽音が降ってきた。"},
+              {text:"ズビャーク、ズビャーク", type:"sfx"},
+              {text:"雷が鳴るような重い羽音を纏いながら、一つの鳥影が急降下してくる。尾羽を目一杯震わせ、轟音そのものを羽ばたきに変えて、また空へと舞い戻っていった。", climax:true},
+              {text:"オオジシギの求愛ディスプレイだった。\n「あれ。あの音」\n舞が空を見上げる。\n「地元じゃ『カミナリシギ』って呼ばれてた。……こっちでも、聞けるんだ」\n懐かしそうな声に、隠しきれない安堵が滲んでいた。"}
+            ],
+            choices:[
+              {label:"何も言わず、しばらく一緒に空を見上げる", delta:15, result:"舞は満足そうに息をついた。「……こんな音、こっちで聞けると思わなかった」"},
+              {label:"「地元の音、こっちでも聞けてよかったな」と伝える", delta:35, result:"舞は驚いた顔をしたあと、小さく笑った。「……うん。ありがとう、つきあってくれて」"},
+              {label:"「舞の『好き』、もっと教えてほしいな」と伝える", delta:70, result:"舞は目を見開き、頬を赤らめた。「……そんなの、今聞く?」照れ隠しに視線を逸らしたが、その後も少しずつ、故郷の話をするようになった。"}
+            ]},
+          { label:"SCENE 05 — 見晴らし台の小鳥", birdId:"nobitaki",
+            beats:[
+              {text:"夏、同じ草地を訪れると、低木の先に、黒い頭と橙色の胸をした小鳥がちょこんと止まっていた。"},
+              {text:"「ノビタキだ。……北海道じゃ、そこら中にいたのに」\n舞は懐かしそうに目を細めた。新体操の稽古で鍛えられた体幹とは裏腹に、こういう瞬間だけは、力の抜けた素の姿を見せてくれるようになっていた。"}
+            ],
+            choices:[
+              {label:"隣で黙って、彼女が見ている方向を一緒に見る", delta:15, result:"舞は満足そうに、しばらくその場を動かなかった。"},
+              {label:"「舞、こういう顔してる方が、俺は好きだけどな」と伝える", delta:35, result:"舞は頬を染め、「……ずるい言い方」と呟いた。"},
+              {label:"「これからも、舞の『地元』の話、もっと聞かせてくれ」と伝える", delta:70, result:"舞は驚いた顔のあと、嬉しそうに頷いた。「……うん。柄でもないけど、話す」"}
+            ]},
+          { label:"SCENE 06 — 干潟の大群", birdId:"hamashigi",
+            beats:[
+              {text:"秋、就職活動の説明会が学内で始まった頃、河口の干潟まで足を延ばした。潮が引き始めた泥の上に、無数の小さな影がひしめいていた。"},
+              {text:"数百羽のハマシギの群れが、潮の満ち引きに合わせて一斉に飛び立ち、まるで一つの生き物のように旋回する。銀色の腹が陽に反射し、群れ全体が瞬く間に色を変えた。", climax:true},
+              {text:"「あの群れ、毎年同じ顔ぶれで飛んでくるんだって」\n舞は群れを見つめながら、ぽつりと言った。「……私たちも、卒業したらそれぞれ違う場所に飛んでいくのかな」\nいつもの凛とした声ではない、迷子になった子どものような、頼りない声だった。"}
+            ],
+            choices:[
+              {label:"何も言わず、しばらく一緒に群れを眺め続ける", delta:15, result:"舞は何かを確かめるように、長い間空を見上げていた。"},
+              {label:"「別々の場所に行っても、また会えるだろ」と返す", delta:35, result:"舞は少し驚いた顔をしたあと、小さく笑った。「……そうだね」"},
+              {label:"「舞がどこに行っても、俺は隣にいるつもりだけどな」と伝える", delta:70, result:"舞は息を呑み、目に涙を滲ませながらこちらを見た。「……そんなこと、今ここで言う?」声は震えていたが、拒む響きは少しもなかった。"}
+            ]},
+          { label:"SCENE 07 — 雪原に立つ、赤い頭", birdId:"tanchou",
+            beats:[
+              {text:"冬、帰省する舞に誘われて、初めて北海道・釧路を訪れた。\n「せっかくだから、最後にちゃんと『地元』を見せる」\n雪の積もる湿原、川霧に包まれた早朝だった。"},
+              {text:"凍らない川のほとりに、大きな白い影がいくつも並んでいた。近づくにつれ、その輪郭がはっきりしてくる。全身は雪のように白く、翼の先だけが墨のような黒。そして、頭の頂きにだけ、血のように鮮やかな赤い一点があった。"},
+              {text:"タンチョウだった。舞が生まれ育った土地の象徴であり、彼女がずっと標準語の下に隠してきた故郷そのものだった。", climax:true},
+              {text:"「……これが、私の『地元』。訛りも、この景色も、全部含めて、私」\n吐く息が白く舞い上がる中、舞は初めて、隠すもののない顔で笑った。"}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒に鳥たちを見つめ続ける", delta:15, result:"舞は白い息を吐きながら、小さく微笑んだ。「……見せられて、良かった」"},
+              {label:"「舞の『地元』、見せてくれてありがとう」と伝える", delta:35, result:"舞は照れたように「……大袈裟だって」と呟いた。それでも、声には確かな喜びがあった。"},
+              {label:"「訛りも、この景色も含めて、俺は舞のこと好きだけどな」と伝える", delta:70, result:"舞は長い沈黙のあと、静かに涙をこぼしながら頷いた。「……なまら、ずるい人だね、あんた」故郷の言葉が、隠すことなくこぼれた。"}
+            ]},
+          {
+            label:"SCENE 08 — 最後の練習の夜", text:"一年が過ぎ、生態学の課題も無事終わった春。舞は大会前の最後の練習を終え、いつものように体育館から出てきた。\n「あの日、体育館裏で変なとこ見られてから、ずっとこの調子だね」\n懐かしむように笑う舞の横顔は、出会った頃とはまるで違って見えた。",
+            choices:[
+              {label:"「これからも、舞の隣にいたい」と静かに伝える", delta:20, result:"舞は小さく頷いた。「……うん、それで十分」穏やかな声だった。"},
+              {label:"「舞のことが、ずっと前から好きだった」と正直に伝える", delta:85, result:"舞は長い沈黙のあと、目に涙を浮かべながら、けれど確かに頷いた。「……こんな訛り丸出しの私を好きになるなんて、物好きだね」震える声が、そのまま答えだった。"}
+            ],
+            final:true,
+            endingText:"体育館に戻った舞は、今日も後輩の演技を熱心に見ている。ただ、指導の合間に飛び出す北海道弁を、誰も気にしなくなった。「なんもだべさ、そこは」――訂正する声さえ、もう出てこない。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"少しずつ、正体を明かす関係",
+        epilogueText:"「あなたが、いつも急かさずに待っていてくれたから」\n最後の練習を終えた帰り道、舞がぽつりと言う。「私、いつの間にか、訛りを隠さない方が楽だって思えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、『舞姫』なんて呼ばれるより、あんたの隣にいる自分の方が、なまら好き」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、誰も近づけなかった距離を、確かに縮めていた。",
+        events:[
+          { label:"SCENE 02 — 呼び止められて", text:"翌週の課題帰り、舞の方から呼び止められた。\n「ねえ、昨日の夜、体育館の近くにいなかった?」\n何気ない調子を装っていたが、目はまっすぐこちらを探るように見ていた。",
+            choices:[
+              {label:"「たまたま通りかかっただけだ」ととぼける", delta:10, result:"舞はしばらくこちらを見つめていたが、やがて「そう」とだけ言って引き下がった。"},
+              {label:"「変な訛り、聞こえてたって言ったら嘘になる」と正直に認める", delta:40, result:"舞は息を呑み、それから観念したように肩の力を抜いた。「……やっぱり。もういいや、正直に言うと恥ずかしい」"}
+            ]},
+          { label:"SCENE 03 — 素顔の分だけ", text:"それからというもの、舞は課題の作業中、少しずつ気を抜いた口調を見せるようになっていた。\n「一つだけ聞かれたんだから、もう隠す意味ないよね」",
+            choices:[
+              {label:"急かさず、彼女のペースに合わせる", delta:15, result:"舞はそれが心地よかったのか、少しずつ肩の力を抜いていった。"},
+              {label:"「訛ってる舞の方が、俺は話しやすい」と伝える", delta:55, result:"舞は驚いた顔をしたあと、俯いて小さく笑った。「……そういうこと、簡単に言うんだ」"}
+            ]},
+          { label:"SCENE 04 — 空から降る、懐かしい音", birdId:"oojishigi",
+            beats:[
+              {text:"春、課題のフィールドワークで訪れた休耕田で、夕暮れ時、上空から奇妙な音が響いてきた。"},
+              {text:"ズビャーク、ズビャーク", type:"sfx"},
+              {text:"雷のような羽音を纏いながら、鳥影が急降下し、また空へ舞い戻っていく。オオジシギの求愛ディスプレイだった。", climax:true},
+              {text:"「……あ、この音。北海道にいた頃、よく聞いてた」\n舞が思わず呟いた言葉に、懐かしさが滲んでいた。急降下するその影を、二人でしばらく見上げていた。"}
+            ],
+            choices:[
+              {label:"急かさず、彼女が満足するまで一緒に見上げる", delta:15, result:"舞は満足そうに息をついた。「こんな寄り道、悪くないね」"},
+              {label:"「地元の音、なんか特別なんだな」と軽く言う", delta:35, result:"舞は少し照れたように「……うん、そうかも」と呟いた。"},
+              {label:"「舞の『好きなもの』、もっと知りたいな」と伝える", delta:70, result:"舞は驚いた顔をしたあと、小さく頷いた。「……気が向いたら、話すね」"}
+            ]},
+          { label:"SCENE 05 — 見晴らし台の小鳥", birdId:"nobitaki",
+            beats:[
+              {text:"夏、同じ草地に戻ると、低木の先に黒と橙色の小鳥がとまっていた。"},
+              {text:"舞はしばらく無言でそれを見つめていた。\n「……ノビタキ。地元じゃ、どこにでもいた」\n独り言のような呟きに、こちらから声をかけていいものか迷った。"}
+            ],
+            choices:[
+              {label:"何も言わず、彼女の物思いを邪魔しない", delta:15, result:"舞はふと我に返り、「……ごめん、ぼーっとしてた」と照れたように笑った。"},
+              {label:"「舞でも、ぼーっとする時あるんだな」と軽くからかう", delta:35, result:"舞は頬を膨らませた。「……たまにはね」拗ねた顔も、隠さなくなっていた。"},
+              {label:"何も言わず、そっと隣に座る距離を詰める", delta:70, result:"舞は一瞬身を固くしたが、やがて力を抜いて隣に座り直した。「……もう少し、このままで」"}
+            ]},
+          { label:"SCENE 06 — 干潟の大群", birdId:"hamashigi",
+            beats:[
+              {text:"秋、就職活動の説明会が学内で始まった頃、河口の干潟で数百羽のハマシギの群れを見た。"},
+              {text:"潮の満ち引きに合わせて一斉に飛び立つ様は壮観だった。銀色の腹が陽に反射し、群れ全体が瞬く間に色を変えた。", climax:true},
+              {text:"「あの群れ、卒業したら私たちも、あんな風にバラバラに飛んでいくのかな」\n舞が、誰にも言えなかった不安をぽつりとこぼした。"}
+            ],
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"舞はふと視線に気づき、照れたように目を逸らした。"},
+              {label:"「群れって、また同じ場所に戻ってくるものだろ」と伝える", delta:35, result:"舞は頬を染め、「……そうだといいけど」とぽつりと呟いた。"},
+              {label:"「これからも、舞の隣にいたい」と静かに伝える", delta:70, result:"舞は長い沈黙のあと、消え入りそうな声で「……うん」と答えた。"}
+            ]},
+          { label:"SCENE 07 — 雪原に立つ、赤い頭", birdId:"tanchou",
+            beats:[
+              {text:"冬、舞の方から誘ってきた。「今度の帰省、ついてこない?最後に、ちゃんと『地元』見せておきたいから」\n雪の積もる釧路湿原、川霧の中に立った。"},
+              {text:"大きな白い影がいくつも並んでいた。全身は雪のように白く、翼の先だけが墨のような黒。頭の頂きにだけ、血のように鮮やかな赤い一点があった。"},
+              {text:"タンチョウの群れだった。", climax:true},
+              {text:"「……これが、私の『地元』。訛りも、この景色も、全部含めて、私」"}
+            ],
+            choices:[
+              {label:"黙って、隣で一緒に鳥たちを見つめ続ける", delta:15, result:"舞は白い息を吐きながら、小さく微笑んだ。「見せられて、良かった」"},
+              {label:"「この時間が、一番好きだな」と伝える", delta:35, result:"舞は驚いた顔のあと、嬉しそうに一歩近づいてきた。「……私も」"},
+              {label:"「来年も、舞の『地元』に連れてきてくれ」と伝える", delta:70, result:"舞は涙ぐみながら、小さく、けれど確かに頷いた。「……うん、なまら、いいよ」"}
+            ]},
+          {
+            label:"SCENE 08 — 最後の練習の夜", text:"一年が過ぎ、舞は以前よりずっと自然な顔で笑うようになっていた。大会前の最後の練習を終えた帰り道、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"舞は小さく頷いた。「……うん、それでいい」穏やかな声だった。"},
+              {label:"「隣にいるだけじゃなく、これからは正式に、俺の彼女になってほしい」と伝える", delta:85, result:"舞は長い沈黙のあと、静かに涙をこぼしながら頷いた。「……『舞姫』なんて呼ばれてた私が、こんなに誰かを好きになるなんてね」"}
+            ],
+            final:true,
+            endingText:"生態学の実習室に戻った舞は、今日も課題の資料をめくっている。ただ、疲れると自然に訛りが滲むようになった。それを笑う者は、もういない。"
+          }
+        ]
+      }
+    }
+  },
+  suzumori: {
+    name:"雫",
+    subtitle:"学内ミスコン優勝の看板娘、SNSでも人気の「完璧アイコン」",
+    color:"#6b6f5e", glow:"#eef1e8", emblem:"雫", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"涼森雫の名前を知らない学生は、この大学にはいない。学内ミスコン優勝、フォロワー数十万のSNSアカウント、どんな瞬間を切り取っても様になる「完璧アイコン」――それが雫の代名詞だった。\n一般教養の登山実習、くじ引きで同じ班になったのが、その涼森雫だった。\n本番前の慣らし登山、急な傾斜にさしかかった辺りで、後方から荒い息遣いと、小さな悪態が聞こえてきた。\n振り返ると、雫が木の根に足を取られて尻餅をつき、リュックの中身を辺りにぶちまけていた。\n「……っ、はあ?ちょっと、待ってよ、なんでこんな……はあ、もう最悪」\nいつもの完璧な微笑みはどこにもなく、乱れた前髪の下から、剥き出しの苛立ちが覗いていた。",
+      choices:[
+        { label:"「大丈夫か」と手を差し伸べる", delta:100, route:"A",
+          result:"雫は弾かれたように顔を上げ、みるみるうちに頬を赤らめた。\n「……っ、今の、見た?最悪、こんな恰好悪いとこ」\n差し出した手を、躊躇いがちに掴みながら、雫は視線を逸らした。いつもの「完璧アイコン」としての取り澄ました表情は、そこにはなかった。" },
+        { label:"見なかったことにして、先に進む", delta:75, route:"B",
+          result:"そっと視線を逸らし、何も見なかったことにして先を歩いた。休憩中、雫の方から声をかけてきた。\n「……さっき、下の方にいたよね」\n探るような視線に、曖昧に頷くと、彼女は珍しく歯切れの悪い返事をした。それ以上は何も言わなかったが、纏う空気には確かな戸惑いがあった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"素顔のまま歩ける関係",
+        epilogueText:"「あの日、慣らし登山で変なとこ見られてなかったら」\n最終レポートを提出した帰り道、雫がぽつりと言う。「私、今でも『完璧』な写真だけ撮って、それで満足したふりをしてたと思う」\n「今は?」と聞くと、彼女は初めて出会った日には見せなかった顔で笑った。\n「今は、あんたの前でだけ、鎧脱いでいいのが分かってる。それだけで、ずっと息がしやすい」\n『完璧アイコン』と呼ばれ続けた横顔に、初めて誰かのためだけの温度が灯っていた。",
+        events:[
+          { label:"SCENE 02 — 約束", text:"気まずい沈黙のあと、雫は散らばった荷物をかき集めながら言った。\n「……今の、SNSに上げないでよね。『完璧』じゃないとこ見せたら、一瞬でフォロワー減るんだから」\n冗談めかした口調だったが、声には隠しきれない切実さがあった。",
+            choices:[
+              {label:"「上げない。約束する」と静かに頷く", delta:10, result:"雫はほっとしたように息をついた。「……ありがと。案外話分かるじゃん」"},
+              {label:"「別に、疲れて悪態つくくらい普通のことだろ」と本音で返す", delta:40, result:"雫は驚いた顔でこちらを見た。「……そんな風に言われたの、初めてかも」観念したように小さく笑った、作られたものじゃない笑顔だった。"}
+            ]},
+          { label:"SCENE 03 — 週に一度の実習", text:"登山実習は週に一度のペースで続くことになった。回を重ねるうち、雫は時々、素の口調を滲ませるようになっていた。\n「……あ、今の、ガラ悪かった?」\n自分で気づいて慌てて取り繕う姿が、いつもの『完璧アイコン』とはまるで違っていた。",
+            choices:[
+              {label:"気づかないふりをして、話を続ける", delta:15, result:"雫はほっとしたように、また実習の話に戻った。それでも、肩の力は抜けたままだった。"},
+              {label:"「無理に『アイコン』らしくしなくていいのに」と伝える", delta:55, result:"雫は虚をつかれたように黙り込み、それから小さく「……うん」と呟いた。"}
+            ]},
+          { label:"SCENE 04 — 藪の中の名歌手", birdId:"komadori",
+            beats:[
+              {text:"春、実習の低山コースで、谷沿いの薄暗い林を歩いていると、遠くから馬のいななきのような、力強いさえずりが響いてきた。"},
+              {text:"ヒンカラララ", type:"sfx"},
+              {text:"「……何、今の声。鳥?すごい迫力」\n雫が足を止め、耳を澄ませる。日本三鳴鳥の一つ、コマドリの声だった。"},
+              {text:"姿はなかなか見えず、しばらく藪の中を探し続けるうち、橙色の胸をした小さな鳥が、切り株にちょんと姿を現した。", climax:true},
+              {text:"「……いた。ちっちゃいのに、あんな大きな声出すんだ」\n雫は息を潜め、食い入るようにその小さな姿を見つめていた。"}
+            ],
+            choices:[
+              {label:"何も言わず、彼女が満足するまで見守る", delta:15, result:"雫は満足そうに息をついた。「……こんなの、初めて見た」"},
+              {label:"「雫、そんな真剣な顔できるんだな」と軽く言う", delta:35, result:"雫は少しむっとした顔をしたあと、笑った。「……悪い?本気で綺麗だと思ったんだもん」"},
+              {label:"「その顔の方が、いつもの『アイコン』よりずっと良いと思うけどな」と伝える", delta:70, result:"雫は目を見開き、頬を赤らめた。「……そういうこと、不意打ちで言わないでよ」"}
+            ]},
+          { label:"SCENE 05 — 標高2500m、白と茶のまだら", birdId:"raicho",
+            beats:[
+              {text:"夏、実習の集大成として、本格的な高山への縦走登山が組まれた。標高2500mを超えたあたりで、雫は既に息も絶え絶えだった。\n「……もう無理、なんでこんな苦行、単位のために……」\n弱音を吐きながらも、雫は一歩ずつ足を進め続けていた。空気は薄く、風の音以外、何も聞こえない世界だった。"},
+              {text:"ハイマツ帯に差し掛かった時、雫の足が止まった。\n「……あれ、石?」\n数メートル先、岩と苔の間に、こぶし大の『石』があった。よく見ると、その石には白と黒褐色の羽毛が、まるで残雪と地肌をそのまま写し取ったような細かい斑模様で描かれていた。標高2500mの岩肌に完全に溶け込む、生きた迷彩だった。"},
+              {text:"――と、その『石』が、ゆっくりと瞬きをした。"},
+              {text:"雫が息を呑む。"},
+              {text:"石ころだと思っていたものが、ことり、と小さな音を立てて一歩を踏み出した。目の上、白と茶のまだら模様の中にだけ、血のように鮮やかな赤い肉冠が覗いている。\n人間を恐れる素振りは、欠片もなかった。", climax:true},
+              {text:"ライチョウだった。氷河期からこの標高だけに取り残された生き残り。国の特別天然記念物であり、その数はこの十数年で半分近くにまで減っている――そう実習で教わったばかりだった。\n誰もが憧れても、なかなか出会えない存在が、今、疲れ切った二人のすぐ数メートル先を、のんびりと歩いていた。"},
+              {text:"「……っ、うそ、こんな近くに」\n雫は疲労を忘れたように、その場に立ち尽くしていた。手を伸ばせば届きそうな距離。それでもライチョウは、逃げも威嚇もせず、ただ静かに岩の上を歩き続けていた。"}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒にその姿を見つめ続ける", delta:15, result:"雫は言葉を失ったまま、長い間その場を動かなかった。"},
+              {label:"「ここまで登ってきた甲斐、あったな」と伝える", delta:35, result:"雫は涙目のまま笑った。「……うん。マジで、来てよかった」"},
+              {label:"「その顔、SNSに上げるより、俺だけが知ってたいけどな」と伝える", delta:70, result:"雫は虚をつかれたように黙り込み、それから小さく、けれど確かに頷いた。「……なにそれ。ずるい」目には隠しきれない喜びが滲んでいた。"}
+            ]},
+          { label:"SCENE 06 — 岬に立つ、鷹の柱", birdId:"sashiba",
+            beats:[
+              {text:"秋、就活の説明会が学内で始まった頃、渡りの名所として知られる岬まで、二人で足を延ばした。"},
+              {text:"上空を見上げると、幾重にも旋回する猛禽類の群れが、まるで見えない柱を巻くように空へと立ち上っていた。鷹柱と呼ばれる光景だった。", climax:true},
+              {text:"「……あれ、全部同じ種類の鳥なの?」\n雫が空を見上げながら呟いた。サシバの群れが、上昇気流に乗って渡りの旅を続けていた。「あの子たち、これから南まで飛んでいくんだって。……私たちも、卒業したらバラバラの場所に飛んでいくのかな」\nいつもの快活な声ではない、迷子になった子どものような、頼りない声だった。"}
+            ],
+            choices:[
+              {label:"何も言わず、しばらく一緒に空を見上げ続ける", delta:15, result:"雫は何かを確かめるように、長い間空を見つめていた。"},
+              {label:"「別々の場所に行っても、また会えるだろ」と返す", delta:35, result:"雫は少し驚いた顔をしたあと、小さく笑った。「……そうだね」"},
+              {label:"「雫がどこに行っても、俺は隣にいるつもりだけどな」と伝える", delta:70, result:"雫は息を呑み、目に涙を滲ませながらこちらを見た。「……そんなこと、今ここで言う?」声は震えていたが、拒む響きは少しもなかった。"}
+            ]},
+          { label:"SCENE 07 — 星のような斑点", birdId:"hoshigarasu",
+            beats:[
+              {text:"冬、実習の最終レポートを兼ねて、亜高山帯の樹林帯をスノーシューで歩くことになった。針葉樹の梢から、しわがれた声が響いてくる。"},
+              {text:"ガーッ、ガーッ", type:"sfx"},
+              {text:"「……なんか、カラスと違う声」\n雫が指差した先、黒褐色の体に白い斑点を散らした鳥が、松ぼっくりをくわえて飛び去っていった。ホシガラスだった。", climax:true},
+              {text:"「星みたいな模様だから、『ホシガラス』なんだって。……なんか、今日の私たちみたい」\n雫は白い息を吐きながら、そう呟いて笑った。"}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒に鳥を見送る", delta:15, result:"雫は白い息を吐きながら、小さく微笑んだ。「一年で、随分色んな鳥見たね」"},
+              {label:"「星みたいな模様、確かに綺麗だな」と伝える", delta:35, result:"雫は少し照れたように「……でしょ」と呟いた。"},
+              {label:"「来年も、雫と一緒に鳥を探しに行きたい」と伝える", delta:70, result:"雫は涙ぐみながら、小さく、けれど確かに頷いた。「……うん。来年も、再来年も」"}
+            ]},
+          {
+            label:"SCENE 08 — 最終レポートの春", text:"一年が過ぎ、登山実習の最終レポートも無事提出した春。雫はいつものように、SNS用の完璧な写真を撮り終えたところだった。\n「あの日、慣らし登山で変なとこ見られてから、ずっとこの調子だね」\n懐かしむように笑う雫の横顔は、出会った頃とはまるで違って見えた。",
+            choices:[
+              {label:"「これからも、雫の隣にいたい」と静かに伝える", delta:20, result:"雫は小さく頷いた。「……うん、それで十分」穏やかな声だった。"},
+              {label:"「雫のことが、ずっと前から好きだった」と正直に伝える", delta:85, result:"雫は長い沈黙のあと、目に涙を浮かべながら、けれど確かに頷いた。「……こんな『アイコン』崩れの私を好きになるなんて、物好きだね」震える声が、そのまま答えだった。"}
+            ],
+            final:true,
+            endingText:"スマホを構えた雫は、今日も完璧な構図で写真を撮っている。ただ、投稿の中に一枚だけ、髪が乱れたままの笑顔が混ざるようになった。コメント欄には「こっちの方が好き」という声が、静かに増えている。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"少しずつ、鎧を脱いでいく",
+        epilogueText:"「あなたが、いつも急かさずに待っていてくれたから」\n最終レポートを提出した帰り道、雫がぽつりと言う。「私、いつの間にか、『完璧』じゃない自分の方が楽だって思えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、『完璧アイコン』なんて呼ばれるより、あんたの隣にいる自分の方が、ずっと好き」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、誰も近づけなかった距離を、確かに縮めていた。",
+        events:[
+          { label:"SCENE 02 — 呼び止められて", text:"翌週の実習帰り、雫の方から呼び止められた。\n「ねえ、この前の慣らし登山、途中で見てたよね」\n何気ない調子を装っていたが、目はまっすぐこちらを探るように見ていた。",
+            choices:[
+              {label:"「たまたま通りかかっただけだ」ととぼける", delta:10, result:"雫はしばらくこちらを見つめていたが、やがて「そう」とだけ言って引き下がった。"},
+              {label:"「悪態、聞こえてたって言ったら嘘になる」と正直に認める", delta:40, result:"雫は息を呑み、それから観念したように肩の力を抜いた。「……やっぱり。もういいや、正直に言うと恥ずかしい」"}
+            ]},
+          { label:"SCENE 03 — 素顔の分だけ", text:"それからというもの、雫は実習の作業中、少しずつ気を抜いた口調を見せるようになっていた。\n「一つだけ見られたんだから、もう隠す意味ないよね」",
+            choices:[
+              {label:"急かさず、彼女のペースに合わせる", delta:15, result:"雫はそれが心地よかったのか、少しずつ肩の力を抜いていった。"},
+              {label:"「素の雫の方が、俺は話しやすい」と伝える", delta:55, result:"雫は驚いた顔をしたあと、俯いて小さく笑った。「……そういうこと、簡単に言うんだ」"}
+            ]},
+          { label:"SCENE 04 — 藪の中の名歌手", birdId:"komadori",
+            beats:[
+              {text:"春、実習の低山コースで、谷沿いの薄暗い林を歩いていると、遠くから馬のいななきのような力強いさえずりが響いてきた。「……何、今の声」"},
+              {text:"雫は藪の中をしばらく探し続けた。"},
+              {text:"橙色の胸をした小さな鳥、コマドリの姿を見つけた。", climax:true}
+            ],
+            choices:[
+              {label:"急かさず、彼女が満足するまで一緒に探す", delta:15, result:"雫は満足そうに息をついた。「こんな寄り道、悪くないね」"},
+              {label:"「あの声で、あの体格なんだな」と軽く言う", delta:35, result:"雫は少し驚いた顔で「……うん、意外だよね」と呟いた。"},
+              {label:"「雫の『真剣な顔』、もっと見てみたいな」と伝える", delta:70, result:"雫は驚いた顔をしたあと、小さく頷いた。「……気が向いたらね」"}
+            ]},
+          { label:"SCENE 05 — 標高2500m、白と茶のまだら", birdId:"raicho",
+            beats:[
+              {text:"夏、実習の集大成として、本格的な縦走登山が組まれた。標高2500mを超えたあたりで、雫は既に力尽きかけていた。空気は薄く、風の音以外、何も聞こえない世界だった。"},
+              {text:"ハイマツ帯の岩陰、こぶし大の『石』に、白と黒褐色の細かい斑模様が浮いていた。残雪と地肌をそのまま写し取ったような、生きた迷彩だった。"},
+              {text:"――と、その『石』が、ゆっくりと瞬きをした。"},
+              {text:"ことり、と小さな音を立てて、それが一歩を踏み出す。目の上、まだら模様の中にだけ、血のように鮮やかな赤い肉冠が覗いていた。", climax:true},
+              {text:"ライチョウだった。氷河期からこの標高だけに取り残された生き残り。人間を恐れる素振りは、欠片もなかった。"},
+              {text:"「……っ、こんな近くに」\n雫は疲労を忘れたように立ち尽くしていた。手を伸ばせば届きそうな距離。それでもライチョウは、逃げも威嚇もせず、ただ静かに岩の上を歩き続けていた。"}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒にその姿を見つめ続ける", delta:15, result:"雫は言葉を失ったまま、長い間その場を動かなかった。"},
+              {label:"「ここまで登ってきた甲斐、あったな」と伝える", delta:35, result:"雫は涙目のまま笑った。「……うん。マジで、来てよかった」"},
+              {label:"何も言わず、そっと隣に座る距離を詰める", delta:70, result:"雫は一瞬身を固くしたが、やがて力を抜いて隣に座り直した。「……もう少し、このままで」"}
+            ]},
+          { label:"SCENE 06 — 岬に立つ、鷹の柱", birdId:"sashiba",
+            beats:[
+              {text:"秋、就活の説明会が学内で始まった頃、渡りの名所の岬を訪れた。"},
+              {text:"上空、幾重にも旋回する猛禽類の群れが、見えない柱を巻くように空へ立ち上っていた。サシバの鷹柱だった。", climax:true},
+              {text:"「あの子たち、卒業したら私たちも、あんな風にバラバラの場所に飛んでいくのかな」\n雫が、誰にも言えなかった不安をぽつりとこぼした。"}
+            ],
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"雫はふと視線に気づき、照れたように目を逸らした。"},
+              {label:"「群れって、また同じ場所に戻ってくるものだろ」と伝える", delta:35, result:"雫は頬を染め、「……そうだといいけど」とぽつりと呟いた。"},
+              {label:"「これからも、雫の隣にいたい」と静かに伝える", delta:70, result:"雫は長い沈黙のあと、消え入りそうな声で「……うん」と答えた。"}
+            ]},
+          { label:"SCENE 07 — 星のような斑点", birdId:"hoshigarasu",
+            beats:[
+              {text:"冬、雫の方から誘ってきた。「最後に、もう一種類だけ鳥を見に行かない?」亜高山帯の樹林をスノーシューで歩いた。"},
+              {text:"松ぼっくりをくわえたホシガラスが、頭上を飛び去っていった。", climax:true},
+              {text:"「……星みたいな模様だから、ホシガラスなんだって」"}
+            ],
+            choices:[
+              {label:"黙って、隣で一緒に鳥を見送る", delta:15, result:"雫は白い息を吐きながら、小さく微笑んだ。「一年で、随分色んな鳥見たね」"},
+              {label:"「この時間が、一番好きだな」と伝える", delta:35, result:"雫は驚いた顔のあと、嬉しそうに一歩近づいてきた。「……私も」"},
+              {label:"「来年も、雫と一緒に鳥を探しに行きたい」と伝える", delta:70, result:"雫は涙ぐみながら、小さく、けれど確かに頷いた。「……うん。来年も、再来年も」"}
+            ]},
+          {
+            label:"SCENE 08 — 最終レポートの春", text:"一年が過ぎ、雫は以前よりずっと自然な顔で笑うようになっていた。最終レポートを提出した帰り道、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"雫は小さく頷いた。「……うん、それでいい」穏やかな声だった。"},
+              {label:"「隣にいるだけじゃなく、これからは正式に、俺の彼女になってほしい」と伝える", delta:85, result:"雫は長い沈黙のあと、静かに涙をこぼしながら頷いた。「……『完璧アイコン』なんて呼ばれてた私が、こんなに誰かを好きになるなんてね」"}
+            ],
+            final:true,
+            endingText:"登山サークルの集合写真に、雫は今日も加わっている。ただ、その笑顔から、フィルターをかけたような余所行きの硬さが抜けていた。"
+          }
+        ]
+      }
+    }
+  },
+  shiomi: {
+    name:"凪",
+    subtitle:"軽音部のボーカル、ライブハウスでも人気の「歌姫」",
+    color:"#3d5a6c", glow:"#e4f1f5", emblem:"凪", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"汐見凪の名前を知らない学生は、この大学にはいない。軽音部のボーカルとして、ライブハウスのステージに立つたびに客を沸かせる、通称「歌姫」。人前ではどんな時も堂々としていて、物怖じしない――そんなイメージで通っていた。\n一般教養の海洋生物学実習、くじ引きで同じ班になったのが、その汐見凪だった。\n実習船に乗り込んで間もなく、凪は真っ青な顔でデッキの手すりにしがみついていた。\n「……うっ、なんでこんな揺れるの、聞いてない……」\n弱々しい声で吐き気を堪える姿は、ステージの上で堂々と歌う『歌姫』とはまるで別人だった。",
+      choices:[
+        { label:"「大丈夫か」と背中をさすって声をかける", delta:100, route:"A",
+          result:"凪は弱々しく顔を上げ、みるみるうちに顔を赤くした。\n「……っ、今の、見た?最悪、船とか本当ダメで……」\n取り繕う元気もないのか、気弱な声のまま本音がこぼれ落ちてきた。いつもの『歌姫』とはまるで違う、弱った素顔がそこにあった。" },
+        { label:"そっと離れて、誰にも気づかれないよう見守る", delta:75, route:"B",
+          result:"そっと距離を取り、気づかれないよう見守った。船を降りたあと、凪の方から話しかけてきた。\n「……さっき、デッキにいたよね」\n探るような視線に、曖昧に頷くと、彼女は珍しく歯切れの悪い返事をした。それ以上は何も言わなかったが、纏う空気には確かな戸惑いがあった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"舞台の外の、本当の声",
+        epilogueText:"「あの日、船で情けないとこ見られてなかったら」\n最後のライブを終えた帰り道、凪がぽつりと言う。「私、今でも『歌姫』のふりだけして、本当は怖がりなとこ、隠し続けてたと思う」\n「今は?」と聞くと、彼女は初めて出会った日には見せなかった顔で笑った。\n「今は、あんたの前でだけ、怖いって言っていいのが分かってる。それだけで、ずっと息がしやすい」\n『歌姫』と呼ばれ続けた横顔に、初めて誰かのためだけの温度が灯っていた。",
+        events:[
+          { label:"SCENE 02 — 約束", text:"気まずい沈黙のあと、凪は青白い顔のまま言った。\n「……今の、部の子には言わないで。『歌姫』が船に酔って情けなく喚いてた、なんて広まったら終わる」\n弱々しい声だったが、その懇願には確かな切実さがあった。",
+            choices:[
+              {label:"「言わない。約束する」と静かに頷く", delta:10, result:"凪はほっとしたように息をついた。「……ありがと。案外、話分かるんだ」"},
+              {label:"「別に、船に酔うくらい普通のことだろ」と本音で返す", delta:40, result:"凪は驚いた顔でこちらを見た。「……そんな風に言われたの、初めてかも」観念したように小さく笑った、作られたものじゃない笑顔だった。"}
+            ]},
+          { label:"SCENE 03 — 週に一度の実習", text:"海洋生物学実習は週に一度のペースで続くことになった。回を重ねるうち、凪は時々、ステージの上とは違う、素の弱さを見せるようになっていた。\n「……あ、今の、情けなかった?」\n自分で気づいて慌てて取り繕う姿が、いつもの『歌姫』とはまるで違っていた。",
+            choices:[
+              {label:"気づかないふりをして、話を続ける", delta:15, result:"凪はほっとしたように、また実習の話に戻った。それでも、肩の力は抜けたままだった。"},
+              {label:"「無理に『歌姫』らしくしなくていいのに」と伝える", delta:55, result:"凪は虚をつかれたように黙り込み、それから小さく「……うん」と呟いた。"}
+            ]},
+          { label:"SCENE 04 — 岩場の騒がしい隣人", birdId:"umineko",
+            beats:[
+              {text:"春、実習で海沿いの岩場を訪れると、猫のような鳴き声があちこちから響いていた。"},
+              {text:"ミャーオ、ミャーオ", type:"sfx"},
+              {text:"「……うわ、うるさっ。何、この鳥」\n凪が顔をしかめながらも、興味深そうに岩場を覗き込む。白と黒の体をしたウミネコの繁殖地だった。"},
+              {text:"必死にくちばしを開けて餌をねだる雛と、休む間もなく飛び回る親鳥たちの姿に、凪はいつの間にか見入っていた。"},
+              {text:"「……あの声、よく聞くと必死なんだね。子供のために」"}
+            ],
+            choices:[
+              {label:"何も言わず、彼女が見入る横顔を見守る", delta:15, result:"凪は満足そうに息をついた。「……こんなの、じっくり見たの初めて」"},
+              {label:"「凪、うるさいとか言いつつ結構好きだろ」と軽くからかう", delta:35, result:"凪は少しむっとした顔をしたあと、笑った。「……悪い?ちゃんと見ると可愛いんだもん」"},
+              {label:"「そうやって見入ってる顔、ステージの時より良いと思うけどな」と伝える", delta:70, result:"凪は目を見開き、頬を赤らめた。「……そういうこと、不意打ちで言わないでよ」"}
+            ]},
+          { label:"SCENE 05 — 夜の岸壁、地中からの声", birdId:"utou",
+            beats:[
+              {text:"夏、実習の夜間観察で無人島の岸壁に上陸した。日が完全に沈み、辺りは真っ暗になった。"},
+              {text:"ウトウ、ウトウ", type:"sfx"},
+              {text:"足元の地面のあちこちから、奇妙な声が響き始めた。「……なにこれ、地面から声がする」凪が怯えたように身を寄せてくる。"},
+              {text:"次の瞬間、暗闇の空を無数の影が乱れ飛び始めた。羽音と鳴き声が幾重にも重なり、一斉に、この島だけに向かって降ってくる。", climax:true},
+              {text:"巣穴に潜って昼間は姿を隠すウトウという海鳥が、夜になって一斉に戻ってくる瞬間だった。暗闇の中を飛び交う無数の影に、凪は言葉を失っていた。"}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒にその光景を見つめ続ける", delta:15, result:"凪は言葉を失ったまま、長い間その場を動かなかった。"},
+              {label:"「凪が怖がるとこ、初めて見たな」と伝える", delta:35, result:"凪は涙目のまま笑った。「……うん、素直に怖かった」"},
+              {label:"「その顔、ステージのお前より正直で好きだけどな」と伝える", delta:70, result:"凪は虚をつかれたように黙り込み、それから小さく、けれど確かに頷いた。「……なにそれ。ずるい」"}
+            ]},
+          { label:"SCENE 06 — 沖を越えていく影", birdId:"oomizunagidori",
+            beats:[
+              {text:"秋、就活の説明会が学内で始まった頃、岬の展望台から沖を眺めた。"},
+              {text:"水平線近くを、細長い翼の鳥の群れが延々と横切っていく。オオミズナギドリの渡りだった。"},
+              {text:"「……あの群れ、どこまで飛んでいくんだろう」\n凪が沖を見つめながら呟いた。「私たちも、卒業したらバラバラの場所に飛んでいくのかな」\nいつもの快活な声ではない、迷子になった子どものような、頼りない声だった。"}
+            ],
+            choices:[
+              {label:"何も言わず、しばらく一緒に沖を見つめ続ける", delta:15, result:"凪は何かを確かめるように、長い間水平線を見つめていた。"},
+              {label:"「別々の場所に行っても、また会えるだろ」と返す", delta:35, result:"凪は少し驚いた顔をしたあと、小さく笑った。「……そうだね」"},
+              {label:"「凪がどこに行っても、俺は隣にいるつもりだけどな」と伝える", delta:70, result:"凪は息を呑み、目に涙を滲ませながらこちらを見た。「……そんなこと、今ここで言う?」声は震えていたが、拒む響きは少しもなかった。"}
+            ]},
+          { label:"SCENE 07 — 絶海の孤島、白い翼", birdId:"ahoudori",
+            beats:[
+              {text:"冬、実習の集大成として、遠く離れた孤島への特別調査に同行することになった。断崖に立つと、下から吹き上げる潮風が、まっすぐ体を押し返してくる。"},
+              {text:"「……あれ」\n凪が指差した崖の縁、白い塊がいくつも点在していた。翼を畳んだその姿は、大きな座布団のようにも見えた。\nその一羽が、ゆっくりと翼を開き始める。"},
+              {text:"広げた翼幅は、大人二人分よりもまだ広かった。純白の胴に、翼の先だけが墨で刷いたような黒。風を受けて、羽の一枚一枚が細かく震えている。"},
+              {text:"バサッ", type:"sfx"},
+              {text:"崖から飛び出したその体は、羽ばたくことなく、ただ風だけを受けて、滑るように宙へ溶け出した。海面すれすれを、まっすぐ、どこまでも滑空していく。", climax:true},
+              {text:"アホウドリだった。かつて羽毛採取のために乱獲され、一時は絶滅したと考えられていた鳥。今はこの島だけで、再びその命をつないでいる。\n風を切る音以外、何もない。ただ白い一筋が、灰色の海の上を滑っていくのを、二人でいつまでも目で追っていた。"},
+              {text:"「……こんな綺麗な鳥、一度は消えかけてたんだ」\n凪は風に髪をなびかせながら、白い翼をいつまでも目で追っていた。"}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒にその姿を見つめ続ける", delta:15, result:"凪は言葉少なに、長い間その場を動かなかった。"},
+              {label:"「一度消えかけても、また戻ってこられるんだな」と伝える", delta:35, result:"凪は少し照れたように「……うん、なんか勇気もらえるね」と呟いた。"},
+              {label:"「来年も、凪と一緒にこの景色を見に来たい」と伝える", delta:70, result:"凪は涙ぐみながら、小さく、けれど確かに頷いた。「……うん。来年も、再来年も」"}
+            ]},
+          {
+            label:"SCENE 08 — 最後のライブの夜", text:"一年が過ぎ、海洋生物学実習も無事終わった春。凪はサークルの卒業ライブを終え、楽屋裏で一息ついていた。\n「あの日、船で情けないとこ見られてから、ずっとこの調子だね」\n懐かしむように笑う凪の横顔は、出会った頃とはまるで違って見えた。",
+            choices:[
+              {label:"「これからも、凪の隣にいたい」と静かに伝える", delta:20, result:"凪は小さく頷いた。「……うん、それで十分」穏やかな声だった。"},
+              {label:"「凪のことが、ずっと前から好きだった」と正直に伝える", delta:85, result:"凪は長い沈黙のあと、目に涙を浮かべながら、けれど確かに頷いた。「……こんな怖がりな私を好きになるなんて、物好きだね」震える声が、そのまま答えだった。"}
+            ],
+            final:true,
+            endingText:"ライブハウスのステージに立つ凪は、今日もMCで軽口を叩いている。「実はあたし、海めちゃくちゃ苦手なんだよね」――楽屋裏だけの秘密だったはずの弱点を、今は客席に向けて笑い話にできる。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"少しずつ、弱さを見せる関係",
+        epilogueText:"「あなたが、いつも急かさずに待っていてくれたから」\n最後のライブを終えた帰り道、凪がぽつりと言う。「私、いつの間にか、怖がりな自分を隠さなくてもいいって思えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、『歌姫』なんて呼ばれるより、あんたの隣にいる自分の方が、ずっと好き」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、誰も近づけなかった距離を、確かに縮めていた。",
+        events:[
+          { label:"SCENE 02 — 呼び止められて", text:"翌週の実習帰り、凪の方から呼び止められた。\n「ねえ、この前の実習船、デッキの近くにいなかった?」\n何気ない調子を装っていたが、目はまっすぐこちらを探るように見ていた。",
+            choices:[
+              {label:"「たまたま通りかかっただけだ」ととぼける", delta:10, result:"凪はしばらくこちらを見つめていたが、やがて「そう」とだけ言って引き下がった。"},
+              {label:"「情けない声、聞こえてたって言ったら嘘になる」と正直に認める", delta:40, result:"凪は息を呑み、それから観念したように肩の力を抜いた。「……やっぱり。もういいや、正直に言うと恥ずかしい」"}
+            ]},
+          { label:"SCENE 03 — 素顔の分だけ", text:"それからというもの、凪は実習の作業中、少しずつ気を抜いた弱音を見せるようになっていた。\n「一つだけ見られたんだから、もう隠す意味ないよね」",
+            choices:[
+              {label:"急かさず、彼女のペースに合わせる", delta:15, result:"凪はそれが心地よかったのか、少しずつ肩の力を抜いていった。"},
+              {label:"「弱ってる凪の方が、俺は話しやすい」と伝える", delta:55, result:"凪は驚いた顔をしたあと、俯いて小さく笑った。「……そういうこと、簡単に言うんだ」"}
+            ]},
+          { label:"SCENE 04 — 岩場の騒がしい隣人", birdId:"umineko",
+            beats:[
+              {text:"春、実習で海沿いの岩場を訪れると、猫のような鳴き声があちこちから響いていた。"},
+              {text:"凪は顔をしかめつつも、ヒナに餌を運ぶウミネコの姿にいつの間にか見入っていた。", climax:true},
+              {text:"「……あの声、よく聞くと必死なんだね」"}
+            ],
+            choices:[
+              {label:"急かさず、彼女が満足するまで一緒に見る", delta:15, result:"凪は満足そうに息をついた。「こんな寄り道、悪くないね」"},
+              {label:"「うるさいとか言いつつ、結構好きだろ」と軽く言う", delta:35, result:"凪は少し驚いた顔で「……うん、意外と好きかも」と呟いた。"},
+              {label:"「凪の『見入ってる顔』、もっと見てみたいな」と伝える", delta:70, result:"凪は驚いた顔をしたあと、小さく頷いた。「……気が向いたらね」"}
+            ]},
+          { label:"SCENE 05 — 夜の岸壁、地中からの声", birdId:"utou",
+            beats:[
+              {text:"夏、実習の夜間観察で無人島に上陸した。日が沈むと地面のあちこちから奇妙な鳴き声が響き始め、凪が怯えたように身を寄せてきた。"},
+              {text:"暗闇の空を無数の影が乱れ飛び始める。ウトウという海鳥が、巣穴から一斉に戻ってくる瞬間だった。", climax:true}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒にその光景を見つめ続ける", delta:15, result:"凪は言葉を失ったまま、長い間その場を動かなかった。"},
+              {label:"「怖がってるとこ、初めて見たな」と伝える", delta:35, result:"凪は涙目のまま笑った。「……うん、素直に怖かった」"},
+              {label:"何も言わず、そっと隣に座る距離を詰める", delta:70, result:"凪は一瞬身を固くしたが、やがて力を抜いて隣に座り直した。「……もう少し、このままで」"}
+            ]},
+          { label:"SCENE 06 — 沖を越えていく影", birdId:"oomizunagidori",
+            beats:[
+              {text:"秋、就活の説明会が学内で始まった頃、岬の展望台から沖を眺めた。オオミズナギドリの群れが水平線を横切っていく。"},
+              {text:"「私たちも、卒業したらバラバラの場所に飛んでいくのかな」\n凪が、誰にも言えなかった不安をぽつりとこぼした。"}
+            ],
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"凪はふと視線に気づき、照れたように目を逸らした。"},
+              {label:"「群れって、また同じ場所に戻ってくるものだろ」と伝える", delta:35, result:"凪は頬を染め、「……そうだといいけど」とぽつりと呟いた。"},
+              {label:"「これからも、凪の隣にいたい」と静かに伝える", delta:70, result:"凪は長い沈黙のあと、消え入りそうな声で「……うん」と答えた。"}
+            ]},
+          { label:"SCENE 07 — 絶海の孤島、白い翼", birdId:"ahoudori",
+            beats:[
+              {text:"冬、凪の方から誘ってきた。「最後に、もう一種類だけ鳥を見に行かない?」孤島の断崖に立つと、下から吹き上げる潮風が、まっすぐ体を押し返してくる。"},
+              {text:"崖の縁に点在する白い塊。翼を畳んだその姿は、大きな座布団のようにも見えた。その一羽が、ゆっくりと翼を開き始める。"},
+              {text:"広げた翼幅は、大人二人分よりもまだ広かった。純白の胴に、翼の先だけが墨で刷いたような黒。風を受けて、羽の一枚一枚が細かく震えている。"},
+              {text:"バサッ", type:"sfx"},
+              {text:"崖から飛び出したその体は、羽ばたくことなく、ただ風だけを受けて、滑るように宙へ溶け出した。海面すれすれを、まっすぐ、どこまでも滑空していく。", climax:true},
+              {text:"アホウドリだった。かつて羽毛採取のために乱獲され、一時は絶滅したと考えられていた鳥。今はこの島だけで、再びその命をつないでいる。"},
+              {text:"「……こんな綺麗な鳥、一度は消えかけてたんだ」\n凪は風に髪をなびかせながら、白い翼をいつまでも目で追っていた。"}
+            ],
+            choices:[
+              {label:"黙って、隣で一緒にその姿を見つめ続ける", delta:15, result:"凪は言葉少なに、小さく微笑んだ。「一年で、随分色んな鳥見たね」"},
+              {label:"「この時間が、一番好きだな」と伝える", delta:35, result:"凪は驚いた顔のあと、嬉しそうに一歩近づいてきた。「……私も」"},
+              {label:"「来年も、凪と一緒にこの景色を見に来たい」と伝える", delta:70, result:"凪は涙ぐみながら、小さく、けれど確かに頷いた。「……うん。来年も、再来年も」"}
+            ]},
+          {
+            label:"SCENE 08 — 最後のライブの夜", text:"一年が過ぎ、凪は以前よりずっと自然な顔で笑うようになっていた。卒業ライブを終えた帰り道、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"凪は小さく頷いた。「……うん、それでいい」穏やかな声だった。"},
+              {label:"「隣にいるだけじゃなく、これからは正式に、俺の彼女になってほしい」と伝える", delta:85, result:"凪は長い沈黙のあと、静かに涙をこぼしながら頷いた。「……『歌姫』なんて呼ばれてた私が、こんなに誰かを好きになるなんてね」"}
+            ],
+            final:true,
+            endingText:"サークルの新歓ライブで、凪は相変わらず堂々と歌っている。ただ、舞台袖で見せる青い顔を、隠さなくなった後輩が一人だけ知っている。"
+          }
+        ]
+      }
+    }
+  },
+  yoihara: {
+    name:"千夜",
+    subtitle:"生徒会長、「不夜城」と呼ばれるほどの完璧な仕事ぶりで知られる存在",
+    color:"#2f3b2e", glow:"#e8ede0", emblem:"夜", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"宵原千夜の名前を知らない学生は、この大学にはいない。生徒会長として、どんな仕事も完璧にこなす『不夜城』――深夜まで明かりが消えない生徒会室の主として知られていた。\n学祭実行委員会でたまたま同じ班になったのが、その千夜だった。\n資料を届けに深夜の生徒会室を訪れると、千夜は机に突っ伏したまま眠っていた。\n「……もう、無理……誰か、代わって……」\n寝言だった。いつもの完璧な仕事ぶりからは想像もつかない、弱々しい声だった。",
+      choices:[
+        { label:"「大丈夫か」と肩を揺すって起こす", delta:100, route:"A",
+          result:"千夜は弾かれたように飛び起き、みるみるうちに顔を赤くした。\n「……っ、今の、聞いた?最悪、寝言まで……」\n取り繕おうとする声が、寝起きのせいでうまく力が入らないまま震えていた。いつもの『不夜城』とはまるで違う、疲れ切った素顔がそこにあった。" },
+        { label:"起こさないよう、そっと資料だけ置いて立ち去る", delta:75, route:"B",
+          result:"そっと資料だけ置いて、足音を殺して部屋を出た。翌日、千夜の方から声をかけてきた。\n「……昨日の夜、生徒会室に来た?」\n探るような視線に、曖昧に頷くと、彼女は珍しく歯切れの悪い返事をした。それ以上は何も言わなかったが、纏う空気には確かな戸惑いがあった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"完璧じゃなくていい夜",
+        epilogueText:"「あの日、寝言まで聞かれてなかったら」\n学祭の後片付けを終えた帰り道、千夜がぽつりと言う。「私、今でも『不夜城』のふりをして、一人で全部抱え込んでたと思う」\n「今は?」と聞くと、彼女は初めて出会った日には見せなかった顔で笑った。\n「今は、あんたの前でだけ、疲れたって言っていいのが分かってる。それだけで、ずっと息がしやすい」\n『不夜城』と呼ばれ続けた横顔に、初めて誰かのためだけの温度が灯っていた。",
+        events:[
+          { label:"SCENE 02 — 約束", text:"気まずい沈黙のあと、千夜は乱れた髪を整えながら言った。\n「……今の、誰にも言わないで。生徒会長が寝言漏らしてた、なんて広まったら示しがつかない」\n気丈な口調だったが、声にはまだ隠しきれない疲労が滲んでいた。",
+            choices:[
+              {label:"「言わない。約束する」と静かに頷く", delta:10, result:"千夜はほっとしたように息をついた。「……ありがとう」"},
+              {label:"「別に、疲れて寝落ちするくらい普通のことだろ」と本音で返す", delta:40, result:"千夜は驚いた顔でこちらを見た。「……そんな風に言われたの、初めて」観念したように小さく笑った、作られたものじゃない笑顔だった。"}
+            ]},
+          { label:"SCENE 03 — 週に一度の作業", text:"学祭実行委員会の作業は、週に一度のペースで続くことになった。回を重ねるうち、千夜は時々、疲れた表情を隠さなくなっていた。\n「……あ、今の、気の抜けた顔してた?」\n自分で気づいて慌てて取り繕う姿が、いつもの『不夜城』とはまるで違っていた。",
+            choices:[
+              {label:"気づかないふりをして、話を続ける", delta:15, result:"千夜はほっとしたように、また作業の話に戻った。それでも、肩の力は抜けたままだった。"},
+              {label:"「無理に『完璧』でいなくていいのに」と伝える", delta:55, result:"千夜は虚をつかれたように黙り込み、それから小さく「……うん」と呟いた。"}
+            ]},
+          { label:"SCENE 04 — 「仏法僧」と呼ばれた鳥", birdId:"konohazuku",
+            beats:[
+              {text:"春、実行委員会の下見で訪れた里山の森で、日が暮れる頃、涼やかな声が響いてきた。"},
+              {text:"ブッ、ポウ、ソウ", type:"sfx"},
+              {text:"「……仏法僧、って聞いたことある。お寺の鳴き声かと思ったら、鳥だったんだ」\n千夜が驚いたように呟く。小さなコノハズクの声だった。姿を探して木々を見上げる千夜の横顔は、いつもの気を張った表情ではなかった。"}
+            ],
+            choices:[
+              {label:"何も言わず、彼女が探す横顔を見守る", delta:15, result:"千夜は満足そうに息をついた。「……こんな声、初めて聞いた」"},
+              {label:"「千夜、そんな夢中になれること、あるんだな」と軽く言う", delta:35, result:"千夜は少しむっとした顔をしたあと、笑った。「……悪い?本気で綺麗な声だと思ったんだもん」"},
+              {label:"「その顔の方が、いつもの会長よりずっと良いと思うけどな」と伝える", delta:70, result:"千夜は目を見開き、頬を赤らめた。「……そういうこと、不意打ちで言わないでよ」"}
+            ]},
+          { label:"SCENE 05 — 夏の夜、低く響く声", birdId:"aobazuku",
+            beats:[
+              {text:"夏、学祭準備の合間、二人だけ遅くまで作業室に残ることになった。窓の外、裏山の方から低い声が等間隔で響いてくる。"},
+              {text:"ホッ、ホッ", type:"sfx"},
+              {text:"「……あの声、聞くと落ち着く。私も、あんな風に規則正しく生きられたらいいのに」\n千夜が疲れた笑みを浮かべながら呟いた。アオバズクの声に耳を澄ませる横顔は、どこか羨ましそうだった。"}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒に声に耳を澄ませる", delta:15, result:"千夜は肩の力を抜いて、しばらく目を閉じていた。"},
+              {label:"「千夜も、たまには規則正しく休めよ」と伝える", delta:35, result:"千夜は苦笑しながら「……耳が痛い」と呟いた。それでも、拒む響きはなかった。"},
+              {label:"「その疲れた顔、俺にだけは見せてくれていいけどな」と伝える", delta:70, result:"千夜は虚をつかれたように黙り込み、それから小さく、けれど確かに頷いた。「……なにそれ。ずるい」目には隠しきれない安堵が滲んでいた。"}
+            ]},
+          { label:"SCENE 06 — 集まって眠る、秋の森", birdId:"torafuzuku",
+            beats:[
+              {text:"秋、就活の説明会が学内で始まった頃、二人で近くの雑木林を訪れた。"},
+              {text:"一本の常緑樹に、耳のような羽角を持つ鳥が何羽も、身を寄せ合うようにして止まっていた。トラフズクの集団ねぐらだった。", climax:true},
+              {text:"「……あんなに集まって。一人でいるより、あったかいのかな」\n千夜はその様子を見つめながら、ぽつりと言った。「私、ずっと一人で抱え込むのが当たり前だと思ってたけど……」\nいつもの気丈な声ではない、迷子になった子どものような、頼りない声だった。"}
+            ],
+            choices:[
+              {label:"何も言わず、しばらく一緒にその様子を見つめ続ける", delta:15, result:"千夜は何かを確かめるように、長い間その木を見上げていた。"},
+              {label:"「一人で抱え込まなくても、いいんじゃないか」と返す", delta:35, result:"千夜は少し驚いた顔をしたあと、小さく笑った。「……そうだね」"},
+              {label:"「千夜がどれだけ抱え込んでも、俺は隣にいるつもりだけどな」と伝える", delta:70, result:"千夜は息を呑み、目に涙を滲ませながらこちらを見た。「……そんなこと、今ここで言う?」声は震えていたが、拒む響きは少しもなかった。"}
+            ]},
+          { label:"SCENE 07 — 雪の森、大きな瞳", birdId:"fukurou",
+            beats:[
+              {text:"冬、学祭の後片付けもすべて終えた夜、二人で雪の積もる里山を歩いた。"},
+              {text:"太い木の洞から、丸い大きな瞳が、じっとこちらを見下ろしていた。フクロウだった。微動だにせず、静かに佇むその姿に、千夜はしばらく見入っていた。", climax:true},
+              {text:"「……ずっと同じ場所で、静かに見てるだけなんだね。それって、なんか、羨ましい」\n千夜は白い息を吐きながら、そう呟いて笑った。"}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒にその姿を見つめ続ける", delta:15, result:"千夜は白い息を吐きながら、小さく微笑んだ。「一年で、随分色んな鳥見たね」"},
+              {label:"「静かに見てるだけの時間も、悪くないよな」と伝える", delta:35, result:"千夜は少し照れたように「……うん、そうだね」と呟いた。"},
+              {label:"「来年も、千夜と一緒に鳥を探しに行きたい」と伝える", delta:70, result:"千夜は涙ぐみながら、小さく、けれど確かに頷いた。「……うん。来年も、再来年も」"}
+            ]},
+          {
+            label:"SCENE 08 — 生徒会室の最後の夜", text:"一年が過ぎ、学祭実行委員会の任期も無事終わった春。千夜は最後の引き継ぎ資料を書き終え、珍しく肩の力を抜いていた。\n「あの日、寝言まで聞かれてから、ずっとこの調子だね」\n懐かしむように笑う千夜の横顔は、出会った頃とはまるで違って見えた。",
+            choices:[
+              {label:"「これからも、千夜の隣にいたい」と静かに伝える", delta:20, result:"千夜は小さく頷いた。「……うん、それで十分」穏やかな声だった。"},
+              {label:"「千夜のことが、ずっと前から好きだった」と正直に伝える", delta:85, result:"千夜は長い沈黙のあと、目に涙を浮かべながら、けれど確かに頷いた。「……こんな抱え込みグセのある私を好きになるなんて、物好きだね」震える声が、そのまま答えだった。"}
+            ],
+            final:true,
+            endingText:"生徒会室の電気は、今日も遅くまで灯っている。ただ、千夜は「今日はここまで」と言って、後輩に仕事を託して先に帰るようになった。「不夜城」の看板は、少しずつ後輩たちに引き継がれている。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"少しずつ、頼っていい関係",
+        epilogueText:"「あなたが、いつも急かさずに待っていてくれたから」\n最後の引き継ぎを終えた帰り道、千夜がぽつりと言う。「私、いつの間にか、一人で抱え込まなくてもいいって思えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、『不夜城』なんて呼ばれるより、あんたの隣にいる自分の方が、ずっと好き」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、誰も近づけなかった距離を、確かに縮めていた。",
+        events:[
+          { label:"SCENE 02 — 呼び止められて", text:"翌週の作業帰り、千夜の方から呼び止められた。\n「ねえ、昨日の夜、生徒会室に来なかった?」\n何気ない調子を装っていたが、目はまっすぐこちらを探るように見ていた。",
+            choices:[
+              {label:"「たまたま通りかかっただけだ」ととぼける", delta:10, result:"千夜はしばらくこちらを見つめていたが、やがて「そう」とだけ言って引き下がった。"},
+              {label:"「寝言、聞こえてたって言ったら嘘になる」と正直に認める", delta:40, result:"千夜は息を呑み、それから観念したように肩の力を抜いた。「……やっぱり。もういいや、正直に言うと恥ずかしい」"}
+            ]},
+          { label:"SCENE 03 — 素顔の分だけ", text:"それからというもの、千夜は作業中、少しずつ疲れた表情を見せるようになっていた。\n「一つだけ聞かれたんだから、もう隠す意味ないよね」",
+            choices:[
+              {label:"急かさず、彼女のペースに合わせる", delta:15, result:"千夜はそれが心地よかったのか、少しずつ肩の力を抜いていった。"},
+              {label:"「疲れてる千夜の方が、俺は話しやすい」と伝える", delta:55, result:"千夜は驚いた顔をしたあと、俯いて小さく笑った。「……そういうこと、簡単に言うんだ」"}
+            ]},
+          { label:"SCENE 04 — 「仏法僧」と呼ばれた鳥", birdId:"konohazuku",
+            beats:[
+              {text:"春、実行委員会の下見で訪れた里山の森で、日が暮れる頃、涼やかな声が響いてきた。"},
+              {text:"ブッ、ポウ、ソウ", type:"sfx"},
+              {text:"「……仏法僧、って聞いたことある」\n千夜は驚いたように、コノハズクの声がする方を見上げていた。"}
+            ],
+            choices:[
+              {label:"急かさず、彼女が満足するまで一緒に探す", delta:15, result:"千夜は満足そうに息をついた。「こんな寄り道、悪くないね」"},
+              {label:"「この声、確かに涼しげだな」と軽く言う", delta:35, result:"千夜は少し驚いた顔で「……うん、そうだね」と呟いた。"},
+              {label:"「千夜の『夢中になれるもの』、もっと知りたいな」と伝える", delta:70, result:"千夜は驚いた顔をしたあと、小さく頷いた。「……気が向いたらね」"}
+            ]},
+          { label:"SCENE 05 — 夏の夜、低く響く声", birdId:"aobazuku",
+            beats:[
+              {text:"夏、学祭準備の合間、二人だけ遅くまで作業室に残った。窓の外から低い声が等間隔で響いてくる。"},
+              {text:"ホッ、ホッ", type:"sfx"},
+              {text:"「……あの声、聞くと落ち着く」\n千夜が疲れた笑みを浮かべながら呟いた。"}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒に声に耳を澄ませる", delta:15, result:"千夜は肩の力を抜いて、しばらく目を閉じていた。"},
+              {label:"「千夜も、たまには休めよ」と伝える", delta:35, result:"千夜は苦笑しながら「……耳が痛い」と呟いた。"},
+              {label:"何も言わず、そっと隣に座る距離を詰める", delta:70, result:"千夜は一瞬身を固くしたが、やがて力を抜いて隣に座り直した。「……もう少し、このままで」"}
+            ]},
+          { label:"SCENE 06 — 集まって眠る、秋の森", birdId:"torafuzuku",
+            beats:[
+              {text:"秋、就活の説明会が学内で始まった頃、二人で近くの雑木林を訪れた。"},
+              {text:"常緑樹に何羽も身を寄せ合うトラフズクの集団ねぐらを見つけた。", climax:true},
+              {text:"「私、ずっと一人で抱え込むのが当たり前だと思ってたけど……」\n千夜が、誰にも言えなかった弱音をぽつりとこぼした。"}
+            ],
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"千夜はふと視線に気づき、照れたように目を逸らした。"},
+              {label:"「一人で抱え込まなくても、いいんじゃないか」と伝える", delta:35, result:"千夜は頬を染め、「……そうだといいけど」とぽつりと呟いた。"},
+              {label:"「これからも、千夜の隣にいたい」と静かに伝える", delta:70, result:"千夜は長い沈黙のあと、消え入りそうな声で「……うん」と答えた。"}
+            ]},
+          { label:"SCENE 07 — 雪の森、大きな瞳", birdId:"fukurou",
+            beats:[
+              {text:"冬、千夜の方から誘ってきた。「最後に、もう一種類だけ鳥を見に行かない?」雪の里山を歩いた。"},
+              {text:"木の洞から、丸い瞳をしたフクロウがこちらを見下ろしていた。", climax:true},
+              {text:"「……ずっと同じ場所で、静かに見てるだけなんだね」"}
+            ],
+            choices:[
+              {label:"黙って、隣で一緒にその姿を見つめ続ける", delta:15, result:"千夜は白い息を吐きながら、小さく微笑んだ。「一年で、随分色んな鳥見たね」"},
+              {label:"「この時間が、一番好きだな」と伝える", delta:35, result:"千夜は驚いた顔のあと、嬉しそうに一歩近づいてきた。「……私も」"},
+              {label:"「来年も、千夜と一緒に鳥を探しに行きたい」と伝える", delta:70, result:"千夜は涙ぐみながら、小さく、けれど確かに頷いた。「……うん。来年も、再来年も」"}
+            ]},
+          {
+            label:"SCENE 08 — 生徒会室の最後の夜", text:"一年が過ぎ、千夜は以前よりずっと自然な顔で笑うようになっていた。最後の引き継ぎを終えた帰り道、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"千夜は小さく頷いた。「……うん、それでいい」穏やかな声だった。"},
+              {label:"「隣にいるだけじゃなく、これからは正式に、俺の彼女になってほしい」と伝える", delta:85, result:"千夜は長い沈黙のあと、静かに涙をこぼしながら頷いた。「……『不夜城』なんて呼ばれてた私が、こんなに誰かを好きになるなんてね」"}
+            ],
+            final:true,
+            endingText:"学祭実行委員会の会議室で、千夜は今日も的確に議事を進めている。ただ、疲れた顔を見せた瞬間、誰かがそっとお茶を淹れてくれるようになった。それを断らずに受け取れるようになったのが、一番の変化だった。"
+          }
+        ]
+      }
+    }
+  },
+  garasu: {
+    name:"冴",
+    subtitle:"写真部のエース、「寡黙な天才」と呼ばれる存在",
+    color:"#5c6570", glow:"#eef2f5", emblem:"冴", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"硝子冴の名前を知らない学生は、この大学にはいない。写真部のエースとして、学内外のコンテストで数々の賞を獲得し、『寡黙な天才』と呼ばれている。誰とも群れず、いつも一人でカメラを構えている姿ばかりが知られていた。\n都市計画ゼミの実地調査で、たまたま同じ班になったのが、その硝子冴だった。\n公園での聞き取り調査を任された冴の様子を遠くから見ていると、通行人に声をかけるたび、しどろもどろになっていた。\n「あ、あの、す、すみません、写真、いいですか……あ、いえ、無理にとは……」\nしどろもどろに謝りながら小走りで逃げていく後ろ姿は、いつもの『天才』の落ち着きとはまるで違っていた。",
+      choices:[
+        { label:"「代わりに声かけようか」と申し出る", delta:100, route:"A",
+          result:"冴は弾かれたように振り返り、みるみるうちに顔を赤くした。\n「……っ、今の、見てた?最悪、こんな情けないとこ……」\n取り繕おうとする声が、動揺のせいでうまく続かなかった。いつもの『天才』とはまるで違う、弱った素顔がそこにあった。" },
+        { label:"見なかったことにして、そっと離れる", delta:75, route:"B",
+          result:"そっと視線を逸らし、何も見なかったことにして離れた。作業が一段落した頃、冴の方から話しかけてきた。\n「……さっき、あっちにいたよね」\n探るような視線に、曖昧に頷くと、彼女は珍しく歯切れの悪い返事をした。それ以上は何も言わなかったが、纏う空気には確かな戸惑いがあった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"レンズの内側の、本当の顔",
+        epilogueText:"「あの日、情けないとこ見られてなかったら」\nゼミの最終発表を終えた帰り道、冴がぽつりと言う。「私、今でも『天才』のふりをして、人と話すの苦手なとこ、隠し続けてたと思う」\n「今は?」と聞くと、彼女は初めて出会った日には見せなかった顔で笑った。\n「今は、あんたの前でだけ、うまく話せなくてもいいって分かってる。それだけで、ずっと息がしやすい」\n『寡黙な天才』と呼ばれ続けた横顔に、初めて誰かのためだけの温度が灯っていた。",
+        events:[
+          { label:"SCENE 02 — 約束", text:"気まずい沈黙のあと、冴は俯いたまま言った。\n「……今の、誰にも言わないで。『天才』のくせに人と話せない、なんて広まったら、写真だけの人だと思われる」\n小さな声だったが、その懇願には確かな切実さがあった。",
+            choices:[
+              {label:"「言わない。約束する」と静かに頷く", delta:10, result:"冴はほっとしたように息をついた。「……ありがとう」"},
+              {label:"「別に、人と話すの苦手なくらい普通のことだろ」と本音で返す", delta:40, result:"冴は驚いた顔でこちらを見た。「……そんな風に言われたの、初めて」観念したように小さく笑った、作られたものじゃない笑顔だった。"}
+            ]},
+          { label:"SCENE 03 — 週に一度の調査", text:"都市計画ゼミの実地調査は、週に一度のペースで続くことになった。回を重ねるうち、冴は時々、たどたどしい話し方を隠さなくなっていた。\n「……あ、今の、変な喋り方だった?」\n自分で気づいて慌てて言い直す姿が、いつもの『天才』とはまるで違っていた。",
+            choices:[
+              {label:"気づかないふりをして、話を続ける", delta:15, result:"冴はほっとしたように、また調査の話に戻った。それでも、肩の力は抜けたままだった。"},
+              {label:"「無理に上手く喋らなくていいのに」と伝える", delta:55, result:"冴は虚をつかれたように黙り込み、それから小さく「……うん」と呟いた。"}
+            ]},
+          { label:"SCENE 04 — 青い尾の賑やかな群れ", birdId:"onaga",
+            beats:[
+              {text:"春、公園の調査中、頭上の木々を賑やかな声が渡っていった。"},
+              {text:"ギャーギャー", type:"sfx"},
+              {text:"「……あの鳥、尾が長くて、青いんだ」\n冴が思わずカメラを構える。オナガの群れだった。騒がしく鳴きながら移動する群れを、冴は夢中でファインダー越しに追いかけていた。"}
+            ],
+            choices:[
+              {label:"何も言わず、彼女が夢中になる横顔を見守る", delta:15, result:"冴は満足そうに息をついた。「……こんな身近な公園に、こんな綺麗な鳥がいたんだ」"},
+              {label:"「冴、そんな夢中になれること、あるんだな」と軽く言う", delta:35, result:"冴は少しむっとした顔をしたあと、笑った。「……悪い?本気で綺麗だと思ったんだもん」"},
+              {label:"「その顔の方が、いつもの『天才』よりずっと良いと思うけどな」と伝える", delta:70, result:"冴は目を見開き、頬を赤らめた。「……そういうこと、不意打ちで言わないでよ」"}
+            ]},
+          { label:"SCENE 05 — 夜の池、じっと待つ影", birdId:"goisagi",
+            beats:[
+              {text:"夏、夜間調査で公園の池のほとりを歩いていると、水辺の茂みに、灰色がかった鳥がじっと動かずに立っていた。"},
+              {text:"「……ゴイサギだ。昼間は絶対見ない鳥」\n冴が興奮を抑えるように囁く。獲物をじっと待ち続けるその忍耐強さに、冴はいつまでもレンズを向けていた。", climax:true}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒にその様子を見つめ続ける", delta:15, result:"冴は満足そうに、しばらくその場を動かなかった。"},
+              {label:"「冴も、そのくらいじっと待てる方なんだろ」と伝える", delta:35, result:"冴は頬を染め、「……気長なのだけは得意」と呟いた。"},
+              {label:"「もっと、こういう冴の夢中な顔、見ていたいな」と伝える", delta:70, result:"冴は言葉を失ったように固まり、それから小さく、けれど確かに頷いた。「……ずるい言い方するね、それ」"}
+            ]},
+          { label:"SCENE 06 — 川面の漁師たち", birdId:"kawau",
+            beats:[
+              {text:"秋、就活の説明会が学内で始まった頃、二人で川沿いの遊歩道を歩いた。"},
+              {text:"水面から黒い鳥が次々と顔を出し、器用に魚をくわえて飲み込んでいく。カワウの群れだった。", climax:true},
+              {text:"「……カワウって、あんなに潜って魚捕れるんだ」\n冴は群れの動きを追いながら、ぽつりと言った。「私、就活とか、うまく群れに合わせられる自信、全然ない」\nいつもの落ち着いた声ではない、迷子になった子どものような、頼りない声だった。"}
+            ],
+            choices:[
+              {label:"何も言わず、しばらく一緒に川面を眺め続ける", delta:15, result:"冴は何かを確かめるように、長い間水面を見つめていた。"},
+              {label:"「群れに合わせなくても、冴のやり方でいいんじゃないか」と返す", delta:35, result:"冴は少し驚いた顔をしたあと、小さく笑った。「……そうだといいな」"},
+              {label:"「冴がどんな道を選んでも、俺は隣にいるつもりだけどな」と伝える", delta:70, result:"冴は息を呑み、目に涙を滲ませながらこちらを見た。「……そんなこと、今ここで言う?」声は震えていたが、拒む響きは少しもなかった。"}
+            ]},
+          { label:"SCENE 07 — 冬の池、白黒の潜り手", birdId:"mikoaisa",
+            beats:[
+              {text:"冬、ゼミの最終レポートを兼ねて、最後の公園調査に出かけた。凍りかけた池に、小さな鴨が浮かんでいた。"},
+              {text:"白と黒のコントラストが、まるでパンダのような模様を描いている。ミコアイサだった。", climax:true},
+              {text:"「……ミコアイサだ。『パンダガモ』って呼ばれてるやつ、初めて見た」\n冴は震える手でシャッターを切り続けていた。その横顔には、出会った頃にはなかった充実した表情が浮かんでいた。"}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒にその姿を見つめ続ける", delta:15, result:"冴は白い息を吐きながら、小さく微笑んだ。「一年で、随分色んな鳥見たね」"},
+              {label:"「珍しい鳥、撮れてよかったな」と伝える", delta:35, result:"冴は少し照れたように「……うん、最高の一枚になった」と呟いた。"},
+              {label:"「来年も、冴と一緒に鳥を探しに行きたい」と伝える", delta:70, result:"冴は涙ぐみながら、小さく、けれど確かに頷いた。「……うん。来年も、再来年も」"}
+            ]},
+          {
+            label:"SCENE 08 — 最終発表の夜", text:"一年が過ぎ、都市計画ゼミの最終発表も無事終わった春。冴は自分の写真をスクリーンに映しながら、たどたどしくも自分の言葉で発表をやり遂げていた。\n「あの日、情けないとこ見られてから、ずっとこの調子だね」\n懐かしむように笑う冴の横顔は、出会った頃とはまるで違って見えた。",
+            choices:[
+              {label:"「これからも、冴の隣にいたい」と静かに伝える", delta:20, result:"冴は小さく頷いた。「……うん、それで十分」穏やかな声だった。"},
+              {label:"「冴のことが、ずっと前から好きだった」と正直に伝える", delta:85, result:"冴は長い沈黙のあと、目に涙を浮かべながら、けれど確かに頷いた。「……こんな人見知りな私を好きになるなんて、物好きだね」震える声が、そのまま答えだった。"}
+            ],
+            final:true,
+            endingText:"写真部の展示会場で、冴は今日も来場者に話しかけられて、たどたどしく答えている。ただ、その言葉を最後まで言い切れるようになった。「……ありがとう、ございます」――短い一言に、以前より確かな重みがあった。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"少しずつ、言葉を交わす関係",
+        epilogueText:"「あなたが、いつも急かさずに待っていてくれたから」\nゼミの最終発表を終えた帰り道、冴がぽつりと言う。「私、いつの間にか、うまく話せない自分を隠さなくてもいいって思えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、『寡黙な天才』なんて呼ばれるより、あんたの隣にいる自分の方が、ずっと好き」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、誰も近づけなかった距離を、確かに縮めていた。",
+        events:[
+          { label:"SCENE 02 — 呼び止められて", text:"翌週の調査帰り、冴の方から呼び止められた。\n「ねえ、この前、公園の向こうから見てたよね」\n何気ない調子を装っていたが、目はまっすぐこちらを探るように見ていた。",
+            choices:[
+              {label:"「たまたま通りかかっただけだ」ととぼける", delta:10, result:"冴はしばらくこちらを見つめていたが、やがて「そう」とだけ言って引き下がった。"},
+              {label:"「しどろもどろなとこ、見てたって言ったら嘘になる」と正直に認める", delta:40, result:"冴は息を呑み、それから観念したように肩の力を抜いた。「……やっぱり。もういいや、正直に言うと恥ずかしい」"}
+            ]},
+          { label:"SCENE 03 — 素顔の分だけ", text:"それからというもの、冴は調査の作業中、少しずつたどたどしい話し方を見せるようになっていた。\n「一つだけ見られたんだから、もう隠す意味ないよね」",
+            choices:[
+              {label:"急かさず、彼女のペースに合わせる", delta:15, result:"冴はそれが心地よかったのか、少しずつ肩の力を抜いていった。"},
+              {label:"「たどたどしい冴の方が、俺は話しやすい」と伝える", delta:55, result:"冴は驚いた顔をしたあと、俯いて小さく笑った。「……そういうこと、簡単に言うんだ」"}
+            ]},
+          { label:"SCENE 04 — 青い尾の賑やかな群れ", birdId:"onaga",
+            beats:[
+              {text:"春、公園の調査中、頭上の木々を賑やかな声が渡っていった。青い尾を持つオナガの群れだった。"},
+              {text:"冴は思わずカメラを構え、夢中でファインダーを覗いていた。", climax:true}
+            ],
+            choices:[
+              {label:"急かさず、彼女が満足するまで一緒に見る", delta:15, result:"冴は満足そうに息をついた。「こんな寄り道、悪くないね」"},
+              {label:"「身近な公園に、こんな鳥がいたんだな」と軽く言う", delta:35, result:"冴は少し驚いた顔で「……うん、そうだね」と呟いた。"},
+              {label:"「冴の『夢中になれるもの』、もっと知りたいな」と伝える", delta:70, result:"冴は驚いた顔をしたあと、小さく頷いた。「……気が向いたらね」"}
+            ]},
+          { label:"SCENE 05 — 夜の池、じっと待つ影", birdId:"goisagi",
+            beats:[
+              {text:"夏、夜間調査で公園の池のほとりを歩くと、水辺の茂みにゴイサギがじっと立っていた。"},
+              {text:"冴は興奮を抑えるように、いつまでもレンズを向けていた。", climax:true}
+            ],
+            choices:[
+              {label:"何も言わず、彼女の物思いを邪魔しない", delta:15, result:"冴はふと我に返り、「……ごめん、夢中になってた」と照れたように笑った。"},
+              {label:"「冴でも、我を忘れる時あるんだな」と軽くからかう", delta:35, result:"冴は頬を膨らませた。「……たまにはね」拗ねた顔も、隠さなくなっていた。"},
+              {label:"何も言わず、そっと隣に座る距離を詰める", delta:70, result:"冴は一瞬身を固くしたが、やがて力を抜いて隣に座り直した。「……もう少し、このままで」"}
+            ]},
+          { label:"SCENE 06 — 川面の漁師たち", birdId:"kawau",
+            beats:[
+              {text:"秋、就活の説明会が学内で始まった頃、二人で川沿いの遊歩道を歩いた。"},
+              {text:"カワウが次々に水中へ潜り、魚をくわえて浮かび上がってくる。", climax:true},
+              {text:"「私、就活とか、うまく群れに合わせられる自信、全然ない」\n冴が、誰にも言えなかった不安をぽつりとこぼした。"}
+            ],
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"冴はふと視線に気づき、照れたように目を逸らした。"},
+              {label:"「群れに合わせなくても、冴のやり方でいいんじゃないか」と伝える", delta:35, result:"冴は頬を染め、「……そうだといいな」とぽつりと呟いた。"},
+              {label:"「これからも、冴の隣にいたい」と静かに伝える", delta:70, result:"冴は長い沈黙のあと、消え入りそうな声で「……うん」と答えた。"}
+            ]},
+          { label:"SCENE 07 — 冬の池、白黒の潜り手", birdId:"mikoaisa",
+            beats:[
+              {text:"冬、冴の方から誘ってきた。「最後に、もう一種類だけ鳥を見に行かない?」凍りかけた池を覗き込んだ。"},
+              {text:"パンダのような模様のミコアイサが浮かんでいた。", climax:true},
+              {text:"「……『パンダガモ』、初めて見た」"}
+            ],
+            choices:[
+              {label:"黙って、隣で一緒にその姿を見つめ続ける", delta:15, result:"冴は白い息を吐きながら、小さく微笑んだ。「一年で、随分色んな鳥見たね」"},
+              {label:"「この時間が、一番好きだな」と伝える", delta:35, result:"冴は驚いた顔のあと、嬉しそうに一歩近づいてきた。「……私も」"},
+              {label:"「来年も、冴と一緒に鳥を探しに行きたい」と伝える", delta:70, result:"冴は涙ぐみながら、小さく、けれど確かに頷いた。「……うん。来年も、再来年も」"}
+            ]},
+          {
+            label:"SCENE 08 — 最終発表の夜", text:"一年が過ぎ、冴は以前よりずっと自然な顔で笑うようになっていた。最終発表を終えた帰り道、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"冴は小さく頷いた。「……うん、それでいい」穏やかな声だった。"},
+              {label:"「隣にいるだけじゃなく、これからは正式に、俺の彼女になってほしい」と伝える", delta:85, result:"冴は長い沈黙のあと、静かに涙をこぼしながら頷いた。「……『寡黙な天才』なんて呼ばれてた私が、こんなに誰かを好きになるなんてね」"}
+            ],
+            final:true,
+            endingText:"暗室にこもる冴は、今日も一人で作業をしている。ただ、扉をノックする音に、もう身構えなくなった。"
+          }
+        ]
+      }
+    }
+  },
+  minase: {
+    name:"凛",
+    subtitle:"漕艇部のキャプテン、「学内で一番涼しい顔をした人」と呼ばれる存在",
+    color:"#3f6b6e", glow:"#e8f3f0", emblem:"凛", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"水無瀬凛の名前を知らない学生は、この大学にはいない。漕艇部のキャプテンとして、どんな大会でも表情一つ崩さず、『学内で一番涼しい顔をした人』と呼ばれている。\n環境科学の湖沼調査実習で、たまたま同じ班になったのが、その水無瀬凛だった。\n大会に負けた日の夕方、資料を届けにボートハウスへ向かうと、桟橋の隅で凛が一人、膝を抱えて泣いていた。\n「……っ、なんで、あそこで抜かれるの……悔しい、悔しいよ……」\nしゃくり上げる声だった。いつもの涼しい表情からは想像もつかない、剥き出しの悔しさがそこにあった。",
+      choices:[
+        { label:"「大丈夫か」と隣に座る", delta:100, route:"A",
+          result:"凛は弾かれたように顔を上げ、みるみるうちに頬を赤らめた。\n「……っ、今の、見た?最悪、こんな情けないとこ……」\n涙を拭おうとする手が、震えたままうまく動かなかった。いつもの『涼しい顔』とはまるで違う、剥き出しの弱さがそこにあった。" },
+        { label:"気づかれないよう、そっとその場を離れる", delta:75, route:"B",
+          result:"そっと視線を逸らし、何も見なかったことにしてその場を離れた。翌日の実習で、凛の方から声をかけてきた。\n「……昨日の夕方、ボートハウスの近くにいた?」\n探るような視線に、曖昧に頷くと、彼女は珍しく歯切れの悪い返事をした。それ以上は何も言わなかったが、纏う空気には確かな戸惑いがあった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"涼しい顔の下の、本当の感情",
+        epilogueText:"「あの日、泣いてるとこ見られてなかったら」\n実習の最終発表を終えた帰り道、凛がぽつりと言う。「私、今でも『涼しい顔』のふりをして、悔しさも全部一人で抱え込んでたと思う」\n「今は?」と聞くと、彼女は初めて出会った日には見せなかった顔で笑った。\n「今は、あんたの前でだけ、悔しいって泣いていいのが分かってる。それだけで、ずっと息がしやすい」\n『涼しい顔』と呼ばれ続けた横顔に、初めて誰かのためだけの温度が灯っていた。",
+        events:[
+          { label:"SCENE 02 — 約束", text:"気まずい沈黙のあと、凛は涙を拭いながら言った。\n「……今の、部員には言わないで。キャプテンが桟橋で泣いてた、なんて広まったら示しがつかない」\n気丈な口調だったが、声にはまだ隠しきれない涙の名残があった。",
+            choices:[
+              {label:"「言わない。約束する」と静かに頷く", delta:10, result:"凛はほっとしたように息をついた。「……ありがとう」"},
+              {label:"「別に、悔しくて泣くくらい普通のことだろ」と本音で返す", delta:40, result:"凛は驚いた顔でこちらを見た。「……そんな風に言われたの、初めて」観念したように小さく笑った、作られたものじゃない笑顔だった。"}
+            ]},
+          { label:"SCENE 03 — 週に一度の調査", text:"湖沼調査実習は、週に一度のペースで続くことになった。回を重ねるうち、凛は時々、悔しさや弱音を隠さなくなっていた。\n「……あ、今の、また情けない顔してた?」\n自分で気づいて慌てて取り繕う姿が、いつもの『涼しい顔』とはまるで違っていた。",
+            choices:[
+              {label:"気づかないふりをして、話を続ける", delta:15, result:"凛はほっとしたように、また調査の話に戻った。それでも、肩の力は抜けたままだった。"},
+              {label:"「無理に『涼しい顔』でいなくていいのに」と伝える", delta:55, result:"凛は虚をつかれたように黙り込み、それから小さく「……うん」と呟いた。"}
+            ]},
+          { label:"SCENE 04 — 湖面に浮かぶ小さな浮巣", birdId:"kaitsuburi",
+            beats:[
+              {text:"春、湖畔の調査中、水草の間に浮かぶ小さな塊に目が留まった。"},
+              {text:"「……あれ、鳥の巣?水に浮いてる」\n凛が身を乗り出す。カイツブリが水草を集めて作った浮き巣だった。", climax:true},
+              {text:"潜っては餌を運ぶ親鳥の姿を、凛は夢中で見つめていた。"}
+            ],
+            choices:[
+              {label:"何も言わず、彼女が見入る横顔を見守る", delta:15, result:"凛は満足そうに息をついた。「……こんな身近な湖に、こんな工夫があったんだ」"},
+              {label:"「凛、そんな夢中になれること、あるんだな」と軽く言う", delta:35, result:"凛は少しむっとした顔をしたあと、笑った。「……悪い?本気で健気だと思ったんだもん」"},
+              {label:"「その顔の方が、いつもの『涼しい顔』よりずっと良いと思うけどな」と伝える", delta:70, result:"凛は目を見開き、頬を赤らめた。「……そういうこと、不意打ちで言わないでよ」"}
+            ]},
+          { label:"SCENE 05 — 親子で泳ぐ夏の朝", birdId:"karugamo",
+            beats:[
+              {text:"夏、早朝の調査で湖畔を歩いていると、母鳥の後ろに何羽もの雛がぴったりとついて泳いでいく姿があった。"},
+              {text:"「……カルガモの親子だ。あんなに小さいのに、必死についていってる」\n凛は微笑ましそうに目を細めていた。普段の気丈な姿とは違う、柔らかい表情がそこにあった。"}
+            ],
+            choices:[
+              {label:"隣で黙って、彼女が見ている方向を一緒に見る", delta:15, result:"凛は満足そうに、しばらくその場を動かなかった。"},
+              {label:"「凛、こういう顔してる方が、俺は好きだけどな」と伝える", delta:35, result:"凛は頬を染め、「……ずるい言い方」と呟いた。"},
+              {label:"「これからも、凛のこういう顔、もっと見せてくれ」と伝える", delta:70, result:"凛は驚いた顔のあと、嬉しそうに頷いた。「……うん。柄でもないけど、見せる」"}
+            ]},
+          { label:"SCENE 06 — 急降下する漁の名手", birdId:"misago",
+            beats:[
+              {text:"秋、就活の説明会が学内で始まった頃、湖の上空を大きな鳥が旋回していた。ミサゴだった。"},
+              {text:"その鳥が、翼を折りたたむようにして静止した。"},
+              {text:"次の瞬間、垂直に水面へ突き刺さった。", climax:true},
+              {text:"ザバッ", type:"sfx"},
+              {text:"水しぶきを上げ、大きな魚を両脚でしっかりと掴んだまま、再び空へと舞い上がっていく。\n「……っ、今の、すごい」\n凛は息を呑んでその一部始終を見つめていた。「私、あんな風に迷いなく飛び込めるかな。就活とか、正直怖い」\nいつもの気丈な声ではない、迷子になった子どものような、頼りない声だった。"}
+            ],
+            choices:[
+              {label:"何も言わず、しばらく一緒に空を見上げ続ける", delta:15, result:"凛は何かを確かめるように、長い間空を見つめていた。"},
+              {label:"「迷いなく見えても、きっと覚悟決めてから飛んでるんだろ」と返す", delta:35, result:"凛は少し驚いた顔をしたあと、小さく笑った。「……そうだといいな」"},
+              {label:"「凛がどんな道を選んでも、俺は隣にいるつもりだけどな」と伝える", delta:70, result:"凛は息を呑み、目に涙を滲ませながらこちらを見た。「……そんなこと、今ここで言う?」声は震えていたが、拒む響きは少しもなかった。"}
+            ]},
+          { label:"SCENE 07 — 冬の湖畔、鮮やかな一番", birdId:"oshidori",
+            beats:[
+              {text:"冬、実習の最終レポートを兼ねて、最後の湖畔調査に出かけた。葦の陰に、何か色鮮やかなものが動いていた。"},
+              {text:"燃えるような色彩の羽を持つ鳥が、つがいで静かに寄り添って泳いでいた。オシドリだった。", climax:true},
+              {text:"『おしどり夫婦』という言葉の由来にもなった、鮮やかで仲睦まじい姿に、凛はしばらく見入っていた。\n「……いつも一緒にいるんだね。私も、こんな風に誰かの隣に居続けられたらいいな」\n凛は白い息を吐きながら、そう呟いて笑った。"}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒にその姿を見つめ続ける", delta:15, result:"凛は白い息を吐きながら、小さく微笑んだ。「一年で、随分色んな鳥見たね」"},
+              {label:"「凛なら、誰かの隣にい続けられると思うけどな」と伝える", delta:35, result:"凛は少し照れたように「……そう思う?」と呟いた。"},
+              {label:"「来年も、凛と一緒に鳥を探しに行きたい」と伝える", delta:70, result:"凛は涙ぐみながら、小さく、けれど確かに頷いた。「……うん。来年も、再来年も」"}
+            ]},
+          {
+            label:"SCENE 08 — 最終レースの夜", text:"一年が過ぎ、湖沼調査実習も無事終わった春。凛は最後のレースを終え、今度は涙ではなく晴れやかな顔でボートハウスから出てきた。\n「あの日、泣いてるとこ見られてから、ずっとこの調子だね」\n懐かしむように笑う凛の横顔は、出会った頃とはまるで違って見えた。",
+            choices:[
+              {label:"「これからも、凛の隣にいたい」と静かに伝える", delta:20, result:"凛は小さく頷いた。「……うん、それで十分」穏やかな声だった。"},
+              {label:"「凛のことが、ずっと前から好きだった」と正直に伝える", delta:85, result:"凛は長い沈黙のあと、目に涙を浮かべながら、けれど確かに頷いた。「……こんな泣き虫な私を好きになるなんて、物好きだね」震える声が、そのまま答えだった。"}
+            ],
+            final:true,
+            endingText:"レース後のボートハウスで、凛は今日も部員たちと肩を組んで笑っている。負けた日は、人目もはばからず声を上げて泣くようになった。それを「らしくない」と言う者は、もう誰もいない。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"少しずつ、涙を見せる関係",
+        epilogueText:"「あなたが、いつも急かさずに待っていてくれたから」\n最終レポートを提出した帰り道、凛がぽつりと言う。「私、いつの間にか、悔し涙を隠さなくてもいいって思えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、『涼しい顔』なんて呼ばれるより、あんたの隣にいる自分の方が、ずっと好き」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、誰も近づけなかった距離を、確かに縮めていた。",
+        events:[
+          { label:"SCENE 02 — 呼び止められて", text:"翌週の実習帰り、凛の方から呼び止められた。\n「ねえ、昨日の夕方、ボートハウスの近くにいなかった?」\n何気ない調子を装っていたが、目はまっすぐこちらを探るように見ていた。",
+            choices:[
+              {label:"「たまたま通りかかっただけだ」ととぼける", delta:10, result:"凛はしばらくこちらを見つめていたが、やがて「そう」とだけ言って引き下がった。"},
+              {label:"「泣いてるとこ、見えてたって言ったら嘘になる」と正直に認める", delta:40, result:"凛は息を呑み、それから観念したように肩の力を抜いた。「……やっぱり。もういいや、正直に言うと恥ずかしい」"}
+            ]},
+          { label:"SCENE 03 — 素顔の分だけ", text:"それからというもの、凛は実習の作業中、少しずつ弱った表情を見せるようになっていた。\n「一つだけ見られたんだから、もう隠す意味ないよね」",
+            choices:[
+              {label:"急かさず、彼女のペースに合わせる", delta:15, result:"凛はそれが心地よかったのか、少しずつ肩の力を抜いていった。"},
+              {label:"「弱ってる凛の方が、俺は話しやすい」と伝える", delta:55, result:"凛は驚いた顔をしたあと、俯いて小さく笑った。「……そういうこと、簡単に言うんだ」"}
+            ]},
+          { label:"SCENE 04 — 湖面に浮かぶ小さな浮巣", birdId:"kaitsuburi",
+            beats:[
+              {text:"春、湖畔の調査中、水草の間に浮かぶカイツブリの浮き巣を見つけた。"},
+              {text:"凛は身を乗り出し、親鳥が餌を運ぶ様子に夢中で見入っていた。", climax:true}
+            ],
+            choices:[
+              {label:"急かさず、彼女が満足するまで一緒に見る", delta:15, result:"凛は満足そうに息をついた。「こんな寄り道、悪くないね」"},
+              {label:"「あんな小さい巣に工夫があるんだな」と軽く言う", delta:35, result:"凛は少し驚いた顔で「……うん、そうだね」と呟いた。"},
+              {label:"「凛の『夢中になれるもの』、もっと知りたいな」と伝える", delta:70, result:"凛は驚いた顔をしたあと、小さく頷いた。「……気が向いたらね」"}
+            ]},
+          { label:"SCENE 05 — 親子で泳ぐ夏の朝", birdId:"karugamo",
+            beats:[
+              {text:"夏、早朝の調査で湖畔を歩くと、母鳥について泳ぐカルガモの親子がいた。"},
+              {text:"凛は微笑ましそうに、しばらく無言でその姿を見つめていた。"}
+            ],
+            choices:[
+              {label:"何も言わず、彼女の物思いを邪魔しない", delta:15, result:"凛はふと我に返り、「……ごめん、見入ってた」と照れたように笑った。"},
+              {label:"「凛でも、そんな顔する時あるんだな」と軽くからかう", delta:35, result:"凛は頬を膨らませた。「……たまにはね」拗ねた顔も、隠さなくなっていた。"},
+              {label:"何も言わず、そっと隣に座る距離を詰める", delta:70, result:"凛は一瞬身を固くしたが、やがて力を抜いて隣に座り直した。「……もう少し、このままで」"}
+            ]},
+          { label:"SCENE 06 — 急降下する漁の名手", birdId:"misago",
+            beats:[
+              {text:"秋、就活の説明会が学内で始まった頃、湖上でミサゴが旋回していた。"},
+              {text:"ザバッ", type:"sfx"},
+              {text:"急降下したその体が、水しぶきと共に魚を掴んで舞い上がった。", climax:true},
+              {text:"「私、あんな風に迷いなく飛び込めるかな。就活とか、正直怖い」\n凛が、誰にも言えなかった不安をぽつりとこぼした。"}
+            ],
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"凛はふと視線に気づき、照れたように目を逸らした。"},
+              {label:"「覚悟決めてから飛んでるんだろ、きっと」と伝える", delta:35, result:"凛は頬を染め、「……そうだといいな」とぽつりと呟いた。"},
+              {label:"「これからも、凛の隣にいたい」と静かに伝える", delta:70, result:"凛は長い沈黙のあと、消え入りそうな声で「……うん」と答えた。"}
+            ]},
+          { label:"SCENE 07 — 冬の湖畔、鮮やかな一番", birdId:"oshidori",
+            beats:[
+              {text:"冬、凛の方から誘ってきた。「最後に、もう一種類だけ鳥を見に行かない?」葦の陰を覗き込んだ。"},
+              {text:"鮮やかな色彩のオシドリが、つがいで寄り添っていた。", climax:true},
+              {text:"「……いつも一緒にいるんだね」"}
+            ],
+            choices:[
+              {label:"黙って、隣で一緒にその姿を見つめ続ける", delta:15, result:"凛は白い息を吐きながら、小さく微笑んだ。「一年で、随分色んな鳥見たね」"},
+              {label:"「この時間が、一番好きだな」と伝える", delta:35, result:"凛は驚いた顔のあと、嬉しそうに一歩近づいてきた。「……私も」"},
+              {label:"「来年も、凛と一緒に鳥を探しに行きたい」と伝える", delta:70, result:"凛は涙ぐみながら、小さく、けれど確かに頷いた。「……うん。来年も、再来年も」"}
+            ]},
+          {
+            label:"SCENE 08 — 最終レースの夜", text:"一年が過ぎ、凛は以前よりずっと自然な顔で笑うようになっていた。最後のレースを終えた帰り道、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"凛は小さく頷いた。「……うん、それでいい」穏やかな声だった。"},
+              {label:"「隣にいるだけじゃなく、これからは正式に、俺の彼女になってほしい」と伝える", delta:85, result:"凛は長い沈黙のあと、静かに涙をこぼしながら頷いた。「……『涼しい顔』なんて呼ばれてた私が、こんなに誰かを好きになるなんてね」"}
+            ],
+            final:true,
+            endingText:"湖畔の後片付けをする凛の表情は、今日も涼しい。ただ、部員が失敗を詫びた時、以前より柔らかい声で「大丈夫」と返せるようになっていた。"
+          }
+        ]
+      }
+    }
+  },
+  hanabishi: {
+    name:"稲穂",
+    subtitle:"名家のお嬢様、「箱入り娘」と呼ばれるほど深窓育ちの存在",
+    color:"#8a6d3b", glow:"#faf3e0", emblem:"穂", tier:1,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"花菱稲穂の名前を知らない学生は、この大学にはいない。大手企業グループの令嬢として、幼い頃から完璧なマナー教育を受けてきた『箱入り娘』――それが稲穂の代名詞だった。\n農業体験実習で、たまたま同じ班になったのが、その花菱稲穂だった。\n休憩時間、稲穂の姿が見当たらず探していると、田んぼの畦道の先、稲穂が裸足で泥に足を突っ込み、はしゃいだ声を上げていた。\n「……っ、すごい、これがぬかるみってやつ!冷たくて、気持ちいい……!」\n令嬢らしい上品な微笑みはどこにもなく、泥だらけの顔で子供のようにはしゃぐ姿があった。",
+      choices:[
+        { label:"「危ないから気をつけろよ」と近づく", delta:100, route:"A",
+          result:"稲穂は弾かれたように振り返り、みるみるうちに顔を赤くした。\n「……っ、今の、見た?最悪、こんなはしたないとこ……」\n泥だらけの手で取り繕おうとする姿が、余計に滑稽だった。いつもの『お嬢様』とはまるで違う、剥き出しの無邪気さがそこにあった。" },
+        { label:"見なかったことにして、そっと離れる", delta:75, route:"B",
+          result:"そっと視線を逸らし、何も見なかったことにして離れた。休憩が終わる頃、稲穂の方から声をかけてきた。\n「……さっき、あっちにいた?」\n探るような視線に、曖昧に頷くと、彼女は珍しく歯切れの悪い返事をした。それ以上は何も言わなかったが、纏う空気には確かな戸惑いがあった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"泥だらけでも、いい令嬢",
+        epilogueText:"「あの日、泥だらけのとこ見られてなかったら」\n実習の最終発表を終えた帰り道、稲穂がぽつりと言う。「私、今でも『お嬢様』のふりをして、はしゃぎたい気持ち、全部押し殺してたと思う」\n「今は?」と聞くと、彼女は初めて出会った日には見せなかった顔で笑った。\n「今は、あんたの前でだけ、子供みたいにはしゃいでいいのが分かってる。それだけで、ずっと息がしやすい」\n『箱入り娘』と呼ばれ続けた横顔に、初めて誰かのためだけの温度が灯っていた。",
+        events:[
+          { label:"SCENE 02 — 約束", text:"気まずい沈黙のあと、稲穂は泥だらけの足を隠すように言った。\n「……今の、誰にも言わないで。『お嬢様』が泥んこで喜んでた、なんて広まったら家名に傷がつく」\n気丈な口調だったが、声にはまだ隠しきれない照れがあった。",
+            choices:[
+              {label:"「言わない。約束する」と静かに頷く", delta:10, result:"稲穂はほっとしたように息をついた。「……ありがとう」"},
+              {label:"「別に、泥で遊んで喜ぶくらい普通のことだろ」と本音で返す", delta:40, result:"稲穂は驚いた顔でこちらを見た。「……そんな風に言われたの、初めて」観念したように小さく笑った、作られたものじゃない笑顔だった。"}
+            ]},
+          { label:"SCENE 03 — 週に一度の実習", text:"農業体験実習は、週に一度のペースで続くことになった。回を重ねるうち、稲穂は時々、はしゃいだ素の顔を隠さなくなっていた。\n「……あ、今の、はしたなかった?」\n自分で気づいて慌てて取り繕う姿が、いつもの『お嬢様』とはまるで違っていた。",
+            choices:[
+              {label:"気づかないふりをして、話を続ける", delta:15, result:"稲穂はほっとしたように、また実習の話に戻った。それでも、肩の力は抜けたままだった。"},
+              {label:"「無理に『お嬢様』らしくしなくていいのに」と伝える", delta:55, result:"稲穂は虚をつかれたように黙り込み、それから小さく「……うん」と呟いた。"}
+            ]},
+          { label:"SCENE 04 — 空高く鳴き続ける声", birdId:"hibari",
+            beats:[
+              {text:"春、田んぼの上空から、途切れることのない賑やかなさえずりが降り注いでいた。"},
+              {text:"「……あの声、ずっと聞こえるのに、姿が見えない」\n稲穂が空を見上げる。ヒバリだった。空高く舞い上がりながら鳴き続けるその姿を、稲穂はいつまでも目で追っていた。"}
+            ],
+            choices:[
+              {label:"何も言わず、彼女が見上げる横顔を見守る", delta:15, result:"稲穂は満足そうに息をついた。「……こんな身近な田んぼに、こんな声の主がいたんだ」"},
+              {label:"「稲穂、そんな夢中になれること、あるんだな」と軽く言う", delta:35, result:"稲穂は少しむっとした顔をしたあと、笑った。「……悪い?本気で素敵な声だと思ったんだもん」"},
+              {label:"「その顔の方が、いつもの『お嬢様』よりずっと良いと思うけどな」と伝える", delta:70, result:"稲穂は目を見開き、頬を赤らめた。「……そういうこと、不意打ちで言わないでよ」"}
+            ]},
+          { label:"SCENE 05 — 水田に佇む白い影", birdId:"chuusagi",
+            beats:[
+              {text:"夏、稲が青々と茂る水田で、白い鳥が首を伸ばして獲物を狙っていた。「……あんなにじっとして、我慢強いんだね」\n稲穂が息を殺して見つめる。チュウサギが、カエルを狙って微動だにしない姿だった。"},
+              {text:"――ばしゃっ", type:"sfx"},
+              {text:"獲物を捕らえた瞬間、稲穂は思わず小さな声を上げていた。", climax:true}
+            ],
+            choices:[
+              {label:"隣で黙って、彼女が見ている方向を一緒に見る", delta:15, result:"稲穂は満足そうに、しばらくその場を動かなかった。"},
+              {label:"「稲穂、こういう顔してる方が、俺は好きだけどな」と伝える", delta:35, result:"稲穂は頬を染め、「……ずるい言い方」と呟いた。"},
+              {label:"「これからも、稲穂のこういう顔、もっと見せてくれ」と伝える", delta:70, result:"稲穂は驚いた顔のあと、嬉しそうに頷いた。「……うん。柄でもないけど、見せる」"}
+            ]},
+          { label:"SCENE 06 — 高鳴きと、小さな贄", birdId:"mozu",
+            beats:[
+              {text:"秋、就活の説明会が学内で始まった頃、畦道で甲高い鳴き声が響いた。"},
+              {text:"キィキィキィ", type:"sfx"},
+              {text:"木の枝に、小さな虫が刺さっているのを見つけ、稲穂は顔をしかめた。\n「……これ、あの鳥がやったの?なんか、ちょっと怖い」\nモズの『早贄』という習性だった。", climax:true},
+              {text:"「私、家業継ぐの、正直ちょっと怖い。あんな風に、割り切って強くなれる自信ない」\nいつもの気丈な声ではない、迷子になった子どものような、頼りない声だった。"}
+            ],
+            choices:[
+              {label:"何も言わず、しばらく一緒にその様子を見つめ続ける", delta:15, result:"稲穂は何かを確かめるように、長い間その枝を見つめていた。"},
+              {label:"「無理に割り切らなくても、稲穂のやり方でいいんじゃないか」と返す", delta:35, result:"稲穂は少し驚いた顔をしたあと、小さく笑った。「……そうだといいな」"},
+              {label:"「稲穂がどんな道を選んでも、俺は隣にいるつもりだけどな」と伝える", delta:70, result:"稲穂は息を呑み、目に涙を滲ませながらこちらを見た。「……そんなこと、今ここで言う?」声は震えていたが、拒む響きは少しもなかった。"}
+            ]},
+          { label:"SCENE 07 — 雪の田に舞い降りた大きな翼", birdId:"kounotori",
+            beats:[
+              {text:"冬、実習の最終レポートを兼ねて、最後の田園調査に出かけた。雪の残る休耕田の上空に、大きな影が見えた。"},
+              {text:"純白の翼を大きく広げたまま、その鳥はゆっくりと高度を落としていく。羽ばたきは最小限、ただ風に乗って滑るように舞い降りてきた。", climax:true},
+              {text:"コウノトリだった。一度は絶滅した後、保護活動によって野に戻された鳥だと聞いて、稲穂は言葉を失っていた。\n「……消えたはずのものが、ちゃんと戻ってくることもあるんだね」\n稲穂は白い息を吐きながら、そう呟いて笑った。"}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒にその姿を見つめ続ける", delta:15, result:"稲穂は白い息を吐きながら、小さく微笑んだ。「一年で、随分色んな鳥見たね」"},
+              {label:"「戻ってこられたのは、誰かがずっと諦めなかったからだろうな」と伝える", delta:35, result:"稲穂は少し照れたように「……うん、そうだね」と呟いた。"},
+              {label:"「来年も、稲穂と一緒に鳥を探しに行きたい」と伝える", delta:70, result:"稲穂は涙ぐみながら、小さく、けれど確かに頷いた。「……うん。来年も、再来年も」"}
+            ]},
+          {
+            label:"SCENE 08 — 最終発表の春", text:"一年が過ぎ、農業体験実習も無事終わった春。稲穂はいつものお嬢様然とした微笑みで発表を終えたところだった。\n「あの日、泥だらけのとこ見られてから、ずっとこの調子だね」\n懐かしむように笑う稲穂の横顔は、出会った頃とはまるで違って見えた。",
+            choices:[
+              {label:"「これからも、稲穂の隣にいたい」と静かに伝える", delta:20, result:"稲穂は小さく頷いた。「……うん、それで十分」穏やかな声だった。"},
+              {label:"「稲穂のことが、ずっと前から好きだった」と正直に伝える", delta:85, result:"稲穂は長い沈黙のあと、目に涙を浮かべながら、けれど確かに頷いた。「……こんなはしゃぎ虫な私を好きになるなんて、物好きだね」震える声が、そのまま答えだった。"}
+            ],
+            final:true,
+            endingText:"花菱家の茶会で、稲穂は今日も完璧な所作で客をもてなしている。ただ、着物の裾の下、庭で見つけた虫のことをこっそり教えてくれる。「お行儀悪いけど、実は好きなの」――その秘密は、もう恥ずかしいものではなくなっていた。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"少しずつ、素顔をこぼす関係",
+        epilogueText:"「あなたが、いつも急かさずに待っていてくれたから」\n最終発表を終えた帰り道、稲穂がぽつりと言う。「私、いつの間にか、はしゃぎたい気持ちを隠さなくてもいいって思えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、『箱入り娘』なんて呼ばれるより、あんたの隣にいる自分の方が、ずっと好き」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、誰も近づけなかった距離を、確かに縮めていた。",
+        events:[
+          { label:"SCENE 02 — 呼び止められて", text:"翌週の実習帰り、稲穂の方から呼び止められた。\n「ねえ、この前、田んぼの方から見てたよね」\n何気ない調子を装っていたが、目はまっすぐこちらを探るように見ていた。",
+            choices:[
+              {label:"「たまたま通りかかっただけだ」ととぼける", delta:10, result:"稲穂はしばらくこちらを見つめていたが、やがて「そう」とだけ言って引き下がった。"},
+              {label:"「はしゃいでるとこ、見てたって言ったら嘘になる」と正直に認める", delta:40, result:"稲穂は息を呑み、それから観念したように肩の力を抜いた。「……やっぱり。もういいや、正直に言うと恥ずかしい」"}
+            ]},
+          { label:"SCENE 03 — 素顔の分だけ", text:"それからというもの、稲穂は実習の作業中、少しずつはしゃいだ素の顔を見せるようになっていた。\n「一つだけ見られたんだから、もう隠す意味ないよね」",
+            choices:[
+              {label:"急かさず、彼女のペースに合わせる", delta:15, result:"稲穂はそれが心地よかったのか、少しずつ肩の力を抜いていった。"},
+              {label:"「素の稲穂の方が、俺は話しやすい」と伝える", delta:55, result:"稲穂は驚いた顔をしたあと、俯いて小さく笑った。「……そういうこと、簡単に言うんだ」"}
+            ]},
+          { label:"SCENE 04 — 空高く鳴き続ける声", birdId:"hibari",
+            beats:[
+              {text:"春、田んぼの上空から、途切れることのない賑やかなさえずりが降り注いでいた。ヒバリだった。"},
+              {text:"稲穂は姿の見えない声の主を、いつまでも目で追っていた。"}
+            ],
+            choices:[
+              {label:"急かさず、彼女が満足するまで一緒に見る", delta:15, result:"稲穂は満足そうに息をついた。「こんな寄り道、悪くないね」"},
+              {label:"「姿は見えないのに、賑やかだな」と軽く言う", delta:35, result:"稲穂は少し驚いた顔で「……うん、そうだね」と呟いた。"},
+              {label:"「稲穂の『夢中になれるもの』、もっと知りたいな」と伝える", delta:70, result:"稲穂は驚いた顔をしたあと、小さく頷いた。「……気が向いたらね」"}
+            ]},
+          { label:"SCENE 05 — 水田に佇む白い影", birdId:"chuusagi",
+            beats:[
+              {text:"夏、青々と茂る水田で、チュウサギが獲物を狙って微動だにせず立っていた。"},
+              {text:"稲穂は息を殺してその様子を見つめていた。", climax:true}
+            ],
+            choices:[
+              {label:"何も言わず、彼女の物思いを邪魔しない", delta:15, result:"稲穂はふと我に返り、「……ごめん、見入ってた」と照れたように笑った。"},
+              {label:"「稲穂でも、我を忘れる時あるんだな」と軽くからかう", delta:35, result:"稲穂は頬を膨らませた。「……たまにはね」拗ねた顔も、隠さなくなっていた。"},
+              {label:"何も言わず、そっと隣に座る距離を詰める", delta:70, result:"稲穂は一瞬身を固くしたが、やがて力を抜いて隣に座り直した。「……もう少し、このままで」"}
+            ]},
+          { label:"SCENE 06 — 高鳴きと、小さな贄", birdId:"mozu",
+            beats:[
+              {text:"秋、就活の説明会が学内で始まった頃、畦道でモズの高鳴きが響いた。"},
+              {text:"枝に刺さった獲物を見つけ、稲穂は顔をしかめた。", climax:true},
+              {text:"「私、家業継ぐの、正直ちょっと怖い」\n稲穂が、誰にも言えなかった不安をぽつりとこぼした。"}
+            ],
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"稲穂はふと視線に気づき、照れたように目を逸らした。"},
+              {label:"「無理に割り切らなくても、稲穂のやり方でいいんじゃないか」と伝える", delta:35, result:"稲穂は頬を染め、「……そうだといいな」とぽつりと呟いた。"},
+              {label:"「これからも、稲穂の隣にいたい」と静かに伝える", delta:70, result:"稲穂は長い沈黙のあと、消え入りそうな声で「……うん」と答えた。"}
+            ]},
+          { label:"SCENE 07 — 雪の田に舞い降りた大きな翼", birdId:"kounotori",
+            beats:[
+              {text:"冬、稲穂の方から誘ってきた。「最後に、もう一種類だけ鳥を見に行かない?」雪の残る休耕田を見渡した。"},
+              {text:"純白の翼を広げたコウノトリが、風に乗って静かに舞い降りてきた。", climax:true},
+              {text:"「……消えたはずのものが、ちゃんと戻ってくることもあるんだね」"}
+            ],
+            choices:[
+              {label:"黙って、隣で一緒にその姿を見つめ続ける", delta:15, result:"稲穂は白い息を吐きながら、小さく微笑んだ。「一年で、随分色んな鳥見たね」"},
+              {label:"「この時間が、一番好きだな」と伝える", delta:35, result:"稲穂は驚いた顔のあと、嬉しそうに一歩近づいてきた。「……私も」"},
+              {label:"「来年も、稲穂と一緒に鳥を探しに行きたい」と伝える", delta:70, result:"稲穂は涙ぐみながら、小さく、けれど確かに頷いた。「……うん。来年も、再来年も」"}
+            ]},
+          {
+            label:"SCENE 08 — 最終発表の春", text:"一年が過ぎ、稲穂は以前よりずっと自然な顔で笑うようになっていた。最終発表を終えた帰り道、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"稲穂は小さく頷いた。「……うん、それでいい」穏やかな声だった。"},
+              {label:"「隣にいるだけじゃなく、これからは正式に、俺の彼女になってほしい」と伝える", delta:85, result:"稲穂は長い沈黙のあと、静かに涙をこぼしながら頷いた。「……『箱入り娘』なんて呼ばれてた私が、こんなに誰かを好きになるなんてね」"}
+            ],
+            final:true,
+            endingText:"令嬢としての稲穂は、今日も変わらず優雅に笑っている。ただ、泥だらけになって遊んだ日のことを、家族の前で悪びれずに話せるようになった。"
+          }
+        ]
+      }
+    }
+  },
+  tokiha: {
+    name:"茜",
+    subtitle:"環境保全サークルの代表、誰の相談にも乗るのに自分のことは話さない「調整役」",
+    color:"#c98a92", glow:"#fbe9ec", emblem:"朱", tier:4,
+    event1:{
+      label:"SCENE 01 — 邂逅",
+      text:"朱鷺羽茜の名前を知らない学生は、この大学にはいない。環境保全サークルの代表として、他サークルとの調整や後輩の相談ごとを一手に引き受け、誰にでも公平で穏やかな「調整役」――それが茜の代名詞だった。\nサークル合同の企画で、たまたま同じ班になったのが、その朱鷺羽茜だった。\n資料を届けに部室を訪れると、茜は一人、古い新聞の切り抜きを手に、静かに涙をこぼしていた。\n「……っ、お祖母ちゃん、もう一度だけでいいから、あの空、見てほしかった……」\n震える声だった。いつも誰かのために冷静に立ち回る茜からは想像もつかない、剥き出しの悲しみがそこにあった。",
+      choices:[
+        { label:"「大丈夫か」と静かに声をかける", delta:100, route:"A",
+          result:"茜は弾かれたように顔を上げ、慌てて涙を拭った。\n「……っ、今の、見た?ごめん、こんな情けないとこ……」\n取り繕おうとする声が、震えたままうまく続かなかった。いつもの『調整役』とはまるで違う、剥き出しの弱さがそこにあった。" },
+        { label:"気づかれないよう、そっとその場を離れる", delta:75, route:"B",
+          result:"そっと視線を逸らし、何も見なかったことにして部室を出た。翌日、茜の方から声をかけてきた。\n「……昨日、部室に来た?」\n探るような視線に、曖昧に頷くと、彼女は珍しく歯切れの悪い返事をした。それ以上は何も言わなかったが、纏う空気には確かな戸惑いがあった。" }
+      ]
+    },
+    routes:{
+      A:{
+        routeLabel:"誰かのためだけじゃない、自分の時間",
+        epilogueText:"「あの日、泣いてるとこ見られてなかったら」\n合同企画の最終発表を終えた帰り道、茜がぽつりと言う。「私、今でも『調整役』のふりをして、自分の気持ちは全部後回しにしてたと思う」\n「今は?」と聞くと、彼女は初めて出会った日には見せなかった顔で笑った。\n「今は、あんたの前でだけ、自分のために泣いていいのが分かってる。それだけで、ずっと息がしやすい」\n『調整役』と呼ばれ続けた横顔に、初めて誰かのためだけの温度が灯っていた。",
+        events:[
+          { label:"SCENE 02 — 約束", text:"気まずい沈黙のあと、茜は涙を拭いながら言った。\n「……今の、サークルのみんなには言わないで。代表が部室で泣いてた、なんて広まったら、みんな余計な気を遣わせちゃう」\n気丈な口調だったが、声にはまだ隠しきれない涙の名残があった。",
+            choices:[
+              {label:"「言わない。約束する」と静かに頷く", delta:10, result:"茜はほっとしたように息をついた。「……ありがとう」"},
+              {label:"「別に、悲しくて泣くくらい普通のことだろ」と本音で返す", delta:40, result:"茜は驚いた顔でこちらを見た。「……そんな風に言われたの、初めて」観念したように小さく笑った、作られたものじゃない笑顔だった。"}
+            ]},
+          { label:"SCENE 03 — 週に一度の作業", text:"合同企画の作業は、週に一度のペースで続くことになった。回を重ねるうち、茜は時々、自分の弱さを隠さなくなっていた。\n「……あ、今の、また情けない顔してた?」\n自分で気づいて慌てて取り繕う姿が、いつもの『調整役』とはまるで違っていた。",
+            choices:[
+              {label:"気づかないふりをして、話を続ける", delta:15, result:"茜はほっとしたように、また作業の話に戻った。それでも、肩の力は抜けたままだった。"},
+              {label:"「無理に『調整役』でいなくていいのに」と伝える", delta:55, result:"茜は虚をつかれたように黙り込み、それから小さく「……うん」と呟いた。"}
+            ]},
+          { label:"SCENE 04 — 春を告げる、里山の声", birdId:"uguisu",
+            beats:[
+              {text:"春、企画の下見で郊外の里山を訪れると、声があちこちから響いていた。"},
+              {text:"ホーホケキョ", type:"sfx"},
+              {text:"「……この声、実家の裏山でもよく聞いた」\n茜が懐かしそうに目を細める。ウグイスだった。姿はなかなか見えないが、その声に耳を澄ませる茜の横顔は、いつもの気を張った表情ではなかった。"}
+            ],
+            choices:[
+              {label:"何も言わず、彼女が懐かしむ横顔を見守る", delta:15, result:"茜は満足そうに息をついた。「……こんな声、忘れてたな」"},
+              {label:"「茜、そんな懐かしそうな顔できるんだな」と軽く言う", delta:35, result:"茜は少しむっとした顔をしたあと、笑った。「……悪い?本気で懐かしかったんだもん」"},
+              {label:"「その顔の方が、いつもの『調整役』よりずっと良いと思うけどな」と伝える", delta:70, result:"茜は目を見開き、頬を赤らめた。「……そういうこと、不意打ちで言わないでよ」"}
+            ]},
+          { label:"SCENE 05 — 森に響く、月日星の声", birdId:"sankouchou",
+            beats:[
+              {text:"夏、企画の合宿で訪れた森で、独特の声が響いた。"},
+              {text:"ツキ、ヒ、ホシ、ホイホイホイ", type:"sfx"},
+              {text:"「……月日星って聞こえる声、初めて聞いた」\n茜が驚いたように呟く。長い尾を引くサンコウチョウの姿を見つけ、茜はしばらく見入っていた。", climax:true}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒にその姿を見つめ続ける", delta:15, result:"茜は満足そうに、しばらくその場を動かなかった。"},
+              {label:"「茜も、たまにはそうやって見とれるんだな」と伝える", delta:35, result:"茜は頬を染め、「……たまにはね」と呟いた。"},
+              {label:"「もっと、こういう茜の夢中な顔、見ていたいな」と伝える", delta:70, result:"茜は言葉を失ったように固まり、それから小さく、けれど確かに頷いた。「……ずるい言い方するね、それ」"}
+            ]},
+          { label:"SCENE 06 — 稲刈り田に降りる、渡りの群れ", birdId:"magan",
+            beats:[
+              {text:"秋、就活の説明会が学内で始まった頃、稲刈りの終わった田んぼに、数百羽の雁の群れが舞い降りていた。"},
+              {text:"「……マガンだ。毎年、遠くから帰ってくる」\n茜は群れを見つめながら、ぽつりと言った。「私、実家のこと、ずっと避けてきた気がする。……ちゃんと向き合わなきゃいけないのに」\nいつもの落ち着いた声ではない、迷子になった子どものような、頼りない声だった。"}
+            ],
+            choices:[
+              {label:"何も言わず、しばらく一緒に群れを眺め続ける", delta:15, result:"茜は何かを確かめるように、長い間その群れを見つめていた。"},
+              {label:"「向き合うタイミングは、茜が決めればいいだろ」と返す", delta:35, result:"茜は少し驚いた顔をしたあと、小さく笑った。「……そうだといいな」"},
+              {label:"「茜がいつ実家に向き合っても、俺は隣にいるつもりだけどな」と伝える", delta:70, result:"茜は息を呑み、目に涙を滲ませながらこちらを見た。「……そんなこと、今ここで言う?」声は震えていたが、拒む響きは少しもなかった。"}
+            ]},
+          { label:"SCENE 07 — 佐渡の空に、朱鷺色の翼", birdId:"toki",
+            beats:[
+              {text:"冬、企画の最終レポートを兼ねて、茜の帰省に同行し、初めて佐渡島を訪れた。\n「……ここが、私の家族がずっと関わってきた場所」\n保護センター近く、雪の残る田んぼの畦道で、茜が静かに息を吐いた。"},
+              {text:"上空、一羽の鳥が輪を描いていた。翼を畳んだ姿は、遠目には白鷺と大差なく見えた。"},
+              {text:"その鳥が、旋回のために大きく翼を傾けた瞬間だった。"},
+              {text:"翼の内側、風切羽の付け根にだけ、誰も名付けようがないような淡い桃色が広がっていた。伝統色の名前にまでなった、その一色だけのための色。日の光を透かして、羽の一枚ごとに濃淡が揺れる。", climax:true},
+              {text:"トキだった。日本産の個体は、2003年に最後の一羽が死に、一度は完全にこの空から消えた鳥だった。"},
+              {text:"「お祖母ちゃんは、一度は消えた鳥がまた空を飛ぶのを、ずっと願ってた人だった。……もう会えないけど、今ここで見られてよかった」\n茜は空を見上げたまま、静かに涙をこぼしていた。"}
+            ],
+            choices:[
+              {label:"何も言わず、隣で一緒にその姿を見つめ続ける", delta:15, result:"茜は白い息を吐きながら、小さく微笑んだ。「……見せられて、良かった」"},
+              {label:"「茜の家族が繋いできたものが、ちゃんとここにあるんだな」と伝える", delta:35, result:"茜は涙を拭いながら「……うん、そうだね」と呟いた。"},
+              {label:"「これからは、茜の『実家』にも俺を連れていってくれ」と伝える", delta:70, result:"茜は目を見開いたあと、涙を拭いながら小さく笑った。「……うん。今度は、ちゃんと紹介する」"}
+            ]},
+          {
+            label:"SCENE 08 — 合同企画、最後の夜", text:"一年が過ぎ、合同企画も無事に終わった春。茜は後輩たちに囲まれながらも、以前よりずっと自然な表情で笑うようになっていた。\n「あの日、泣いてるとこ見られてから、ずっとこの調子だね」\n懐かしむように笑う茜の横顔は、出会った頃とはまるで違って見えた。",
+            choices:[
+              {label:"「これからも、茜の隣にいたい」と静かに伝える", delta:20, result:"茜は小さく頷いた。「……うん、それで十分」穏やかな声だった。"},
+              {label:"「茜のことが、ずっと前から好きだった」と正直に伝える", delta:85, result:"茜は長い沈黙のあと、目に涙を浮かべながら、けれど確かに頷いた。「……こんな、自分のことは後回しな私を好きになるなんて、物好きだね」震える声が、そのまま答えだった。"}
+            ],
+            final:true,
+            endingText:"サークル棟の一室で、茜は今日も後輩たちの相談に耳を傾けている。ただ、自分が疲れた時には「ちょっと聞いてほしいんだけど」と、誰かに頼ることを覚えていた。"
+          }
+        ]
+      },
+      B:{
+        routeLabel:"少しずつ、頼っていい関係",
+        epilogueText:"「あなたが、いつも急かさずに待っていてくれたから」\n合同企画の最終発表を終えた帰り道、茜がぽつりと言う。「私、いつの間にか、自分のために泣いてもいいって思えるようになってた」\n「今は?」と聞くと、彼女は少し照れたように、けれど確かな笑顔で答えた。\n「今は、『調整役』なんて呼ばれるより、あんたの隣にいる自分の方が、ずっと好き」\n派手な出来事は何もなかった。ただ、待ち続けた時間の積み重ねが、誰も近づけなかった距離を、確かに縮めていた。",
+        events:[
+          { label:"SCENE 02 — 呼び止められて", text:"翌週の作業帰り、茜の方から呼び止められた。\n「ねえ、この前、部室に来なかった?」\n何気ない調子を装っていたが、目はまっすぐこちらを探るように見ていた。",
+            choices:[
+              {label:"「たまたま通りかかっただけだ」ととぼける", delta:10, result:"茜はしばらくこちらを見つめていたが、やがて「そう」とだけ言って引き下がった。"},
+              {label:"「泣いてるとこ、見えてたって言ったら嘘になる」と正直に認める", delta:40, result:"茜は息を呑み、それから観念したように肩の力を抜いた。「……やっぱり。もういいや、正直に言うと恥ずかしい」"}
+            ]},
+          { label:"SCENE 03 — 素顔の分だけ", text:"それからというもの、茜は作業中、少しずつ弱った表情を見せるようになっていた。\n「一つだけ見られたんだから、もう隠す意味ないよね」",
+            choices:[
+              {label:"急かさず、彼女のペースに合わせる", delta:15, result:"茜はそれが心地よかったのか、少しずつ肩の力を抜いていった。"},
+              {label:"「弱ってる茜の方が、俺は話しやすい」と伝える", delta:55, result:"茜は驚いた顔をしたあと、俯いて小さく笑った。「……そういうこと、簡単に言うんだ」"}
+            ]},
+          { label:"SCENE 04 — 春を告げる、里山の声", birdId:"uguisu",
+            beats:[
+              {text:"春、企画の下見で郊外の里山を訪れると、ウグイスの声があちこちから響いていた。"},
+              {text:"「……この声、実家の裏山でもよく聞いた」\n茜が懐かしそうに目を細めていた。"}
+            ],
+            choices:[
+              {label:"急かさず、彼女が満足するまで一緒に聞く", delta:15, result:"茜は満足そうに息をついた。「こんな寄り道、悪くないね」"},
+              {label:"「懐かしい声なんだな」と軽く言う", delta:35, result:"茜は少し驚いた顔で「……うん、そうだね」と呟いた。"},
+              {label:"「茜の『実家の話』、もっと聞かせてほしいな」と伝える", delta:70, result:"茜は驚いた顔をしたあと、小さく頷いた。「……気が向いたらね」"}
+            ]},
+          { label:"SCENE 05 — 森に響く、月日星の声", birdId:"sankouchou",
+            beats:[
+              {text:"夏、企画の合宿で訪れた森で、サンコウチョウの独特の声が響いた。"},
+              {text:"茜はしばらく無言でその姿を見つめていた。", climax:true}
+            ],
+            choices:[
+              {label:"何も言わず、彼女の物思いを邪魔しない", delta:15, result:"茜はふと我に返り、「……ごめん、見入ってた」と照れたように笑った。"},
+              {label:"「茜でも、我を忘れる時あるんだな」と軽くからかう", delta:35, result:"茜は頬を膨らませた。「……たまにはね」拗ねた顔も、隠さなくなっていた。"},
+              {label:"何も言わず、そっと隣に座る距離を詰める", delta:70, result:"茜は一瞬身を固くしたが、やがて力を抜いて隣に座り直した。「……もう少し、このままで」"}
+            ]},
+          { label:"SCENE 06 — 稲刈り田に降りる、渡りの群れ", birdId:"magan",
+            beats:[
+              {text:"秋、就活の説明会が学内で始まった頃、稲刈りの終わった田んぼにマガンの群れが舞い降りていた。"},
+              {text:"「私、実家のこと、ずっと避けてきた気がする」\n茜が、誰にも言えなかった不安をぽつりとこぼした。"}
+            ],
+            choices:[
+              {label:"何も言わず、その変化を見守る", delta:15, result:"茜はふと視線に気づき、照れたように目を逸らした。"},
+              {label:"「向き合うタイミングは、茜が決めればいいだろ」と伝える", delta:35, result:"茜は頬を染め、「……そうだといいな」とぽつりと呟いた。"},
+              {label:"「これからも、茜の隣にいたい」と静かに伝える", delta:70, result:"茜は長い沈黙のあと、消え入りそうな声で「……うん」と答えた。"}
+            ]},
+          { label:"SCENE 07 — 佐渡の空に、朱鷺色の翼", birdId:"toki",
+            beats:[
+              {text:"冬、茜の方から誘ってきた。「最後に、一度だけ実家に付き合ってくれない?」保護センター近く、雪の残る田んぼの畦道に、二人で立っていた。"},
+              {text:"上空、一羽の鳥が輪を描いていた。翼を畳んだ姿は、遠目には白鷺と大差なく見えた。"},
+              {text:"その鳥が、旋回のために大きく翼を傾けた瞬間だった。"},
+              {text:"翼の内側、風切羽の付け根にだけ、誰も名付けようがないような淡い桃色が広がっていた。伝統色の名前にまでなった、その一色だけのための色。日の光を透かして、羽の一枚ごとに濃淡が揺れる。", climax:true},
+              {text:"トキだった。日本産の個体は、2003年に最後の一羽が死に、一度は完全にこの空から消えた鳥だった。"},
+              {text:"「……お祖母ちゃんが、ずっと願ってた景色」\n茜は空を見上げたまま、静かに目を細めていた。"}
+            ],
+            choices:[
+              {label:"黙って、隣で一緒にその姿を見つめ続ける", delta:15, result:"茜は白い息を吐きながら、小さく微笑んだ。「……見せられて、良かった」"},
+              {label:"「この時間が、一番好きだな」と伝える", delta:35, result:"茜は驚いた顔のあと、嬉しそうに一歩近づいてきた。「……私も」"},
+              {label:"「来年も、茜の『実家』に連れてきてくれ」と伝える", delta:70, result:"茜は涙ぐみながら、小さく、けれど確かに頷いた。「……うん。来年も、再来年も」"}
+            ]},
+          {
+            label:"SCENE 08 — 合同企画、最後の夜", text:"一年が過ぎ、茜は以前よりずっと自然な顔で笑うようになっていた。合同企画の最終発表を終えた帰り道、二人きりで交わす最後の会話。",
+            choices:[
+              {label:"「これからも、変わらず隣にいる」とだけ伝える", delta:20, result:"茜は小さく頷いた。「……うん、それでいい」穏やかな声だった。"},
+              {label:"「隣にいるだけじゃなく、これからは正式に、俺の彼女になってほしい」と伝える", delta:85, result:"茜は長い沈黙のあと、静かに涙をこぼしながら頷いた。「……『調整役』なんて呼ばれてた私が、こんなに誰かを好きになるなんてね」"}
+            ],
+            final:true,
+            endingText:"環境保全サークルの代表として、茜は今日も公平に物事を裁いている。ただ、たまに見せる涙を、もう誰にも隠さなくなった。"
+          }
+        ]
+      }
+    }
+  }
+};
+
+let state = { charKey:null, affection:{}, route:{}, clearedRoutes:{}, characterTotal:{}, eventIndex:0, awaitingContinue:false, discoveredBirds:{}, beatIndex:0, inBeatMode:false };
+Object.keys(DATA).forEach(k => { state.affection[k] = 0; state.route[k] = null; state.clearedRoutes[k] = {}; state.characterTotal[k] = 0; });
+
+/* --- セーブデータ(localStorage) --- */
+/* SAVE_KEYは作品ごとに必ず変える(同じキーだと別作品のセーブと衝突する) */
+const SAVE_KEY = 'takane_no_tori_save_v1';
+function loadSave(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    if(data.clearedRoutes){
+      Object.keys(data.clearedRoutes).forEach(k=>{ if(state.clearedRoutes[k]){ Object.assign(state.clearedRoutes[k], data.clearedRoutes[k]); } });
+    }
+    if(data.characterTotal){
+      Object.keys(data.characterTotal).forEach(k=>{ if(k in state.characterTotal){ state.characterTotal[k] = data.characterTotal[k]; } });
+    }
+    if(data.discoveredBirds){
+      Object.assign(state.discoveredBirds, data.discoveredBirds);
+    }
+  }catch(e){ console.warn('セーブデータの読み込みに失敗しました', e); }
+}
+function saveGame(){
+  try{
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
+      clearedRoutes: state.clearedRoutes,
+      characterTotal: state.characterTotal,
+      discoveredBirds: state.discoveredBirds
+    }));
+  }catch(e){ console.warn('セーブデータの保存に失敗しました', e); }
+}
+function resetSave(){
+  try{ localStorage.removeItem(SAVE_KEY); }catch(e){}
+  Object.keys(DATA).forEach(k => { state.clearedRoutes[k] = {}; state.characterTotal[k] = 0; });
+  state.discoveredBirds = {};
+  renderSelect();
+}
+loadSave();
+
+/* --- 解放システム(累計幸福度によるキャラ解放) ---
+   tier:1 は常時解放。tier:2以上はここで指定した総幸福度に到達すると解放される。
+   キャラを増やしたら、そのキャラのtierに応じて閾値を調整すること。 */
+const TIER_THRESHOLDS = { 2: 2200, 3: 4200, 4: 6500 };
+function grandTotal(){
+  return Object.values(state.characterTotal).reduce((a,b)=>a+b, 0);
+}
+function isCharUnlocked(key){
+  const t = DATA[key].tier || 1;
+  if(t <= 1) return true;
+  const need = TIER_THRESHOLDS[t];
+  return need === undefined ? true : grandTotal() >= need;
+}
+
+/* --- 特別編(全員読了で解放されるエピローグ集) --- */
+function clearedRouteCount(){
+  return Object.keys(DATA).reduce((n,k)=>{
+    const c = state.clearedRoutes[k] || {};
+    return n + (c.A ? 1 : 0) + (c.B ? 1 : 0);
+  }, 0);
+}
+function isFinaleUnlocked(){
+  return Object.keys(DATA).every(k=>{
+    const c = state.clearedRoutes[k] || {};
+    return c.A && c.B;
+  });
+}
+/* FINALE_VIGNETTES: DATAのキーと同じキー名で、1人につき1パラグラフの短い後日談を書く。
+   キャラを追加・削除したら、ここも必ず同期させること。 */
+const FINALE_VIGNETTES = {
+  tsumugi:"文学部の廊下ですれ違う紬は、今日も学部一の「高嶺の花」と呼ばれている。ただ、その微笑みにはもう誰も寄せ付けない硬さはなく、時折こちらにだけ向ける、少し崩れた素顔の笑い方が残っていた。",
+  tsurumi:"体育館ですれ違う舞は、今日も「舞姫」と呼ばれ、完璧な標準語で後輩に指導をしている。ただ、疲れた時にふと漏れる訛りを、隠そうとする素振りはもうどこにもなかった。",
+  suzumori:"SNSで完璧な写真を投稿し続ける雫は、今日も「完璧アイコン」と呼ばれている。ただ、そのコメント欄には時々、飾らない素の言葉遣いが混じるようになっていた。",
+  shiomi:"ライブハウスのステージに立つ凪は、今日も「歌姫」と呼ばれ、堂々と歌い上げている。ただ、船や高い所の話になると、素直に「怖い」とこぼせるようになっていた。",
+  yoihara:"生徒会室の明かりは、今日も遅くまで灯っている。千夜は相変わらず「不夜城」と呼ばれているけれど、疲れた時には誰かに「代わってほしい」と素直に言えるようになっていた。",
+  garasu:"写真部の暗室で作業する冴は、今日も「寡黙な天才」と呼ばれている。ただ、後輩に話しかけられた時、たどたどしいながらも自分の言葉で返せるようになっていた。",
+  minase:"漕艇部の練習を仕切る凛は、今日も「涼しい顔」と呼ばれている。ただ、負けて悔しい時は、部員の前でも素直に涙をこぼせるようになっていた。",
+  hanabishi:"茶会やパーティーに顔を出す稲穂は、今日も「箱入り娘」と呼ばれている。ただ、庭で虫を見つけた時など、令嬢らしからぬ無邪気な声を上げることを、隠さなくなっていた。",
+  tokiha:"サークルの相談事に忙しく応じる茜は、今日も公平な「調整役」と呼ばれている。ただ、自分が疲れた時には、誰かに甘えることも覚えていた。"
+  /* 今後キャラを追加したら、ここにも同じキー名で1パラグラフずつ追加すること */
+};
+function showFinale(){
+  resetScroll();
+  document.getElementById('screen-select').classList.add('hidden');
+  document.getElementById('screen-game').classList.add('hidden');
+  document.getElementById('screen-ending').classList.add('hidden');
+  document.getElementById('screen-finale').classList.remove('hidden');
+  document.getElementById('finale-intro').textContent =
+    '誰もが遠巻きに眺めるだけだった「高嶺の花」たち。ゼミやサークル、偶然の再会をきっかけに少しずつ素顔を見せてくれた、それからの日々。';
+  const box = document.getElementById('finale-vignettes');
+  box.innerHTML = '';
+  Object.keys(DATA).forEach(key=>{
+    const c = DATA[key];
+    const card = document.createElement('div');
+    card.className = 'finale-card';
+    card.style.setProperty('--vc', c.color);
+    card.innerHTML = `<div class="fname">${c.name}</div><div class="ftext">${FINALE_VIGNETTES[key] || ''}</div>`;
+    box.appendChild(card);
+  });
+  document.getElementById('finale-closing').textContent =
+    '誰も踏み込めなかった距離に、確かな温度が灯った。\nキャンパスのどこかで、今日も少しずつ、素顔が増えていく。\n\nThank you for playing.';
+  playBgm('finale_bgm.mp3');
+}
+
+function rankFor(v){
+  let r = RANKS[0], idx = 0;
+  RANKS.forEach((rk,i)=>{ if(v>=rk.min){ r=rk; idx=i; } });
+  return {name:r.name, idx};
+}
+function tierFor(v){ return rankFor(v).idx; }
+
+/* --- 野鳥図鑑画面 --- */
+function showZukan(){
+  resetScroll();
+  document.body.setAttribute('data-tier', '0'); // 図鑑は常にニュートラルな背景に戻す(ランクMAXの余韻を持ち込まない)
+  document.getElementById('screen-select').classList.add('hidden');
+  document.getElementById('screen-zukan').classList.remove('hidden');
+  const ids = Object.keys(BIRD_DATA);
+  const foundCount = ids.filter(id => state.discoveredBirds[id]).length;
+  document.getElementById('zukan-progress').textContent =
+    `これまでの物語で出会った鳥たちの記録。発見済み ${foundCount} / ${ids.length}種`;
+  const list = document.getElementById('zukan-list');
+  list.innerHTML = '';
+  ids.forEach(id=>{
+    const b = BIRD_DATA[id];
+    const found = !!state.discoveredBirds[id];
+    const card = document.createElement('div');
+    card.className = found ? 'zukan-card' : 'zukan-card locked';
+    if(found){
+      card.innerHTML = `
+        <div class="zname">${b.name}</div>
+        <div class="zreading">${b.reading}</div>
+        <div class="zrow"><b>生息地</b> ${b.habitat}</div>
+        <div class="zrow"><b>季節</b> ${b.season}</div>
+        <div class="zrow"><b>特記</b> ${b.rarity}</div>
+        <div class="znote">${b.note}</div>
+      `;
+    } else {
+      card.innerHTML = `
+        <div class="zname">？？？</div>
+        <div class="zreading">まだ出会っていない鳥</div>
+      `;
+    }
+    list.appendChild(card);
+  });
+}
+document.getElementById('btn-zukan').addEventListener('click', showZukan);
+document.getElementById('btn-zukan-back').addEventListener('click', renderSelect);
+
+/* --- 隠しジェスチャー: ビート再生中のみ、左右フリックで前後に移動できる ---
+   画面上には何も表示せず、説明もしない。ボタンでの操作と併用可能。 */
+(function(){
+  let touchStartX = null, touchStartY = null;
+  const gameScreen = document.getElementById('screen-game');
+  gameScreen.addEventListener('touchstart', (e)=>{
+    if(!state.inBeatMode) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, {passive:true});
+  gameScreen.addEventListener('touchend', (e)=>{
+    if(!state.inBeatMode || touchStartX === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    touchStartX = null;
+    if(Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return; // 横方向優位のフリックのみ
+    const events = getEventList(state.charKey);
+    const ev = events[state.eventIndex];
+    if(!ev.beats) return;
+    if(dx > 0){
+      // 左 → 右 フリック: 一つ前のビートへ
+      if(state.beatIndex > 0){ state.beatIndex--; renderBeat(ev); }
+    } else {
+      // 右 → 左 フリック: 次のビートへ(最後なら選択肢表示)
+      if(state.beatIndex < ev.beats.length - 1){ state.beatIndex++; renderBeat(ev); }
+      else { renderChoiceButtons(ev); }
+    }
+  }, {passive:true});
+})();
+
+// 分岐ルート対応: event1(共有シーン) + routes[X].events、または従来の events[] のどちらにも対応
+function getEventList(key){
+  const c = DATA[key];
+  if(c.routes){
+    const r = state.route[key];
+    if(r && c.routes[r]){ return [c.event1, ...c.routes[r].events]; }
+    return [c.event1];
+  }
+  return c.events;
+}
+function getEpilogueText(key){
+  const c = DATA[key];
+  if(c.routes && state.route[key] && c.routes[state.route[key]]){
+    return c.routes[state.route[key]].epilogueText;
+  }
+  return c.epilogueText;
+}
+function routeKeyFor(key){
+  return DATA[key].routes ? (state.route[key] || 'A') : 'main';
+}
+
+function setCardVars(el, color, glow){
+  el.style.setProperty('--card-color', color);
+  el.style.setProperty('--glow-c', glow);
+}
+
+/* --- BGM engine --- */
+const CHAR_KEYS = Object.keys(DATA); // 並び順 = キャラ選択カードの表示順
+function charBgmFile(key){
+  const idx = CHAR_KEYS.indexOf(key) + 1;
+  return 'character_bgm' + String(idx).padStart(2,'0') + '.mp3';
+}
+const bgm = document.getElementById('bgm');
+const muteBtn = document.getElementById('mute-btn');
+let bgmMuted = false;
+let bgmFadeTimer = null;
+const BGM_VOLUME = 0.55;
+
+function fadeBgmTo(target, ms){
+  clearInterval(bgmFadeTimer);
+  const start = bgm.volume;
+  const steps = 20;
+  let i = 0;
+  bgmFadeTimer = setInterval(()=>{
+    i++;
+    bgm.volume = Math.max(0, Math.min(1, start + (target-start) * (i/steps)));
+    if(i>=steps){ clearInterval(bgmFadeTimer); }
+  }, ms/steps);
+}
+
+function playBgm(src){
+  if(bgm.getAttribute('data-src') === src){ return; } // 既に再生中なら再スタートしない
+  bgm.setAttribute('data-src', src);
+  const doSwitch = ()=>{
+    bgm.src = src;
+    bgm.currentTime = 0;
+    bgm.volume = 0;
+    bgm.muted = bgmMuted; // iOS Safari対策: volumeが無視される環境でも確実にミュートを反映する
+    bgm.play().then(()=>{ fadeBgmTo(bgmMuted ? 0 : BGM_VOLUME, 900); }).catch(()=>{ /* ユーザー操作待ち */ });
+  };
+  if(bgm.src && !bgm.paused){
+    fadeBgmTo(0, 400);
+    setTimeout(doSwitch, 400);
+  } else {
+    doSwitch();
+  }
+}
+
+muteBtn.addEventListener('click', ()=>{
+  bgmMuted = !bgmMuted;
+  muteBtn.textContent = bgmMuted ? '🔇' : '🔊';
+  bgm.muted = bgmMuted; // iOS Safari対策: volumeフェードだけだと無音にならない環境があるため、mutedを直接切り替える
+  fadeBgmTo(bgmMuted ? 0 : BGM_VOLUME, 300);
+  if(!bgmMuted && bgm.paused){ bgm.play().catch(()=>{}); }
+});
+
+function progressLabel(key){
+  const c = DATA[key];
+  const cleared = state.clearedRoutes[key] || {};
+  const total = state.characterTotal[key] || 0;
+  if(c.routes){
+    const a = cleared.A ? '既読' : '未読';
+    const b = cleared.B ? '既読' : '未読';
+    return `累計幸福度 ${total}　|　ルートA ${a} / ルートB ${b}`;
+  }
+  return `累計幸福度 ${total}　|　${cleared.main ? '既読' : '未読'}`;
+}
+
+function renderSelect(){
+  resetScroll();
+  const grid = document.getElementById('char-grid');
+  grid.innerHTML = '';
+  const gt = grandTotal();
+  Object.keys(DATA).forEach(key=>{
+    const c = DATA[key];
+    const card = document.createElement('div');
+    const unlocked = isCharUnlocked(key);
+    if(!unlocked){
+      card.className = 'char-card locked';
+      const need = TIER_THRESHOLDS[c.tier];
+      card.innerHTML = `
+        <div class="emblem locked-emblem">🔒</div>
+        <h3>？？？</h3>
+        <p>総幸福度 ${need} で解放</p>
+        <div class="char-progress">現在の総幸福度 ${gt} / ${need}</div>
+      `;
+      grid.appendChild(card);
+      return;
+    }
+    card.className = 'char-card';
+    setCardVars(card, c.color, c.glow);
+    card.innerHTML = `
+      <div class="emblem">${c.emblem}</div>
+      <h3>${c.name}</h3>
+      <p>${c.subtitle}</p>
+      <div class="char-progress">${progressLabel(key)}</div>
+    `;
+    card.addEventListener('click', ()=> startGame(key));
+    grid.appendChild(card);
+  });
+
+  // 特別編カード(全9人・両ルート読了で解放)
+  const finaleCard = document.createElement('div');
+  const finaleUnlocked = isFinaleUnlocked();
+  const doneCount = clearedRouteCount();
+  if(finaleUnlocked){
+    finaleCard.className = 'char-card finale-card-select';
+    finaleCard.style.setProperty('--card-color', '#ffe3a3');
+    finaleCard.style.setProperty('--glow-c', '#fffbe8');
+    finaleCard.innerHTML = `
+      <div class="emblem">✦</div>
+      <h3>特別編</h3>
+      <p>それからの日々 — 全員のエピローグ集</p>
+      <div class="char-progress">解放済み</div>
+    `;
+    finaleCard.addEventListener('click', showFinale);
+  } else {
+    finaleCard.className = 'char-card locked';
+    finaleCard.innerHTML = `
+      <div class="emblem locked-emblem">🔒</div>
+      <h3>特別編</h3>
+      <p>全キャラ、両ルートを読了すると解放</p>
+      <div class="char-progress">読了 ${doneCount} / 18</div>
+    `;
+  }
+  grid.appendChild(finaleCard);
+
+  document.getElementById('total-happiness').textContent = `総幸福度: ${gt}`;
+  document.getElementById('screen-select').classList.remove('hidden');
+  document.getElementById('screen-game').classList.add('hidden');
+  document.getElementById('screen-ending').classList.add('hidden');
+  document.getElementById('screen-finale').classList.add('hidden');
+  document.getElementById('screen-zukan').classList.add('hidden');
+  playBgm('select_bgm.mp3');
+}
+
+function startGame(key){
+  state.charKey = key;
+  state.eventIndex = 0;
+  state.affection[key] = 0;
+  state.route[key] = null;
+  resetScroll();
+  document.getElementById('screen-select').classList.add('hidden');
+  document.getElementById('screen-ending').classList.add('hidden');
+  document.getElementById('screen-game').classList.remove('hidden');
+  const c = DATA[key];
+  setCardVars(document.getElementById('screen-game'), c.color, c.glow);
+  document.getElementById('who-dot').style.background = c.color;
+  document.getElementById('who-dot').style.boxShadow = '0 0 16px -2px ' + c.color;
+  document.getElementById('who-name').textContent = c.name;
+  document.body.setAttribute('data-tier', tierFor(state.affection[key]));
+  playBgm(charBgmFile(key));
+  renderEvent();
+}
+
+function updateGauge(){
+  const key = state.charKey;
+  const aff = state.affection[key];
+  const rk = rankFor(aff);
+  document.getElementById('who-rank').textContent = '絆ランク: ' + rk.name;
+  document.getElementById('gauge-num').textContent = '幸福度 ' + aff;
+  const nextRank = RANKS[rk.idx+1];
+  const span = nextRank ? (nextRank.min - RANKS[rk.idx].min) : 60;
+  const within = nextRank ? (aff - RANKS[rk.idx].min) : span;
+  const pct = nextRank ? Math.min(100, Math.round((within/span)*100)) : 100;
+  document.getElementById('gauge-fill').style.width = pct + '%';
+}
+
+/* --- スクロール位置リセット: シーン本文が切り替わるたびに画面上部に戻す ---
+   smoothではなくautoにする(グイッと動く違和感を避け、瞬時に切り替える) */
+function resetScroll(){
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  const sceneEl = document.querySelector('.scene');
+  if(sceneEl) sceneEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+}
+
+function renderEvent(){
+  const key = state.charKey;
+  const events = getEventList(key);
+  const ev = events[state.eventIndex];
+  document.getElementById('scene-label').textContent = ev.label;
+  if(ev.birdId && !state.discoveredBirds[ev.birdId]){
+    state.discoveredBirds[ev.birdId] = true;
+    saveGame();
+  }
+  updateGauge();
+  resetScroll();
+
+  if(ev.beats && ev.beats.length){
+    state.beatIndex = 0;
+    renderBeat(ev);
+  } else {
+    state.inBeatMode = false;
+    document.getElementById('scene-text').textContent = ev.text;
+    renderChoiceButtons(ev);
+  }
+}
+
+/* --- 高解像度ビート演出: text の代わりに beats:[{text, type, climax}] を1つずつ表示する ---
+   type: "prose"(通常)|"sfx"(擬音を強調表示)。climax:true のビートで画面フラッシュ。
+   最後のビートまで進んだら通常の選択肢を表示する。
+   左右フリックでもビートを前後に移動できる(隠しジェスチャー、説明なし)。 */
+function renderBeat(ev){
+  state.inBeatMode = true;
+  resetScroll();
+  const beat = ev.beats[state.beatIndex];
+  const textEl = document.getElementById('scene-text');
+  textEl.innerHTML = '';
+  const span = document.createElement('div');
+  span.className = 'beat-fade' + (beat.type === 'sfx' ? ' beat-sfx' : '');
+  span.textContent = beat.text;
+  textEl.appendChild(span);
+
+  if(beat.climax){
+    const flash = document.getElementById('flash-overlay');
+    flash.classList.remove('play'); void flash.offsetWidth; flash.classList.add('play');
+  }
+
+  const box = document.getElementById('choices');
+  box.innerHTML = '';
+  const isLast = state.beatIndex === ev.beats.length - 1;
+  const btn = document.createElement('button');
+  btn.className = 'beat-continue-btn';
+  btn.textContent = isLast ? '続きを読む →' : '続きを読む →';
+  btn.addEventListener('click', ()=>{
+    if(isLast){ renderChoiceButtons(ev); }
+    else { state.beatIndex++; renderBeat(ev); }
+  });
+  box.appendChild(btn);
+}
+
+function renderChoiceButtons(ev){
+  state.inBeatMode = false;
+  const box = document.getElementById('choices');
+  box.innerHTML = '';
+  ev.choices.forEach(ch=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = `${ch.label}<span class="delta-hint">選択すると幸福度が変化します</span>`;
+    btn.addEventListener('click', ()=> pickChoice(ev, ch));
+    box.appendChild(btn);
+  });
+}
+
+function pickChoice(ev, ch){
+  state.inBeatMode = false;
+  const key = state.charKey;
+  if(ch.route){ state.route[key] = ch.route; }
+  const before = state.affection[key];
+  const beforeRank = rankFor(before);
+  state.affection[key] = before + ch.delta;
+  const after = state.affection[key];
+  const afterRank = rankFor(after);
+
+  // show result text + continue button instead of choices
+  document.getElementById('scene-text').textContent = ch.result;
+  resetScroll();
+  const box = document.getElementById('choices');
+  box.innerHTML = '';
+  const cont = document.createElement('button');
+  cont.className = 'continue-btn';
+  cont.textContent = ev.final ? 'エンディングへ →' : '次へ →';
+  cont.addEventListener('click', ()=>{
+    if(ev.final){ showEnding(); }
+    else { state.eventIndex++; renderEvent(); }
+  });
+  box.appendChild(cont);
+
+  updateGauge();
+  document.body.setAttribute('data-tier', afterRank.idx);
+  playBurst(ch.delta, afterRank.idx > beforeRank.idx ? afterRank.name : null);
+}
+
+function playBurst(delta, rankUpName){
+  const burst = document.getElementById('burst');
+  burst.textContent = '+' + delta + ' 幸福度';
+  burst.classList.remove('play'); void burst.offsetWidth; burst.classList.add('play');
+
+  if(rankUpName){
+    const banner = document.getElementById('rankup-banner');
+    document.getElementById('rankup-text').textContent = rankUpName;
+    banner.classList.remove('play'); void banner.offsetWidth; banner.classList.add('play');
+  }
+}
+
+function showEnding(){
+  resetScroll();
+  const key = state.charKey;
+  const c = DATA[key];
+  const events = getEventList(key);
+  const ev = events[events.length-1];
+  const aff = state.affection[key];
+  const rk = rankFor(aff);
+  const isMax = rk.idx === RANKS.length - 1;
+  state.clearedRoutes[key][routeKeyFor(key)] = true;
+  state.characterTotal[key] = (state.characterTotal[key] || 0) + aff;
+  saveGame();
+  document.getElementById('screen-game').classList.add('hidden');
+  document.getElementById('screen-ending').classList.remove('hidden');
+  setCardVars(document.getElementById('screen-ending'), c.color, c.glow);
+  const routeTag = c.routes ? `【${c.routes[state.route[key]].routeLabel}】` : '';
+  document.getElementById('end-label').textContent = (isMax ? 'TRUE EPILOGUE — 絆MAX到達 ' : 'EPILOGUE ') + routeTag;
+  document.getElementById('end-title').textContent = c.name + ' — ' + rk.name;
+  document.getElementById('end-num').textContent = `今回の幸福度 +${aff} ・ 累計 ${state.characterTotal[key]}`;
+  document.getElementById('end-text').textContent = isMax ? getEpilogueText(key) : ev.endingText;
+  const box = document.getElementById('screen-ending');
+  box.classList.toggle('is-max', isMax);
+  if(isMax){
+    const banner = document.getElementById('rankup-banner');
+    document.getElementById('rankup-text').textContent = '絆MAX — TRUE EPILOGUE';
+    banner.classList.remove('play'); void banner.offsetWidth; banner.classList.add('play');
+  }
+}
+
+document.getElementById('btn-back').addEventListener('click', renderSelect);
+document.getElementById('btn-ending-back').addEventListener('click', renderSelect);
+document.getElementById('btn-finale-back').addEventListener('click', renderSelect);
+document.getElementById('btn-reset-save').addEventListener('click', ()=>{
+  if(confirm('セーブデータ(既読状態・累計幸福度)を全て消去します。よろしいですか?')){
+    resetSave();
+  }
+});
+
+document.getElementById('screen-title').addEventListener('click', ()=>{
+  document.getElementById('screen-title').classList.add('hidden');
+  renderSelect();
+});
+</script>
+</body>
+</html>
