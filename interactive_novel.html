@@ -384,7 +384,7 @@
 
         <section class="soundtrack-player">
             <h2 class="section-title">🎧 全作品サウンドトラック</h2>
-            <p class="soundtrack-intro">各作品のBGMをまとめて聴ける作業用プレイヤー。作品を選んで通しで聴くか、全作品シャッフルで流しっぱなしにできます。</p>
+            <p class="soundtrack-intro">各作品のBGMをまとめて聴ける作業用プレイヤー。作品を選んで通しで聴くか、全作品シャッフルで流しっぱなしにできます。<br>（このページの作品を開くと、再生は自動で一時停止します）</p>
 
             <div class="player-box">
                 <select id="st-select" class="st-select"></select>
@@ -592,6 +592,17 @@
             });
 
             audio.addEventListener('ended', goNext);
+
+            // 作品カードは別タブで開く仕様なので、クリックした瞬間にこのページの再生を止めておく。
+            // (放置すると、新しいタブの作品側のBGMと二重に鳴ってしまうため)
+            document.querySelectorAll('.work-card-link').forEach(function(link){
+                link.addEventListener('click', function(){
+                    if(!audio.paused){
+                        audio.pause();
+                        stPlayPause.textContent = '▶';
+                    }
+                });
+            });
 
             // 初期状態: 先頭(全作品シャッフル)を選択した状態で待機。実際の再生はボタン操作から開始する
             // (自動再生はブラウザにブロックされることが多いため、ユーザー操作を起点にする)
