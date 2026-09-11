@@ -203,6 +203,12 @@
   .choice-btn .delta-hint{
     display:block; margin-top:5px; font-family:'JetBrains Mono',monospace; font-size:10.5px; opacity:0.55;
   }
+  .choice-btn .route-tag{
+    display:block; text-align:right; margin-top:6px;
+    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; letter-spacing:0.03em;
+  }
+  .choice-btn .route-tag.route-a{ color:#3fb8e0; }
+  .choice-btn .route-tag.route-b{ color:#ff6fa8; }
   .continue-btn{
     margin-top:4px; align-self:flex-end;
     background:linear-gradient(90deg, var(--gold), var(--rose));
@@ -1982,7 +1988,8 @@ function renderEvent(){
   ev.choices.forEach(ch=>{
     const btn = document.createElement('button');
     btn.className = 'choice-btn';
-    btn.innerHTML = `${ch.label}<span class="delta-hint">選択すると幸福度が変化します</span>`;
+    const routeTagHtml = ch.route ? `<span class="route-tag route-${ch.route.toLowerCase()}">ルート${ch.route}</span>` : '';
+    btn.innerHTML = `${ch.label}<span class="delta-hint">選択すると幸福度が変化します</span>${routeTagHtml}`;
     btn.addEventListener('click', ()=> pickChoice(ev, ch));
     box.appendChild(btn);
   });
