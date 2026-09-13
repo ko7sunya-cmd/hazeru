@@ -12,29 +12,102 @@
             <p class="site-title">はぜるの作品</p>
             <h1>オフライン・サマー</h1>
             <nav class="site-menu">
-                <a href="index.html">トップ</a>
+                <a href="index.html">← トップに戻る</a>
             </nav>
         </header>
-        
+
+        <!-- 波の区切り線：空から作品世界へ -->
+        <svg class="wave-divider" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0,20 C150,38 350,2 600,20 C850,38 1050,2 1200,20 L1200,40 L0,40 Z" fill="#b2dfdb" opacity="0.55"></path>
+            <path d="M0,24 C200,10 400,34 600,22 C800,10 1000,34 1200,22" fill="none" stroke="#00796b" stroke-width="2" stroke-linecap="round" opacity="0.5"></path>
+        </svg>
+
         <main>
             <section class="intro">
+                <svg class="cloud-decor" viewBox="0 0 200 100" aria-hidden="true">
+                    <ellipse cx="60" cy="58" rx="52" ry="26" fill="#ffffff"></ellipse>
+                    <ellipse cx="105" cy="42" rx="42" ry="22" fill="#ffffff"></ellipse>
+                    <ellipse cx="145" cy="60" rx="35" ry="19" fill="#ffffff"></ellipse>
+                </svg>
                 <p>社会のノイズに疲れたあなたへ贈る、圏外の避難所。<br>
                 Wi-Fiの届かない田舎で、二人が少しずつ距離を縮めていく物語。</p>
             </section>
 
-            <section class="work-list">
-                <h2>作品一覧</h2>
-                <ul>
+            <section class="category-box category-box--novel">
+                <h2>
+                    <span class="category-icon-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 5.5C4 4.67 4.67 4 5.5 4H11V20H5.5C4.67 20 4 19.33 4 18.5V5.5Z"></path>
+                            <path d="M20 5.5C20 4.67 19.33 4 18.5 4H13V20H18.5C19.33 20 20 19.33 20 18.5V5.5Z"></path>
+                            <path d="M11 4V20"></path>
+                        </svg>
+                    </span>
+                    作品一覧
+                </h2>
+
+                <div class="work-list">
                     <!-- ここから各お話のフォルダへ飛びます -->
-                    <li><a href="offsama001/index.html">オフラインサマー：Wi-Fiの死んだ田舎で、共犯関係になりました</a></li>
-                    <li><a href="offsama002/index.html">オフラインサマー2：完璧なお嬢様の盾が完全崩壊した件</a></li>
-                    <li><a href="offsama003/index.html">オフラインサマー3：圏外の二人の秘密基地</a></li>
-                </ul>
+                    <a class="work-item" href="offsama001/index.html" style="--shine-delay: 0s;">
+                        <span class="work-number">01</span>
+                        <div class="work-item-text">
+                            <h3>Wi-Fiの死んだ田舎で、共犯関係になりました</h3>
+                            <div class="work-tags">
+                                <span class="work-tag">田舎</span>
+                                <span class="work-tag">共犯関係</span>
+                            </div>
+                        </div>
+                        <span class="work-action">
+                            読む
+                            <svg class="work-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M9 6l6 6-6 6"></path>
+                            </svg>
+                        </span>
+                    </a>
+
+                    <a class="work-item" href="offsama002/index.html" style="--shine-delay: 8s;">
+                        <span class="work-number">02</span>
+                        <div class="work-item-text">
+                            <h3>完璧なお嬢様の盾が完全崩壊した件</h3>
+                            <div class="work-tags">
+                                <span class="work-tag">お嬢様</span>
+                                <span class="work-tag">盾崩壊</span>
+                            </div>
+                        </div>
+                        <span class="work-action">
+                            読む
+                            <svg class="work-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M9 6l6 6-6 6"></path>
+                            </svg>
+                        </span>
+                    </a>
+
+                    <a class="work-item" href="offsama003/index.html" style="--shine-delay: 16s;">
+                        <span class="work-number">03</span>
+                        <div class="work-item-text">
+                            <h3>圏外の二人の秘密基地</h3>
+                            <div class="work-tags">
+                                <span class="work-tag">圏外</span>
+                                <span class="work-tag">秘密基地</span>
+                            </div>
+                        </div>
+                        <span class="work-action">
+                            読む
+                            <svg class="work-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M9 6l6 6-6 6"></path>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
             </section>
         </main>
 
-        <footer style="margin-top: 50px; text-align: center; color: #777;">
-            <p>&copy; 2026 はぜる</p>
+        <!-- 波の区切り線：作品世界からフッターへ -->
+        <svg class="wave-divider wave-divider--footer" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0,20 C150,4 350,36 600,20 C850,4 1050,36 1200,20" fill="none" stroke="#b2dfdb" stroke-width="2" stroke-linecap="round" opacity="0.7"></path>
+        </svg>
+
+        <footer class="site-footer">
+            <p class="copyright">&copy; 2026 はぜる</p>
         </footer>
     </div>
 </body>
