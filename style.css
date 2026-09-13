@@ -1,7 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap');
+
+:root {
+    /* --- 海と空のカラーパレット --- */
+    --color-sky: #0288d1;         /* 海の青（音楽カテゴリのアクセント） */
+    --color-teal: #00796b;        /* 深いシアン（小説カテゴリ／サイトの基調色） */
+    --color-teal-pale: #b2dfdb;
+    --color-teal-pale-bg: #e0f2f1;
+    --color-sand: #d9924a;        /* 砂浜の色（ゲームカテゴリのアクセント） */
+    --color-sand-pale-bg: #f6e8d6;
+    --color-ink: #2c3e50;
+    --color-card-bg: rgba(255, 255, 255, 0.92);
+}
+
 body {
     /* 背景画像（積乱雲）を画面全体に固定 */
-
-background-image: url('summer-clouds.PNG');
+    background-image: url('summer-clouds.PNG');
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
@@ -9,26 +22,283 @@ background-image: url('summer-clouds.PNG');
     margin: 0;
     padding: 2rem 1rem;
     line-height: 1.8;
-    color: #2c3e50;
-    font-family: sans-serif;
+    color: var(--color-ink);
+    font-family: 'Zen Kaku Gothic New', sans-serif;
     min-height: 100vh;
+}
 
 /* ここが「白背景のブロック」の設定 */
 .container {
-    background-color: rgba(255, 255, 255, 0.9); /* 白背景、少しだけ透過して雲の気配を残す */
-    padding: 2rem;
-    border-radius: 12px; /* 少し角を丸くして柔らかさを */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 浮き上がるような影 */
+    max-width: 720px;
+    margin: 0 auto;
+    background-color: var(--color-card-bg); /* 白背景、少しだけ透過して雲の気配を残す */
+    padding: 2.25rem 2rem;
+    border-radius: 20px; /* 少し角を丸くして柔らかさを */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); /* 浮き上がるような影 */
 }
 
 h1 {
-    font-size: 1.5rem;
-    color: #00796b; /* 深いシアンでタイトルを強調 */
-    border-bottom: 2px solid #b2dfdb;
-    padding-bottom: 0.5rem;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 1.6rem;
+    color: var(--color-teal); /* 深いシアンでタイトルを強調 */
+    border-bottom: 2px solid var(--color-teal-pale);
+    padding-bottom: 0.6rem;
+    margin: 0 0 0.5rem;
 }
 
+/* --- 波の区切り線（ヘッダー下・フッター上） --- */
+.wave-divider {
+    display: block;
+    width: 100%;
+    height: 32px;
+    margin: 0.5rem 0 1.75rem;
+}
 
+.wave-divider--footer {
+    margin: 2rem 0 1rem;
+}
+
+/* --- イントロ：雲のワンポイント装飾 --- */
+.intro {
+    position: relative;
+    overflow: hidden;
+    padding-right: 4rem; /* 雲の飾りとテキストが重なりすぎないように */
+}
+
+.cloud-decor {
+    position: absolute;
+    top: -18px;
+    right: -18px;
+    width: 130px;
+    height: auto;
+    opacity: 0.55;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.intro p {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+}
+
+/* --- カテゴリ全体のレイアウト --- */
+.categories {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+/* 橋脚のような左ボーダーで、各カテゴリを「島」のように見立てる */
+.category-box {
+    border-left: 4px solid var(--accent, var(--color-teal));
+    padding-left: 1.1rem;
+}
+
+.category-box--novel {
+    --accent: var(--color-teal);
+    --accent-bg: var(--color-teal-pale-bg);
+}
+
+.category-box--music {
+    --accent: var(--color-sky);
+    --accent-bg: #e1f0fa;
+}
+
+.category-box--game {
+    --accent: var(--color-sand);
+    --accent-bg: var(--color-sand-pale-bg);
+}
+
+.category-box h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 1.15rem;
+    color: var(--color-ink);
+    margin: 0 0 1rem;
+}
+
+.category-icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--accent-bg, var(--color-teal-pale-bg));
+    color: var(--accent, var(--color-teal));
+}
+
+.category-icon-badge svg {
+    width: 1.35rem;
+    height: 1.35rem;
+}
+
+.work-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+/* --- 押せる感のあるカード --- */
+.work-item {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: inherit;
+    background: var(--accent-bg, var(--color-teal-pale-bg));
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+/* 30秒に一度だけ、カードの表面をそっと光が横切る（控えめな“生きてる感”の演出） */
+.work-item::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -60%;
+    width: 35%;
+    height: 100%;
+    background: linear-gradient(115deg, transparent 0%, rgba(255, 255, 255, 0.75) 45%, transparent 100%);
+    transform: skewX(-20deg);
+    animation: cardShine 30s ease-in-out infinite;
+    animation-delay: var(--shine-delay, 0s);
+    pointer-events: none;
+}
+
+@keyframes cardShine {
+    0% { left: -60%; opacity: 0; }
+    2% { opacity: 0.8; }
+    8% { left: 130%; opacity: 0; }
+    100% { left: 130%; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .work-item::after {
+        animation: none;
+    }
+}
+
+.work-item:hover {
+    background-color: #ffffff;
+    box-shadow: 0 14px 24px rgba(0, 0, 0, 0.13);
+    transform: translateY(-3px);
+}
+
+.work-item:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.09);
+    transition-duration: 0.06s;
+}
+
+.work-item:focus-visible {
+    outline: 2px solid var(--accent, var(--color-teal));
+    outline-offset: 3px;
+}
+
+.work-item-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.work-item h3 {
+    margin: 0 0 0.3rem;
+    font-size: 1.05rem;
+    color: var(--color-ink);
+}
+
+.work-desc {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #4a5a68;
+}
+
+/* --- ジャンル・雰囲気のタグチップ --- */
+.work-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.4rem 0 0.6rem;
+    position: relative;
+    z-index: 1;
+}
+
+.work-tag {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid var(--accent, var(--color-teal));
+    background: rgba(255, 255, 255, 0.55);
+    color: var(--accent, var(--color-teal));
+    white-space: nowrap;
+}
+
+/* --- 「読む／聴く／遊ぶ」の行動バッジ --- */
+.work-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent, var(--color-sky));
+    white-space: nowrap;
+}
+
+.work-arrow {
+    width: 1.2rem;
+    height: 1.2rem;
+    flex-shrink: 0;
+    transition: transform 0.18s ease;
+}
+
+.work-item:hover .work-arrow {
+    transform: translateX(4px);
+}
+
+.work-sublink {
+    display: inline-block;
+    margin: -0.3rem 0 0 0.3rem;
+    font-size: 0.85rem;
+    color: var(--accent, var(--color-sky));
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+.work-sublink:hover {
+    border-bottom-color: currentColor;
+}
+
+/* --- フッター --- */
+.site-footer {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.footer-nav {
+    margin-bottom: 0.75rem;
+}
+
+.footer-nav .divider {
+    margin: 0 0.5rem;
+    color: var(--color-teal-pale);
+}
+
+.copyright {
+    color: #7a8894;
+}
 
 /* メニューの装飾 */
 /* --- 修正：メニューをコンパクトにする --- */
@@ -47,4 +317,21 @@ h1 {
     text-decoration: none;
     font-weight: bold;
     font-size: 0.9em; /* 文字サイズを少し小さくした（ここが重要！） */
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .intro {
+        padding-right: 0;
+    }
+
+    .cloud-decor {
+        top: -10px;
+        right: -10px;
+        width: 90px;
+        opacity: 0.4;
+    }
 }

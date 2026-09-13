@@ -12,51 +12,154 @@
             <p class="site-title"></p>
             <h1>はぜるの作品</h1>
         </header>
-        
+
+        <!-- 波の区切り線：空から作品世界へ -->
+        <svg class="wave-divider" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0,20 C150,38 350,2 600,20 C850,38 1050,2 1200,20 L1200,40 L0,40 Z" fill="#b2dfdb" opacity="0.55"></path>
+            <path d="M0,24 C200,10 400,34 600,22 C800,10 1000,34 1200,22" fill="none" stroke="#00796b" stroke-width="2" stroke-linecap="round" opacity="0.5"></path>
+        </svg>
+
         <main>
             <!-- サイト全体の短いコンセプト -->
             <section class="intro">
+                <svg class="cloud-decor" viewBox="0 0 200 100" aria-hidden="true">
+                    <ellipse cx="60" cy="58" rx="52" ry="26" fill="#ffffff"></ellipse>
+                    <ellipse cx="105" cy="42" rx="42" ry="22" fill="#ffffff"></ellipse>
+                    <ellipse cx="145" cy="60" rx="35" ry="19" fill="#ffffff"></ellipse>
+                </svg>
                 <p>言葉で綴る小説と、Suno AIで描く音楽の世界。<br></p>
             </section>
 
             <!-- カテゴリ分けのセクション -->
             <section class="categories">
-                
-                <!-- 📖 小説カテゴリ -->
-                <div class="category-box">
-                    <h2>📖 Novel / 小説作品</h2>
-                    
-                    <div class="work-item">
-                        <h3><a href="offlinesummer.html">オフライン・サマー</a></h3>
-                        <p class="work-desc">都会のノイズに疲れたあなたへ贈る、圏外の避難所。Wi-Fiの届かない田舎で、二人が少しずつ距離を縮めていく物語。</p>
-                    </div>
 
-                    <div class="work-item" style="margin-top: 20px;">
-                        <h3><a href="interactive_novel.html">インタラクティブノベル</a></h3>
-                        <p class="work-desc">BGMと共に物語が展開する選択式小説。あなたの選択によってストーリーの行方が変化します。</p>
+                <!-- 小説カテゴリ -->
+                <div class="category-box category-box--novel">
+                    <h2>
+                        <span class="category-icon-badge">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 5.5C4 4.67 4.67 4 5.5 4H11V20H5.5C4.67 20 4 19.33 4 18.5V5.5Z"></path>
+                                <path d="M20 5.5C20 4.67 19.33 4 18.5 4H13V20H18.5C19.33 20 20 19.33 20 18.5V5.5Z"></path>
+                                <path d="M11 4V20"></path>
+                            </svg>
+                        </span>
+                        Novel / 小説作品
+                    </h2>
+
+                    <div class="work-list">
+                        <a class="work-item" href="offlinesummer.html" style="--shine-delay: 0s;">
+                            <div class="work-item-text">
+                                <h3>オフライン・サマー</h3>
+                                <div class="work-tags">
+                                    <span class="work-tag">田舎ロマンス</span>
+                                    <span class="work-tag">圏外</span>
+                                    <span class="work-tag">じんわり系</span>
+                                </div>
+                                <p class="work-desc">都会のノイズに疲れたあなたへ贈る、圏外の避難所。Wi-Fiの届かない田舎で、二人が少しずつ距離を縮めていく物語。</p>
+                            </div>
+                            <span class="work-action">
+                                読む
+                                <svg class="work-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M9 6l6 6-6 6"></path>
+                                </svg>
+                            </span>
+                        </a>
+
+                        <a class="work-item" href="interactive_novel.html" style="--shine-delay: 6s;">
+                            <div class="work-item-text">
+                                <h3>インタラクティブノベル</h3>
+                                <div class="work-tags">
+                                    <span class="work-tag">選択式</span>
+                                    <span class="work-tag">全6作品</span>
+                                    <span class="work-tag">BGM同期</span>
+                                </div>
+                                <p class="work-desc">BGMと共に物語が展開する選択式小説。あなたの選択によってストーリーの行方が変化します。</p>
+                            </div>
+                            <span class="work-action">
+                                読む
+                                <svg class="work-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M9 6l6 6-6 6"></path>
+                                </svg>
+                            </span>
+                        </a>
                     </div>
                 </div>
 
-                <!-- 🎵 音楽カテゴリ -->
-                <div class="category-box" style="margin-top: 40px;">
-                    <h2>🎵 Suno AI / 音楽作品</h2>
-                    <div class="work-item">
-                        <h3><a href="music_jukebox.html">ジュークボックス（テーマ別音楽プレイヤー）</a></h3>
-                        <p class="work-desc">疾走感のあるEDMからシンセポップまで、テーマごとに構築した特製プレイヤー。再生中は『他のタブ』を開いて閲覧していても音楽が途切れないので、作業用BGMやリラックスタイムのお供に最適です。</p>
+                <!-- 音楽カテゴリ -->
+                <div class="category-box category-box--music">
+                    <h2>
+                        <span class="category-icon-badge">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 18V5l11-2v13"></path>
+                                <circle cx="6.5" cy="18" r="2.5" fill="currentColor" stroke="none"></circle>
+                                <circle cx="17.5" cy="16" r="2.5" fill="currentColor" stroke="none"></circle>
+                            </svg>
+                        </span>
+                        Suno AI / 音楽作品
+                    </h2>
+                    <div class="work-list">
+                        <a class="work-item" href="music_jukebox.html" style="--shine-delay: 12s;">
+                            <div class="work-item-text">
+                                <h3>ジュークボックス（テーマ別音楽プレイヤー）</h3>
+                                <div class="work-tags">
+                                    <span class="work-tag">作業用BGM</span>
+                                    <span class="work-tag">EDM×シンセ</span>
+                                    <span class="work-tag">タブ跨ぎ再生</span>
+                                </div>
+                                <p class="work-desc">疾走感のあるEDMからシンセポップまで、テーマごとに構築した特製プレイヤー。再生中は『他のタブ』を開いて閲覧していても音楽が途切れないので、作業用BGMやリラックスタイムのお供に最適です。</p>
+                            </div>
+                            <span class="work-action">
+                                聴く
+                                <svg class="work-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M9 6l6 6-6 6"></path>
+                                </svg>
+                            </span>
+                        </a>
                     </div>
                 </div>
 
-                <!-- 🎮 ゲームカテゴリ -->
-                <div class="category-box" style="margin-top: 40px;">
-                    <h2>🎮 Game / ゲーム作品</h2>
-                    <div class="work-item">
-                        <h3><a href="block_defence/index.html">BLOCK DEFENSE</a></h3>
-                        <p class="work-desc">落ちてくるブロックを組んでタワーへと変え、無限に押し寄せる敵から拠点を守る「落ちゲー × 無限タワーディフェンス」。レベルアップ、オンラインランキング、日本語/English対応。（<a href="block_defence/block-defense-manual.html">遊び方はこちら</a>）</p>
+                <!-- ゲームカテゴリ -->
+                <div class="category-box category-box--game">
+                    <h2>
+                        <span class="category-icon-badge">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 9h12a4 4 0 0 1 4 4.5l-.6 3A2.5 2.5 0 0 1 19 18.7c-.8 0-1.5-.4-2-1l-1.2-1.7a2 2 0 0 0-1.6-.8h-4.4a2 2 0 0 0-1.6.8L7 17.7c-.5.6-1.2 1-2 1a2.5 2.5 0 0 1-2.4-2.2l-.6-3A4 4 0 0 1 6 9Z"></path>
+                                <path d="M8 12v3M6.5 13.5h3"></path>
+                                <circle cx="16" cy="12.5" r=".6" fill="currentColor" stroke="none"></circle>
+                                <circle cx="18" cy="14.5" r=".6" fill="currentColor" stroke="none"></circle>
+                            </svg>
+                        </span>
+                        Game / ゲーム作品
+                    </h2>
+                    <div class="work-list">
+                        <a class="work-item" href="block_defence/index.html" style="--shine-delay: 18s;">
+                            <div class="work-item-text">
+                                <h3>BLOCK DEFENSE</h3>
+                                <div class="work-tags">
+                                    <span class="work-tag">落ちゲー×TD</span>
+                                    <span class="work-tag">オンラインランキング</span>
+                                    <span class="work-tag">日本語/English</span>
+                                </div>
+                                <p class="work-desc">落ちてくるブロックを組んでタワーへと変え、無限に押し寄せる敵から拠点を守る「落ちゲー × 無限タワーディフェンス」。レベルアップ、オンラインランキング、日本語/English対応。</p>
+                            </div>
+                            <span class="work-action">
+                                遊ぶ
+                                <svg class="work-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M9 6l6 6-6 6"></path>
+                                </svg>
+                            </span>
+                        </a>
+                        <a class="work-sublink" href="block_defence/block-defense-manual.html">遊び方はこちら</a>
                     </div>
                 </div>
 
             </section>
         </main>
+
+        <!-- 波の区切り線：作品世界からフッターへ -->
+        <svg class="wave-divider wave-divider--footer" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0,20 C150,4 350,36 600,20 C850,4 1050,36 1200,20" fill="none" stroke="#b2dfdb" stroke-width="2" stroke-linecap="round" opacity="0.7"></path>
+        </svg>
 
         <footer class="site-footer">
             <div class="footer-nav">
