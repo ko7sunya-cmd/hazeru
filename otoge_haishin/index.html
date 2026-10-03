@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>音ゲー配信は世界を救う笑</title>
+<title>音ゲープロトタイプ</title>
 <style>
   :root{
     --bg1:#1d1a2e; --bg2:#3a2a4a; --ink:#f6efe0; --gold:#f0c060; --rose:#ef8fa5; --blue:#6fb5f0;
@@ -69,11 +69,10 @@
 </style>
 </head>
 <body>
-<div class="world" id="worldTop"></div>
 
 <!-- START（曲選択） -->
 <div class="screen on" id="start">
-  <h1>音ゲー配信は世界を救う笑</h1>
+  <h1>音ゲープロトタイプ</h1>
   <p class="sub">曲を選んで、スタート。<br>ドン・カッでコンボをつなぎ、まんなかのスタンプで盛り上げよう。</p>
   <div id="songList"></div>
   <button class="big-btn" id="btnStart">スタート</button>
@@ -86,7 +85,7 @@
 
 <!-- GAME -->
 <div class="screen" id="game">
-  <div id="hud"><div><div class="hp">世界幸福度への貢献</div><div class="num" id="score">0</div></div><div style="text-align:center"><div class="hp">コンボ</div><div class="num" id="combo">0</div></div><div class="hp" id="time" style="min-width:64px;text-align:right"></div></div>
+  <div id="hud"><div><div class="hp">スコア</div><div class="num" id="score">0</div></div><div style="text-align:center"><div class="hp">コンボ</div><div class="num" id="combo">0</div></div><div class="hp" id="time" style="min-width:64px;text-align:right"></div></div>
   <div id="gauge"><div id="gaugeFill"></div></div>
   <canvas id="cv"></canvas>
   <div id="pads">
@@ -104,9 +103,9 @@
 
 <!-- RESULT -->
 <div class="screen" id="result">
-  <h1>配信終了！</h1>
+  <h1>おつかれさま！</h1>
   <div class="result-num" id="resScore">+0</div>
-  <div class="sub" id="resWorld"></div>
+  <div class="sub" id="resInfo"></div>
   <div class="row">
     <button class="big-btn" id="btnAgain">もう一度</button>
   </div>
@@ -149,12 +148,6 @@ function lsSet(k,v){ try{localStorage.setItem(k,v);}catch(e){} }
 function getBest(id){ try{return (JSON.parse(lsGet(BKEY)||'{}'))[id]||null;}catch(e){return null;} }
 function setBest(id,rec){ let o={}; try{o=JSON.parse(lsGet(BKEY)||'{}')||{};}catch(e){} o[id]=rec; lsSet(BKEY,JSON.stringify(o)); }
 
-/* ===== 世界幸福度（保存） ===== */
-const WKEY='haishin_world_v1';
-function getWorld(){ try{return parseInt(localStorage.getItem(WKEY)||'0',10)||0;}catch(e){return 0;} }
-function addWorld(n){ try{localStorage.setItem(WKEY,String(getWorld()+n));}catch(e){} refreshWorld(); }
-function refreshWorld(){ document.getElementById('worldTop').textContent='世界幸福度 '+getWorld(); }
-refreshWorld();
 
 /* ===== 画面切り替え ===== */
 const $ = id=>document.getElementById(id);
@@ -407,16 +400,13 @@ function loop(){
 
 bgm.addEventListener('ended',()=>{ if(running) finish(); });
 
-let gained=0;
 function finish(){
   running=false; cancelAnimationFrame(raf);
-  gained = Math.round(score*2);          // 貢献度 → 世界幸福度
-  addWorld(gained);
   const prev=getBest(curSong.id), rec={score:Math.round(score), combo:Math.max(maxCombo,prev?prev.combo:0)};
   const isNew = !prev || rec.score>prev.score;
   setBest(curSong.id, {score:Math.max(rec.score,prev?prev.score:0), combo:rec.combo});
-  $('resScore').textContent='+'+gained+(isNew?'　NEW!':'');
-  $('resWorld').innerHTML='最大コンボ '+maxCombo+'　／　スタンプ '+stampHit+'/'+stampTotal+'（ぴったり '+stampMatch+'）<br>世界幸福度 '+getWorld();
+  $('resScore').textContent=Math.round(score)+(isNew?'　NEW!':'');
+  $('resInfo').innerHTML='最大コンボ '+maxCombo+'　／　スタンプ '+stampHit+'/'+stampTotal+'（ぴったり '+stampMatch+'）';
   show('result');
 }
 
