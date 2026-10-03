@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>スピードポーカー</title>
+<style>
+  :root{
+    --bg:#0f3d2e; --felt:#12583f; --card:#ffffff; --ink:#1e2b22; --sub:#7f9488;
+    --accent:#e0b23c; --accent-d:#b8891f;
+    --red:#d23a3a; --black:#20281f;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+  button{-webkit-appearance:none;appearance:none;outline:none}
+  button:focus,button:focus-visible{outline:none}
+  button::-moz-focus-inner{border:0}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif}
+  body{display:flex;justify-content:center}
+  #app{width:100%;max-width:480px;height:100vh;height:100dvh;position:relative;overflow:hidden;
+    background:radial-gradient(ellipse at top, var(--felt), var(--bg));
+    user-select:none;-webkit-user-select:none;touch-action:manipulation}
+  .screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:20px 18px;
+    padding-bottom:max(20px,env(safe-area-inset-bottom))}
+  .hidden{display:none!important}
+
+  .center{align-items:center;justify-content:center;text-align:center;gap:14px;color:#fff}
+  h1{font-size:26px;margin:0;line-height:1.25;color:#fff}
+  h1 small{display:block;font-size:13px;color:#cfe0d5;font-weight:600;margin-top:6px}
+  .lead{font-size:14px;color:#cfe0d5;line-height:1.7;margin:0}
+  .rulebox{background:rgba(255,255,255,.08);border-radius:14px;padding:12px 14px;font-size:12.5px;color:#e7f0ea;text-align:left;line-height:1.8}
+  .btn{border:0;border-radius:999px;padding:14px 34px;font-size:18px;font-weight:800;color:#3a2b06;
+    background:var(--accent);box-shadow:0 5px 0 var(--accent-d);cursor:pointer;font-family:inherit}
+  .btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--accent-d)}
+  .btn.ghost{background:#fff;color:var(--accent-d);box-shadow:0 5px 0 #d9d0b0}
+  .btn.ghost:active{box-shadow:0 2px 0 #d9d0b0}
+  .btn.busy{opacity:.45;pointer-events:none;transition:opacity .15s}
+
+  /* play */
+  #play{padding:0;color:#fff}
+  .topbar{padding:12px 16px 10px}
+  .row{display:flex;align-items:center;justify-content:space-between}
+  .time{font-weight:800;font-size:20px;font-variant-numeric:tabular-nums}
+  .handcount{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;color:#dfead0}
+  .bar{height:6px;border-radius:99px;background:rgba(255,255,255,.15);margin-top:8px;overflow:hidden}
+  .bar i{display:block;height:100%;width:100%;background:var(--accent);transition:width .1s linear}
+
+  .table{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:10px}
+  .cards{display:flex;gap:8px;justify-content:center}
+  .card{width:58px;height:82px;background:var(--card);border-radius:9px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;font-weight:800;box-shadow:0 3px 8px rgba(0,0,0,.35);
+    border:3px solid transparent;transition:transform .12s, border-color .12s, opacity .12s;
+    animation:deal .22s ease-out}
+  .card.black{color:var(--black)} .card.red{color:var(--red)}
+  .card .r{font-size:20px;line-height:1.1}
+  .card .s{font-size:18px;line-height:1.1}
+  .card.held{border-color:var(--accent);transform:translateY(-8px)}
+  .card.dim{opacity:.35}
+  .cardwrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .holdtag{font-size:10px;font-weight:800;color:var(--accent);letter-spacing:.05em;height:12px;visibility:hidden}
+  .holdtag.show{visibility:visible}
+  @keyframes deal{from{transform:translateY(-16px) scale(.85);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+
+  .hint{font-size:12.5px;color:#cfe0d5;text-align:center;min-height:16px}
+  .banner{font-size:22px;font-weight:900;color:#fff;text-align:center;min-height:30px;
+    text-shadow:0 2px 6px rgba(0,0,0,.4)}
+  .banner.show{animation:pop .22s ease-out}
+  @keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+
+  .actionbar{padding:14px 16px;padding-bottom:max(16px,env(safe-area-inset-bottom))}
+
+  /* result */
+  .stats{width:100%;display:flex;flex-direction:column;gap:6px;background:rgba(255,255,255,.08);
+    border-radius:14px;padding:12px 14px}
+  .stats .srow{display:flex;justify-content:space-between;font-size:14px;color:#fff}
+  .stats .srow b{font-variant-numeric:tabular-nums}
+  .title-card{background:#fff;border-radius:20px;padding:18px 16px;width:100%;box-shadow:0 6px 0 #d9d0b0}
+  .title-card .cap{font-size:12px;color:var(--sub);font-weight:700}
+  .title-card .name{font-size:24px;font-weight:900;margin:6px 0;color:var(--accent-d)}
+  .title-card .desc{font-size:14px;color:var(--sub);line-height:1.6}
+  .big{font-size:18px;font-weight:800;line-height:1.5;color:#fff}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .toast{font-size:12px;color:#cfe0d5;min-height:16px}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- スタート -->
+  <section id="start" class="screen center">
+    <div style="font-size:54px">🃏</div>
+    <h1>スピードポーカー<small>1分間、何度でも勝負</small></h1>
+    <div class="rulebox">
+      ① 5枚配られます<br>
+      ② 残したい札をタップしてホールド(0〜5枚)<br>
+      ③「交換して勝負」で残り1回だけ交換、役が確定<br>
+      ④ 即、次の手へ。1分間ひたすら回します。
+    </div>
+    <button class="btn" id="startBtn">スタート</button>
+    <p class="lead" style="font-size:12px">PCはクリックでも操作できます</p>
+  </section>
+
+  <!-- プレイ -->
+  <section id="play" class="screen hidden">
+    <div class="topbar">
+      <div class="row">
+        <div class="time"><span id="sec">60</span>s</div>
+        <div class="handcount">🂠 <span id="handn">0</span>回勝負</div>
+      </div>
+      <div class="bar"><i id="barfill"></i></div>
+    </div>
+    <div class="table">
+      <div class="banner" id="banner">&nbsp;</div>
+      <div class="cards" id="cards"></div>
+      <div class="hint" id="hint">残したい札をタップ(ホールド) → 「交換して勝負」</div>
+    </div>
+    <div class="actionbar">
+      <button class="btn" id="actionBtn" style="width:100%">交換して勝負！</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section id="result" class="screen center hidden">
+    <div style="font-size:40px">⏰</div>
+    <div class="big" id="summary"></div>
+    <div class="stats" id="stats"></div>
+    <div class="title-card">
+      <div class="cap">あなたの称号</div>
+      <div class="name" id="tname"></div>
+      <div class="desc" id="tdesc"></div>
+    </div>
+    <div class="btns">
+      <button class="btn" id="retryBtn">もう一回</button>
+      <button class="btn ghost" id="shareBtn">結果をシェア</button>
+    </div>
+    <div class="toast" id="toast"></div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const GAME_SEC = 60;
+
+  const SUITS = [
+    {id:'s', sym:'♠', red:false},
+    {id:'h', sym:'♥', red:true},
+    {id:'d', sym:'♦', red:true},
+    {id:'c', sym:'♣', red:false},
+  ];
+  const RANK_LABEL = r => r<=10 ? String(r) : ({11:'J',12:'Q',13:'K',14:'A'})[r];
+
+  const HAND_TYPES = [
+    {key:'royal',        label:'ロイヤルストレートフラッシュ', order:9},
+    {key:'straightFlush', label:'ストレートフラッシュ',        order:8},
+    {key:'fourKind',      label:'フォーカード',                order:7},
+    {key:'fullHouse',     label:'フルハウス',                  order:6},
+    {key:'flush',         label:'フラッシュ',                  order:5},
+    {key:'straight',      label:'ストレート',                  order:4},
+    {key:'threeKind',     label:'スリーカード',                order:3},
+    {key:'twoPair',       label:'ツーペア',                    order:2},
+    {key:'onePair',       label:'ワンペア',                    order:1},
+    {key:'highCard',      label:'ブタ(役なし)',                order:0},
+  ];
+
+  function freshDeck(){
+    const d=[];
+    for(const suit of SUITS) for(let r=2;r<=14;r++) d.push({rank:r,suit:suit.id});
+    return shuffle(d);
+  }
+  function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[a[i],a[k]]=[a[k],a[i]];}return a;}
+
+  function evaluateHand(cards){
+    const ranks = cards.map(c=>c.rank).sort((a,b)=>a-b);
+    const suits = cards.map(c=>c.suit);
+    const isFlush = suits.every(s=>s===suits[0]);
+    const uniq = [...new Set(ranks)];
+    let isStraight=false, highForStraight=ranks[4];
+    if(uniq.length===5){
+      if(uniq[4]-uniq[0]===4){ isStraight=true; }
+      else if(uniq.join(',')==='2,3,4,5,14'){ isStraight=true; highForStraight=5; }
+    }
+    const counts={};
+    ranks.forEach(r=>counts[r]=(counts[r]||0)+1);
+    const countVals = Object.values(counts).sort((a,b)=>b-a);
+
+    if(isStraight && isFlush){
+      if(highForStraight===14 && uniq[0]===10) return HAND_TYPES[0]; // royal
+      return HAND_TYPES[1]; // straight flush
+    }
+    if(countVals[0]===4) return HAND_TYPES[2];
+    if(countVals[0]===3 && countVals[1]===2) return HAND_TYPES[3];
+    if(isFlush) return HAND_TYPES[4];
+    if(isStraight) return HAND_TYPES[5];
+    if(countVals[0]===3) return HAND_TYPES[6];
+    if(countVals[0]===2 && countVals[1]===2) return HAND_TYPES[7];
+    if(countVals[0]===2) return HAND_TYPES[8];
+    return HAND_TYPES[9];
+  }
+
+  // ---- 称号 ----
+  function pickTitle(tally, n){
+    const T=(name,desc)=>({name,desc});
+    if(n===0) return T('📭 判断力ゼロ','1回も勝負できなかった。次はもっと早く。');
+    const c = k => tally[k].count;
+    const high = c('highCard');
+    const made = n - high;
+    if(c('royal')>=1)          return T('👑 伝説降臨','ロイヤルストレートフラッシュ。一生分の運をここで使い切りました。');
+    if(c('straightFlush')>=1)  return T('🌈 選ばれし者','ストレートフラッシュ。これはもう、持って生まれた才能。');
+    if(c('fourKind')>=2)       return T('🍀 手札運バグってる','フォーカードを複数回。カジノに出禁レベル。');
+    if(c('fourKind')>=1)       return T('🎩 大物の予感','フォーカードを引き当てた。次はもっとデカいの来るかも。');
+    if(c('fullHouse')>=3)      return T('🏠 フルハウス御殿','フルハウスを量産。もう家、建ちます。');
+    if(c('fullHouse')>=1)      return T('🎰 持ってる人','フルハウス達成。運を持ってる側の人間です。');
+    if(n>=8 && high/n>=0.7)    return T('💀 手札運お先真っ暗','ほぼ毎回ブタ。次の人生に期待。');
+    if(n>=10 && made/n>=0.65)  return T('👑 配牌の申し子','ほぼ毎回、何かしらの役ができた。手札に愛されてる。');
+    if(n>=8 && made/n>=0.45)   return T('🍀 引きが強い説','半分近くの手で役成立。地味にツイてます。');
+    if(n>=20)                   return T('⚡ スピード狂','とにかく数をこなした。中身は二の次。');
+    if(n>=6 && (c('twoPair')+c('threeKind'))>=n*0.4)
+                                return T('🎲 中堅ギャンブラー','大きくは勝てないが、負けもしない。堅実派。');
+    return T('😐 平均的なギャンブラー','特に目立った結果なし。でも、それが博打というもの。');
+  }
+
+  // ---- DOM ----
+  const $ = id => document.getElementById(id);
+  const startEl=$('start'), playEl=$('play'), resultEl=$('result');
+  const cardsEl=$('cards'), bannerEl=$('banner'), hintEl=$('hint'), actionBtn=$('actionBtn');
+
+  function show(el){ [startEl,playEl,resultEl].forEach(x=>x.classList.add('hidden')); el.classList.remove('hidden'); }
+
+  // ---- 状態 ----
+  let deck=[], hand=[], held=[], tally, n=0, phase='deal', timeUp=false, timer=null, startAt=0;
+
+  function newTally(){
+    const t={};
+    HAND_TYPES.forEach(h=> t[h.key]={label:h.label, order:h.order, count:0});
+    return t;
+  }
+
+  function renderCards(){
+    cardsEl.innerHTML='';
+    hand.forEach((card,i)=>{
+      const suit = SUITS.find(s=>s.id===card.suit);
+      const wrap=document.createElement('div');
+      wrap.className='cardwrap';
+      const el=document.createElement('div');
+      el.className='card '+(suit.red?'red':'black')+(held[i]?' held':'');
+      el.innerHTML=`<span class="r">${RANK_LABEL(card.rank)}</span><span class="s">${suit.sym}</span>`;
+      const tag=document.createElement('div');
+      tag.className='holdtag'+(held[i]?' show':'');
+      tag.textContent='HOLD';
+      el.addEventListener('pointerdown', e=>{
+        e.preventDefault();
+        if(phase!=='choose') return;
+        held[i]=!held[i];
+        renderCards();
+      });
+      wrap.appendChild(el);
+      wrap.appendChild(tag);
+      cardsEl.appendChild(wrap);
+    });
+  }
+
+  function dealHand(){
+    deck = freshDeck();
+    hand = deck.slice(0,5);
+    deck = deck.slice(5);
+    held = [false,false,false,false,false];
+    phase='choose';
+    bannerEl.textContent=' ';
+    hintEl.textContent='残したい札をタップ(ホールド) → 「交換して勝負」';
+    actionBtn.classList.remove('busy');
+    actionBtn.textContent='交換して勝負！';
+    renderCards();
+  }
+
+  function doExchange(){
+    if(phase!=='choose') return;
+    phase='resolve';
+    actionBtn.classList.add('busy');
+    hand = hand.map((card,i)=> held[i] ? card : deck.shift());
+    held=[false,false,false,false,false];
+    renderCards();
+    const result = evaluateHand(hand);
+    tally[result.key].count++;
+    n++;
+    $('handn').textContent=n;
+    bannerEl.textContent = result.order>=1 ? `🎉 ${result.label}！` : `😐 ${result.label}`;
+    bannerEl.classList.remove('show'); void bannerEl.offsetWidth; bannerEl.classList.add('show');
+    hintEl.textContent='';
+    setTimeout(()=>{ if(timeUp) finish(); else dealHand(); }, 850);
+  }
+
+  function tick(){
+    const left=Math.max(0, GAME_SEC-(performance.now()-startAt)/1000);
+    $('sec').textContent=Math.ceil(left);
+    $('barfill').style.width=(left/GAME_SEC*100)+'%';
+    if(left<=0){
+      clearInterval(timer); timer=null; timeUp=true;
+      if(phase==='choose'){ finish(); }
+    }
+  }
+
+  function start(){
+    tally=newTally(); n=0; timeUp=false;
+    $('handn').textContent='0'; $('barfill').style.width='100%'; $('sec').textContent=GAME_SEC;
+    show(playEl);
+    dealHand();
+    startAt=performance.now();
+    timer=setInterval(tick,100);
+  }
+
+  let lastTitle=null;
+  function finish(){
+    if(timer){clearInterval(timer);timer=null;}
+    lastTitle=pickTitle(tally,n);
+    $('summary').innerHTML=`1分間で ${n}回 勝負しました🃏`;
+    const rows = HAND_TYPES.filter(h=>tally[h.key].count>0).sort((a,b)=>b.order-a.order);
+    const statsEl=$('stats');
+    if(rows.length===0){
+      statsEl.innerHTML='<div class="srow"><span>役、ひとつも出ませんでした…</span></div>';
+    } else {
+      statsEl.innerHTML = rows.map(h=>`<div class="srow"><span>${h.label}</span><b>× ${tally[h.key].count}</b></div>`).join('');
+    }
+    $('tname').textContent=lastTitle.name; $('tdesc').textContent=lastTitle.desc;
+    $('toast').textContent='';
+    show(resultEl);
+  }
+
+  async function share(){
+    const rows = HAND_TYPES.filter(h=>tally[h.key].count>0).sort((a,b)=>b.order-a.order)
+      .map(h=>`${h.label}${tally[h.key].count}回`).join('、');
+    const text=`【スピードポーカー】1分で${n}回勝負🃏 ${rows||'役ゼロ'}。称号は「${lastTitle.name}」！`;
+    const url=location.href.split('#')[0];
+    try{
+      if(navigator.share){ await navigator.share({text,url}); return; }
+      await navigator.clipboard.writeText(text+' '+url);
+      $('toast').textContent='結果をコピーしました！';
+    }catch(e){
+      if(e&&e.name==='AbortError') return;
+      $('toast').textContent='コピーできませんでした…スクショでシェアしてね';
+    }
+  }
+
+  $('startBtn').addEventListener('click',start);
+  $('retryBtn').addEventListener('click',start);
+  $('shareBtn').addEventListener('click',share);
+  actionBtn.addEventListener('pointerdown', e=>{ e.preventDefault(); doExchange(); });
+})();
+</script>
+</body>
+</html>

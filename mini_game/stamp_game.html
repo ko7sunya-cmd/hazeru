@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>コミュ症改善ゲーム</title>
+<style>
+  :root{
+    --bg:#eef0fb; --card:#ffffff; --ink:#2b2d42; --sub:#6b6f8d;
+    --accent:#6c63ff; --accent-d:#5148e0;
+    --joy:#2eb872; --conf:#f0a020; --ang:#ee4b4b; --blk:#444;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+  button{-webkit-appearance:none;appearance:none;outline:none}
+  button:focus,button:focus-visible{outline:none}
+  button::-moz-focus-inner{border:0}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif}
+  body{display:flex;justify-content:center}
+  #app{width:100%;max-width:480px;height:100vh;height:100dvh;position:relative;overflow:hidden;
+    background:var(--bg);user-select:none;-webkit-user-select:none;touch-action:manipulation}
+  .screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:20px 18px;
+    padding-bottom:max(20px,env(safe-area-inset-bottom))}
+  .hidden{display:none!important}
+
+  /* start / result */
+  .center{align-items:center;justify-content:center;text-align:center;gap:14px}
+  h1{font-size:28px;margin:0;line-height:1.25}
+  h1 small{display:block;font-size:13px;color:var(--sub);font-weight:600;margin-top:6px}
+  .lead{font-size:14px;color:var(--sub);line-height:1.7;margin:0}
+  .btn{border:0;border-radius:999px;padding:14px 34px;font-size:18px;font-weight:800;color:#fff;
+    background:var(--accent);box-shadow:0 5px 0 var(--accent-d);cursor:pointer;font-family:inherit}
+  .btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--accent-d)}
+  .btn.ghost{background:#fff;color:var(--accent);box-shadow:0 5px 0 #d5d3f5}
+  .btn.ghost:active{box-shadow:0 2px 0 #d5d3f5}
+  .legend{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;font-size:12px;color:var(--sub)}
+  .legend span{background:#fff;border-radius:999px;padding:4px 10px}
+
+  /* play */
+  #play{padding:0}
+  .topbar{padding:12px 16px 10px;background:#fff;box-shadow:0 1px 0 #e3e5f3}
+  .row{display:flex;align-items:center;justify-content:space-between}
+  .time{font-weight:800;font-size:20px;font-variant-numeric:tabular-nums}
+  .counts{display:flex;gap:10px;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+  .bar{height:6px;border-radius:99px;background:#e6e8f6;margin-top:8px;overflow:hidden}
+  .bar i{display:block;height:100%;width:100%;background:var(--accent);transition:width .1s linear}
+  .partner{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#fff}
+  .avatar{width:38px;height:38px;border-radius:50%;background:#e9e7ff;display:grid;place-items:center;font-size:22px}
+  .pname{font-weight:800;font-size:15px}
+  .chat{flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;overflow:hidden;justify-content:flex-start}
+  .b{max-width:78%;padding:11px 14px;border-radius:18px;font-size:17px;line-height:1.5;
+    animation:pop .16s ease-out;word-break:break-word}
+  .b.them{align-self:flex-start;background:#fff;border-top-left-radius:4px}
+  .b.me{align-self:flex-end;background:#dcd9ff;border-top-right-radius:4px;font-size:36px;padding:6px 14px;line-height:1.2}
+  .b.me small{display:block;font-size:11px;color:var(--sub);font-weight:700;text-align:center}
+  .b.react{align-self:flex-start;font-weight:800;color:#fff}
+  .b.react.j{background:var(--joy)} .b.react.c{background:var(--conf)}
+  .b.react.a{background:var(--ang)} .b.react.b{background:var(--blk)}
+  @keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+  .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px 14px;
+    padding-bottom:max(14px,env(safe-area-inset-bottom));background:#fff;box-shadow:0 -1px 0 #e3e5f3}
+  .stamp{border:0;background:#f3f2ff;border-radius:16px;padding:10px 0 8px;font-family:inherit;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--ink)}
+  .stamp .e{font-size:34px;line-height:1.15}
+  .stamp .t{font-size:12px;font-weight:800;color:var(--sub)}
+  .stamp:active{background:#dcd9ff;transform:scale(.96)}
+
+  /* result */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%}
+  .stat{background:#fff;border-radius:14px;padding:10px 4px}
+  .stat b{display:block;font-size:26px;font-variant-numeric:tabular-nums}
+  .stat span{font-size:11px;color:var(--sub);font-weight:700}
+  .title-card{background:#fff;border-radius:20px;padding:18px 16px;width:100%;box-shadow:0 6px 0 #d5d3f5}
+  .title-card .cap{font-size:12px;color:var(--sub);font-weight:700}
+  .title-card .name{font-size:26px;font-weight:900;margin:6px 0;color:var(--accent-d)}
+  .title-card .desc{font-size:14px;color:var(--sub);line-height:1.6}
+  .big{font-size:18px;font-weight:800;line-height:1.5}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .toast{font-size:12px;color:var(--sub);min-height:16px}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- スタート -->
+  <section id="start" class="screen center">
+    <div style="font-size:54px">💬</div>
+    <h1>コミュ症改善ゲーム<small>※ 改善はされません</small></h1>
+    <p class="lead">1分間、次々と話しかけてくる相手に<br>スタンプだけで返信しよう。<br>喜ばせても、困らせても、怒らせても<br>ぜんぶ立派な「選択」です。</p>
+    <p class="lead" style="background:#fff;border-radius:12px;padding:10px 14px;font-size:12.5px">
+      遊び方: スタンプで対応できなさそうなやつも、<br>スタンプで対応してください。<br>
+      適切な回答をしても怒ることがあります、ご了承ください。
+    </p>
+    <div class="legend"><span>😊 喜び</span><span>😵 困惑</span><span>💢 怒り</span><span>🚫 ブロック</span></div>
+    <button class="btn" id="startBtn">スタート</button>
+    <p class="lead" style="font-size:12px">PCはキーボードの 1〜6 でも返信できます</p>
+  </section>
+
+  <!-- プレイ -->
+  <section id="play" class="screen hidden">
+    <div class="topbar">
+      <div class="row">
+        <div class="time"><span id="sec">60</span>s</div>
+        <div class="counts">
+          <span>😊<span id="cj">0</span></span><span>😵<span id="cc">0</span></span>
+          <span>💢<span id="ca">0</span></span><span>🚫<span id="cb">0</span></span>
+        </div>
+      </div>
+      <div class="bar"><i id="barfill"></i></div>
+    </div>
+    <div class="partner"><div class="avatar" id="av">🙂</div><div class="pname" id="pn">-</div></div>
+    <div class="chat" id="chat"></div>
+    <div class="pad" id="pad"></div>
+  </section>
+
+  <!-- 結果 -->
+  <section id="result" class="screen center hidden">
+    <div style="font-size:40px">⏰</div>
+    <div class="big" id="summary"></div>
+    <div class="stats">
+      <div class="stat"><b id="rj">0</b><span>😊 喜び</span></div>
+      <div class="stat"><b id="rc">0</b><span>😵 困惑</span></div>
+      <div class="stat"><b id="ra">0</b><span>💢 怒り</span></div>
+      <div class="stat"><b id="rb">0</b><span>🚫 ブロック</span></div>
+    </div>
+    <div class="title-card">
+      <div class="cap">あなたの称号</div>
+      <div class="name" id="tname"></div>
+      <div class="desc" id="tdesc"></div>
+    </div>
+    <div class="btns">
+      <button class="btn" id="retryBtn">もう一回</button>
+      <button class="btn ghost" id="shareBtn">結果をシェア</button>
+    </div>
+    <div class="toast" id="toast"></div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const GAME_SEC = 60;
+
+  // ---- スタンプ(オリジナル絵文字ベース) ----
+  const STAMPS = [
+    {id:'ok',    e:'👍', t:'了解'},
+    {id:'thx',   e:'🙏', t:'ありがとう'},
+    {id:'sorry', e:'🙇', t:'ごめん'},
+    {id:'hmm',   e:'🤔', t:'なるほど'},
+    {id:'lol',   e:'🤣', t:'笑'},
+    {id:'q',     e:'❓', t:'？'},
+  ];
+
+  // ---- 相手のセリフ ----
+  // j:喜ぶスタンプ / a:怒るスタンプ / b:ブロックするスタンプ / それ以外は困惑
+  const MSGS = [
+    {t:'今日、飲み行かない？',           j:['ok'],          a:['q'],        b:['hmm']},
+    {t:'あの件どうなった？',             j:['sorry','ok'],  a:['lol'],      b:['q']},
+    {t:'誕生日おめでとう🎉',             j:['thx'],         a:['q'],        b:['hmm']},
+    {t:'実は昨日、猫が家出して…',        j:['hmm','q'],     a:['ok'],       b:['lol']},
+    {t:'資料送っといたよ〜',             j:['thx','ok'],    a:['q'],        b:['lol']},
+    {t:'ごめん、返信遅れた！',           j:['ok','lol'],    a:['q'],        b:['hmm']},
+    {t:'私のこと、嫌いになった？',       j:['sorry'],       a:['ok','lol'], b:['hmm']},
+    {t:'見て見て！髪型変えた✂️',         j:['lol','thx'],   a:['q'],        b:['ok']},
+    {t:'明日の会議、10時からね',         j:['ok','thx'],    a:['lol'],      b:['q']},
+    {t:'今度ごはん行こうよ！',           j:['ok','thx'],    a:['q'],        b:['sorry']},
+    {t:'ちょっと相談があるんだけど…',    j:['hmm','ok'],    a:['q'],        b:['lol']},
+    {t:'お金貸してくれない？',           j:['sorry'],       a:['ok'],       b:['thx','lol']},
+    {t:'今日めっちゃ疲れた〜',           j:['hmm','sorry'], a:['lol'],      b:['q']},
+    {t:'昨日の試合見た！？',             j:['lol','ok'],    a:['thx'],      b:['q']},
+    {t:'これ、ひとつあげる🍫',           j:['thx'],         a:['q'],        b:['sorry']},
+    {t:'既読つけるの早すぎない？w',      j:['lol'],         a:['sorry'],    b:['hmm']},
+    {t:'結婚することになりました！',     j:['thx','lol'],   a:['sorry'],    b:['q']},
+    {t:'実はずっと言えなかったんだけど…',j:['hmm'],         a:['lol'],      b:['ok']},
+    {t:'この前貸した本、返して〜',       j:['sorry'],       a:['lol','thx'],b:['q']},
+    {t:'テスト全然できなかった…',        j:['hmm'],         a:['lol'],      b:['thx']},
+    {t:'一緒に写真撮ろ📸',               j:['ok','lol'],    a:['sorry'],    b:['q']},
+    {t:'今どこ？',                       j:['ok'],          a:['lol'],      b:['hmm']},
+    {t:'おはよう☀️(夜10時)',             j:['lol','ok'],    a:['sorry'],    b:['q']},
+    {t:'私の話、ちゃんと聞いてる？',     j:['sorry'],       a:['lol','ok'], b:['q']},
+    {t:'元気にしてる？',                 j:['ok','thx'],    a:['q'],        b:['lol']},
+  ];
+
+  const PEOPLE = [
+    ['田中さん','👨'],['佐藤さん','👩'],['鈴木くん','🧑'],['母','👵'],['上司','🧔'],
+    ['元カレ','🥀'],['隣の席の人','🪑'],['謎のアカウント','👤'],['たかし','😎'],['みゆ','🎀'],
+    ['大家さん','🏠'],['小学校の同級生','🎒'],['バイト先の先輩','🍜'],['親戚のおじさん','🍶'],
+    ['ゆうき','🎮'],['あかり','🌸'],['サークルの部長','🏸'],['宅配業者さん','📦'],
+  ];
+
+  const REACT = {
+    j:['😊 ありがとう！','😆 うれしい！','🥰 やさしい…'],
+    c:['❓ …え？','😵 どういうこと？','🌀 ？？？'],
+    a:['💢 は？','😠 ひどくない？','🔥 なにそれ'],
+    b:['🚫 ブロックされました'],
+  };
+
+  // ---- 称号(レアなものから判定) ----
+  function pickTitle(s){
+    const {n,j,c,a,b,maxRun} = s;
+    const bad = a + b;
+    const T = (name,desc)=>({name,desc});
+    if(n>=15 && j===n)               return T('🌟 スタンプ聖人','全員を笑顔に。もはやこの世の人間じゃない。');
+    if(n>=8  && bad===n)             return T('🏴 孤高のトラブルメーカー','全員を敵に回した。これはこれで、才能。逆に尊敬する。');
+    if(n>=20 && j/n>=0.7)            return T('🗣️ コミュ力お化け','初対面でも一生モノの友達になれるタイプ。多少ブロックされてもビクともしない。');
+    if(n>=10 && j/n>=0.6 && bad===0) return T('🕊️ 癒しの権化','誰も怒らせなかった。もはや人間界の空気清浄機。');
+    if(n>=10 && j/n>=0.5 && b<=1)    return T('😈 愛されトラブルメーカー','一人くらい怒らせても、それ以上にみんなに愛されてる証拠。');
+    if(b>=5)                         return T('👑 ブロックの帝王','ブロック数が国家レベル。逆にここまでいくと才能。');
+    if(b>=3)                         return T('🗃️ ブロック・コレクター','ブロックされるのも立派な実績。集めてる人にしか分からない喜び。');
+    if(n>=22 && bad>=n*0.4)          return T('🔥 炎上マーケター','燃やしながら数をこなす、最強の広報担当。');
+    if(n>=8  && a>=n/2 && b===0)     return T('🎯 煽りの匠','ブロックされないギリギリを攻め続ける、職人技。');
+    if(n>=8  && c>=n*0.4 && bad===0) return T('🔮 不思議ちゃん認定','みんなを困惑させたのに、なぜか嫌われない。天性の魅力。');
+    if(n>=8  && c>=n*0.3 && j>=n*0.3)return T('🎭 意味深スタンプ職人','困らせつつ、ちゃんと喜ばせもした。器用すぎる。');
+    if(b>=1  && c>=3 && j<=n*0.3)    return T('🚧 会話ラリー事故物件','困惑とブロックが同時発生。現場は騒然。');
+    if(n>=8  && c>=n*0.5)            return T('🌀 謎の返信マスター','返信の意図が誰にも読めない。ミステリアスな人と思われてるはず。');
+    if(maxRun>=5)                    return T('🥁 ブレない男(女)','同じスタンプを押しまくった。信念がある。');
+    if(j>=10)                        return T('☀️ みんなの太陽','そこにいるだけで、たくさんの人を笑顔にしてる。');
+    if(n>=25)                        return T('⚡ 秒速の返信王','考える前に指が動くタイプ。反射神経、化け物級。');
+    if(n<10)                         return T('📭 既読スルーの達人','慎重すぎて、あまり返せなかった。でも慎重さも才能。');
+    const lo=n*0.2, hi=n*0.5;
+    if(j>=lo&&j<=hi&&c>=lo&&c<=hi&&bad>=lo&&bad<=hi)
+                                     return T('⚖️ バランス型コミュニケーター','喜び・困惑・怒り、ちょうどよく配分できる器用なタイプ。');
+    return T('😊 マイペース系コミュ強','特に目立たないけど、それが逆に強い。無理してないのがいい。');
+  }
+
+  // ---- DOM ----
+  const $ = id => document.getElementById(id);
+  const startEl=$('start'), playEl=$('play'), resultEl=$('result');
+  const chat=$('chat'), pad=$('pad');
+
+  STAMPS.forEach((s,i)=>{
+    const btn=document.createElement('button');
+    btn.className='stamp'; btn.dataset.id=s.id;
+    btn.innerHTML=`<span class="e">${s.e}</span><span class="t">${s.t}</span>`;
+    btn.addEventListener('pointerdown',e=>{e.preventDefault();onStamp(s.id);});
+    pad.appendChild(btn);
+  });
+
+  // ---- 状態 ----
+  let st, deck=[], cur=null, locked=true, timeUp=false, timer=null, startAt=0;
+
+  const rand = a => a[Math.floor(Math.random()*a.length)];
+  function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[a[i],a[k]]=[a[k],a[i]];}return a;}
+  function nextMsg(){ if(!deck.length) deck=shuffle(MSGS); return deck.pop(); }
+
+  function bubble(cls,html){
+    const d=document.createElement('div'); d.className='b '+cls; d.innerHTML=html; chat.appendChild(d); return d;
+  }
+
+  function show(el){ [startEl,playEl,resultEl].forEach(x=>x.classList.add('hidden')); el.classList.remove('hidden'); }
+
+  function newPartner(){
+    cur=nextMsg();
+    const [name,av]=rand(PEOPLE);
+    $('pn').textContent=name; $('av').textContent=av;
+    chat.innerHTML='';
+    bubble('them', cur.t.replace(/</g,'&lt;'));
+    locked=false;
+  }
+
+  function updateCounts(){
+    $('cj').textContent=st.j; $('cc').textContent=st.c; $('ca').textContent=st.a; $('cb').textContent=st.b;
+  }
+
+  function onStamp(id){
+    if(locked||!cur) return;
+    locked=true;
+    const s=STAMPS.find(x=>x.id===id);
+    bubble('me',`${s.e}<small>${s.t}</small>`);
+    let o='c';
+    if(cur.j.includes(id)) o='j'; else if(cur.b.includes(id)) o='b'; else if(cur.a.includes(id)) o='a';
+    st.n++; st[o]++;
+    if(st.last===id) st.run++; else {st.run=1; st.last=id;}
+    if(st.run>st.maxRun) st.maxRun=st.run;
+    setTimeout(()=>{ bubble('react '+o, rand(REACT[o])); updateCounts(); },100);
+    setTimeout(()=>{ if(timeUp) finish(); else newPartner(); },380);
+  }
+
+  function tick(){
+    const left=Math.max(0, GAME_SEC-(performance.now()-startAt)/1000);
+    $('sec').textContent=Math.ceil(left);
+    $('barfill').style.width=(left/GAME_SEC*100)+'%';
+    if(left<=0){
+      clearInterval(timer); timer=null; timeUp=true;
+      if(!locked) { locked=true; finish(); }
+    }
+  }
+
+  function start(){
+    st={n:0,j:0,c:0,a:0,b:0,last:null,run:0,maxRun:0};
+    deck=shuffle(MSGS); timeUp=false; locked=true;
+    updateCounts(); $('barfill').style.width='100%'; $('sec').textContent=GAME_SEC;
+    show(playEl);
+    newPartner();
+    startAt=performance.now();
+    timer=setInterval(tick,100);
+  }
+
+  let lastTitle=null;
+  function finish(){
+    if(timer){clearInterval(timer);timer=null;}
+    locked=true;
+    lastTitle=pickTitle(st);
+    $('summary').innerHTML=`1分間で ${st.n}人 とやりとりしました✨`;
+    $('rj').textContent=st.j; $('rc').textContent=st.c; $('ra').textContent=st.a; $('rb').textContent=st.b;
+    $('tname').textContent=lastTitle.name; $('tdesc').textContent=lastTitle.desc;
+    $('toast').textContent='';
+    show(resultEl);
+  }
+
+  async function share(){
+    const text=`【コミュ症改善ゲーム】1分で${st.n}人とやりとり✨ 喜び${st.j}件、困惑${st.c}件、怒り${st.a}件、ブロックされました${st.b}件。称号は「${lastTitle.name}」！`;
+    const url=location.href.split('#')[0];
+    try{
+      if(navigator.share){ await navigator.share({text,url}); return; }
+      await navigator.clipboard.writeText(text+' '+url);
+      $('toast').textContent='結果をコピーしました！';
+    }catch(e){
+      if(e&&e.name==='AbortError') return;
+      $('toast').textContent='コピーできませんでした…スクショでシェアしてね';
+    }
+  }
+
+  $('startBtn').addEventListener('click',start);
+  $('retryBtn').addEventListener('click',start);
+  $('shareBtn').addEventListener('click',share);
+  document.addEventListener('keydown',e=>{
+    if(playEl.classList.contains('hidden')) return;
+    const i=parseInt(e.key,10)-1;
+    if(i>=0&&i<STAMPS.length) onStamp(STAMPS[i].id);
+  });
+})();
+</script>
+</body>
+</html>

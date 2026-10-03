@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>スマホ早打ちチャレンジ</title>
+<style>
+  :root{
+    --bg:#eef7f7; --card:#ffffff; --ink:#1f3535; --sub:#5e7a7a;
+    --accent:#0aa3a3; --accent-d:#087f7f;
+    --ok:#2eb872; --ng:#ee4b4b;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+  button{-webkit-appearance:none;appearance:none;outline:none}
+  button:focus,button:focus-visible{outline:none}
+  button::-moz-focus-inner{border:0}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif}
+  body{display:flex;justify-content:center}
+  #app{width:100%;max-width:480px;height:100vh;height:100dvh;position:relative;overflow:hidden;
+    background:var(--bg);user-select:none;-webkit-user-select:none;touch-action:manipulation}
+  .screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:20px 18px;
+    padding-bottom:max(20px,env(safe-area-inset-bottom))}
+  .hidden{display:none!important}
+
+  .center{align-items:center;justify-content:center;text-align:center;gap:14px}
+  h1{font-size:26px;margin:0;line-height:1.25}
+  h1 small{display:block;font-size:13px;color:var(--sub);font-weight:600;margin-top:6px}
+  .lead{font-size:14px;color:var(--sub);line-height:1.7;margin:0}
+  .rulebox{background:#fff;border-radius:14px;padding:12px 14px;font-size:12.5px;color:var(--ink);text-align:left;line-height:1.8;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+  .btn{border:0;border-radius:999px;padding:14px 34px;font-size:18px;font-weight:800;color:#fff;
+    background:var(--accent);box-shadow:0 5px 0 var(--accent-d);cursor:pointer;font-family:inherit}
+  .btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--accent-d)}
+  .btn.ghost{background:#fff;color:var(--accent-d);box-shadow:0 5px 0 #cfe9e9}
+  .btn.ghost:active{box-shadow:0 2px 0 #cfe9e9}
+  .btn.small{padding:9px 22px;font-size:14px;box-shadow:0 3px 0 var(--accent-d)}
+  .btn.small:active{box-shadow:0 1px 0 var(--accent-d)}
+
+  /* play */
+  #play{padding:0}
+  .topbar{padding:12px 16px 10px;background:#fff;box-shadow:0 1px 0 #e3ecec}
+  .row{display:flex;align-items:center;justify-content:space-between}
+  .time{font-weight:800;font-size:20px;font-variant-numeric:tabular-nums}
+  .clearn{font-size:14px;font-weight:700;color:var(--sub);font-variant-numeric:tabular-nums}
+  .bar{height:6px;border-radius:99px;background:#dcefef;margin-top:8px;overflow:hidden}
+  .bar i{display:block;height:100%;width:100%;background:var(--accent);transition:width .1s linear}
+
+  .field{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:20px}
+  .phrase{font-size:26px;font-weight:800;line-height:1.7;text-align:center;letter-spacing:.02em;word-break:keep-all}
+  .phrase span{transition:color .1s}
+  .phrase .done{color:var(--ok)}
+  .phrase .bad{color:var(--ng)}
+  .phrase .rest{color:#c3d3d3}
+
+  .inputwrap{width:100%}
+  #typeInput{width:100%;font-size:22px;padding:14px 16px;border-radius:14px;border:3px solid #cfe9e9;
+    text-align:center;font-family:inherit;background:#fff;color:var(--ink);outline:none;
+    transition:border-color .1s, transform .1s}
+  #typeInput.err{border-color:var(--ng);animation:shake .28s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+  .banner{font-size:16px;font-weight:800;color:var(--ok);text-align:center;min-height:22px;opacity:0}
+  .banner.show{animation:bannerFade .9s ease forwards}
+  @keyframes bannerFade{0%{opacity:0;transform:scale(.85)}15%{opacity:1;transform:scale(1)}70%{opacity:1}100%{opacity:0}}
+  @keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+
+  .skiprow{text-align:center}
+
+  /* result */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
+  .stat{background:#fff;border-radius:14px;padding:10px 4px}
+  .stat b{display:block;font-size:24px;font-variant-numeric:tabular-nums;color:var(--accent-d)}
+  .stat span{font-size:11px;color:var(--sub);font-weight:700}
+  .title-card{background:#fff;border-radius:20px;padding:18px 16px;width:100%;box-shadow:0 6px 0 #cfe9e9}
+  .title-card .cap{font-size:12px;color:var(--sub);font-weight:700}
+  .title-card .name{font-size:24px;font-weight:900;margin:6px 0;color:var(--accent-d)}
+  .title-card .desc{font-size:14px;color:var(--sub);line-height:1.6}
+  .big{font-size:18px;font-weight:800;line-height:1.5}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .toast{font-size:12px;color:var(--sub);min-height:16px}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- スタート -->
+  <section id="start" class="screen center">
+    <div style="font-size:54px">⌨️</div>
+    <h1>スマホ早打ちチャレンジ<small>フリック入力、何問いける？</small></h1>
+    <div class="rulebox">
+      表示された文章と、まったく同じ文字を<br>
+      下の入力欄に打ち込んでね(ぜんぶひらがな)。<br>
+      合ってる部分は緑、間違えたら赤。<br>
+      打ち終わったら自動で次の問題へ。<br>
+      1分間で何問クリアできるか勝負！
+    </div>
+    <button class="btn" id="startBtn">スタート</button>
+  </section>
+
+  <!-- プレイ -->
+  <section id="play" class="screen hidden">
+    <div class="topbar">
+      <div class="row">
+        <div class="time"><span id="sec">60</span>s</div>
+        <div class="clearn">✅ <span id="clearedn">0</span>問クリア</div>
+      </div>
+      <div class="bar"><i id="barfill"></i></div>
+    </div>
+    <div class="field">
+      <div class="banner" id="banner">&nbsp;</div>
+      <div class="phrase" id="phrase"></div>
+      <div class="inputwrap">
+        <input id="typeInput" type="text" inputmode="text" autocomplete="off" autocorrect="off"
+               autocapitalize="off" spellcheck="false" placeholder="ここに入力">
+      </div>
+      <div class="skiprow"><button class="btn small ghost" id="skipBtn">この問題をスキップ</button></div>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section id="result" class="screen center hidden">
+    <div style="font-size:40px">⏰</div>
+    <div class="big" id="summary"></div>
+    <div class="stats">
+      <div class="stat"><b id="rn">0</b><span>クリア数</span></div>
+      <div class="stat"><b id="rchars">0</b><span>文字/分</span></div>
+      <div class="stat"><b id="rmiss">0</b><span>ミス回数</span></div>
+    </div>
+    <div class="title-card">
+      <div class="cap">あなたの称号</div>
+      <div class="name" id="tname"></div>
+      <div class="desc" id="tdesc"></div>
+    </div>
+    <div class="btns">
+      <button class="btn" id="retryBtn">もう一回</button>
+      <button class="btn ghost" id="shareBtn">結果をシェア</button>
+    </div>
+    <div class="toast" id="toast"></div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const GAME_SEC = 60;
+
+  const PHRASES = [
+    'あしたははれ','おはようございます','おなかがすいた','ねむくなってきた','がっこうにいく',
+    'しゅくだいがおわらない','あめがふってきた','でんしゃがおくれた','きょうもがんばろう','ねこがかわいい',
+    'のどがかわいた','あたまがいたい','でかけるじかんだ','でんわがなっている','しごとがおわらない',
+    'きょうははれのちくもり','おふろにはいろう','はやくねたほうがいい','しゅみはさんぽです','からだがだるい',
+    'きゅうにあめがふった','でんきをけしわすれた','さいふをわすれた','ゆうがたにあめがやんだ','あたらしいくつがほしい',
+    'きょうのごはんはなに','でんしゃがこんでいる','はやくおきたい','ちこくしそう','おちゃがのみたい',
+  ];
+
+  const $ = id => document.getElementById(id);
+  const startEl=$('start'), playEl=$('play'), resultEl=$('result');
+  const phraseEl=$('phrase'), inputEl=$('typeInput'), bannerEl=$('banner');
+
+  function show(el){ [startEl,playEl,resultEl].forEach(x=>x.classList.add('hidden')); el.classList.remove('hidden'); }
+
+  const rand = a => a[Math.floor(Math.random()*a.length)];
+  function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[a[i],a[k]]=[a[k],a[i]];}return a;}
+
+  // ---- 状態 ----
+  let deck=[], target='', clearedN=0, charsTyped=0, missN=0, hadError=false, timeUp=false, timer=null, startAt=0;
+  let errorTimer=null;
+  const ERROR_GRACE_MS = 260; // 「っ」「ゃゅょ」等の変換中の一瞬のズレをミス扱いしないための猶予
+
+  function nextTarget(){
+    if(errorTimer){ clearTimeout(errorTimer); errorTimer=null; }
+    if(!deck.length) deck=shuffle(PHRASES);
+    target = deck.pop();
+    hadError=false;
+    inputEl.value='';
+    inputEl.classList.remove('err');
+    renderPhrase(0,0);
+  }
+
+  function commonPrefixLen(a,b){
+    let i=0; const n=Math.min(a.length,b.length);
+    while(i<n && a[i]===b[i]) i++;
+    return i;
+  }
+
+  function renderPhrase(matchLen, hasError){
+    let html='';
+    for(let i=0;i<target.length;i++){
+      const ch=target[i];
+      if(i<matchLen) html+=`<span class="done">${ch}</span>`;
+      else if(i===matchLen && hasError) html+=`<span class="bad">${ch}</span>`;
+      else html+=`<span class="rest">${ch}</span>`;
+    }
+    phraseEl.innerHTML=html;
+  }
+
+  let composing = false;
+
+  function onInput(e){
+    if(composing || (e && e.isComposing)) return; // 変換確定前は判定しない(未確定の文字がクリアと衝突して残留するのを防ぐ)
+    if(errorTimer){ clearTimeout(errorTimer); errorTimer=null; }
+    const val=inputEl.value;
+
+    if(val===target){
+      clearedN++; charsTyped+=target.length;
+      $('clearedn').textContent=clearedN;
+      bannerEl.textContent='✨ せいかい！';
+      bannerEl.classList.remove('show'); void bannerEl.offsetWidth; bannerEl.classList.add('show');
+      inputEl.classList.remove('err');
+      // キーボードを閉じさせないよう、setTimeoutを挟まずこの場で即座に次の問題へ
+      if(timeUp){ finish(); } else { nextTarget(); inputEl.focus(); }
+      return;
+    }
+
+    const matchLen = commonPrefixLen(val, target);
+    const isError = matchLen < val.length; // 入力の一部が正解のprefixからズレている
+
+    if(!isError){
+      // 正しい途中入力。ここまでは即反映して問題ない
+      renderPhrase(matchLen, false);
+      inputEl.classList.remove('err');
+      hadError=false;
+      return;
+    }
+
+    // ズレている。ただし「つ→っ」のような変換の一瞬かもしれないので、
+    // 少し待って、それでもズレていたら初めて本当のミスとして扱う
+    renderPhrase(matchLen, false);
+    errorTimer = setTimeout(()=>{
+      errorTimer=null;
+      const val2 = inputEl.value;
+      if(val2===target) return; // すでに確定済み(onInputの完了処理側で拾われる)
+      const matchLen2 = commonPrefixLen(val2, target);
+      const isError2 = matchLen2 < val2.length;
+      if(isError2){
+        renderPhrase(matchLen2, true);
+        inputEl.classList.add('err');
+        if(!hadError){ missN++; hadError=true; }
+      }
+    }, ERROR_GRACE_MS);
+  }
+
+  function skip(){
+    if(timeUp) return;
+    nextTarget();
+    inputEl.focus();
+  }
+
+  function tick(){
+    const left=Math.max(0, GAME_SEC-(performance.now()-startAt)/1000);
+    $('sec').textContent=Math.ceil(left);
+    $('barfill').style.width=(left/GAME_SEC*100)+'%';
+    if(left<=0){
+      clearInterval(timer); timer=null; timeUp=true;
+      finish();
+    }
+  }
+
+  function start(){
+    deck=shuffle(PHRASES); clearedN=0; charsTyped=0; missN=0; hadError=false; timeUp=false;
+    $('clearedn').textContent='0'; $('barfill').style.width='100%'; $('sec').textContent=GAME_SEC;
+    bannerEl.classList.remove('show'); bannerEl.textContent=' ';
+    show(playEl);
+    nextTarget();
+    inputEl.focus();
+    startAt=performance.now();
+    timer=setInterval(tick,100);
+  }
+
+  let lastTitle=null;
+  function pickTitle(n, miss, chars){
+    const T=(name,desc)=>({name,desc});
+    if(n===0) return T('📭 まだ1問もクリアできず','次はもう少し短い文からいこう。');
+    if(miss>=n*1.5 && n>=3)    return T('🌀 誤字の申し子','間違えても気にせず突き進むタイプ。');
+    if(miss===0 && chars>=80)  return T('🌟 完璧超人','神の域なのに1回もミスなし。もう反則。');
+    if(chars>=80)              return T('🙏 早打ちの神','80文字/分は、もはや人間離れ。これ以上は指を痛めるので無理しないで。');
+    if(chars>=60)              return T('🚀 早打ちの達人','この速さは、かなりの手練れ。');
+    if(chars>=45)              return T('🔥 なかなかの俊足','45文字/分を超えたら、もう十分速い。');
+    if(miss===0 && n>=6)      return T('🎯 ノーミスの指先','1回も打ち間違えなかった。');
+    if(chars>=25)             return T('⌨️ 標準的なタイパー','平均的なスピード。');
+    if(n>=1)                  return T('🐢 じっくり派','丁寧に、着実に。焦らない性格が出てる。');
+    return T('😊 コツコツ入力マン','マイペースにいきましょう。');
+  }
+
+  function finish(){
+    if(timer){clearInterval(timer);timer=null;}
+    if(errorTimer){clearTimeout(errorTimer);errorTimer=null;}
+    inputEl.blur();
+    lastTitle=pickTitle(clearedN, missN, charsTyped);
+    $('summary').innerHTML=`1分間で ${clearedN}問 クリアしました⌨️`;
+    $('rn').textContent=clearedN; $('rchars').textContent=charsTyped; $('rmiss').textContent=missN;
+    $('tname').textContent=lastTitle.name; $('tdesc').textContent=lastTitle.desc;
+    $('toast').textContent='';
+    show(resultEl);
+  }
+
+  async function share(){
+    const text=`【スマホ早打ちチャレンジ】1分で${clearedN}問クリア⌨️ ${charsTyped}文字/分、ミス${missN}回。称号は「${lastTitle.name}」！`;
+    const url=location.href.split('#')[0];
+    try{
+      if(navigator.share){ await navigator.share({text,url}); return; }
+      await navigator.clipboard.writeText(text+' '+url);
+      $('toast').textContent='結果をコピーしました！';
+    }catch(e){
+      if(e&&e.name==='AbortError') return;
+      $('toast').textContent='コピーできませんでした…スクショでシェアしてね';
+    }
+  }
+
+  $('startBtn').addEventListener('click',start);
+  $('retryBtn').addEventListener('click',start);
+  $('shareBtn').addEventListener('click',share);
+  $('skipBtn').addEventListener('pointerdown', e=>{ e.preventDefault(); skip(); });
+  inputEl.addEventListener('input', onInput);
+  inputEl.addEventListener('compositionstart', ()=>{ composing=true; });
+  inputEl.addEventListener('compositionend', ()=>{ composing=false; onInput(); });
+})();
+</script>
+</body>
+</html>
