@@ -280,6 +280,18 @@ h1 {
     border-bottom-color: currentColor;
 }
 
+/* --- オフラインサマー専用：ノベルコーナーの中だが、ゲーム色（オレンジ）を帯びたハイブリッド枠 --- */
+.work-item--hybrid {
+    --accent: var(--color-sand);
+    --accent-bg: var(--color-sand-pale-bg);
+}
+
+/* タグの中でも「ゲーム性あり」だけは塗りつぶしで少し目立たせる */
+.work-tag--emphasis {
+    background: var(--accent, var(--color-teal));
+    color: #fff;
+}
+
 /* --- フッター --- */
 .site-footer {
     margin-top: 1.5rem;
