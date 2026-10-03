@@ -422,6 +422,44 @@
         body.theme-space .kagerou { opacity: 0; }
         body.theme-relax .kagerou { height: 15%; background: linear-gradient(to top, rgba(244, 63, 94, 0.02), transparent); backdrop-filter: blur(3px); opacity: 1; }
 
+
+        /* =========================================
+           🗂 未分類テーマ（琥珀色）
+           ========================================= */
+        body.theme-misc {
+            background: linear-gradient(180deg, #0e0b07 0%, #1a140b 60%, #261a0c 100%) !important;
+            color: #e2e8f0 !important;
+        }
+        body.theme-misc .player-title { color: #fbbf24; }
+        body.theme-misc .main-btn:hover {
+            background: rgba(251, 191, 36, 0.14);
+            border-color: rgba(251, 191, 36, 0.5);
+            box-shadow: 0 4px 16px rgba(251, 191, 36, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+        body.theme-misc #play-pause-btn {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        }
+        body.theme-misc .track-item:hover {
+            background: rgba(251, 191, 36, 0.1);
+            border-color: #fbbf24;
+        }
+        body.theme-misc .track-item.active {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+            border-color: #fbbf24;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
+        }
+        body.theme-misc .theme-tab.active {
+            border-color: #fbbf24;
+            color: #fbbf24;
+            box-shadow: 0 0 12px rgba(251, 191, 36, 0.2);
+        }
+        body.theme-misc .lens-flare { background: radial-gradient(circle, rgba(255, 237, 200, 0.10) 0%, rgba(251, 191, 36, 0.04) 45%, transparent 75%); top: -8%; right: 10%; }
+        body.theme-misc .light-ray { transform: rotate(25deg); }
+        body.theme-misc .ray-1 { background: linear-gradient(90deg, transparent 0%, rgba(251, 191, 36, 0.05) 50%, transparent 100%); }
+        body.theme-misc .ray-2 { background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.03) 50%, transparent 100%); }
+        body.theme-misc .kagerou { height: 20%; background: linear-gradient(to top, rgba(251, 191, 36, 0.02), transparent); backdrop-filter: blur(2px); opacity: 1; }
+
         @keyframes flare-breathe { 0% { transform: scale(1) translate(0, 0); opacity: 0.6; } 100% { transform: scale(1.05) translate(-10px, 15px); opacity: 1; } }
         @keyframes ray-shift { 0% { transform: rotate(inherit) translateX(0px); opacity: 0.5; } 100% { transform: rotate(inherit) translateX(40px); opacity: 1; } }
         @keyframes kagerou-wave { 0% { transform: translateY(0); opacity: 0.5; } 100% { transform: translateY(-5px); opacity: 1; } }
@@ -448,7 +486,7 @@
         <main>
             <section class="intro">
  
-<p>Suno AIで紡いだオリジナル楽曲のライブラリです。<br>「夏の聖域」「星の鼓動」「日常の輪郭」をタップすることでプレイリストを切り替えることができます。</p>
+<p>Suno AIで紡いだオリジナル楽曲のライブラリです。<br>「夏の聖域」「星の鼓動」「日常の輪郭」「未分類」をタップすることでプレイリストを切り替えることができます。</p>
             </section>
 
             <!-- 🎛 チャプター切り替えタブ -->
@@ -456,6 +494,7 @@
                 <div class="theme-tab active" data-theme="summer">夏の聖域</div>
                 <div class="theme-tab" data-theme="space">星の鼓動</div>
                 <div class="theme-tab" data-theme="relax">日常の輪郭</div> <!-- 🌟 変更: 日常の輪郭 -->
+                <div class="theme-tab" data-theme="misc">未分類</div>
             </div>
 
             <!-- 特製オーディオプレイヤー -->
@@ -553,6 +592,20 @@
                                 <div class="track-item" data-src="music/silver_borderline_01.mp3" data-name="Silver Borderline 01">01</div>
                             </div>
                         </div>
+                        <!-- 🌟 追加: エリア84 -記憶境界線（Synth Pop） -->
+                        <div class="song-group">
+                            <div class="song-title">エリア84 -記憶境界線</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/area84_kioku_kyokaisen_01.mp3" data-name="エリア84 -記憶境界線 01">01</div>
+                            </div>
+                        </div>
+                        <!-- 🌟 追加: Absolute Zero Panorama -->
+                        <div class="song-group">
+                            <div class="song-title">Absolute Zero Panorama</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/absolute_zero_panorama_01.mp3" data-name="Absolute Zero Panorama 01">01</div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- 🌸 CHAPTER 03: 日常の輪郭 -->
@@ -584,6 +637,40 @@
                             </div>
                         </div>
                         -->
+                    </div>
+
+                    <!-- 🗂 CHAPTER 04: 未分類 -->
+                    <div class="playlist-group" id="group-misc" style="display: none;">
+                        <div class="song-group">
+                            <div class="song-title">戦火の花</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/senka_no_hana_01.mp3" data-name="戦火の花 01">01</div>
+                            </div>
+                        </div>
+                        <div class="song-group">
+                            <div class="song-title">Beta Testers High Sky</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/beta_tester_high_sky_02.mp3" data-name="Beta Testers High Sky 02">02</div>
+                            </div>
+                        </div>
+                        <div class="song-group">
+                            <div class="song-title">叫べ Hello! Win! Win!</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/sakebe_hello_win_win_01.mp3" data-name="叫べ Hello! Win! Win! 01">01</div>
+                            </div>
+                        </div>
+                        <div class="song-group">
+                            <div class="song-title">煌めき億光年</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/kirameki_okukounen_01.mp3" data-name="煌めき億光年 01">01</div>
+                            </div>
+                        </div>
+                        <div class="song-group">
+                            <div class="song-title">わちゃわちゃ</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/wacha_wacha_01.mp3" data-name="わちゃわちゃ 01">01</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -764,6 +851,10 @@
                     playerTitle.innerText = 'CHAPTER 03: 日常の輪郭'; // 🌟 変更：日常の輪郭
                     playerSub.innerText = '耳かき、湯気。生活の隙間に溶けるプライベート'; // 🌟 変更
                     playerSub.style.color = '#f43f5e';
+                } else if (theme === 'misc') {
+                    playerTitle.innerText = 'CHAPTER 04: 未分類';
+                    playerSub.innerText = 'ジャンルもテーマもいろいろ。まだ居場所の決まっていない曲たち';
+                    playerSub.style.color = '#fbbf24';
                 }
 
                 // 5. 変数を更新して新しいテーマの1曲目をロード
