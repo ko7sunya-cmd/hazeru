@@ -31,6 +31,10 @@
 
   /* song select */
   #start{justify-content:flex-start;overflow-y:auto;padding:44px 16px 28px;}
+  .howto{width:min(420px,100%);text-align:left;font-size:12.5px;line-height:1.7;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.04);padding:10px 14px;margin:2px 0 8px;}
+  .howto .ht{font-size:11px;letter-spacing:.15em;color:var(--gold);margin-bottom:4px;}
+  .howto .ht2{opacity:.65;font-size:11.5px;margin-top:4px;}
+  .howto b{color:var(--gold);font-weight:700;}
   .diff{display:flex;gap:8px;margin:8px 0 6px;}
   .dbtn{border:2px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);border-radius:100px;padding:8px 22px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;}
   .dbtn.sel{border-color:var(--gold);background:rgba(240,192,96,.15);color:var(--gold);}
@@ -76,7 +80,13 @@
 <!-- START（曲選択） -->
 <div class="screen on" id="start">
   <h1>音ゲープロトタイプ</h1>
-  <p class="sub">曲を選んで、スタート。<br>ドン・カッでコンボをつなぎ、まんなかのスタンプで盛り上げよう。</p>
+  <p class="sub">曲を選んで、スタート。</p>
+  <div class="howto">
+    <div class="ht">あそびかた</div>
+    <div>🔴🔵 <b>ドン・カッ</b>：落ちてきたノーツに合わせてタップ。つなげるとコンボ。</div>
+    <div>👏🌸💖 <b>スタンプ</b>：まんなかのレーンに来たら、<b>どれを押してもOK</b>。<b>同じマークを押せば得点アップ</b>！</div>
+    <div class="ht2">スタンプは押さなくてもコンボは切れません。余裕があるときだけどうぞ。</div>
+  </div>
   <div class="diff" id="diffBox">
     <button class="dbtn" data-d="easy">かんたん</button>
     <button class="dbtn" data-d="normal">ふつう</button>
