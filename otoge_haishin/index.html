@@ -31,6 +31,9 @@
 
   /* song select */
   #start{justify-content:flex-start;overflow-y:auto;padding:44px 16px 28px;}
+  .diff{display:flex;gap:8px;margin:8px 0 6px;}
+  .dbtn{border:2px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);border-radius:100px;padding:8px 22px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;}
+  .dbtn.sel{border-color:var(--gold);background:rgba(240,192,96,.15);color:var(--gold);}
   #songList{width:min(420px,100%);display:flex;flex-direction:column;gap:10px;margin:4px 0 18px;}
   .song{width:100%;text-align:left;border:2px solid var(--line);border-radius:16px;background:rgba(255,255,255,.05);color:var(--ink);padding:12px 14px;font-family:inherit;}
   .song.sel{border-color:var(--gold);background:rgba(240,192,96,.12);}
@@ -74,6 +77,10 @@
 <div class="screen on" id="start">
   <h1>音ゲープロトタイプ</h1>
   <p class="sub">曲を選んで、スタート。<br>ドン・カッでコンボをつなぎ、まんなかのスタンプで盛り上げよう。</p>
+  <div class="diff" id="diffBox">
+    <button class="dbtn" data-d="easy">かんたん</button>
+    <button class="dbtn" data-d="normal">ふつう</button>
+  </div>
   <div id="songList"></div>
   <button class="big-btn" id="btnStart">スタート</button>
   <details class="settings">
@@ -89,14 +96,14 @@
   <div id="gauge"><div id="gaugeFill"></div></div>
   <canvas id="cv"></canvas>
   <div id="pads">
+    <div class="mains">
+      <button class="pad m don" id="padDon">ドン<small>F</small></button>
+      <button class="pad m ka" id="padKa">カッ<small>J</small></button>
+    </div>
     <div class="stamps">
       <button class="pad s clap" id="padClap">👏</button>
       <button class="pad s flower" id="padFlower">🌸</button>
       <button class="pad s heart" id="padHeart">💖</button>
-    </div>
-    <div class="mains">
-      <button class="pad m don" id="padDon">ドン<small>F</small></button>
-      <button class="pad m ka" id="padKa">カッ<small>J</small></button>
     </div>
   </div>
 </div>
@@ -116,8 +123,14 @@
 
 <script>
 /* ===== 設定 ===== */
-const TRAVEL = 1.5;          // 本番ノーツが落ちるのにかかる秒数
-const WINDOW = 0.28;         // 本番ノーツの判定幅（秒）。ゆるめ
+/* 難易度：ふつう／かんたん（setDiff で切り替え） */
+const DIFFS = {
+  normal:{label:'ふつう',  travel:1.5, window:0.28, pEarly:0.30, pLate:0.45},
+  easy:  {label:'かんたん',travel:2.1, window:0.40, pEarly:0.12, pLate:0.20}
+};
+let DIFF='normal';
+let TRAVEL = 1.5;            // 本番ノーツが落ちるのにかかる秒数
+let WINDOW = 0.28;           // 本番ノーツの判定幅（秒）。ゆるめ
 const STAMP_WINDOW = 0.32;   // スタンプの判定幅（秒）。さらにゆるめ
 let FIRST_BEAT = 0.2;        // 曲の最初の拍の位置（秒）。曲ごとに startGame で設定
 const MAIN = ['don','ka'];
@@ -126,7 +139,6 @@ const STAMP_ICON = {clap:'👏', flower:'🌸', heart:'💖'};
 const COLOR = {don:'#ef6f6f', ka:'#6fb5f0', clap:'#f0c060', flower:'#ef8fa5', heart:'#e57ad0'};
 const isStamp = l => l==='stamp';   // 判定上のレーン名。3種のボタンはどれでも同じ扱い
 const STAMP_ANY = 2, STAMP_MATCH = 6;   // スタンプの点：どれでもOK / 絵柄ぴったり
-const STAMP_PROB_EARLY = 0.30, STAMP_PROB_LATE = 0.45;  // スタンプが出る確率（裏拍ごと）
 
 /* ===== 曲リスト =====
    bpm  : 曲のBPM
@@ -142,9 +154,10 @@ const SONGS = [
 let curSong = SONGS[0];
 
 /* ===== 記録（曲ごとのベスト・保存） ===== */
-const BKEY='otoge_best_v1', SKEY='otoge_sel_v1', TKEY='otoge_off_v1';
+const BKEY='otoge_best_v1', SKEY='otoge_sel_v1', TKEY='otoge_off_v1', DKEY='otoge_diff_v1';
 function lsGet(k){ try{return localStorage.getItem(k);}catch(e){return null;} }
 function lsSet(k,v){ try{localStorage.setItem(k,v);}catch(e){} }
+const bestId = id=>DIFF==='easy'?id+':easy':id;   // かんたんは記録を分ける
 function getBest(id){ try{return (JSON.parse(lsGet(BKEY)||'{}'))[id]||null;}catch(e){return null;} }
 function setBest(id,rec){ let o={}; try{o=JSON.parse(lsGet(BKEY)||'{}')||{};}catch(e){} o[id]=rec; lsSet(BKEY,JSON.stringify(o)); }
 
@@ -216,7 +229,14 @@ function playSE(lane){
 }
 
 /* ===== 譜面生成（BPMだけで自動） ===== */
-const PATTERNS = [
+const PATTERNS_EASY = [
+  [['don',0],['ka',2]],
+  [['don',0],['don',2]],
+  [['don',0],['ka',2],['don',3]],
+  [['don',0],['don',1],['ka',2]],
+  [['don',0],['ka',1],['don',2],['ka',3]]
+];
+const PATTERNS_NORMAL = [
   [['don',0],['don',1],['don',2],['don',3]],
   [['don',0],['ka',1],['don',2],['ka',3]],
   [['don',0],['don',1.5],['ka',2],['don',3]],
@@ -225,6 +245,7 @@ const PATTERNS = [
   [['ka',0.5],['don',1],['ka',2.5],['don',3]]
 ];
 function buildChart(bpm,duration){
+  const PATTERNS = DIFF==='easy'?PATTERNS_EASY:PATTERNS_NORMAL, D=DIFFS[DIFF];
   const beat=60/bpm, notes=[]; let m=0;
   // 最初のノーツが画面の一番上から出てくるまで、さらに1拍の間を置く
   const lead=Math.ceil(TRAVEL/beat)+1;
@@ -234,7 +255,7 @@ function buildChart(bpm,duration){
     p.forEach(([lane,off])=>notes.push({t:FIRST_BEAT+(b+off)*beat,lane,hit:false,done:false}));
     // スタンプ：真ん中のレーン。裏拍に置き、本番ノーツと同時にはしない
     if(m>=1){
-      const prob = m<4 ? STAMP_PROB_EARLY : STAMP_PROB_LATE;
+      const prob = m<4 ? D.pEarly : D.pLate;
       [0.5,1.5,2.5,3.5].forEach(off=>{
         if(p.some(([,o])=>o===off)) return;
         if(Math.random()<prob){ const kind=STAMPS[Math.floor(Math.random()*3)]; notes.push({t:FIRST_BEAT+(b+off)*beat,lane:'stamp',kind,icon:STAMP_ICON[kind],hit:false,done:false}); }
@@ -248,7 +269,7 @@ function buildChart(bpm,duration){
 function renderSongs(){
   const box=document.getElementById('songList'); box.innerHTML='';
   SONGS.forEach(sg=>{
-    const b=getBest(sg.id), btn=document.createElement('button');
+    const b=getBest(bestId(sg.id)), btn=document.createElement('button');
     btn.className='song'+(sg===curSong?' sel':'');
     btn.innerHTML='<div class="ttl"></div><div class="meta"></div>';
     btn.querySelector('.ttl').textContent=sg.title;
@@ -260,7 +281,11 @@ function renderSongs(){
     box.appendChild(btn);
   });
 }
-(function(){ const id=lsGet(SKEY); const f=SONGS.find(x=>x.id===id); if(f) curSong=f;
+function setDiff(d){ DIFF=DIFFS[d]?d:'normal'; lsSet(DKEY,DIFF);
+  document.querySelectorAll('.dbtn').forEach(b=>b.classList.toggle('sel',b.dataset.d===DIFF)); renderSongs(); }
+document.querySelectorAll('.dbtn').forEach(b=>b.addEventListener('click',()=>setDiff(b.dataset.d)));
+(function(){ const dd=lsGet(DKEY); if(DIFFS[dd]) DIFF=dd; document.querySelectorAll('.dbtn').forEach(b=>b.classList.toggle('sel',b.dataset.d===DIFF));
+  const id=lsGet(SKEY); const f=SONGS.find(x=>x.id===id); if(f) curSong=f;
   const off=lsGet(TKEY); if(off!==null){ document.getElementById('offset').value=off; document.getElementById('offVal').textContent=off+'ms'; }
   renderSongs(); })();
 
@@ -281,6 +306,7 @@ window.addEventListener('resize',()=>{ if($('game').classList.contains('on')) re
 function startGame(){
   ensureAudio();
   const bpm=curSong.bpm; FIRST_BEAT=curSong.first||0;
+  TRAVEL=DIFFS[DIFF].travel; WINDOW=DIFFS[DIFF].window;
   if(!bgm.src.endsWith(curSong.file.replace('..',''))){ bgm.src=curSong.file; }
   offsetSec=(parseInt($('offset').value,10)||0)/1000;
   show('game'); resize();
@@ -402,11 +428,11 @@ bgm.addEventListener('ended',()=>{ if(running) finish(); });
 
 function finish(){
   running=false; cancelAnimationFrame(raf);
-  const prev=getBest(curSong.id), rec={score:Math.round(score), combo:Math.max(maxCombo,prev?prev.combo:0)};
+  const prev=getBest(bestId(curSong.id)), rec={score:Math.round(score), combo:Math.max(maxCombo,prev?prev.combo:0)};
   const isNew = !prev || rec.score>prev.score;
-  setBest(curSong.id, {score:Math.max(rec.score,prev?prev.score:0), combo:rec.combo});
+  setBest(bestId(curSong.id), {score:Math.max(rec.score,prev?prev.score:0), combo:rec.combo});
   $('resScore').textContent=Math.round(score)+(isNew?'　NEW!':'');
-  $('resInfo').innerHTML='最大コンボ '+maxCombo+'　／　スタンプ '+stampHit+'/'+stampTotal+'（ぴったり '+stampMatch+'）';
+  $('resInfo').innerHTML='【'+DIFFS[DIFF].label+'】最大コンボ '+maxCombo+'　／　スタンプ '+stampHit+'/'+stampTotal+'（ぴったり '+stampMatch+'）';
   show('result');
 }
 
