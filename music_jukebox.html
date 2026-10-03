@@ -460,6 +460,43 @@
         body.theme-misc .ray-2 { background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.03) 50%, transparent 100%); }
         body.theme-misc .kagerou { height: 20%; background: linear-gradient(to top, rgba(251, 191, 36, 0.02), transparent); backdrop-filter: blur(2px); opacity: 1; }
 
+
+        /* =========================================
+           ✨ v2: アクセント色 / イコライザー / オプション / お気に入り / 検索
+           ========================================= */
+        body.theme-summer { --accent: #38bdf8; }
+        body.theme-space  { --accent: #a78bfa; }
+        body.theme-relax  { --accent: #f43f5e; }
+        body.theme-misc   { --accent: #fbbf24; }
+
+        .now-playing { display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; width: 16px; flex: none; }
+        .eq i { display: block; width: 3px; height: 28%; background: var(--accent, #38bdf8); border-radius: 1px; animation: eq-bounce 0.9s ease-in-out infinite; animation-play-state: paused; }
+        .eq i:nth-child(2) { animation-delay: -0.3s; }
+        .eq i:nth-child(3) { animation-delay: -0.6s; }
+        .eq i:nth-child(4) { animation-delay: -0.15s; }
+        .eq.on i { animation-play-state: running; }
+        @keyframes eq-bounce { 0%, 100% { height: 25%; } 50% { height: 100%; } }
+        @media (prefers-reduced-motion: reduce) { .eq i { animation: none; } }
+
+        .progress-container { touch-action: none; }
+        .progress-container::before { content: ''; position: absolute; left: 0; right: 0; top: -10px; bottom: -10px; }
+
+        .opts { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+        .opt-btn { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); color: #94a3b8; border-radius: 20px; padding: 6px 12px; font-size: 0.72rem; font-weight: 600; cursor: pointer; font-family: inherit; letter-spacing: 0.5px; }
+        .opt-btn.on { color: var(--accent, #38bdf8); border-color: var(--accent, #38bdf8); }
+        .vol { display: none; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; font-size: 0.75rem; color: #64748b; }
+        .vol input { width: 150px; }
+
+        .search-box { margin: 0 0 16px; }
+        .search-box input { width: 100%; box-sizing: border-box; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); color: #e2e8f0; border-radius: 20px; padding: 10px 16px; font-size: 16px; font-family: inherit; outline: none; }
+        .search-box input:focus { border-color: var(--accent, #38bdf8); }
+        .search-box input::placeholder { color: #64748b; }
+
+        .fav-btn { margin-left: auto; background: none; border: none; color: #64748b; font-size: 1.2rem; cursor: pointer; line-height: 1; padding: 2px 4px; }
+        .fav-btn.on { color: #f472b6; }
+        .empty { color: #64748b; font-size: 0.85rem; padding: 20px 8px; text-align: center; line-height: 1.7; }
+
         @keyframes flare-breathe { 0% { transform: scale(1) translate(0, 0); opacity: 0.6; } 100% { transform: scale(1.05) translate(-10px, 15px); opacity: 1; } }
         @keyframes ray-shift { 0% { transform: rotate(inherit) translateX(0px); opacity: 0.5; } 100% { transform: rotate(inherit) translateX(40px); opacity: 1; } }
         @keyframes kagerou-wave { 0% { transform: translateY(0); opacity: 0.5; } 100% { transform: translateY(-5px); opacity: 1; } }
@@ -495,7 +532,10 @@
                 <div class="theme-tab" data-theme="space">星の鼓動</div>
                 <div class="theme-tab" data-theme="relax">日常の輪郭</div> <!-- 🌟 変更: 日常の輪郭 -->
                 <div class="theme-tab" data-theme="misc">未分類</div>
+                <div class="theme-tab" data-theme="fav">♡ お気に入り</div>
             </div>
+
+            <div class="search-box"><input type="search" id="song-search" placeholder="曲名で探す" autocomplete="off"></div>
 
             <!-- 特製オーディオプレイヤー -->
             <div class="jukebox-container">
@@ -507,7 +547,7 @@
                 <audio id="main-audio" src=""></audio>
                 
                 <div class="controls-box">
-                    <div class="now-playing" id="now-playing-title">曲を選択してください</div>
+                    <div class="now-playing"><span class="eq" id="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span id="now-playing-title">曲を選択してください</span></div>
                     
                     <div class="progress-container" id="progress-container">
                         <div class="progress-bar" id="progress-bar"></div>
@@ -523,10 +563,19 @@
                         <button class="main-btn" id="play-pause-btn">▶</button>
                         <button class="main-btn" id="next-btn">⏭</button>
                     </div>
+                    <div class="opts">
+                        <button class="opt-btn" id="shuffle-btn" type="button">シャッフル OFF</button>
+                        <button class="opt-btn on" id="repeat-btn" type="button">リピート 章</button>
+                    </div>
+                    <div class="vol" id="vol-wrap"><span>音量</span><input type="range" id="vol" min="0" max="1" step="0.05" value="1"></div>
                 </div>
                 
                 <!-- ボタン式プレイリスト -->
                 <div id="playlist">
+                    <!-- ♡ お気に入り・検索結果（JSで中身を作ります） -->
+                    <div class="playlist-group" id="group-fav" style="display: none;"></div>
+                    <div class="playlist-group" id="group-search" style="display: none;"></div>
+
                     <!-- ☀️ CHAPTER 01: 夏の聖域 -->
                     <div class="playlist-group" id="group-summer">
                         <div class="song-group">
@@ -683,188 +732,313 @@
 
     <!-- プレイヤーを動かすJavaScript -->
     <script>
-        const audio = document.getElementById('main-audio');
-        const playPauseBtn = document.getElementById('play-pause-btn');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const progressBar = document.getElementById('progress-bar');
-        const progressContainer = document.getElementById('progress-container');
-        const nowPlayingTitle = document.getElementById('now-playing-title');
-        const currentTimeEl = document.getElementById('current-time');
-        const totalDurationEl = document.getElementById('total-duration');
-
-        let activeGroup = 'summer';
-        let currentTrackIndex = 0;
-        let isPlaying = false;
-
-        // 現在のテーマに所属するtrack-itemを取得
-        function getActiveTracks() {
-            const activeGroupEl = document.getElementById(`group-${activeGroup}`);
-            return Array.from(activeGroupEl.getElementsByClassName('track-item'));
-        }
-
-        function loadTrack(index) {
-            const tracks = getActiveTracks();
-            if (tracks.length === 0) return;
-            
-            // 全てのアクティブクラスをリセット
-            document.querySelectorAll('.track-item').forEach(item => item.classList.remove('active'));
-            
-            // 現在のターゲットをアクティブ化
-            tracks[index].classList.add('active');
-            
-            const src = tracks[index].getAttribute('data-src');
-            const name = tracks[index].getAttribute('data-name');
-            
-            audio.src = src;
-            nowPlayingTitle.innerText = `PLAYING : ${name}`;
-            currentTrackIndex = index;
-        }
-
-        function togglePlay() {
-            if (audio.src === "" || audio.src.endsWith('/')) {
-                loadTrack(0);
-            }
-            
-            if (isPlaying) {
-                audio.pause();
-                playPauseBtn.innerText = '▶';
-                isPlaying = false;
-            } else {
-                audio.play()
-                    .then(() => {
-                        playPauseBtn.innerText = '⏸';
-                        isPlaying = true;
-                    })
-                    .catch(e => console.error("自動再生がブロックされたか、音声ファイルが見つかりません:", e));
-            }
-        }
-
-        // 🔧 修正ポイント：再生/一時停止ボタンにクリックイベントが未登録だったため追加
-        playPauseBtn.addEventListener('click', togglePlay);
-
-        // 🔧 修正ポイント：audioタグ自体のpause/play状態とボタン表示・isPlayingフラグを
-        //    常に同期させる（他の要因で再生/停止された場合にもボタン表示がズレないように）
-        audio.addEventListener('play', () => {
-            playPauseBtn.innerText = '⏸';
-            isPlaying = true;
-        });
-        audio.addEventListener('pause', () => {
-            playPauseBtn.innerText = '▶';
-            isPlaying = false;
-        });
-
-        function formatTime(secs) {
-            let min = Math.floor(secs / 60);
-            let sec = Math.floor(secs % 60);
-            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
-        }
-
-        audio.addEventListener('timeupdate', () => {
-            const { duration, currentTime } = audio;
-            if (duration) {
-                const progressPercent = (currentTime / duration) * 100;
-                progressBar.style.width = `${progressPercent}%`;
-                currentTimeEl.innerText = formatTime(currentTime);
-                totalDurationEl.innerText = formatTime(duration);
-            }
-        });
-
-        progressContainer.addEventListener('click', (e) => {
-            const width = progressContainer.clientWidth;
-            const clickX = e.offsetX;
-            const duration = audio.duration;
-            if (duration) {
-                audio.currentTime = (clickX / width) * duration;
-            }
-        });
-
-        prevBtn.addEventListener('click', () => {
-            const tracks = getActiveTracks();
-            let index = currentTrackIndex - 1;
-            if (index < 0) index = tracks.length - 1;
-            loadTrack(index);
-            isPlaying = false;
-            togglePlay();
-        });
-
-        nextBtn.addEventListener('click', () => {
-            const tracks = getActiveTracks();
-            let index = currentTrackIndex + 1;
-            if (index >= tracks.length) index = 0;
-            loadTrack(index);
-            isPlaying = false;
-            togglePlay();
-        });
-
-        audio.addEventListener('ended', () => {
-            nextBtn.click();
-        });
-
-        // イベント委譲によるスマートな曲選択
-        document.getElementById('playlist').addEventListener('click', (e) => {
-            const track = e.target.closest('.track-item');
-            if (!track) return;
-
-            const tracks = getActiveTracks();
-            const index = tracks.indexOf(track);
-            
-            if (index !== -1) {
-                loadTrack(index);
-                isPlaying = false;
-                togglePlay();
-            }
-        });
-
-        // =========================================
-        // 🎛 テーマ＆プレイリスト切り替え
-        // =========================================
+        const $ = id => document.getElementById(id);
+        const audio = $('main-audio'), playPauseBtn = $('play-pause-btn'), prevBtn = $('prev-btn'), nextBtn = $('next-btn');
+        const progressBar = $('progress-bar'), progressContainer = $('progress-container');
+        const nowPlayingTitle = $('now-playing-title'), currentTimeEl = $('current-time'), totalDurationEl = $('total-duration');
+        const eqEl = $('eq'), playlistEl = $('playlist'), searchInput = $('song-search');
+        const shuffleBtn = $('shuffle-btn'), repeatBtn = $('repeat-btn'), volWrap = $('vol-wrap'), volInput = $('vol');
+        const playerTitle = document.querySelector('.player-title');
+        const playerSub = document.querySelector('.player-header p');
         const tabs = document.querySelectorAll('.theme-tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const theme = tab.getAttribute('data-theme');
-                if (theme === activeGroup) return;
 
-                // 1. タブの活性化
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
+        const CHAPTERS = ['summer', 'space', 'relax', 'misc'];
+        const CH_INFO = {
+            summer: { title: 'CHAPTER 01: あの夏の聖域', sub: '切なくも疾走感のあるエモポップ・EDMフォルダ', color: '#64748b' },
+            space:  { title: 'CHAPTER 02: 星の鼓動', sub: '無限の宇宙を漂うフューチャー・シンセテクノ', color: '#8b5cf6' },
+            relax:  { title: 'CHAPTER 03: 日常の輪郭', sub: '耳かき、湯気。生活の隙間に溶けるプライベート', color: '#f43f5e' },
+            misc:   { title: 'CHAPTER 04: 未分類', sub: 'ジャンルもテーマもいろいろ。まだ居場所の決まっていない曲たち', color: '#fbbf24' },
+            fav:    { title: 'FAVORITES: お気に入り', sub: 'ハート（♡）を付けた曲だけ', color: '#f472b6' }
+        };
 
-                // 2. グループ切り替え
-                document.querySelectorAll('.playlist-group').forEach(group => group.style.display = 'none');
-                document.getElementById(`group-${theme}`).style.display = 'block';
+        /* ---------- 保存（そのスマホのブラウザにだけ） ---------- */
+        const FAVKEY = 'jb_fav_v1', LASTKEY = 'jb_last_v1', OPTKEY = 'jb_opts_v1';
+        function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+        function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+        function lsJson(k, def) { try { const v = JSON.parse(lsGet(k)); return v == null ? def : v; } catch (e) { return def; } }
 
-                // 3. bodyテーマの切り替え
-                document.body.className = `theme-${theme}`;
+        /* ---------- 状態 ---------- */
+        let activeGroup = 'summer';   // いま見ている章（色のテーマ）
+        let viewTab = 'summer';       // いま選んでいるタブ（章 or fav）
+        let viewGroup = 'summer';     // いま画面に出している一覧（章 / fav / search）
+        let queue = [], qIndex = 0;   // 再生中の曲の並び（クリックした一覧がそのまま入る）
+        let currentSrc = '', currentName = '';
+        let isPlaying = false, pendingSeek = null;
+        let shuffle = false, repeatMode = 'all';   // 'all' = 章をぐるぐる / 'one' = 1曲 / 'off' = 最後で止まる
+        let history = [];             // シャッフル中に「前の曲」で戻るための履歴
+        let favs = lsJson(FAVKEY, []); if (!Array.isArray(favs)) favs = [];
 
-                // 4. タイトル＆サブタイトルの書き換え（日常の輪郭にアップデート）
-                const playerTitle = document.querySelector('.player-title');
-                const playerSub = document.querySelector('.player-header p');
-                if (theme === 'summer') {
-                    playerTitle.innerText = 'CHAPTER 01: あの夏の聖域';
-                    playerSub.innerText = '切なくも疾走感のあるエモポップ・EDMフォルダ';
-                    playerSub.style.color = '#64748b';
-                } else if (theme === 'space') {
-                    playerTitle.innerText = 'CHAPTER 02: 星の鼓動';
-                    playerSub.innerText = '無限の宇宙を漂うフューチャー・シンセテクノ';
-                    playerSub.style.color = '#8b5cf6';
-                } else if (theme === 'relax') {
-                    playerTitle.innerText = 'CHAPTER 03: 日常の輪郭'; // 🌟 変更：日常の輪郭
-                    playerSub.innerText = '耳かき、湯気。生活の隙間に溶けるプライベート'; // 🌟 変更
-                    playerSub.style.color = '#f43f5e';
-                } else if (theme === 'misc') {
-                    playerTitle.innerText = 'CHAPTER 04: 未分類';
-                    playerSub.innerText = 'ジャンルもテーマもいろいろ。まだ居場所の決まっていない曲たち';
-                    playerSub.style.color = '#fbbf24';
-                }
-
-                // 5. 変数を更新して新しいテーマの1曲目をロード
-                activeGroup = theme;
-                loadTrack(0);
-                if (isPlaying) {
-                    audio.play().catch(e => console.error("再生エラー:", e));
-                }
+        /* ---------- ♡ お気に入り ---------- */
+        const songKey = sg => { const t = sg.querySelector('.track-item'); return t ? t.getAttribute('data-src') : ''; };
+        CHAPTERS.forEach(ch => {
+            document.querySelectorAll('#group-' + ch + ' .song-group').forEach(sg => {
+                const t = sg.querySelector('.song-title'); if (!t) return;
+                const b = document.createElement('button');
+                b.type = 'button'; b.className = 'fav-btn'; b.setAttribute('aria-label', 'お気に入り');
+                t.appendChild(b);
             });
         });
+        function syncHearts() {
+            document.querySelectorAll('.song-group').forEach(sg => {
+                const b = sg.querySelector('.fav-btn'); if (!b) return;
+                const on = favs.includes(songKey(sg));
+                b.classList.toggle('on', on); b.textContent = on ? '♥' : '♡';
+            });
+        }
+        function rebuildFav() {
+            const box = $('group-fav'); box.innerHTML = ''; let n = 0;
+            CHAPTERS.forEach(ch => document.querySelectorAll('#group-' + ch + ' .song-group').forEach(sg => {
+                if (favs.includes(songKey(sg))) { box.appendChild(sg.cloneNode(true)); n++; }
+            }));
+            if (!n) box.innerHTML = '<div class="empty">曲名の右の ♡ を押すと、ここに集まります。</div>';
+            syncHearts(); markActive();
+        }
+
+        /* ---------- 検索 ---------- */
+        function rebuildSearch(q) {
+            const box = $('group-search'); box.innerHTML = ''; let n = 0;
+            const key = q.toLowerCase();
+            CHAPTERS.forEach(ch => document.querySelectorAll('#group-' + ch + ' .song-group').forEach(sg => {
+                const title = sg.querySelector('.song-title').innerText.toLowerCase();
+                const names = Array.from(sg.querySelectorAll('.track-item')).map(t => (t.getAttribute('data-name') || '').toLowerCase()).join(' ');
+                if (title.includes(key) || names.includes(key)) { box.appendChild(sg.cloneNode(true)); n++; }
+            }));
+            if (!n) box.innerHTML = '<div class="empty">「' + q.replace(/[<>&]/g, '') + '」に合う曲は見つかりませんでした。</div>';
+            syncHearts(); markActive();
+        }
+
+        /* ---------- 一覧の表示切り替え ---------- */
+        function showView(view) {
+            viewGroup = view;
+            document.querySelectorAll('.playlist-group').forEach(g => g.style.display = (g.id === 'group-' + view) ? 'block' : 'none');
+        }
+        function markActive() {
+            document.querySelectorAll('.track-item').forEach(el => {
+                el.classList.toggle('active', !!currentSrc && el.getAttribute('data-src') === currentSrc);
+            });
+        }
+        function groupTracks(groupEl) { return Array.from(groupEl.getElementsByClassName('track-item')); }
+
+        /* ---------- 再生 ---------- */
+        function updateMediaSession() {
+            if (!('mediaSession' in navigator) || !currentName) return;
+            try {
+                navigator.mediaSession.metadata = new MediaMetadata({ title: currentName, artist: 'はぜる', album: 'Suno AI ジュークボックス' });
+            } catch (e) {}
+        }
+        function saveLast() { lsSet(LASTKEY, JSON.stringify({ src: currentSrc, time: audio.currentTime || 0 })); }
+
+        function loadTrack(index, restoreLabel) {
+            if (!queue.length) return;
+            qIndex = index;
+            const t = queue[index];
+            currentSrc = t.getAttribute('data-src');
+            currentName = t.getAttribute('data-name');
+            audio.src = currentSrc;
+            nowPlayingTitle.innerText = (restoreLabel ? '前回の続き : ' : 'PLAYING : ') + currentName;
+            markActive(); updateMediaSession();
+            progressBar.style.width = '0%'; currentTimeEl.innerText = '0:00';
+            if (!restoreLabel) saveLast();
+        }
+        function startPlay() {
+            audio.play().catch(e => console.error('再生できませんでした:', e));
+        }
+        function togglePlay() {
+            if (!currentSrc) {
+                const g = document.getElementById('group-' + viewGroup);
+                const tracks = g ? groupTracks(g) : [];
+                if (!tracks.length) return;
+                queue = tracks; history = []; loadTrack(0);
+            }
+            if (isPlaying) audio.pause(); else startPlay();
+        }
+        playPauseBtn.addEventListener('click', togglePlay);
+
+        function setPlayingUI(on) {
+            isPlaying = on;
+            playPauseBtn.innerText = on ? '⏸' : '▶';
+            eqEl.classList.toggle('on', on);
+            if ('mediaSession' in navigator) { try { navigator.mediaSession.playbackState = on ? 'playing' : 'paused'; } catch (e) {} }
+        }
+        audio.addEventListener('play', () => setPlayingUI(true));
+        audio.addEventListener('pause', () => { setPlayingUI(false); saveLast(); });
+
+        function pickNext(auto) {
+            if (!queue.length) return -1;
+            if (auto && repeatMode === 'one') return qIndex;
+            if (shuffle && queue.length > 1) {
+                let i; do { i = Math.floor(Math.random() * queue.length); } while (i === qIndex);
+                return i;
+            }
+            let i = qIndex + 1;
+            if (i >= queue.length) { if (repeatMode === 'off' && auto) return -1; i = 0; }
+            return i;
+        }
+        function goNext(auto) {
+            const i = pickNext(auto);
+            if (i < 0) { audio.pause(); audio.currentTime = 0; return; }
+            if (shuffle && i !== qIndex) history.push(qIndex);
+            loadTrack(i); startPlay();
+        }
+        function goPrev() {
+            if (!queue.length) return;
+            if (audio.currentTime > 3) { audio.currentTime = 0; return; }
+            let i;
+            if (shuffle && history.length) i = history.pop();
+            else { i = qIndex - 1; if (i < 0) i = queue.length - 1; }
+            loadTrack(i); startPlay();
+        }
+        prevBtn.addEventListener('click', goPrev);
+        nextBtn.addEventListener('click', () => goNext(false));
+        audio.addEventListener('ended', () => goNext(true));
+        audio.addEventListener('error', () => {
+            if (currentSrc) nowPlayingTitle.innerText = '読み込めませんでした : ' + currentName;
+        });
+
+        /* ---------- 進行バー（タップ・ドラッグでシーク） ---------- */
+        function formatTime(secs) {
+            const min = Math.floor(secs / 60), sec = Math.floor(secs % 60);
+            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        }
+        let lastSaved = 0, lastPos = 0;
+        audio.addEventListener('timeupdate', () => {
+            const { duration, currentTime } = audio;
+            if (duration && isFinite(duration)) {
+                progressBar.style.width = `${(currentTime / duration) * 100}%`;
+                currentTimeEl.innerText = formatTime(currentTime);
+                totalDurationEl.innerText = formatTime(duration);
+                if (currentTime - lastPos >= 1 || currentTime < lastPos) {
+                    lastPos = currentTime;
+                    if ('mediaSession' in navigator && navigator.mediaSession.setPositionState) {
+                        try { navigator.mediaSession.setPositionState({ duration, position: Math.min(currentTime, duration), playbackRate: 1 }); } catch (e) {}
+                    }
+                }
+            }
+            if (Math.abs(currentTime - lastSaved) >= 5) { lastSaved = currentTime; saveLast(); }
+        });
+        audio.addEventListener('loadedmetadata', () => {
+            if (pendingSeek != null) {
+                const t = pendingSeek; pendingSeek = null;
+                if (isFinite(audio.duration) && t > 1 && t < audio.duration - 2) audio.currentTime = t;
+            }
+        });
+        let scrubbing = false;
+        function seekFromEvent(e) {
+            const rect = progressContainer.getBoundingClientRect();
+            const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+            if (audio.duration && isFinite(audio.duration)) audio.currentTime = ratio * audio.duration;
+        }
+        progressContainer.addEventListener('pointerdown', e => {
+            scrubbing = true;
+            try { progressContainer.setPointerCapture(e.pointerId); } catch (err) {}
+            seekFromEvent(e);
+        });
+        progressContainer.addEventListener('pointermove', e => { if (scrubbing) seekFromEvent(e); });
+        ['pointerup', 'pointercancel'].forEach(ev => progressContainer.addEventListener(ev, () => { scrubbing = false; }));
+
+        /* ---------- ロック画面・通知からの操作 ---------- */
+        if ('mediaSession' in navigator) {
+            const set = (name, fn) => { try { navigator.mediaSession.setActionHandler(name, fn); } catch (e) {} };
+            set('play', () => startPlay());
+            set('pause', () => audio.pause());
+            set('previoustrack', () => goPrev());
+            set('nexttrack', () => goNext(false));
+            set('seekto', d => { if (d && d.seekTime != null) audio.currentTime = d.seekTime; });
+        }
+
+        /* ---------- シャッフル・リピート・音量 ---------- */
+        const REPEAT_LABEL = { all: 'リピート 章', one: 'リピート 1曲', off: 'リピート なし' };
+        function renderOpts() {
+            shuffleBtn.textContent = 'シャッフル ' + (shuffle ? 'ON' : 'OFF');
+            shuffleBtn.classList.toggle('on', shuffle);
+            repeatBtn.textContent = REPEAT_LABEL[repeatMode];
+            repeatBtn.classList.toggle('on', repeatMode !== 'off');
+        }
+        function saveOpts() { lsSet(OPTKEY, JSON.stringify({ shuffle, repeatMode, volume: audio.volume })); }
+        shuffleBtn.addEventListener('click', () => { shuffle = !shuffle; history = []; renderOpts(); saveOpts(); });
+        repeatBtn.addEventListener('click', () => {
+            repeatMode = repeatMode === 'all' ? 'one' : (repeatMode === 'one' ? 'off' : 'all');
+            renderOpts(); saveOpts();
+        });
+        // iPhoneのSafariはページから音量を変えられないので、変えられる端末にだけスライダーを出す
+        (function () {
+            const orig = audio.volume; audio.volume = 0.5;
+            const ok = Math.abs(audio.volume - 0.5) < 0.01; audio.volume = orig;
+            if (ok) { volWrap.style.display = 'flex'; }
+        })();
+        volInput.addEventListener('input', () => { audio.volume = parseFloat(volInput.value); saveOpts(); });
+        (function () {
+            const o = lsJson(OPTKEY, null); if (!o) return;
+            shuffle = !!o.shuffle; if (['all', 'one', 'off'].includes(o.repeatMode)) repeatMode = o.repeatMode;
+            if (typeof o.volume === 'number' && volWrap.style.display === 'flex') { audio.volume = o.volume; volInput.value = o.volume; }
+        })();
+        renderOpts();
+
+        /* ---------- 曲を選ぶ（クリックした一覧が、そのまま再生の並びになる） ---------- */
+        playlistEl.addEventListener('click', e => {
+            const heart = e.target.closest('.fav-btn');
+            if (heart) {
+                const sg = heart.closest('.song-group'), key = songKey(sg);
+                favs = favs.includes(key) ? favs.filter(k => k !== key) : favs.concat(key);
+                lsSet(FAVKEY, JSON.stringify(favs));
+                syncHearts();
+                if (viewGroup === 'fav') rebuildFav();
+                return;
+            }
+            const track = e.target.closest('.track-item');
+            if (!track) return;
+            const group = track.closest('.playlist-group');
+            const tracks = groupTracks(group), index = tracks.indexOf(track);
+            if (index === -1) return;
+            queue = tracks; history = []; pendingSeek = null;
+            loadTrack(index); startPlay();
+        });
+
+        /* ---------- タブ（章 / お気に入り）。曲の再生はそのまま続く ---------- */
+        function selectTab(theme) {
+            tabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-theme') === theme));
+            viewTab = theme;
+            const info = CH_INFO[theme];
+            playerTitle.innerText = info.title;
+            playerSub.innerText = info.sub;
+            playerSub.style.color = info.color;
+            if (CHAPTERS.includes(theme)) {
+                activeGroup = theme;
+                document.body.className = `theme-${theme}`;
+                showView(theme);
+            } else if (theme === 'fav') {
+                rebuildFav(); showView('fav');
+            }
+        }
+        tabs.forEach(tab => tab.addEventListener('click', () => {
+            searchInput.value = '';
+            selectTab(tab.getAttribute('data-theme'));
+        }));
+
+        searchInput.addEventListener('input', () => {
+            const q = searchInput.value.trim();
+            if (!q) { selectTab(viewTab); return; }
+            rebuildSearch(q); showView('search');
+            playerTitle.innerText = '検索結果';
+            playerSub.innerText = '「' + q.replace(/[<>&]/g, '') + '」を含む曲';
+            playerSub.style.color = '#94a3b8';
+        });
+
+        /* ---------- 前回の続きから ---------- */
+        syncHearts();
+        (function restore() {
+            const last = lsJson(LASTKEY, null);
+            if (!last || !last.src) return;
+            let found = null, chapter = null;
+            CHAPTERS.forEach(ch => document.querySelectorAll('#group-' + ch + ' .track-item').forEach(t => {
+                if (!found && t.getAttribute('data-src') === last.src) { found = t; chapter = ch; }
+            }));
+            if (!found) return;
+            selectTab(chapter);
+            queue = groupTracks(document.getElementById('group-' + chapter));
+            loadTrack(queue.indexOf(found), true);
+            pendingSeek = last.time || 0;
+        })();
     </script>
 </body>
 </html>
