@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>音ゲー配信は世界を救う笑</title>
+<style>
+  :root{
+    --bg1:#1d1a2e; --bg2:#3a2a4a; --ink:#f6efe0; --gold:#f0c060; --rose:#ef8fa5; --blue:#6fb5f0;
+    --line:rgba(246,239,224,.18);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{
+    font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;
+    color:var(--ink);
+    background:radial-gradient(circle at 20% 0%,var(--bg2),var(--bg1) 65%);
+    overflow:hidden; touch-action:manipulation; user-select:none;-webkit-user-select:none;
+  }
+  .screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;}
+  .screen.on{display:flex;}
+  h1{font-size:clamp(24px,7vw,34px);margin:0 0 8px;background:linear-gradient(90deg,#ffe3a3,var(--gold),var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .sub{opacity:.7;font-size:13px;line-height:1.8;margin:0 0 22px;}
+  .big-btn{border:none;border-radius:100px;padding:14px 34px;font-size:16px;font-weight:700;color:#2a1a2a;background:linear-gradient(90deg,var(--gold),var(--rose));box-shadow:0 8px 22px -8px var(--gold);cursor:pointer;}
+  .ghost-btn{background:none;border:1px solid var(--line);color:var(--ink);border-radius:100px;padding:10px 22px;font-size:13px;opacity:.8;cursor:pointer;margin-top:12px;}
+  .settings{margin-top:26px;width:min(340px,90%);font-size:12px;opacity:.85;text-align:left;border-top:1px solid var(--line);padding-top:14px;}
+  .settings label{display:flex;justify-content:space-between;align-items:center;margin:8px 0;gap:10px;}
+  .settings input[type=number]{width:80px;background:rgba(255,255,255,.08);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px;text-align:right;}
+  .settings input[type=range]{flex:1;}
+  .world{position:absolute;top:10px;left:14px;font-size:12px;opacity:.75;z-index:5;}
+
+  /* song select */
+  #start{justify-content:flex-start;overflow-y:auto;padding:44px 16px 28px;}
+  #songList{width:min(420px,100%);display:flex;flex-direction:column;gap:10px;margin:4px 0 18px;}
+  .song{width:100%;text-align:left;border:2px solid var(--line);border-radius:16px;background:rgba(255,255,255,.05);color:var(--ink);padding:12px 14px;font-family:inherit;}
+  .song.sel{border-color:var(--gold);background:rgba(240,192,96,.12);}
+  .song .ttl{font-size:16px;font-weight:700;}
+  .song .meta{font-size:11px;opacity:.7;margin-top:4px;display:flex;gap:10px;flex-wrap:wrap;}
+  .song .tag{color:var(--rose);opacity:1;}
+  details.settings{margin-top:18px;}
+  details.settings summary{cursor:pointer;opacity:.8;}
+  /* game */
+  #game{padding:0;justify-content:flex-start;}
+  #hud{width:100%;max-width:480px;padding:34px 16px 6px;display:flex;justify-content:space-between;align-items:flex-end;}
+  #hud .hp{font-size:12px;opacity:.7;}
+  #hud .num{font-size:26px;font-weight:800;color:var(--gold);}
+  #gauge{width:calc(100% - 32px);max-width:448px;height:8px;border-radius:8px;background:rgba(0,0,0,.35);overflow:hidden;margin-bottom:6px;}
+  #gaugeFill{height:100%;width:0;background:linear-gradient(90deg,var(--rose),var(--gold));transition:width .25s;}
+  #cv{width:100%;max-width:480px;flex:1;min-height:0;display:block;}
+  #pads{width:100%;max-width:480px;display:flex;flex-direction:column;gap:8px;padding:8px 12px 20px;}
+  .stamps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .mains{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .pad{border-radius:18px;border:2px solid var(--line);font-weight:800;color:var(--ink);background:rgba(255,255,255,.06);}
+  .pad small{display:block;font-size:10px;opacity:.6;font-weight:500;margin-top:2px;}
+  .pad.s{height:62px;font-size:26px;line-height:1;}
+  .pad.m{height:100px;font-size:18px;}
+  .pad.don{border-color:#ef6f6f;} .pad.ka{border-color:var(--blue);}
+  .pad.clap{border-color:#f0c060;} .pad.flower{border-color:#ef8fa5;} .pad.heart{border-color:#e57ad0;}
+  .pad:active,.pad.hit{transform:scale(.95);background:rgba(255,255,255,.18);}
+
+  /* story */
+  .avatar{width:96px;height:96px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff2cf,var(--gold) 70%);display:flex;align-items:center;justify-content:center;font-size:46px;margin-bottom:12px;box-shadow:0 0 30px -6px var(--gold);}
+  .who{font-weight:700;font-size:16px;margin-bottom:2px;}
+  .role{font-size:11px;opacity:.6;margin-bottom:14px;letter-spacing:.1em;}
+  .textbox{width:min(420px,92%);min-height:130px;border:1px solid var(--line);border-radius:18px;padding:18px;background:rgba(255,255,255,.05);font-size:15px;line-height:1.9;text-align:left;white-space:pre-wrap;}
+  .beat-tag{font-size:10px;letter-spacing:.2em;color:var(--gold);opacity:.85;margin-bottom:6px;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px;}
+  .result-num{font-size:44px;font-weight:800;color:var(--gold);margin:8px 0;}
+</style>
+</head>
+<body>
+<div class="world" id="worldTop"></div>
+
+<!-- START（曲選択） -->
+<div class="screen on" id="start">
+  <h1>音ゲー配信は世界を救う笑</h1>
+  <p class="sub">曲を選んで、スタート。<br>ドン・カッでコンボをつなぎ、まんなかのスタンプで盛り上げよう。</p>
+  <div id="songList"></div>
+  <button class="big-btn" id="btnStart">スタート</button>
+  <details class="settings">
+    <summary>設定</summary>
+    <label style="margin-top:10px">タイミング調整 <span id="offVal">0ms</span><input type="range" id="offset" min="-250" max="250" step="10" value="0"></label>
+    <div style="opacity:.6;line-height:1.7">ノーツが曲より遅く感じたら＋、早く感じたら−に動かしてください。</div>
+  </details>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="game">
+  <div id="hud"><div><div class="hp">世界幸福度への貢献</div><div class="num" id="score">0</div></div><div style="text-align:center"><div class="hp">コンボ</div><div class="num" id="combo">0</div></div><div class="hp" id="time" style="min-width:64px;text-align:right"></div></div>
+  <div id="gauge"><div id="gaugeFill"></div></div>
+  <canvas id="cv"></canvas>
+  <div id="pads">
+    <div class="stamps">
+      <button class="pad s clap" id="padClap">👏</button>
+      <button class="pad s flower" id="padFlower">🌸</button>
+      <button class="pad s heart" id="padHeart">💖</button>
+    </div>
+    <div class="mains">
+      <button class="pad m don" id="padDon">ドン<small>F</small></button>
+      <button class="pad m ka" id="padKa">カッ<small>J</small></button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="result">
+  <h1>配信終了！</h1>
+  <div class="result-num" id="resScore">+0</div>
+  <div class="sub" id="resWorld"></div>
+  <div class="row">
+    <button class="big-btn" id="btnAgain">もう一度</button>
+  </div>
+  <button class="ghost-btn" id="btnBack">曲選択へ</button>
+</div>
+
+<audio id="bgm" preload="auto"></audio>
+
+<script>
+/* ===== 設定 ===== */
+const TRAVEL = 1.5;          // 本番ノーツが落ちるのにかかる秒数
+const WINDOW = 0.28;         // 本番ノーツの判定幅（秒）。ゆるめ
+const STAMP_WINDOW = 0.32;   // スタンプの判定幅（秒）。さらにゆるめ
+let FIRST_BEAT = 0.2;        // 曲の最初の拍の位置（秒）。曲ごとに startGame で設定
+const MAIN = ['don','ka'];
+const STAMPS = ['clap','flower','heart'];
+const STAMP_ICON = {clap:'👏', flower:'🌸', heart:'💖'};
+const COLOR = {don:'#ef6f6f', ka:'#6fb5f0', clap:'#f0c060', flower:'#ef8fa5', heart:'#e57ad0'};
+const isStamp = l => l==='stamp';   // 判定上のレーン名。3種のボタンはどれでも同じ扱い
+const STAMP_ANY = 2, STAMP_MATCH = 6;   // スタンプの点：どれでもOK / 絵柄ぴったり
+const STAMP_PROB_EARLY = 0.30, STAMP_PROB_LATE = 0.45;  // スタンプが出る確率（裏拍ごと）
+
+/* ===== 曲リスト =====
+   bpm  : 曲のBPM
+   first: 最初の拍の位置（秒）。分からなければ 0
+   tentative: true の間は「BPM仮」と表示。曲を解析できたら false にして数字を入れる */
+const SONGS = [
+  {id:'sanctuary_01',  title:'Sanctuary 01',  file:'../music/sanctuary_01.mp3',  bpm:130,   first:0.2,  tentative:false},
+  {id:'star_pulse_01', title:'Star Pulse 01', file:'../music/star_pulse_01.mp3', bpm:86,    first:0.57, tentative:false},
+  {id:'ripples_in_the_mirror_01', title:'Ripples in the Mirror', file:'../music/ripples_in_the_mirror_01.mp3', bpm:138.2, first:0.31, tentative:false},
+  {id:'blue_border_01', title:'Blue Border 01', file:'../music/blue_border_01.mp3', bpm:97,    first:0.04, tentative:false},
+  {id:'rain_of_paint_01', title:'Rain of Paint', file:'../music/rain_of_paint_01.mp3', bpm:101.8, first:0.17, tentative:true}
+];
+let curSong = SONGS[0];
+
+/* ===== 記録（曲ごとのベスト・保存） ===== */
+const BKEY='otoge_best_v1', SKEY='otoge_sel_v1', TKEY='otoge_off_v1';
+function lsGet(k){ try{return localStorage.getItem(k);}catch(e){return null;} }
+function lsSet(k,v){ try{localStorage.setItem(k,v);}catch(e){} }
+function getBest(id){ try{return (JSON.parse(lsGet(BKEY)||'{}'))[id]||null;}catch(e){return null;} }
+function setBest(id,rec){ let o={}; try{o=JSON.parse(lsGet(BKEY)||'{}')||{};}catch(e){} o[id]=rec; lsSet(BKEY,JSON.stringify(o)); }
+
+/* ===== 世界幸福度（保存） ===== */
+const WKEY='haishin_world_v1';
+function getWorld(){ try{return parseInt(localStorage.getItem(WKEY)||'0',10)||0;}catch(e){return 0;} }
+function addWorld(n){ try{localStorage.setItem(WKEY,String(getWorld()+n));}catch(e){} refreshWorld(); }
+function refreshWorld(){ document.getElementById('worldTop').textContent='世界幸福度 '+getWorld(); }
+refreshWorld();
+
+/* ===== 画面切り替え ===== */
+const $ = id=>document.getElementById(id);
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $(id).classList.add('on'); }
+
+/* ===== 効果音（WebAudioで仮の音を合成） ===== */
+let actx=null;
+function ensureAudio(){ if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(actx&&actx.state==='suspended') actx.resume(); }
+function tone(freq,dur,type,vol,slideTo){
+  if(!actx) return; const t=actx.currentTime;
+  const o=actx.createOscillator(), g=actx.createGain();
+  o.type=type; o.frequency.setValueAtTime(freq,t);
+  if(slideTo) o.frequency.exponentialRampToValueAtTime(slideTo,t+dur);
+  g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+  o.connect(g).connect(actx.destination); o.start(t); o.stop(t+dur);
+}
+function noise(dur,vol){
+  if(!actx) return; const t=actx.currentTime;
+  const len=Math.floor(actx.sampleRate*dur), buf=actx.createBuffer(1,len,actx.sampleRate), d=buf.getChannelData(0);
+  for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*(1-i/len);
+  const s=actx.createBufferSource(); s.buffer=buf;
+  const f=actx.createBiquadFilter(); f.type='highpass'; f.frequency.value=2200;
+  const g=actx.createGain(); g.gain.value=vol;
+  s.connect(f).connect(g).connect(actx.destination); s.start(t);
+}
+function playSE(lane){
+  if(lane==='don'){ tone(190,0.16,'sine',0.7,70); }
+  else if(lane==='ka'){ noise(0.09,0.5); tone(900,0.05,'square',0.12); }
+  else {
+    const f = lane==='clap'?784 : lane==='flower'?988 : 1175;
+    tone(f,0.14,'triangle',0.3); setTimeout(()=>tone(f*1.5,0.2,'triangle',0.25),70);
+  }
+}
+
+/* ===== 譜面生成（BPMだけで自動） ===== */
+const PATTERNS = [
+  [['don',0],['don',1],['don',2],['don',3]],
+  [['don',0],['ka',1],['don',2],['ka',3]],
+  [['don',0],['don',1.5],['ka',2],['don',3]],
+  [['don',0],['ka',1],['don',2],['don',2.5],['ka',3]],
+  [['don',0],['ka',2]],
+  [['ka',0.5],['don',1],['ka',2.5],['don',3]]
+];
+function buildChart(bpm,duration){
+  const beat=60/bpm, notes=[]; let m=0;
+  // 最初のノーツが画面の一番上から出てくるまで、さらに1拍の間を置く
+  const lead=Math.ceil(TRAVEL/beat)+1;
+  for(let b=lead;;b+=4,m++){
+    if(FIRST_BEAT+b*beat > duration-3) break;
+    const p = m<2 ? PATTERNS[m%2] : PATTERNS[Math.floor(Math.random()*PATTERNS.length)];
+    p.forEach(([lane,off])=>notes.push({t:FIRST_BEAT+(b+off)*beat,lane,hit:false,done:false}));
+    // スタンプ：真ん中のレーン。裏拍に置き、本番ノーツと同時にはしない
+    if(m>=1){
+      const prob = m<4 ? STAMP_PROB_EARLY : STAMP_PROB_LATE;
+      [0.5,1.5,2.5,3.5].forEach(off=>{
+        if(p.some(([,o])=>o===off)) return;
+        if(Math.random()<prob){ const kind=STAMPS[Math.floor(Math.random()*3)]; notes.push({t:FIRST_BEAT+(b+off)*beat,lane:'stamp',kind,icon:STAMP_ICON[kind],hit:false,done:false}); }
+      });
+    }
+  }
+  return notes.sort((x,y)=>x.t-y.t);
+}
+
+/* ===== 曲選択画面 ===== */
+function renderSongs(){
+  const box=document.getElementById('songList'); box.innerHTML='';
+  SONGS.forEach(sg=>{
+    const b=getBest(sg.id), btn=document.createElement('button');
+    btn.className='song'+(sg===curSong?' sel':'');
+    btn.innerHTML='<div class="ttl"></div><div class="meta"></div>';
+    btn.querySelector('.ttl').textContent=sg.title;
+    const meta=btn.querySelector('.meta');
+    const add=(t,cls)=>{ const sp=document.createElement('span'); sp.textContent=t; if(cls) sp.className=cls; meta.appendChild(sp); };
+    add('BPM '+sg.bpm); if(sg.tentative) add('BPM仮','tag');
+    add(b?('BEST '+b.score+'　最大コンボ '+b.combo):'未プレイ');
+    btn.addEventListener('click',()=>{ curSong=sg; lsSet(SKEY,sg.id); renderSongs(); });
+    box.appendChild(btn);
+  });
+}
+(function(){ const id=lsGet(SKEY); const f=SONGS.find(x=>x.id===id); if(f) curSong=f;
+  const off=lsGet(TKEY); if(off!==null){ document.getElementById('offset').value=off; document.getElementById('offVal').textContent=off+'ms'; }
+  renderSongs(); })();
+
+/* ===== ゲーム本体 ===== */
+const bgm=$('bgm'), cv=$('cv'), ctx=cv.getContext('2d');
+let notes=[], score=0, maxScore=1, combo=0, maxCombo=0, stampHit=0, stampMatch=0, stampTotal=0;
+let running=false, offsetSec=0, effects=[], raf=0;
+
+$('offset').addEventListener('input',e=>{ $('offVal').textContent=e.target.value+'ms'; lsSet(TKEY,e.target.value); });
+
+function resize(){
+  const r=cv.getBoundingClientRect(), dpr=window.devicePixelRatio||1;
+  cv.width=Math.floor(r.width*dpr); cv.height=Math.floor(r.height*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize',()=>{ if($('game').classList.contains('on')) resize(); });
+
+function startGame(){
+  ensureAudio();
+  const bpm=curSong.bpm; FIRST_BEAT=curSong.first||0;
+  if(!bgm.src.endsWith(curSong.file.replace('..',''))){ bgm.src=curSong.file; }
+  offsetSec=(parseInt($('offset').value,10)||0)/1000;
+  show('game'); resize();
+  const go=()=>{
+    notes=buildChart(bpm,(isFinite(bgm.duration)&&bgm.duration>10)?bgm.duration:120);
+    maxScore=notes.reduce((s,n)=>s+(isStamp(n.lane)?STAMP_MATCH:1),0)||1;
+    stampTotal=notes.filter(n=>isStamp(n.lane)).length; stampHit=0; stampMatch=0;
+    score=0; combo=0; maxCombo=0; effects=[]; updateHud();
+    bgm.currentTime=0;
+    bgm.play().then(()=>{ running=true; loop(); }).catch(()=>{
+      alert('曲を読み込めませんでした。'+curSong.file+' のパスを確認してください。'); show('start');
+    });
+  };
+  if(bgm.readyState>=1) go(); else bgm.addEventListener('loadedmetadata',go,{once:true});
+  bgm.load && bgm.readyState===0 && bgm.load();
+}
+
+function nowT(){ return bgm.currentTime + offsetSec; }
+
+// pad: 押したボタンの種類（don / ka / clap / flower / heart）
+const PAD_ID = {don:'padDon',ka:'padKa',clap:'padClap',flower:'padFlower',heart:'padHeart'};
+function press(pad){
+  if(!running) return;
+  playSE(pad);
+  const lane = STAMPS.includes(pad) ? 'stamp' : pad;   // スタンプ3種はどれでも同じ判定
+  const t=nowT();
+  let best=null, bd=WINDOW;
+  for(const n of notes){
+    if(n.hit||n.done||n.lane!==lane) continue;
+    const d=Math.abs(n.t-t);
+    if(d<bd){ bd=d; best=n; }
+  }
+  if(best){
+    best.hit=true;
+    const st=isStamp(lane);
+    const mult = 1 + Math.min(combo,40)/40;   // コンボで最大2倍
+    const match = st && best.kind===pad;       // スタンプの絵柄が合っているか
+    score += (st ? (match?STAMP_MATCH:STAMP_ANY) : 1)*mult;
+    if(st){ stampHit++; if(match) stampMatch++; }
+    combo++; if(combo>maxCombo) maxCombo=combo;
+    updateHud();
+    effects.push({lane,match,born:performance.now(),text: st?(match?STAMP_ICON[pad]+' ぴったり！':STAMP_ICON[pad]):(bd<0.1?'いいね！':'OK')});
+    try{ navigator.vibrate && navigator.vibrate(8); }catch(e){}
+  }
+  // 外れたタップは何も起きない（ペナルティなし）
+  const el=$(PAD_ID[pad]);
+  el.classList.add('hit'); setTimeout(()=>el.classList.remove('hit'),80);
+}
+function updateHud(){
+  $('score').textContent=Math.round(score);
+  $('combo').textContent=combo;
+  $('gaugeFill').style.width=Math.min(100,(score/(maxScore*1.9))*100)+'%';
+}
+
+// 3レーン：ドン｜スタンプ｜カッ。判定ラインは全部同じ高さ（視線を動かさなくていい）
+const LANES=['don','stamp','ka'];
+const LANE_X={don:0.22, stamp:0.5, ka:0.78};
+
+function loop(){
+  if(!running) return;
+  const rc=cv.getBoundingClientRect(), w=rc.width, h=rc.height;
+  ctx.clearRect(0,0,w,h);
+  const t=nowT();
+  const hitY=h-52, spawnY=-28;
+
+  // レーン
+  LANES.forEach(ln=>{
+    const x=w*LANE_X[ln], lw=ln==='stamp'?w*0.2:w*0.3;
+    ctx.fillStyle=ln==='stamp'?'rgba(240,192,96,.06)':'rgba(255,255,255,.04)';
+    ctx.fillRect(x-lw/2,0,lw,h);
+  });
+  // 判定リング
+  LANES.forEach(ln=>{
+    const x=w*LANE_X[ln], r=ln==='stamp'?26:30;
+    ctx.beginPath(); ctx.arc(x,hitY,r,0,Math.PI*2);
+    ctx.strokeStyle=ln==='stamp'?COLOR.clap:COLOR[ln]; ctx.lineWidth=3; ctx.stroke();
+  });
+
+  // ノーツ
+  for(const n of notes){
+    const dt=n.t-t;
+    // 取り逃し：本番ノーツだけコンボが切れる。スタンプは素通りOK
+    if(!n.hit && !n.done && dt<-WINDOW){
+      n.done=true;
+      if(!isStamp(n.lane) && combo>0){ combo=0; updateHud(); }
+    }
+    if(n.hit || dt>TRAVEL || dt<-0.4) continue;
+    const st=isStamp(n.lane);
+    const y=hitY-(dt/TRAVEL)*(hitY-spawnY);
+    const x=w*LANE_X[n.lane];
+    ctx.globalAlpha = dt<0 ? Math.max(0,1+dt/0.4)*0.6 : 1;
+    ctx.beginPath(); ctx.arc(x,y,st?22:28,0,Math.PI*2);
+    ctx.fillStyle=st?'#f6d98a':COLOR[n.lane]; ctx.fill();
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    if(st){ ctx.font='22px sans-serif'; ctx.fillStyle='#fff'; ctx.fillText(n.icon,x,y+1); }
+    else { ctx.font='bold 13px sans-serif'; ctx.fillStyle='#2a1a2a'; ctx.fillText(n.lane==='don'?'ドン':'カッ',x,y); }
+    ctx.globalAlpha=1;
+  }
+
+  // ヒット演出（判定ラインのすぐ上に出る）
+  const nowMs=performance.now();
+  effects=effects.filter(e=>nowMs-e.born<600);
+  for(const e of effects){
+    const a=1-(nowMs-e.born)/600, st=isStamp(e.lane), x=w*LANE_X[e.lane];
+    ctx.globalAlpha=a;
+    ctx.beginPath(); ctx.arc(x,hitY,(st?26:30)+(1-a)*26,0,Math.PI*2);
+    ctx.strokeStyle=st?COLOR.clap:COLOR[e.lane]; ctx.lineWidth=e.match?6:3; ctx.stroke();
+    ctx.fillStyle=e.match?'#ffe08a':'#fff'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.font = st?(e.match?'bold 20px sans-serif':'26px sans-serif'):'bold 14px sans-serif';
+    ctx.fillText(e.text,x,hitY-48-(1-a)*24);
+    ctx.globalAlpha=1;
+  }
+  // 残り時間
+  if(isFinite(bgm.duration)){ const rest=Math.max(0,Math.ceil(bgm.duration-bgm.currentTime)); $('time').textContent='残り '+rest+'秒'; }
+  raf=requestAnimationFrame(loop);
+}
+
+bgm.addEventListener('ended',()=>{ if(running) finish(); });
+
+let gained=0;
+function finish(){
+  running=false; cancelAnimationFrame(raf);
+  gained = Math.round(score*2);          // 貢献度 → 世界幸福度
+  addWorld(gained);
+  const prev=getBest(curSong.id), rec={score:Math.round(score), combo:Math.max(maxCombo,prev?prev.combo:0)};
+  const isNew = !prev || rec.score>prev.score;
+  setBest(curSong.id, {score:Math.max(rec.score,prev?prev.score:0), combo:rec.combo});
+  $('resScore').textContent='+'+gained+(isNew?'　NEW!':'');
+  $('resWorld').innerHTML='最大コンボ '+maxCombo+'　／　スタンプ '+stampHit+'/'+stampTotal+'（ぴったり '+stampMatch+'）<br>世界幸福度 '+getWorld();
+  show('result');
+}
+
+/* ===== イベント ===== */
+$('btnStart').addEventListener('click',startGame);
+$('btnAgain').addEventListener('click',startGame);
+$('btnBack').addEventListener('click',()=>{ renderSongs(); show('start'); });
+Object.entries(PAD_ID).forEach(([pad,id])=>{
+  $(id).addEventListener('pointerdown',e=>{ e.preventDefault(); press(pad); });
+});
+window.addEventListener('keydown',e=>{
+  if(e.repeat) return;
+  if(e.key==='f'||e.key==='F') press('don');
+  else if(e.key==='j'||e.key==='J') press('ka');
+  else if(e.key==='1') press('clap');
+  else if(e.key==='2') press('flower');
+  else if(e.key==='3') press('heart');
+});
+</script>
+</body>
+</html>
