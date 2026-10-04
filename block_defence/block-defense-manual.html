@@ -65,10 +65,21 @@
     background: rgba(77,217,255,.12);
     border:1px solid var(--line);
     font-size:13px;
+    flex-shrink:0;
   }
   .card p{ margin: 0 0 10px; font-size: 15px; }
   .card p:last-child{ margin-bottom:0; }
   .muted{ color: var(--muted); font-size: 13.5px; }
+
+  .note{
+    margin-top:12px;
+    background: rgba(77,255,176,.06);
+    border:1px solid rgba(77,255,176,.28);
+    border-radius:10px;
+    padding:10px 14px;
+    font-size:14px;
+  }
+  .note b{ color: var(--green); }
 
   .kbd-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:12px; }
   @media (max-width:520px){ .kbd-grid{ grid-template-columns:1fr; } }
@@ -89,7 +100,10 @@
     padding:4px 8px;
     min-width: 44px;
     text-align:center;
+    flex-shrink:0;
   }
+  .kbd.amber{ color: var(--amber); background: rgba(255,157,77,.1); border-color: rgba(255,157,77,.35); }
+  .kbd.mag{ color: var(--magenta); background: rgba(192,77,255,.1); border-color: rgba(192,77,255,.35); }
   .kbd-item span.desc{ font-size:14px; }
 
   .flow{ display:flex; flex-direction:column; gap:10px; margin-top:6px; }
@@ -114,14 +128,17 @@
   table{ width:100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }
   th,td{ text-align:left; padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
   th{ color: var(--muted); font-weight:600; font-size:12px; letter-spacing:1px; text-transform:uppercase; }
+  td small{ display:block; color: var(--muted); font-size:12px; margin-top:2px; }
   .tag{
     display:inline-flex; align-items:center; justify-content:center;
     width: 26px; height:26px; border-radius:6px;
     font-family:'Orbitron',sans-serif; font-size:12px; font-weight:700;
     color:#0a0e17;
   }
+  .num-table td, .num-table th{ text-align:center; }
+  .num-table td:first-child, .num-table th:first-child{ text-align:left; }
 
-  .upg-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px; }
+  .upg-grid{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:10px; }
   @media (max-width:520px){ .upg-grid{ grid-template-columns:1fr; } }
   .upg-item{
     background: rgba(255,255,255,.03);
@@ -173,138 +190,212 @@
     </div>
   </div>
 
+  <!-- =====================================================  日本語  -->
   <div id="ja-content">
+
   <div class="card">
     <h2><span class="no">1</span>ゲーム概要</h2>
-    <p>落ちてくるブロックを積み上げて<b>タワー</b>を作り、無限に押し寄せる敵から拠点を守る「落ちゲー × タワーディフェンス」です。</p>
-    <p class="muted">敵はどんどん強くなり、終わりはありません。どこまで生き残れるかに挑戦するゲームです。</p>
+    <p>落ちてくるブロックを積み上げて<b>タワー</b>を作り、押し寄せる敵から拠点を守る「落ちゲー × タワーディフェンス」です。</p>
+    <p>序盤は敵がゆるやかで、時間がたつほど敵は強く、数も多くなります。いつかは押し切られるので、<b>どれだけ長く守り切れるか</b>に挑戦するゲームです。</p>
+    <div class="note"><b>このゲームの特徴:</b> ラインを消すと、そのラインを作っていた種類のブロックが強くなります。何を積んで、どれを消すかが勝負どころです。</div>
   </div>
 
   <div class="card">
     <h2><span class="no">2</span>操作方法</h2>
+    <p class="muted">スマホでは画面下の4つのボタン、PCではキーボードで操作します。</p>
     <div class="kbd-grid">
-      <div class="kbd-item"><span class="kbd">←→</span><span class="desc">ブロックを左右に移動</span></div>
-      <div class="kbd-item"><span class="kbd">↑ / ⟳</span><span class="desc">ブロックを回転</span></div>
-      <div class="kbd-item"><span class="kbd">↓ / ▼</span><span class="desc">ソフトドロップ(押している間だけ高速落下)</span></div>
-      <div class="kbd-item"><span class="kbd">SPACE / ⤓</span><span class="desc">ハードドロップ(即座に着地)</span></div>
-      <div class="kbd-item"><span class="kbd">P / II</span><span class="desc">一時停止</span></div>
-      <div class="kbd-item"><span class="kbd">🔀</span><span class="desc">プレイヤーIDの再抽選</span></div>
+      <div class="kbd-item"><span class="kbd">◀ ▶</span><span class="desc">ブロックを左右に移動(押し続けると連続で動く)</span></div>
+      <div class="kbd-item"><span class="kbd mag">⟳</span><span class="desc">ブロックを回転(右回り)</span></div>
+      <div class="kbd-item"><span class="kbd amber">⤓</span><span class="desc">直下(一気に落下して、その場で固定)</span></div>
     </div>
-    <p class="muted" style="margin-top:12px;">スマホでは画面下の大きなボタン、PCではキーボードのどちらでも操作できます。</p>
+    <p style="margin-top:14px;"><b>キーボード</b></p>
+    <div class="kbd-grid">
+      <div class="kbd-item"><span class="kbd">← →</span><span class="desc">左右に移動</span></div>
+      <div class="kbd-item"><span class="kbd">↑ / X</span><span class="desc">回転</span></div>
+      <div class="kbd-item"><span class="kbd">SPACE / Z</span><span class="desc">直下</span></div>
+      <div class="kbd-item"><span class="kbd">↓</span><span class="desc">ソフトドロップ(押している間だけ速く落ちる)</span></div>
+      <div class="kbd-item"><span class="kbd">P</span><span class="desc">一時停止</span></div>
+    </div>
+    <p class="muted" style="margin-top:12px;">ソフトドロップはキーボードのみです。スマホでは、ブロックは自然に落ちるのを待つか、⤓で直下にします。</p>
   </div>
 
   <div class="card">
-    <h2><span class="no">3</span>基本ルール</h2>
-    <div class="flow">
-      <div class="flow-item">
-        <div class="flow-num">1</div>
-        <div><b>ブロックが着地するとタワーになる</b><span>置いた瞬間からそのブロックは自動で敵を攻撃するタワーに変わります。</span></div>
-      </div>
-      <div class="flow-item">
-        <div class="flow-num">2</div>
-        <div><b>敵は右から左へ歩いてくる</b><span>画面のレーン(横一列)ごとに、右端から拠点(画面左端)を目指して進んできます。</span></div>
-      </div>
-      <div class="flow-item">
-        <div class="flow-num">3</div>
-        <div><b>拠点に到達されるとHPが減る</b><span>拠点HPが0になるとゲームオーバーです。</span></div>
-      </div>
-      <div class="flow-item">
-        <div class="flow-num">4</div>
-        <div><b>横一列を埋めるとライン消去</b><span>そのレーンのタワーは消えてしまいますが、代わりに大きな経験値ボーナスがもらえます。守りとのトレードオフです。</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2><span class="no">4</span>タワー一覧(ブロックの形で性能が決まる)</h2>
-    <p class="muted">同じ場所に積んでも、ブロックの種類によってタワーの役割が変わります。</p>
+    <h2><span class="no">3</span>画面の見方</h2>
     <table>
-      <tr><th>形</th><th>名前</th><th>特徴</th></tr>
-      <tr><td><span class="tag" style="background:#4dd9ff;">I</span></td><td>狙撃機</td><td>射程が長く、火力も高い。攻撃間隔はやや遅め。</td></tr>
-      <tr><td><span class="tag" style="background:#ffe14d;">O</span></td><td>砲撃機</td><td>攻撃時に上下のレーンにも巻き込みダメージ(範囲攻撃)。</td></tr>
-      <tr><td><span class="tag" style="background:#c04dff;">T</span></td><td>連射機</td><td>一発は軽いが、非常に速い間隔で連射する。</td></tr>
-      <tr><td><span class="tag" style="background:#4dffb0;">S</span></td><td>氷結機</td><td>攻撃した敵の動きを一定時間遅くする。</td></tr>
-      <tr><td><span class="tag" style="background:#ff4d6a;">Z</span></td><td>重砲機</td><td>射程は短いが、単発火力は全タワー中トップクラス。</td></tr>
-      <tr><td><span class="tag" style="background:#4d7bff;">J</span></td><td>標準機</td><td>火力・射程・速度のバランス型。</td></tr>
-      <tr><td><span class="tag" style="background:#ff9d4d;">L</span></td><td>強化機</td><td>標準機よりわずかに全性能が高いバランス型。</td></tr>
+      <tr><th>表示</th><th>内容</th></tr>
+      <tr><td>LV</td><td>経験値のレベル。上がるほどブロックの自然落下が少し速くなります(強化の選択はありません)。</td></tr>
+      <tr><td>拠点 HP</td><td>拠点の残りHP。右の「+1.7/s」のような数字は、いまの自然回復の速さです。</td></tr>
+      <tr><td>🏆 / 🔊 / ? / II</td><td>ランキング / 音のオン・オフ / 操作とタワーの説明(各ブロックのレベルも見られます) / 一時停止</td></tr>
+      <tr><td>SCORE / TIME / KILL</td><td>スコア / 経過時間 / 倒した敵の数</td></tr>
+      <tr><td>NEXT</td><td>次に落ちてくるブロック</td></tr>
+      <tr><td>細いバー</td><td>次のレベルまでの経験値</td></tr>
+      <tr><td>画面左端の線</td><td>拠点のHP。ここまで敵が来ると、拠点がダメージを受けます。</td></tr>
     </table>
   </div>
 
   <div class="card">
-    <h2><span class="no">5</span>レベルアップ & アップグレード</h2>
-    <p>敵を倒すと経験値がたまり、レベルアップします。レベルアップ時は<b>3択</b>からアップグレードを1つ選んで強化していきます。</p>
-    <div class="upg-grid">
-      <div class="upg-item"><b>攻撃力アップ</b><span>全タワーの攻撃力 +20%</span></div>
-      <div class="upg-item"><b>射程アップ</b><span>全タワーの射程 +1</span></div>
-      <div class="upg-item"><b>攻撃速度アップ</b><span>全タワーの攻撃間隔 -15%</span></div>
-      <div class="upg-item"><b>拠点強化</b><span>拠点の最大HP +30(全回復つき)</span></div>
-      <div class="upg-item"><b>減速フィールド</b><span>敵の移動速度 -8%(永続)</span></div>
-      <div class="upg-item"><b>経験値ブースト</b><span>獲得経験値 +15%</span></div>
-      <div class="upg-item"><b>応急修復</b><span>拠点HPを50回復</span></div>
-      <div class="upg-item"><b>降下加速</b><span>ソフトドロップの速度 +30%</span></div>
+    <h2><span class="no">4</span>基本ルール</h2>
+    <div class="flow">
+      <div class="flow-item">
+        <div class="flow-num">1</div>
+        <div><b>ブロックが着地するとタワーになる</b><span>置いた瞬間から、そのブロックは自動で敵を攻撃するタワーに変わります。</span></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">2</div>
+        <div><b>敵は右から左へ歩いてくる</b><span>画面の横一列(レーン)ごとに、右端から拠点(画面左端)を目指します。敵が出るのは、積み上げた一番高い位置の2段上から下のレーンです。</span></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">3</div>
+        <div><b>拠点に着かれるとHPが減る</b><span>拠点HPが0になるとゲームオーバーです。HPは時間とともに少しずつ自然回復します。</span></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">4</div>
+        <div><b>横一列を埋めるとライン消去</b><span>そのレーンのタワーは消えますが、そのラインを作っていた種類が強化されます(次の項目を参照)。経験値とスコアももらえます。</span></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">5</div>
+        <div><b>天井まで積み上がるとゲームオーバー</b><span>新しいブロックを出す場所がなくなっても、ゲームオーバーです。</span></div>
+      </div>
     </div>
   </div>
 
   <div class="card">
-    <h2><span class="no">6</span>敵の種類</h2>
+    <h2><span class="no">5</span>ブロック一覧(形で役割が決まる)</h2>
+    <p class="muted">同じ場所に置いても、ブロックの種類でタワーの役割が変わります。数値はレベル0のときのものです。</p>
+    <table>
+      <tr><th>形</th><th>名前</th><th>特徴</th></tr>
+      <tr><td><span class="tag" style="background:#4dd9ff;">I</span></td><td>狙撃機</td><td>射程が長く、火力も高い。攻撃間隔はやや遅め。<small>攻撃15 / 間隔0.9秒 / 射程5マス</small></td></tr>
+      <tr><td><span class="tag" style="background:#ffe14d;">O</span></td><td>砲撃機</td><td>攻撃時に上下のレーンにも巻き込みダメージ(範囲攻撃)。<small>攻撃8 / 間隔1.0秒 / 射程3マス</small></td></tr>
+      <tr><td><span class="tag" style="background:#c04dff;">T</span></td><td>連射機</td><td>一発は軽いが、非常に速い間隔で連射する。<small>攻撃4 / 間隔0.32秒 / 射程3マス</small></td></tr>
+      <tr><td><span class="tag" style="background:#4dffb0;">S</span></td><td>氷結機</td><td>攻撃した敵の動きを一定時間遅くする。<small>攻撃5 / 間隔0.8秒 / 射程3マス</small></td></tr>
+      <tr><td><span class="tag" style="background:#ff4d6a;">Z</span></td><td>重砲機</td><td>射程は短いが、単発の火力は全タワー中トップ。<small>攻撃22 / 間隔1.45秒 / 射程2マス</small></td></tr>
+      <tr><td><span class="tag" style="background:#4d7bff;">J</span></td><td>標準機</td><td>火力・射程・速度のバランス型。<small>攻撃8 / 間隔0.7秒 / 射程3マス</small></td></tr>
+      <tr><td><span class="tag" style="background:#ff9d4d;">L</span></td><td>強化機</td><td>標準機よりわずかに全性能が高いバランス型。<small>攻撃10 / 間隔0.65秒 / 射程3マス</small></td></tr>
+      <tr><td><span class="tag" style="background:#ff8ad8;">V</span></td><td>縦砲機</td><td>縦に3マスのブロック。自分の<b>列</b>を通る敵を、上下の行をまたいで攻撃できる。<small>攻撃7 / 間隔0.6秒 / 上下6行まで</small></td></tr>
+      <tr><td><span class="tag" style="background:#f2f6ff;">H</span></td><td>回復機</td><td>3マスの角形のブロック。攻撃はしないが、置いた分だけ拠点の自然回復が速くなる。<small>くわしくは「回復ブロックと拠点HP」</small></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">6</span>ライン消去と強化</h2>
+    <p>横一列を埋めてラインを消すと、そのラインに含まれていた<b>種類のブロック</b>が、それぞれ<b>+1レベル</b>になります。レベルが上がった種類は、盤面にあるものも、これから置くものも強くなります。</p>
+    <div class="upg-grid">
+      <div class="upg-item"><b>攻撃力 +8%</b><span>1レベルごと</span></div>
+      <div class="upg-item"><b>攻撃間隔 約-5%</b><span>1レベルごと(連射が速くなる)</span></div>
+      <div class="upg-item"><b>射程 +1</b><span>6レベルごと</span></div>
+    </div>
+    <div class="note"><b>例:</b> T・T・T・T・T・T・O で1列を消すと、TとOがそれぞれ +1レベルです。2列同時に消して両方にTが含まれていれば、Tは +2レベルになります。</div>
+    <p style="margin-top:12px;">レベルは、ブロックの角の数字で確認できます。強化されたときは、画面の上に「T Lv2」のように通知が出ます。「?」ボタンの一覧でも、種類ごとのレベルが見られます。</p>
+    <p class="muted">消したラインのタワーは、なくなります。守りを少し手放して強化を得る、というやりくりが大事です。レベルはゲームを始め直すとリセットされます。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">7</span>回復ブロックと拠点HP</h2>
+    <p>拠点HPは、何もしなくても毎秒 <b>0.6</b> ずつ自然回復します。回復機(H)を置くと、この回復が<b>%で速くなります</b>。</p>
+    <table class="num-table">
+      <tr><th>置いたHのマス数</th><th>自然回復(毎秒)</th></tr>
+      <tr><td>0マス</td><td>0.6</td></tr>
+      <tr><td>3マス(Hを1つ)</td><td>1.7</td></tr>
+      <tr><td>6マス(Hを2つ)</td><td>2.8</td></tr>
+      <tr><td>9マス(Hを3つ)</td><td>3.8</td></tr>
+    </table>
+    <p class="muted" style="margin-top:10px;">Hは1マスにつき回復が +60% になります。ラインを消してHがレベルアップすると、1マスの効果がさらに +10% ずつ上がります。いまの回復の速さは、HPバーの横で確認できます。</p>
+    <p class="muted">ただし、Hのあるラインを消すとそのHもなくなります。回復機はなるべく消さない位置に置きましょう。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">8</span>敵と難しさ</h2>
     <div class="enemy-row">
       <div class="dot" style="background:#ff6a6a;"></div>
-      <div><b>通常タイプ</b><span>基本の敵。時間経過とともにHP・速度が上がっていきます。</span></div>
+      <div><b>通常タイプ</b><span>基本の敵。時間とともにHP・速度・ダメージが上がります。</span></div>
     </div>
     <div class="enemy-row">
       <div class="dot" style="background:#ffe14d;"></div>
-      <div><b>高速タイプ</b><span>HPは低いが移動速度が速い。一定時間経過後から出現。</span></div>
+      <div><b>高速タイプ</b><span>1分ほどたってから出現。HPは低め(通常の約0.6倍)ですが、足は約2倍速い。</span></div>
     </div>
     <div class="enemy-row">
       <div class="dot" style="background:#c04dff;"></div>
-      <div><b>重量タイプ</b><span>HPが高く移動は遅いが、拠点への攻撃力が大きい。より時間が経つと出現。</span></div>
+      <div><b>重量タイプ</b><span>2分ほどたってから出現。HPが高く(通常の約2.6倍)動きは遅いが、拠点へのダメージが大きい(約2.3倍)。</span></div>
     </div>
+    <p style="margin-top:14px;"><b>敵はこう強くなる</b>(通常タイプの目安)</p>
+    <table class="num-table">
+      <tr><th>経過時間</th><th>HP</th><th>速さ(マス/秒)</th><th>拠点へのダメージ</th><th>出現間隔</th></tr>
+      <tr><td>10秒</td><td>18</td><td>0.8</td><td>6</td><td>約2.4秒</td></tr>
+      <tr><td>2分</td><td>44</td><td>1.1</td><td>8</td><td>約2.0秒</td></tr>
+      <tr><td>5分</td><td>103</td><td>1.6</td><td>12</td><td>約1.4秒</td></tr>
+      <tr><td>10分</td><td>245</td><td>2.4</td><td>18</td><td>約0.5秒</td></tr>
+    </table>
+    <p class="muted" style="margin-top:10px;">序盤はゆるやかで、後半は一気に厳しくなります。強化と回復で、どこまで耐えられるかが勝負です。</p>
   </div>
 
   <div class="card">
-    <h2><span class="no">7</span>スコア & ランキング</h2>
+    <h2><span class="no">9</span>スコア & ランキング</h2>
     <p>初回プレイ時に「するどいトラ4821」のようなプレイヤーIDが自動でつきます(自由入力はできません)。</p>
     <p>ゲームオーバー時、自己ベストを更新していれば自動でランキングに送信されます。画面右上の 🏆 ボタンでいつでも上位ランキングを確認できます。</p>
-    <p class="muted">IDが気に入らない場合は 🔀 ボタンでいつでも再抽選できます(ただしランキング上の記録は新しいIDでの新規参加になります)。</p>
+    <p class="muted">IDが気に入らない場合は 🔀 ボタンでいつでも再抽選できます(ただしランキング上の記録は、新しいIDでの新規参加になります)。</p>
   </div>
 
   <div class="card">
-    <h2><span class="no">8</span>攻略のコツ</h2>
+    <h2><span class="no">10</span>攻略のコツ</h2>
     <ul class="tips">
-      <li>拠点に近いレーン(下の方)から優先的にタワーで固めると、HPを削られにくくなります。</li>
-      <li>I(狙撃機)は射程が長いので、少ない数でも広い範囲をカバーできます。</li>
-      <li>O(砲撃機)は敵が密集しやすいレーンの中心に置くと効果的です。</li>
-      <li>Z(重砲機)は火力は高いですが射程が短いので、囲まれると弱いです。周りを他のタワーで守りましょう。</li>
-      <li>ライン消去は経験値効率が良い反面、守りが一時的に薄くなります。敵が少ないタイミングを狙いましょう。</li>
-      <li>レベルアップの選択肢に迷ったら、序盤は「攻撃速度」か「射程」、終盤は「拠点強化」がおすすめです。</li>
+      <li>敵が出るのは、積み上げた高さの2段上から下のレーンです。まず下の段を埋めて、守れるレーンを増やしましょう。</li>
+      <li>V(縦砲機)を縦向きに置くと、その列を通る敵を上下6行まで狙えます。タワーが届いていないレーンの穴埋めに便利です。</li>
+      <li>H(回復機)は、たくさん置くほど回復が速くなります。早めに数個置いておくと、後半の粘りが違います。</li>
+      <li>ラインを消すときに、いろいろな種類が混ざっているほど、多くの種類を一度に強化できます。同じ種類だけで消すと、その種類だけが強くなります。</li>
+      <li>I(狙撃機)は射程が長いので、少ない数でも広い範囲を守れます。O(砲撃機)は、敵が密集しやすいレーンの中心が向いています。</li>
+      <li>Z(重砲機)は火力が高い反面、射程が短いので、周りを他のタワーで守りましょう。</li>
+      <li>ラインを消すとそのレーンのタワーがなくなります。敵が少ないタイミングを見て消しましょう。</li>
     </ul>
   </div>
 
-  <div class="footer">BLOCK DEFENSE — 落ちゲー × 無限タワーディフェンス</div>
+  <div class="footer">BLOCK DEFENSE — 落ちゲー × タワーディフェンス</div>
   </div>
 
+  <!-- =====================================================  English  -->
   <div id="en-content" style="display:none;">
+
   <div class="card">
     <h2><span class="no">1</span>Overview</h2>
-    <p>Stack falling blocks into <b>towers</b> to defend your base against an endless wave of enemies — a mashup of a falling-block puzzle game and a tower defense.</p>
-    <p class="muted">Enemies keep getting stronger forever. There's no ending — the challenge is how long you can survive.</p>
+    <p>Stack falling blocks into <b>towers</b> to defend your base against waves of enemies — a mashup of a falling-block puzzle game and tower defense.</p>
+    <p>Enemies start out gentle and get stronger and more numerous as time goes on. You'll eventually be overrun, so the challenge is <b>how long you can hold out</b>.</p>
+    <div class="note"><b>What makes it different:</b> when you clear a row, every block type that made up that row gets stronger. What you stack and what you clear is the heart of the game.</div>
   </div>
 
   <div class="card">
     <h2><span class="no">2</span>Controls</h2>
+    <p class="muted">Use the four on-screen buttons on mobile, or the keyboard on desktop.</p>
     <div class="kbd-grid">
-      <div class="kbd-item"><span class="kbd">←→</span><span class="desc">Move the block left/right</span></div>
-      <div class="kbd-item"><span class="kbd">↑ / ⟳</span><span class="desc">Rotate the block</span></div>
-      <div class="kbd-item"><span class="kbd">↓ / ▼</span><span class="desc">Soft drop (fast-fall while held)</span></div>
-      <div class="kbd-item"><span class="kbd">SPACE / ⤓</span><span class="desc">Hard drop (instant landing)</span></div>
-      <div class="kbd-item"><span class="kbd">P / II</span><span class="desc">Pause</span></div>
-      <div class="kbd-item"><span class="kbd">🔀</span><span class="desc">Reroll your player ID</span></div>
+      <div class="kbd-item"><span class="kbd">◀ ▶</span><span class="desc">Move left/right (hold to keep moving)</span></div>
+      <div class="kbd-item"><span class="kbd mag">⟳</span><span class="desc">Rotate (clockwise)</span></div>
+      <div class="kbd-item"><span class="kbd amber">⤓</span><span class="desc">Hard drop (falls instantly and locks in place)</span></div>
     </div>
-    <p class="muted" style="margin-top:12px;">Works with on-screen buttons on mobile, or the keyboard on desktop.</p>
+    <p style="margin-top:14px;"><b>Keyboard</b></p>
+    <div class="kbd-grid">
+      <div class="kbd-item"><span class="kbd">← →</span><span class="desc">Move left/right</span></div>
+      <div class="kbd-item"><span class="kbd">↑ / X</span><span class="desc">Rotate</span></div>
+      <div class="kbd-item"><span class="kbd">SPACE / Z</span><span class="desc">Hard drop</span></div>
+      <div class="kbd-item"><span class="kbd">↓</span><span class="desc">Soft drop (falls faster while held)</span></div>
+      <div class="kbd-item"><span class="kbd">P</span><span class="desc">Pause</span></div>
+    </div>
+    <p class="muted" style="margin-top:12px;">Soft drop is keyboard-only. On mobile, either wait for the block to fall or use ⤓ to hard drop.</p>
   </div>
 
   <div class="card">
-    <h2><span class="no">3</span>Basic Rules</h2>
+    <h2><span class="no">3</span>Reading the Screen</h2>
+    <table>
+      <tr><th>Display</th><th>Meaning</th></tr>
+      <tr><td>LV</td><td>XP level. Higher levels make blocks fall slightly faster (there is no upgrade pick).</td></tr>
+      <tr><td>BASE HP</td><td>Your base's remaining HP. The "+1.7/s" next to it is your current natural regen rate.</td></tr>
+      <tr><td>🏆 / 🔊 / ? / II</td><td>Ranking / sound on-off / controls &amp; tower guide (also shows each type's level) / pause</td></tr>
+      <tr><td>SCORE / TIME / KILL</td><td>Score / elapsed time / enemies defeated</td></tr>
+      <tr><td>NEXT</td><td>The next block to fall</td></tr>
+      <tr><td>Thin bar</td><td>XP toward the next level</td></tr>
+      <tr><td>Line on the left edge</td><td>Your base. Enemies that reach it damage your HP.</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">4</span>Basic Rules</h2>
     <div class="flow">
       <div class="flow-item">
         <div class="flow-num">1</div>
@@ -312,85 +403,113 @@
       </div>
       <div class="flow-item">
         <div class="flow-num">2</div>
-        <div><b>Enemies walk from right to left</b><span>In each lane (row), enemies march from the right edge toward your base on the left.</span></div>
+        <div><b>Enemies walk from right to left</b><span>In each lane (row), enemies march from the right edge toward your base on the left. They only appear in lanes from two rows above your tallest stack and below.</span></div>
       </div>
       <div class="flow-item">
         <div class="flow-num">3</div>
-        <div><b>Reaching the base costs HP</b><span>When base HP hits 0, it's game over.</span></div>
+        <div><b>Reaching the base costs HP</b><span>When base HP hits 0, it's game over. HP slowly regenerates over time.</span></div>
       </div>
       <div class="flow-item">
         <div class="flow-num">4</div>
-        <div><b>Fill a row to clear it</b><span>Towers in that row are lost, but you get a big XP bonus in return — a trade-off between offense and defense.</span></div>
+        <div><b>Fill a row to clear it</b><span>Towers in that row are lost, but every type that made up the row levels up (see below). You also earn XP and score.</span></div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">5</div>
+        <div><b>Stacking to the ceiling ends the game</b><span>If there's no room left to spawn a new block, it's game over too.</span></div>
       </div>
     </div>
   </div>
 
   <div class="card">
-    <h2><span class="no">4</span>Tower Types (determined by block shape)</h2>
-    <p class="muted">The same spot can hold very different towers depending on which block shape lands there.</p>
+    <h2><span class="no">5</span>Block Types (shape decides the role)</h2>
+    <p class="muted">The same spot can hold very different towers depending on which block lands there. Numbers are for level 0.</p>
     <table>
       <tr><th>Shape</th><th>Name</th><th>Traits</th></tr>
-      <tr><td><span class="tag" style="background:#4dd9ff;">I</span></td><td>Sniper</td><td>Long range and high damage. Fires a bit slower.</td></tr>
-      <tr><td><span class="tag" style="background:#ffe14d;">O</span></td><td>Cannon</td><td>Splash damage that also hits the row above and below.</td></tr>
-      <tr><td><span class="tag" style="background:#c04dff;">T</span></td><td>Rapid</td><td>Light hits, but fires extremely fast.</td></tr>
-      <tr><td><span class="tag" style="background:#4dffb0;">S</span></td><td>Frost</td><td>Slows down whatever it hits for a short time.</td></tr>
-      <tr><td><span class="tag" style="background:#ff4d6a;">Z</span></td><td>Heavy</td><td>Short range, but the highest single-hit damage of any tower.</td></tr>
-      <tr><td><span class="tag" style="background:#4d7bff;">J</span></td><td>Standard</td><td>Balanced damage, range, and speed.</td></tr>
-      <tr><td><span class="tag" style="background:#ff9d4d;">L</span></td><td>Upgraded</td><td>Slightly better all-round than Standard.</td></tr>
+      <tr><td><span class="tag" style="background:#4dd9ff;">I</span></td><td>Sniper</td><td>Long range and high damage. Fires a bit slower.<small>Dmg 15 / 0.9s / range 5</small></td></tr>
+      <tr><td><span class="tag" style="background:#ffe14d;">O</span></td><td>Cannon</td><td>Splash damage that also hits the rows above and below.<small>Dmg 8 / 1.0s / range 3</small></td></tr>
+      <tr><td><span class="tag" style="background:#c04dff;">T</span></td><td>Rapid</td><td>Light hits, but fires extremely fast.<small>Dmg 4 / 0.32s / range 3</small></td></tr>
+      <tr><td><span class="tag" style="background:#4dffb0;">S</span></td><td>Frost</td><td>Slows down whatever it hits for a short time.<small>Dmg 5 / 0.8s / range 3</small></td></tr>
+      <tr><td><span class="tag" style="background:#ff4d6a;">Z</span></td><td>Heavy</td><td>Short range, but the highest single-hit damage of any tower.<small>Dmg 22 / 1.45s / range 2</small></td></tr>
+      <tr><td><span class="tag" style="background:#4d7bff;">J</span></td><td>Standard</td><td>Balanced damage, range, and speed.<small>Dmg 8 / 0.7s / range 3</small></td></tr>
+      <tr><td><span class="tag" style="background:#ff9d4d;">L</span></td><td>Upgraded</td><td>Slightly better all-round than Standard.<small>Dmg 10 / 0.65s / range 3</small></td></tr>
+      <tr><td><span class="tag" style="background:#ff8ad8;">V</span></td><td>Column</td><td>A 3-tall block. Hits enemies passing through its <b>column</b>, reaching across rows.<small>Dmg 7 / 0.6s / up to 6 rows up &amp; down</small></td></tr>
+      <tr><td><span class="tag" style="background:#f2f6ff;">H</span></td><td>Medic</td><td>A 3-cell corner block. It never attacks, but each cell speeds up your base's natural regen.<small>See "Medic Blocks &amp; Base HP"</small></td></tr>
     </table>
   </div>
 
   <div class="card">
-    <h2><span class="no">5</span>Leveling Up & Upgrades</h2>
-    <p>Defeating enemies earns XP. On level-up, pick <b>one of three</b> upgrades to grow stronger.</p>
+    <h2><span class="no">6</span>Clearing Rows &amp; Growth</h2>
+    <p>When you clear a row, every <b>block type</b> that was in that row gains <b>+1 level</b>. Leveled-up types get stronger both on the board and for blocks you place later.</p>
     <div class="upg-grid">
-      <div class="upg-item"><b>Damage Up</b><span>+20% damage on all towers</span></div>
-      <div class="upg-item"><b>Range Up</b><span>+1 range on all towers</span></div>
-      <div class="upg-item"><b>Fire Rate Up</b><span>-15% attack cooldown</span></div>
-      <div class="upg-item"><b>Base Reinforce</b><span>+30 max base HP (full heal)</span></div>
-      <div class="upg-item"><b>Slow Field</b><span>-8% enemy speed (permanent)</span></div>
-      <div class="upg-item"><b>XP Boost</b><span>+15% XP gained</span></div>
-      <div class="upg-item"><b>Field Repair</b><span>Heal base by 50 HP</span></div>
-      <div class="upg-item"><b>Drop Boost</b><span>+30% soft drop speed</span></div>
+      <div class="upg-item"><b>Damage +8%</b><span>per level</span></div>
+      <div class="upg-item"><b>Cooldown about -5%</b><span>per level (fires faster)</span></div>
+      <div class="upg-item"><b>Range +1</b><span>every 6 levels</span></div>
     </div>
+    <div class="note"><b>Example:</b> clear a row of T·T·T·T·T·T·O and both T and O gain +1 level. Clear two rows at once that both contain T, and T gains +2.</div>
+    <p style="margin-top:12px;">A type's level shows as a small number in the corner of its blocks. When something levels up, a notice like "T Lv2" appears at the top of the field. The "?" guide also lists each type's level.</p>
+    <p class="muted">Towers in a cleared row are lost, so you're trading a little defense for growth. Levels reset when you start a new game.</p>
   </div>
 
   <div class="card">
-    <h2><span class="no">6</span>Enemy Types</h2>
+    <h2><span class="no">7</span>Medic Blocks &amp; Base HP</h2>
+    <p>Your base regenerates <b>0.6</b> HP per second on its own. Placing Medic (H) blocks makes that regen faster <b>by a percentage</b>.</p>
+    <table class="num-table">
+      <tr><th>H cells placed</th><th>Natural regen (per sec)</th></tr>
+      <tr><td>0 cells</td><td>0.6</td></tr>
+      <tr><td>3 cells (one H)</td><td>1.7</td></tr>
+      <tr><td>6 cells (two H)</td><td>2.8</td></tr>
+      <tr><td>9 cells (three H)</td><td>3.8</td></tr>
+    </table>
+    <p class="muted" style="margin-top:10px;">Each H cell adds +60% to regen. When H levels up from a row clear, each cell's effect grows by another +10% per level. You can check your current regen next to the HP bar.</p>
+    <p class="muted">Clearing a row that contains H removes those H cells too, so try to place Medics where they won't be cleared.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="no">8</span>Enemies &amp; Difficulty</h2>
     <div class="enemy-row">
       <div class="dot" style="background:#ff6a6a;"></div>
-      <div><b>Standard</b><span>The basic enemy. HP and speed rise as time goes on.</span></div>
+      <div><b>Standard</b><span>The basic enemy. HP, speed and damage rise as time goes on.</span></div>
     </div>
     <div class="enemy-row">
       <div class="dot" style="background:#ffe14d;"></div>
-      <div><b>Fast</b><span>Low HP but moves quickly. Starts appearing after a while.</span></div>
+      <div><b>Fast</b><span>Appears after about a minute. Low HP (about 0.6× standard) but roughly twice as fast.</span></div>
     </div>
     <div class="enemy-row">
       <div class="dot" style="background:#c04dff;"></div>
-      <div><b>Heavy</b><span>High HP, slow, but hits your base hard. Appears later on.</span></div>
+      <div><b>Heavy</b><span>Appears after about two minutes. High HP (about 2.6× standard), slow, but hits your base hard (about 2.3×).</span></div>
     </div>
+    <p style="margin-top:14px;"><b>How enemies scale</b> (standard type, roughly)</p>
+    <table class="num-table">
+      <tr><th>Time</th><th>HP</th><th>Speed (tiles/s)</th><th>Base damage</th><th>Spawn gap</th></tr>
+      <tr><td>10 s</td><td>18</td><td>0.8</td><td>6</td><td>~2.4 s</td></tr>
+      <tr><td>2 min</td><td>44</td><td>1.1</td><td>8</td><td>~2.0 s</td></tr>
+      <tr><td>5 min</td><td>103</td><td>1.6</td><td>12</td><td>~1.4 s</td></tr>
+      <tr><td>10 min</td><td>245</td><td>2.4</td><td>18</td><td>~0.5 s</td></tr>
+    </table>
+    <p class="muted" style="margin-top:10px;">The early game is gentle; the late game gets tough fast. How long your growth and regen can keep up is the real test.</p>
   </div>
 
   <div class="card">
-    <h2><span class="no">7</span>Score & Ranking</h2>
+    <h2><span class="no">9</span>Score &amp; Ranking</h2>
     <p>On your first play, you're automatically given a player ID like "SwiftTiger4821" (free text entry isn't allowed).</p>
     <p>When you beat your personal best, it's automatically submitted to the ranking. Tap the 🏆 button anytime to see the top scores.</p>
     <p class="muted">Don't like your ID? Tap 🔀 to reroll anytime (note: this starts a new entry on the ranking).</p>
   </div>
 
   <div class="card">
-    <h2><span class="no">8</span>Tips</h2>
+    <h2><span class="no">10</span>Tips</h2>
     <ul class="tips">
-      <li>Prioritize building towers in the lanes closest to your base — it keeps your HP from draining fast.</li>
-      <li>I (Sniper) has long range, so a few of them can cover a wide area.</li>
-      <li>O (Cannon) works best in the center of lanes where enemies tend to bunch up.</li>
-      <li>Z (Heavy) hits hard but has short range — it's weak if surrounded, so protect it with other towers.</li>
-      <li>Clearing lines is great for XP but temporarily weakens your defense. Time it for quiet moments.</li>
-      <li>Not sure which upgrade to pick? Early on, go for Fire Rate or Range; late game, Base Reinforce is a solid pick.</li>
+      <li>Enemies only appear from two rows above your tallest stack and below. Fill the lower rows first to widen the lanes you can defend.</li>
+      <li>Place V (Column) upright to hit enemies in its column up to 6 rows away. It's great for patching lanes your other towers don't reach.</li>
+      <li>The more H (Medic) cells you place, the faster you heal. A few early on make a big difference late in the game.</li>
+      <li>A row made of many different types levels up many types at once; a row of one type only levels that type.</li>
+      <li>I (Sniper) has long range, so a few of them cover a wide area. O (Cannon) works best in lanes where enemies tend to bunch up.</li>
+      <li>Z (Heavy) hits hard but has short range — protect it with other towers.</li>
+      <li>Clearing a row removes that lane's towers, so clear during quiet moments.</li>
     </ul>
   </div>
 
-  <div class="footer">BLOCK DEFENSE — Falling Blocks × Infinite Tower Defense</div>
+  <div class="footer">BLOCK DEFENSE — Falling Blocks × Tower Defense</div>
   </div>
 
 </div>
@@ -407,10 +526,12 @@
     if(lang==='en'){
       jaContent.style.display='none'; enContent.style.display='block';
       heroSub.textContent = 'Manual / How to Play';
+      document.documentElement.lang = 'en';
       langEnBtn.classList.add('active'); langJaBtn.classList.remove('active');
     } else {
       enContent.style.display='none'; jaContent.style.display='block';
       heroSub.textContent = '説明書 / 遊び方ガイド';
+      document.documentElement.lang = 'ja';
       langJaBtn.classList.add('active'); langEnBtn.classList.remove('active');
     }
   }

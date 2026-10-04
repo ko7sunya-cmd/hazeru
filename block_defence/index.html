@@ -151,91 +151,32 @@
     gap:8px;
   }
   .ctrl-row{ display:flex; gap:8px; }
-  /* ---- Famicom-style pad ---- */
+  /* ---- Pad: [左][右] 隙間 [直下][回転] ---- */
   .famipad{
-    --d: 108px;            /* 十字キー全体サイズ */
-    --t: 36px;             /* 十字の太さ */
-    --ab: 50px;            /* A/Bボタン直径 */
-    display:flex; align-items:center; justify-content:space-between;
-    gap:6px;
-    width:100%; max-width:100%; overflow:hidden;
-    padding:8px 16px 14px;
-    background: linear-gradient(180deg,#d9d4c7,#b9b3a4);
-    border-radius:14px;
-    border:2px solid #8d8778;
-    box-shadow: inset 0 2px 0 rgba(255,255,255,.5), 0 4px 0 #6f6a5d, 0 8px 18px rgba(0,0,0,.5);
+    display:flex; align-items:center; gap:8px;
+    width:100%;
+    padding:2px 0 0;
     user-select:none; -webkit-user-select:none;
     touch-action:none;
   }
-  .fp-mid{
-    flex:1; min-width:0; display:flex; align-items:center; justify-content:center;
-  }
-  .fp-brand{ font-family:'Orbitron',sans-serif; font-size:8px; letter-spacing:2px; color:#c8402a; font-weight:900; }
-  .fp-sel{ display:flex; gap:8px; }
-  .pill{
-    display:flex; flex-direction:column; align-items:center; gap:3px;
-    font-family:'Orbitron',sans-serif; font-size:7.5px; letter-spacing:1px; color:#c8402a; font-weight:700;
-  }
-  .pill i{
-    display:block; width:38px; height:13px; border-radius:7px;
-    background: linear-gradient(180deg,#5a5a5a,#2a2a2a);
-    border:1px solid #000;
-    box-shadow: 0 2px 0 #000;
-    transition: transform .05s, box-shadow .05s;
-  }
-  .pill.on i{ transform:translateY(2px); box-shadow:0 0 0 #000; }
-
-  /* 直下(ハードドロップ)ボタン */
-  .dropwrap{ display:flex; flex-direction:column; align-items:center; gap:5px; }
-  .dropbtn{
-    width:46px; height:46px; border-radius:50%;
-    background: radial-gradient(circle at 35% 30%,#ffc46a,#e8891f 60%,#a55a0c);
-    border:2px solid #6b3a06;
-    box-shadow: 0 4px 0 #6b3a06, 0 7px 8px rgba(0,0,0,.4);
-    color:#fff; font-size:22px; line-height:1;
+  .pbtn{
+    flex:1 1 0; min-width:0;
+    aspect-ratio:1 / 1;          /* 四角 */
+    max-height:84px;
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:1.5px solid var(--cyan);
+    border-radius:12px;
+    color:var(--cyan);
+    font-size:28px; line-height:1;
     display:flex; align-items:center; justify-content:center;
-    transition: transform .05s, box-shadow .05s;
+    transition: background .08s ease, transform .08s ease;
   }
-  .dropbtn.on{ transform:translateY(3px); box-shadow:0 1px 0 #6b3a06; }
-  .fp-brand{ color:#a55a0c; }
-
-  /* D-pad (cross) */
-  .dpad{ position:relative; width:var(--d); height:var(--d); flex-shrink:0; }
-  .dpad .arm{
-    position:absolute; background:#2a2a2a;
-    display:flex; align-items:center; justify-content:center;
-    color:#6b6b6b; font-size:15px;
-    box-shadow: inset 0 2px 0 rgba(255,255,255,.12), 0 3px 0 #000;
-  }
-  .dpad .arm.on{ background:#111; color:#fff; box-shadow: inset 0 0 0 #000; transform:translateY(2px); }
-  .dpad .up{ left:calc((var(--d) - var(--t))/2); top:0; width:var(--t); height:calc((var(--d) - var(--t))/2 + 2px); border-radius:6px 6px 0 0; }
-  .dpad .down{ left:calc((var(--d) - var(--t))/2); bottom:0; width:var(--t); height:calc((var(--d) - var(--t))/2 + 2px); border-radius:0 0 6px 6px; }
-  .dpad .left{ left:0; top:calc((var(--d) - var(--t))/2); width:calc((var(--d) - var(--t))/2 + 2px); height:var(--t); border-radius:6px 0 0 6px; }
-  .dpad .right{ right:0; top:calc((var(--d) - var(--t))/2); width:calc((var(--d) - var(--t))/2 + 2px); height:var(--t); border-radius:0 6px 6px 0; }
-  .dpad .center{
-    position:absolute; left:calc((var(--d) - var(--t))/2); top:calc((var(--d) - var(--t))/2);
-    width:var(--t); height:var(--t); background:#2a2a2a;
-  }
-  .dpad .center::after{
-    content:''; position:absolute; inset:10px; border-radius:50%;
-    background: radial-gradient(circle at 50% 40%,#1a1a1a,#3a3a3a);
-  }
-
-  /* A / B buttons */
-  .abwrap{ position:relative; width:calc(var(--ab)*2 + 14px); height:calc(var(--ab) + 44px); flex-shrink:0; }
-  .abtn{
-    position:absolute; width:var(--ab); height:var(--ab); border-radius:50%;
-    background: radial-gradient(circle at 35% 30%,#ff6a50,#c8402a 60%,#8a2616);
-    border:2px solid #5d1a0e;
-    box-shadow: 0 5px 0 #5d1a0e, 0 8px 8px rgba(0,0,0,.4);
-    color:#fff; font-family:'Orbitron',sans-serif; font-weight:900; font-size:14px;
-    display:flex; align-items:flex-end; justify-content:center; padding-bottom:-14px;
-    transition: transform .05s, box-shadow .05s;
-  }
-  .abtn span{ position:absolute; bottom:-16px; color:#c8402a; font-size:11px; }
-  .abtn.on{ transform:translateY(4px); box-shadow:0 1px 0 #5d1a0e; }
-  .abtn.b{ left:0; top:26px; }
-  .abtn.a{ right:0; top:4px; }
+  .pbtn.on{ background:rgba(77,217,255,.22); transform:scale(.95); }
+  .pbtn.drop{ border-color:var(--amber); color:var(--amber); }
+  .pbtn.drop.on{ background:rgba(255,157,77,.22); }
+  .pbtn.rot{ border-color:var(--magenta); color:var(--magenta); }
+  .pbtn.rot.on{ background:rgba(192,77,255,.22); }
+  .pgap{ flex:0 0 14px; }
 
   /* ---------------- overlays ---------------- */
   .overlay{
@@ -317,7 +258,7 @@
   <div class="topbar">
     <div class="chip"><div class="label" data-i18n="lvLabel">LV</div><div class="num" id="levelNum">1</div></div>
     <div class="chip hpchip">
-      <div class="label"><span data-i18n="hpLabel">拠点 HP</span> <span id="hpText" style="float:right;color:var(--text)">100/100</span></div>
+      <div class="label"><span data-i18n="hpLabel">拠点 HP</span> <span id="regenText" style="color:var(--green);font-size:9px;margin-left:4px;"></span><span id="hpText" style="float:right;color:var(--text)">100/100</span></div>
       <div class="bar-track"><div class="bar-fill hp-fill" id="hpFill" style="width:100%"></div></div>
     </div>
     <div class="iconbtn" id="rankBtn">🏆</div>
@@ -358,7 +299,7 @@
         <div class="upgrade-list" style="margin-bottom:16px;">
           <div class="upgrade-opt" style="cursor:default;">
             <div class="u-name" data-i18n="startRuleName">ルール</div>
-            <div class="u-desc" data-i18n="startRuleDesc">ブロックを積んでタワー化 → 敵の通るレーンに置いて自動攻撃。横一列を埋めるとライン消去でボーナス経験値。拠点HPが0でゲームオーバー。</div>
+            <div class="u-desc" data-i18n="startRuleDesc">ブロックを積んでタワー化 → 敵の通るレーンに置いて自動攻撃。横一列を埋めて消すと、そのラインを作った種類のタワーが強化される。回復機(H)を置くと拠点の自然回復が速くなる。拠点HPが0でゲームオーバー。</div>
           </div>
         </div>
         <div class="ctrl-row" style="gap:10px;">
@@ -416,23 +357,11 @@
 
   <div class="controls">
     <div class="famipad" id="famipad">
-      <div class="dpad">
-        <div class="arm up" data-key="up">▲</div>
-        <div class="arm left" data-key="left">◀</div>
-        <div class="center"></div>
-        <div class="arm right" data-key="right">▶</div>
-        <div class="arm down" data-key="down">▼</div>
-      </div>
-      <div class="fp-mid">
-        <div class="dropwrap">
-          <div class="dropbtn" data-key="drop">⤓</div>
-          <div class="fp-brand">DROP</div>
-        </div>
-      </div>
-      <div class="abwrap">
-        <div class="abtn b" data-key="b"><span>B</span></div>
-        <div class="abtn a" data-key="a"><span>A</span></div>
-      </div>
+      <div class="pbtn mv" data-key="left">◀</div>
+      <div class="pbtn mv" data-key="right">▶</div>
+      <div class="pgap"></div>
+      <div class="pbtn drop" data-key="b">⤓</div>
+      <div class="pbtn rot" data-key="a">⟳</div>
     </div>
   </div>
 
@@ -504,12 +433,12 @@
       rotateBtn:'回転',
       startDesc:'落ちてくるブロックを組んで、拠点を守るタワーへと変えろ。敵は無限に押し寄せる。倒すほどレベルが上がり、タワーは強化される。',
       startRuleName:'ルール',
-      startRuleDesc:'ブロックを積んでタワー化 → 敵の通るレーンに置いて自動攻撃。横一列を埋めるとライン消去でボーナス経験値。拠点HPが0でゲームオーバー。',
+      startRuleDesc:'ブロックを積んでタワー化 → 敵の通るレーンに置いて自動攻撃。横一列を埋めて消すと、そのラインを作った種類のタワーが強化される。回復機(H)を置くと拠点の自然回復が速くなる。拠点HPが0でゲームオーバー。',
       manualLink:'📖 遊び方を詳しく見る(別タブで開きます)',
       levelUpDesc:'強化するアップグレードを1つ選択',
       gameOverTitle:'拠点陥落', gameOverDesc:'防衛線が突破されました。',
       restartBtn:'もう一度防衛する ▶',
-      infoTitle:'操作 / タワー適性', infoControlsText:'十字キー ◀▶移動(長押しでリピート)/ ▼ソフトドロップ / ▲ハードドロップ。Aで右回転、Bで左回転。キーボード: 矢印・X(A)・Z(B)・Pでポーズ。',
+      infoTitle:'操作 / タワー適性', infoControlsText:'◀▶で移動(長押しでリピート)、⤓で直下(一気に落下)、⟳で回転。キーボード: ←→移動・X/↑回転・Z/Space直下・Pでポーズ。',
       closeBtn:'閉じる',
       rankTitle:'🏆 ランキング', rankMyIdLabel:'あなたのID:',
       rankLoading:'読み込み中...', rankNoDb:'ランキング機能は準備中です(Firebase未設定)。',
@@ -527,6 +456,8 @@
         Z:{name:'重砲機', role:'超高火力'},
         J:{name:'標準機', role:'バランス型'},
         L:{name:'強化機', role:'バランス+型'},
+        V:{name:'縦砲機', role:'縦方向に攻撃'},
+        H:{name:'回復機', role:'自然回復速度UP'},
       },
       upgrades: {
         dmg:{name:'攻撃力アップ', desc:'全タワーの攻撃力 +20%'},
@@ -546,12 +477,12 @@
       rotateBtn:'ROTATE',
       startDesc:'Stack falling blocks into towers to defend your base. Enemies never stop coming. Defeat them to level up and grow stronger.',
       startRuleName:'Rules',
-      startRuleDesc:'Blocks that land become auto-firing towers. Fill a full row to clear it for bonus XP. Base HP hits 0 → game over.',
+      startRuleDesc:'Blocks that land become auto-firing towers. Clear a row and every tower type in it levels up. Medic (H) blocks speed up natural base regen. Base HP hits 0 → game over.',
       manualLink:'📖 View the full manual (opens in a new tab)',
       levelUpDesc:'Choose one upgrade',
       gameOverTitle:'BASE DESTROYED', gameOverDesc:'Your defenses were overrun.',
       restartBtn:'Defend Again ▶',
-      infoTitle:'Controls / Tower Guide', infoControlsText:'D-pad: ◀▶ move (hold to repeat), ▼ soft drop, ▲ hard drop. A rotates right, B rotates left. Keyboard: arrows, X (A), Z (B), P to pause.',
+      infoTitle:'Controls / Tower Guide', infoControlsText:'◀▶ move (hold to repeat), ⤓ hard drop, ⟳ rotate. Keyboard: ←→ move, X/↑ rotate, Z/Space hard drop, P to pause.',
       closeBtn:'Close',
       rankTitle:'🏆 Ranking', rankMyIdLabel:'Your ID:',
       rankLoading:'Loading...', rankNoDb:'Ranking is not set up yet (Firebase not configured).',
@@ -569,6 +500,8 @@
         Z:{name:'Heavy', role:'Very high damage'},
         J:{name:'Standard', role:'Balanced'},
         L:{name:'Upgraded', role:'Balanced+'},
+        V:{name:'Column', role:'Fires up & down its column'},
+        H:{name:'Medic', role:'Boosts natural regen'},
       },
       upgrades: {
         dmg:{name:'Damage Up', desc:'+20% damage on all towers'},
@@ -733,7 +666,24 @@
     Z: {dmg:22, range:2, cooldown:1450, color:'#ff4d6a', splash:false, slow:false},
     J: {dmg:8,  range:3, cooldown:700,  color:'#4d7bff', splash:false, slow:false},
     L: {dmg:10, range:3, cooldown:650,  color:'#ff9d4d', splash:false, slow:false},
+    // 縦砲機: 自分の列を通る敵を、上下の行をまたいで攻撃(range は縦方向の行数)
+    V: {dmg:7,  range:6, cooldown:600,  color:'#ff8ad8', splash:false, slow:false, vertical:true},
+    // 回復機: 攻撃はしない。置いた分だけ拠点の自然回復速度が%で上がる
+    H: {dmg:0,  range:0, cooldown:1e9,  color:'#f2f6ff', splash:false, slow:false, heal:true},
   };
+
+  /* バランス値(シミュレーションで調整)
+     強化: そのラインを作った種類が +1Lv ごとに 攻撃+8% / 攻撃間隔-5% / 6Lvごとに射程+1
+     回復: 自然回復 0.6HP/秒。回復機1マスにつき +60%(回復機のLvごとに効果×(1+0.1×Lv))
+     enemyRowMargin: 敵は「一番高い積み位置の2行上」から下の行にだけ出現(null で全行) */
+  /* 敵の強さ(経過秒 t で徐々に上がる。序盤はゆるく、後半に向けて急に)
+     HP倍率  = 1 + t/hpDiv + (t/hpQuadDiv)^2
+     速度倍率 = 1 + t/spdDiv   ダメージ倍率 = 1 + t/dmgDiv
+     出現間隔(ms) = max(spawnFloor, spawnStart - t×spawnSlope)
+     fastAt/tankAt: 足の速い敵 / 硬い敵が出始める秒数 */
+  const ENEMY = { spawnStart:2400, spawnSlope:3.2, spawnFloor:450, hpDiv:80, hpQuadDiv:230, spdDiv:300, dmgDiv:300, fastAt:60, tankAt:120 };
+
+  const BALANCE = { regenBase:0.6, healPerCell:0.6, healPerLv:0.1, dmgPerLv:0.08, cdPerLv:0.05, rangeEvery:6, enemyRowMargin:2 };
 
   const SHAPES = {
     I: [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
@@ -743,18 +693,9 @@
     Z: [[1,1,0],[0,1,1],[0,0,0]],
     J: [[1,0,0],[1,1,1],[0,0,0]],
     L: [[0,0,1],[1,1,1],[0,0,0]],
+    V: [[0,1,0],[0,1,0],[0,1,0]],
+    H: [[1,1],[1,0]],
   };
-
-  const UPGRADE_POOL = [
-    {id:'dmg',   apply:s=>{s.dmgMult*=1.2;}},
-    {id:'range', apply:s=>{s.rangeBonus+=1;}},
-    {id:'speed', apply:s=>{s.atkSpeedMult*=0.85;}},
-    {id:'hp',    apply:s=>{s.baseMaxHp+=30; s.baseHp=s.baseMaxHp;}},
-    {id:'slow',  apply:s=>{s.enemySpeedMult*=0.92;}},
-    {id:'xp',    apply:s=>{s.xpMult*=1.15;}},
-    {id:'heal',  apply:s=>{s.baseHp=Math.min(s.baseMaxHp, s.baseHp+50);}},
-    {id:'fdrop', apply:s=>{s.softDropMult*=1.3;}},
-  ];
 
   /* =========================================================
      STATE
@@ -774,7 +715,8 @@
       score: 0, kills: 0,
       baseHp: 100, baseMaxHp: 100,
 
-      dmgMult:1, rangeBonus:0, atkSpeedMult:1, enemySpeedMult:1, xpMult:1, softDropMult:1,
+      typeLv: {I:0,O:0,T:0,S:0,Z:0,J:0,L:0,V:0,H:0},
+      toast: null,
 
       elapsed: 0,
       dropTimer: 0,
@@ -784,7 +726,6 @@
       paused: true,
       started: false,
       gameOver: false,
-      levelUpQueue: [],
       lastTime: 0,
     };
   }
@@ -808,7 +749,7 @@
   }
 
   function nextTypeFromBag(){
-    if(S.bag.length===0){ S.bag = shuffle(['I','O','T','S','Z','J','L']); }
+    if(S.bag.length===0){ S.bag = shuffle(['I','O','T','S','Z','J','L','V','H']); }
     return S.bag.pop();
   }
 
@@ -907,6 +848,14 @@
       if(S.grid[r].every(c=>c!==null)) rowsToClear.push(r);
     }
     if(rowsToClear.length===0) return;
+    // そのラインを構成していた種類が強化される(1ラインにつき、含まれる種類ごとに+1Lv)
+    const upTypes = [];
+    for(const r of rowsToClear){
+      const seen = new Set();
+      for(const cell of S.grid[r]) seen.add(cell.type);
+      seen.forEach(ty=>{ S.typeLv[ty]++; if(!upTypes.includes(ty)) upTypes.push(ty); });
+    }
+    S.toast = { text: upTypes.map(ty=>ty+' Lv'+S.typeLv[ty]).join('  '), until: S.elapsed + 1.8 };
     const remaining = S.grid.filter((row,idx)=>!rowsToClear.includes(idx));
     const cleared = rowsToClear.length;
     const freshRows = Array.from({length:cleared},()=>new Array(COLS).fill(null));
@@ -921,14 +870,21 @@
   ========================================================= */
   function spawnEnemy(){
     const t = S.elapsed;
-    const diff = 1 + t/40;
-    const speedDiff = 1 + t/170;
-    const row = Math.floor(Math.random()*ROWS);
+    const diff = 1 + t/ENEMY.hpDiv + Math.pow(t/ENEMY.hpQuadDiv, 2);
+    const speedDiff = 1 + t/ENEMY.spdDiv;
+    const dmgMul = 1 + t/ENEMY.dmgDiv;
+    let row = Math.floor(Math.random()*ROWS);
+    if(BALANCE.enemyRowMargin !== null){
+      let top = ROWS;
+      for(let r=0;r<ROWS;r++){ if(S.grid[r].some(c=>c!==null)){ top=r; break; } }
+      const lo = Math.max(0, top - BALANCE.enemyRowMargin);
+      row = lo + Math.floor(Math.random()*(ROWS-lo));
+    }
     const roll = Math.random();
 
     let hpBase=16, speedBase=0.8, dmgBase=6, color='#ff6a6a';
-    if(t>55 && roll<0.14){ hpBase=42; speedBase=0.48; dmgBase=14; color='#c04dff'; }
-    else if(t>25 && roll<0.32){ hpBase=9; speedBase=1.6; dmgBase=4; color='#ffe14d'; }
+    if(t>ENEMY.tankAt && roll<0.14){ hpBase=42; speedBase=0.48; dmgBase=14; color='#c04dff'; }
+    else if(t>ENEMY.fastAt && roll<0.32){ hpBase=9; speedBase=1.6; dmgBase=4; color='#ffe14d'; }
 
     S.enemies.push({
       row,
@@ -936,7 +892,7 @@
       hp: Math.round(hpBase*diff),
       maxHp: Math.round(hpBase*diff),
       baseSpeed: speedBase*speedDiff,
-      dmg: Math.round(dmgBase),
+      dmg: Math.round(dmgBase*dmgMul),
       xp: Math.round(6*diff),
       color,
       slowUntil: 0,
@@ -946,7 +902,7 @@
   function updateEnemies(dt){
     for(const e of S.enemies){
       const slowed = e.slowUntil > S.elapsed;
-      const speed = e.baseSpeed * S.enemySpeedMult * (slowed?0.5:1);
+      const speed = e.baseSpeed * (slowed?0.5:1);
       e.x -= speed*dt;
       if(e.x<=0){
         S.baseHp = Math.max(0, S.baseHp - e.dmg);
@@ -962,20 +918,32 @@
         const cell = S.grid[r][c];
         if(!cell) continue;
         const stats = TOWER_STATS[cell.type];
-        const cooldown = stats.cooldown*S.atkSpeedMult/1000;
+        if(stats.heal) continue;
+        const lv = S.typeLv[cell.type];
+        const cooldown = stats.cooldown/(1+BALANCE.cdPerLv*lv)/1000;
         if(S.elapsed - cell.lastAttack < cooldown) continue;
 
-        const range = stats.range + S.rangeBonus;
+        const range = stats.range + Math.floor(lv/BALANCE.rangeEvery);
         let target=null, bestX=Infinity;
-        for(const e of S.enemies){
-          if(e.hp<=0 || e.row!==r) continue;
-          if(Math.abs(e.x-c) > range) continue;
-          if(e.x < bestX){ bestX=e.x; target=e; }
+        if(stats.vertical){
+          // 縦方向: 自分の列(±0.9マス)を通る敵を、range行以内なら行をまたいで狙う
+          for(const e of S.enemies){
+            if(e.hp<=0) continue;
+            if(Math.abs(e.x-(c+0.5)) > 0.9) continue;
+            if(Math.abs(e.row-r) > range) continue;
+            if(e.x < bestX){ bestX=e.x; target=e; }
+          }
+        } else {
+          for(const e of S.enemies){
+            if(e.hp<=0 || e.row!==r) continue;
+            if(Math.abs(e.x-c) > range) continue;
+            if(e.x < bestX){ bestX=e.x; target=e; }
+          }
         }
         if(!target) continue;
 
         cell.lastAttack = S.elapsed;
-        const dmg = stats.dmg*S.dmgMult;
+        const dmg = stats.dmg*(1+BALANCE.dmgPerLv*lv);
         target.hp -= dmg;
         addEffect(c, r, target.x, target.row, stats.color);
 
@@ -1028,48 +996,15 @@
   function addScore(n){ S.score += Math.round(n); }
 
   function addXP(n){
-    S.xp += n*S.xpMult;
+    S.xp += n;
     while(S.xp >= S.xpToNext){
       S.xp -= S.xpToNext;
       S.level++;
       S.xpToNext = Math.floor(40 + S.level*22);
-      S.levelUpQueue.push(true);
     }
-    if(S.levelUpQueue.length>0 && !S.paused) showNextLevelUp();
   }
 
   const levelUpOverlay = document.getElementById('levelUpOverlay');
-  const upgradeListEl = document.getElementById('upgradeList');
-
-  function showNextLevelUp(){
-    if(S.levelUpQueue.length===0) return;
-    S.paused = true;
-    setBgmDucked(true);
-    const choices = shuffle(UPGRADE_POOL.slice()).slice(0,3);
-    upgradeListEl.innerHTML='';
-    choices.forEach(u=>{
-      const div = document.createElement('div');
-      div.className='upgrade-opt';
-      const info = t('upgrades')[u.id];
-      div.innerHTML = `<div class="u-name">${info.name}</div><div class="u-desc">${info.desc}</div>`;
-      div.onclick = ()=>{
-        u.apply(S);
-        S.levelUpQueue.pop();
-        levelUpOverlay.classList.add('hidden');
-        if(S.levelUpQueue.length>0){
-          showNextLevelUp();
-        } else {
-          S.paused = false;
-          S.lastTime = 0;
-          setBgmDucked(false);
-        }
-        updateHUD();
-      };
-      upgradeListEl.appendChild(div);
-    });
-    levelUpOverlay.classList.remove('hidden');
-  }
-
   /* =========================================================
      GAME OVER / START / RESTART
   ========================================================= */
@@ -1130,13 +1065,13 @@
   /* =========================================================
      INPUT
   ========================================================= */
-  // キーボード: 矢印=十字キー / X=A(右回転) / Z=B(左回転) / Enter=START / Shift=SELECT
-  const KEYMAP = { ArrowLeft:'left', ArrowRight:'right', ArrowDown:'down', ArrowUp:'up' };
+  // キーボード: ←→移動 / ↓ソフトドロップ / X・↑回転 / Z・Space直下 / Pポーズ
+  const KEYMAP = { ArrowLeft:'left', ArrowRight:'right', ArrowDown:'down' };
   window.addEventListener('keydown', e=>{
     if(!S.started || S.gameOver) return;
     if(KEYMAP[e.code]){ if(!e.repeat) setPad(KEYMAP[e.code], true); e.preventDefault(); return; }
     if(e.repeat) return;
-    if(e.code==='KeyX'){ pressAction('a'); e.preventDefault(); }
+    if(e.code==='KeyX' || e.code==='ArrowUp'){ pressAction('a'); e.preventDefault(); }
     else if(e.code==='KeyZ'){ pressAction('b'); e.preventDefault(); }
     else if(e.code==='KeyP'){ pressAction('start'); e.preventDefault(); }
     else if(e.code==='Space'){ hardDrop(); e.preventDefault(); }
@@ -1145,17 +1080,15 @@
     if(KEYMAP[e.code]) setPad(KEYMAP[e.code], false);
   });
 
-  /* ---------- Famicom-style pad ----------
-     十字キー : ◀▶ 移動(長押しでオートリピート) / ▼ ソフトドロップ / ▲ ハードドロップ
-     A        : 右回転     B : 左回転
-     START    : ポーズ     SELECT : 操作/タワー説明
+  /* ---------- Pad ----------
+     [◀][▶] 左右移動(長押しでオートリピート)  [⤓] 直下  [⟳] 右回転
+     キーボード: ←→ 移動 / X・↑ 回転 / Z・Space 直下 / P ポーズ
   ------------------------------------------------ */
   const DAS_DELAY = 170, DAS_RATE = 55; // ms
   const padEl = document.getElementById('famipad');
-  const dpadEl = padEl.querySelector('.dpad');
-  const armEls = {};
-  dpadEl.querySelectorAll('.arm').forEach(a=>{ armEls[a.dataset.key] = a; });
-  const padState = { left:false, right:false, down:false, up:false };
+  const padEls = {};
+  padEl.querySelectorAll('.pbtn').forEach(el=>{ padEls[el.dataset.key] = el; });
+  const padState = { left:false, right:false, down:false };
   let dasTimer = null, dasDir = 0;
 
   function buzz(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms||8); }catch(e){} }
@@ -1178,7 +1111,7 @@
   function setPad(key, on){
     if(padState[key] === on) return;
     padState[key] = on;
-    if(armEls[key]) armEls[key].classList.toggle('on', on);
+    if(padEls[key]) padEls[key].classList.toggle('on', on);
     if(on) buzz(8);
     if(key==='left' || key==='right'){
       if(on) startDAS(key==='left' ? -1 : 1);
@@ -1188,79 +1121,37 @@
         if(padState.left) startDAS(-1); else if(padState.right) startDAS(1);
       }
     } else if(key==='down'){
-      S.fastDrop = on;
-    } else if(key==='up'){
-      if(on) hardDrop();
+      S.fastDrop = on; // キーボードの↓のみ
     }
   }
-
-  function releaseDpad(){
-    ['left','right','down','up'].forEach(k=>setPad(k,false));
+  function releaseAll(){
+    ['left','right','down'].forEach(k=>setPad(k,false));
   }
 
-  // ポインタ位置から十字キー方向を判定(指をスライドさせても追従)
-  function dpadFromPoint(x, y){
-    const r = dpadEl.getBoundingClientRect();
-    const dx = x - (r.left + r.width/2);
-    const dy = y - (r.top + r.height/2);
-    const dead = r.width * 0.12;
-    const res = {left:false,right:false,down:false,up:false};
-    if(Math.hypot(dx,dy) < dead) return res;
-    // 斜め入力は45°ずつ判定せず、主軸のみ(ファミコンの十字キーに近い)
-    if(Math.abs(dx) > Math.abs(dy)*0.9 && Math.abs(dx) > dead) { if(dx<0) res.left=true; else res.right=true; }
-    if(Math.abs(dy) > Math.abs(dx)*0.9 && Math.abs(dy) > dead) { if(dy<0) res.up=true; else res.down=true; }
-    return res;
-  }
-  function applyDpad(res){
-    // 左右が同時に出た場合は後勝ち防止のため上下を優先して整理
-    if(res.left && res.right){ res.left = res.right = false; }
-    if(res.up && res.down){ res.up = res.down = false; }
-    ['left','right','down','up'].forEach(k=>setPad(k, !!res[k]));
-  }
-
-  let dpadPointer = null;
-  dpadEl.addEventListener('pointerdown', ev=>{
-    ev.preventDefault();
-    dpadPointer = ev.pointerId;
-    try{ dpadEl.setPointerCapture(ev.pointerId); }catch(e){}
-    applyDpad(dpadFromPoint(ev.clientX, ev.clientY));
-  });
-  dpadEl.addEventListener('pointermove', ev=>{
-    if(ev.pointerId !== dpadPointer) return;
-    ev.preventDefault();
-    applyDpad(dpadFromPoint(ev.clientX, ev.clientY));
-  });
-  const dpadEnd = ev=>{
-    if(ev.pointerId !== dpadPointer) return;
-    dpadPointer = null;
-    releaseDpad();
-  };
-  dpadEl.addEventListener('pointerup', dpadEnd);
-  dpadEl.addEventListener('pointercancel', dpadEnd);
-  dpadEl.addEventListener('lostpointercapture', dpadEnd);
-
-  // A / B / SELECT / START
   function pressAction(key){
     if(!S.started || S.gameOver) return;
     if(key==='a'){ tryRotate(1); }
-    else if(key==='b'){ tryRotate(-1); }
-    else if(key==='drop'){ hardDrop(); }
+    else if(key==='b'){ hardDrop(); }
     else if(key==='start'){ document.getElementById('pauseBtn').click(); }
-    else if(key==='select'){ document.getElementById('infoBtn').click(); }
   }
-  padEl.querySelectorAll('.abtn, .dropbtn').forEach(el=>{
+
+  // ボタンごとに独立して反応(マルチタッチ可)
+  padEl.querySelectorAll('.pbtn').forEach(el=>{
     const key = el.dataset.key;
+    const isMove = (key==='left' || key==='right');
     el.addEventListener('pointerdown', ev=>{
       ev.preventDefault();
       try{ el.setPointerCapture(ev.pointerId); }catch(e){}
-      el.classList.add('on');
-      buzz(10);
-      pressAction(key);
+      if(isMove){ setPad(key, true); }
+      else { el.classList.add('on'); buzz(10); pressAction(key); }
     });
-    const up = ()=>el.classList.remove('on');
-    el.addEventListener('pointerup', up);
-    el.addEventListener('pointercancel', up);
-    el.addEventListener('lostpointercapture', up);
+    const end = ()=>{
+      if(isMove) setPad(key, false);
+      else el.classList.remove('on');
+    };
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+    el.addEventListener('lostpointercapture', end);
   });
   padEl.addEventListener('contextmenu', e=>e.preventDefault());
   // 長押しでの文字選択・拡大鏡・コールアウトを防止(iOS Safari対策)
@@ -1268,9 +1159,7 @@
   padEl.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
   document.addEventListener('selectstart', e=>e.preventDefault());
   document.addEventListener('contextmenu', e=>e.preventDefault());
-
-  // ゲーム状態が変わったら押しっぱなしを解除
-  window.addEventListener('blur', ()=>{ releaseDpad(); });
+  window.addEventListener('blur', releaseAll);
 
   // block iOS gesture zoom / double-tap zoom on controls
   document.addEventListener('gesturestart', e=>e.preventDefault());
@@ -1284,14 +1173,14 @@
 
     S.dropTimer += dt*1000;
     const baseInterval = Math.max(220, 800 - S.level*10);
-    const effInterval = S.fastDrop ? baseInterval/(6*S.softDropMult) : baseInterval;
+    const effInterval = S.fastDrop ? baseInterval/6 : baseInterval;
     if(S.dropTimer >= effInterval){
       S.dropTimer = 0;
       stepDown();
     }
 
     S.spawnTimer += dt*1000;
-    const spawnInterval = Math.max(380, 1500 - S.elapsed*4.5);
+    const spawnInterval = Math.max(ENEMY.spawnFloor, ENEMY.spawnStart - S.elapsed*ENEMY.spawnSlope);
     if(S.spawnTimer >= spawnInterval){
       S.spawnTimer = 0;
       spawnEnemy();
@@ -1302,7 +1191,21 @@
     S.enemies = S.enemies.filter(e=>e.hp>0);
     cleanupEffects();
 
-    if(S.baseHp<=0) triggerGameOver();
+    if(S.baseHp<=0){ triggerGameOver(); return; }
+    if(S.baseHp < S.baseMaxHp){
+      S.baseHp = Math.min(S.baseMaxHp, S.baseHp + regenPerSec()*dt);
+    }
+  }
+
+  // 自然回復(HP/秒): 基準 × (1 + 回復機の数 × 1マスあたりの上昇率)
+  function regenPerSec(){
+    let hc = 0;
+    for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+      const cell = S.grid[r][c];
+      if(cell && cell.type==='H') hc++;
+    }
+    const perCell = BALANCE.healPerCell * (1 + BALANCE.healPerLv*S.typeLv.H);
+    return BALANCE.regenBase * (1 + hc*perCell);
   }
 
   /* =========================================================
@@ -1351,6 +1254,13 @@
         ctx.font = Math.max(9,CELL*0.28)+'px Orbitron';
         ctx.textAlign='center'; ctx.textBaseline='middle';
         ctx.fillText(cell.type, x+CELL/2, y+CELL/2+1);
+        const tlv = S.typeLv[cell.type];
+        if(tlv>0){
+          ctx.font = 'bold '+Math.max(8,CELL*0.22)+'px Orbitron';
+          ctx.textAlign='right'; ctx.textBaseline='top';
+          ctx.fillStyle = 'rgba(0,0,0,.75)';
+          ctx.fillText(tlv, x+CELL-5, y+4);
+        }
       }
     }
   }
@@ -1449,6 +1359,20 @@
     drawEnemies();
     drawPiece();
 
+    // 強化の通知(ライン消去時)
+    if(S.toast && S.elapsed < S.toast.until){
+      const a = Math.min(1, (S.toast.until - S.elapsed)/0.5);
+      ctx.globalAlpha = a;
+      ctx.font = 'bold '+Math.max(11,CELL*0.34)+'px Orbitron';
+      const w = ctx.measureText(S.toast.text).width + 20, h = Math.max(22,CELL*0.7);
+      ctx.fillStyle = 'rgba(6,9,17,.85)';
+      roundRect(canvas.width/2-w/2, 6, w, h, 6); ctx.fill();
+      ctx.fillStyle = '#4dffb0';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(S.toast.text, canvas.width/2, 6+h/2+1);
+      ctx.globalAlpha = 1;
+    }
+
     if(S.paused && S.started && !S.gameOver && levelUpOverlay.classList.contains('hidden') && infoOverlay.classList.contains('hidden') && rankOverlay.classList.contains('hidden')){
       ctx.fillStyle='rgba(6,9,17,.7)';
       ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -1493,6 +1417,7 @@
     document.getElementById('xpFill').style.width = Math.min(100,(S.xp/S.xpToNext*100))+'%';
     document.getElementById('hpFill').style.width = Math.max(0,(S.baseHp/S.baseMaxHp*100))+'%';
     document.getElementById('hpText').textContent = `${Math.max(0,Math.round(S.baseHp))}/${S.baseMaxHp}`;
+    document.getElementById('regenText').textContent = `+${regenPerSec().toFixed(1)}/s`;
     document.getElementById('timeNum').textContent = formatTime(S.elapsed);
     document.getElementById('killNum').textContent = S.kills;
   }
@@ -1504,7 +1429,7 @@
       const info = t('towers')[type];
       const div = document.createElement('div');
       div.className='legend-item';
-      div.innerHTML = `<div class="swatch" style="background:${stats.color}"></div><span style="color:var(--text)"><b>${type}</b>${info.name}</span><span class="role">${info.role}</span>`;
+      div.innerHTML = `<div class="swatch" style="background:${stats.color}"></div><span style="color:var(--text)"><b>${type}</b>${info.name}</span><span class="role">${info.role}${S.typeLv[type]>0 ? ' / Lv.'+S.typeLv[type] : ''}</span>`;
       box.appendChild(div);
     });
   }
