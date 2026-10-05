@@ -505,8 +505,8 @@
            🌌 深度パララックス背景（章ごとの1枚絵）
            ========================================= */
         .container { position: relative; z-index: 2; }
-        #bg-gl, #bg-fx { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 0.7s ease; }
-        #bg-dim { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 0.7s ease;
+        #bg-gl, #bg-fx { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; height: 100dvh; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 0.7s ease; }
+        #bg-dim { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; height: 100dvh; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 0.7s ease;
                   background: linear-gradient(180deg, rgba(7, 9, 19, 0.05) 0%, rgba(7, 9, 19, 0.09) 45%, rgba(7, 9, 19, 0.28) 75%, rgba(7, 9, 19, 0.52) 100%); }
         /* 背景の絵が出ている章だけ、文字・ボタンまわりを読みやすくする */
         html[data-bg="on"] header h1, html[data-bg="on"] .site-title, html[data-bg="on"] .intro p { text-shadow: 0 0 2px rgba(0, 0, 0, 0.95), 0 0 5px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.8); }
@@ -602,7 +602,7 @@
         html[data-gallery="on"] .jukebox-container { margin-top: 0; padding: 0; }
         html[data-gallery="on"] .theme-tabs { margin-bottom: 12px; }
 
-        #gal-ui { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; z-index: 40; display: none; touch-action: none; -webkit-user-select: none; user-select: none; }
+        #gal-ui { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; height: 100dvh; z-index: 40; display: none; touch-action: none; -webkit-user-select: none; user-select: none; }
         html[data-gallery="on"] #gal-ui { display: block; }
         #gal-top, #gal-bar { position: absolute; left: 0; right: 0; transition: opacity 0.3s ease, transform 0.3s ease; }
         #gal-top { top: 0; display: flex; align-items: center; justify-content: space-between; padding: calc(10px + env(safe-area-inset-top)) 12px 30px; background: linear-gradient(180deg, rgba(0, 0, 0, 0.32), transparent); }
@@ -1459,7 +1459,8 @@ void main(){
             } catch (e) {}
         }
         gyroBtn.addEventListener('click', toggleGyro);
-        const gyroAvail = coarse && 'DeviceOrientationEvent' in window;
+        const GYRO_ENABLED = false;   // スマホの傾き操作。歪みが強いので今は無効（true にすると ⟳ ボタンが復活）
+        const gyroAvail = GYRO_ENABLED && coarse && 'DeviceOrientationEvent' in window;
         const updateGyro = () => { gyroBtn.style.display = (gyroAvail && (cur || galleryOn)) ? 'block' : 'none'; };
 
         /* ---------- 光の粒子（スプライトを使い回して軽く描く） ---------- */
