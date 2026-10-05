@@ -3,30 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>はぜるの作品｜ポートフォリオ</title>
-    <link rel="stylesheet" href="style.css">
+    <title>hazeru｜はぜるの作品（小説・音楽・ゲーム）</title>
+    <meta name="description" content="言葉で綴る小説と、Suno AIで描く音楽、そして小さなゲーム。はぜるの作品集 .hazeru。">
+    <meta name="theme-color" content="#2f6fdb">
+    <link rel="canonical" href="https://ko7sunya-cmd.github.io/hazeru/">
+
+    <!-- SNS・LINEなどで共有したときのカード（OGP） -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="hazeru">
+    <meta property="og:title" content="hazeru｜はぜるの作品（小説・音楽・ゲーム）">
+    <meta property="og:description" content="言葉で綴る小説と、Suno AIで描く音楽、そして小さなゲーム。はぜるの作品集。">
+    <meta property="og:url" content="https://ko7sunya-cmd.github.io/hazeru/">
+    <meta property="og:image" content="https://ko7sunya-cmd.github.io/hazeru/og.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" href="top.css">
 </head>
 <body>
+    <header class="hero">
+        <img class="hero-img" src="banner.webp" alt=".hazeru：空に浮かぶ白い都市と青い海">
+        <h1 class="visually-hidden">.hazeru ― はぜるの作品</h1>
+    </header>
+
     <div class="container">
-        <header>
-            <p class="site-title"></p>
-            <h1>はぜるの作品</h1>
-        </header>
-
-        <!-- 波の区切り線：空から作品世界へ -->
-        <svg class="wave-divider" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M0,20 C150,38 350,2 600,20 C850,38 1050,2 1200,20 L1200,40 L0,40 Z" fill="#b2dfdb" opacity="0.55"></path>
-            <path d="M0,24 C200,10 400,34 600,22 C800,10 1000,34 1200,22" fill="none" stroke="#00796b" stroke-width="2" stroke-linecap="round" opacity="0.5"></path>
-        </svg>
-
         <main>
             <!-- サイト全体の短いコンセプト -->
             <section class="intro">
-                <svg class="cloud-decor" viewBox="0 0 200 100" aria-hidden="true">
-                    <ellipse cx="60" cy="58" rx="52" ry="26" fill="#ffffff"></ellipse>
-                    <ellipse cx="105" cy="42" rx="42" ry="22" fill="#ffffff"></ellipse>
-                    <ellipse cx="145" cy="60" rx="35" ry="19" fill="#ffffff"></ellipse>
-                </svg>
                 <p>言葉で綴る小説と、Suno AIで描く音楽の世界。<br></p>
             </section>
 
@@ -43,7 +47,7 @@
                                 <path d="M11 4V20"></path>
                             </svg>
                         </span>
-                        Novel / 小説作品
+                        <span class="cat-title"><span class="cat-en">NOVEL</span><span class="cat-ja">小説作品</span></span>
                     </h2>
 
                     <div class="work-list">
@@ -116,13 +120,14 @@
                                 <circle cx="17.5" cy="16" r="2.5" fill="currentColor" stroke="none"></circle>
                             </svg>
                         </span>
-                        Suno AI / 音楽作品
+                        <span class="cat-title"><span class="cat-en">MUSIC · SUNO AI</span><span class="cat-ja">音楽作品</span></span>
                     </h2>
                     <div class="work-list">
                         <a class="work-item" href="music_jukebox.html" style="--shine-delay: 12s;">
                             <div class="work-item-text">
                                 <h3>ジュークボックス（テーマ別音楽プレイヤー）</h3>
                                 <div class="work-tags">
+                                    <span class="work-tag">イラスト空間</span>
                                     <span class="work-tag">作業用BGM</span>
                                     <span class="work-tag">EDM×シンセ</span>
                                     <span class="work-tag">タブ跨ぎ再生</span>
@@ -150,7 +155,7 @@
                                 <circle cx="18" cy="14.5" r=".6" fill="currentColor" stroke="none"></circle>
                             </svg>
                         </span>
-                        Game / ゲーム作品
+                        <span class="cat-title"><span class="cat-en">GAME</span><span class="cat-ja">ゲーム作品</span></span>
                     </h2>
                     <div class="work-list">
                         <a class="work-item" href="block_defence/index.html" style="--shine-delay: 18s;">
@@ -212,11 +217,6 @@
 
             </section>
         </main>
-
-        <!-- 波の区切り線：作品世界からフッターへ -->
-        <svg class="wave-divider wave-divider--footer" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M0,20 C150,4 350,36 600,20 C850,4 1050,36 1200,20" fill="none" stroke="#b2dfdb" stroke-width="2" stroke-linecap="round" opacity="0.7"></path>
-        </svg>
 
         <footer class="site-footer">
             <div class="footer-nav">

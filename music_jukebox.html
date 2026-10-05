@@ -500,9 +500,173 @@
         @keyframes flare-breathe { 0% { transform: scale(1) translate(0, 0); opacity: 0.6; } 100% { transform: scale(1.05) translate(-10px, 15px); opacity: 1; } }
         @keyframes ray-shift { 0% { transform: rotate(inherit) translateX(0px); opacity: 0.5; } 100% { transform: rotate(inherit) translateX(40px); opacity: 1; } }
         @keyframes kagerou-wave { 0% { transform: translateY(0); opacity: 0.5; } 100% { transform: translateY(-5px); opacity: 1; } }
+
+        /* =========================================
+           🌌 深度パララックス背景（章ごとの1枚絵）
+           ========================================= */
+        .container { position: relative; z-index: 2; }
+        #bg-gl, #bg-fx { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 0.7s ease; }
+        #bg-dim { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 0.7s ease;
+                  background: linear-gradient(180deg, rgba(7, 9, 19, 0.05) 0%, rgba(7, 9, 19, 0.09) 45%, rgba(7, 9, 19, 0.28) 75%, rgba(7, 9, 19, 0.52) 100%); }
+        /* 背景の絵が出ている章だけ、文字・ボタンまわりを読みやすくする */
+        html[data-bg="on"] header h1, html[data-bg="on"] .site-title, html[data-bg="on"] .intro p { text-shadow: 0 0 2px rgba(0, 0, 0, 0.95), 0 0 5px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.8); }
+        html[data-bg="on"] .intro p { color: #d5dce8 !important; }
+        html[data-bg="on"] .site-title { color: #aab6c8 !important; }
+
+        /* ---- スケルトン仕様：下地は無し。押すところだけガラス質感、▶は色つき ---- */
+        html[data-bg="on"] { --glass-blur: 10px; }   /* スマホが重いときは 0px にするとぼかしが止まります */
+
+        /* 下地をなくして、絵をそのまま見せる */
+        html[data-bg="on"] .jukebox-container { background: transparent !important; border-color: transparent; box-shadow: none; text-shadow: 0 0 2px rgba(0, 0, 0, 0.95), 0 0 5px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.8); }
+        html[data-bg="on"] .controls-box { background: transparent; }
+        html[data-bg="on"] .song-group { background: transparent; border-color: transparent; }
+        html[data-bg="on"] .player-header { border-bottom-color: rgba(255, 255, 255, 0.16); }
+        html[data-bg="on"] .player-header p { color: #cfd8e6 !important; }
+        html[data-bg="on"] .now-playing { color: #eef2f8; }
+        html[data-bg="on"] .time-box { color: #cbd5e1; }
+        html[data-bg="on"] .song-title { color: #fff; }
+        html[data-bg="on"] .empty { color: #cbd5e1; }
+        html[data-bg="on"] footer p { color: #aab6c8 !important; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8); }
+
+        /* 押せるところ：ガラス質感（半透明＋縁のハイライト＋ドロップシャドウ） */
+        html[data-bg="on"] .main-btn:not(#play-pause-btn),
+        html[data-bg="on"] .theme-tab,
+        html[data-bg="on"] .opt-btn,
+        html[data-bg="on"] .track-item:not(.active),
+        html[data-bg="on"] .site-menu,
+        html[data-bg="on"] .search-box input {
+            background: linear-gradient(150deg, rgba(255, 255, 255, 0.20) 0%, rgba(255, 255, 255, 0.04) 55%, rgba(255, 255, 255, 0.10) 100%), rgba(12, 16, 26, 0.10) !important;
+            border: 1px solid rgba(255, 255, 255, 0.30) !important;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.42), inset 0 -1px 0 rgba(255, 255, 255, 0.08) !important;
+            color: #f1f5f9 !important;
+        }
+        /* 本物のぼかしは、小さくて目立つ所だけ（軽さのため） */
+        html[data-bg="on"] .main-btn:not(#play-pause-btn),
+        html[data-bg="on"] .theme-tab { -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3); backdrop-filter: blur(var(--glass-blur)) saturate(1.3); }
+
+        /* 選択中・オン：色の縁と光彩 */
+        html[data-bg="on"] .theme-tab.active,
+        html[data-bg="on"] .opt-btn.on {
+            border-color: var(--accent) !important; color: #fff !important;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.42), 0 0 14px var(--accent) !important;
+        }
+        html[data-bg="on"] .main-btn:not(#play-pause-btn):hover,
+        html[data-bg="on"] .theme-tab:hover,
+        html[data-bg="on"] .opt-btn:hover,
+        html[data-bg="on"] .track-item:not(.active):hover {
+            border-color: var(--accent) !important; color: #fff !important;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 14px var(--accent) !important;
+        }
+        /* 再生中の曲：色をしっかり（グラデーション＋光彩） */
+        html[data-bg="on"] .track-item.active { color: #04121c; text-shadow: none; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 0 16px var(--accent); }
+        /* ▶：しっかり色。ガラスではなく、光る宝石っぽく */
+        html[data-bg="on"] #play-pause-btn { text-shadow: none; box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5), 0 0 24px var(--accent), inset 0 2px 0 rgba(255, 255, 255, 0.5), inset 0 -4px 8px rgba(0, 0, 0, 0.2) !important; }
+        /* 進行バー */
+        html[data-bg="on"] .progress-container { background: rgba(255, 255, 255, 0.2); box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.45); }
+        html[data-bg="on"] .progress-bar { box-shadow: 0 0 10px var(--accent); }
+        html[data-bg="on"] .fav-btn { color: #cbd5e1; }
+        html[data-bg="on"] .fav-btn.on { color: #f472b6; text-shadow: 0 0 10px #f472b6; }
+        html[data-bg="on"] .search-box input::placeholder { color: #cbd5e1; }
+
+        /* 対応ブラウザでは、光彩をやわらかい色にする */
+        html[data-bg="on"] .theme-tab.active, html[data-bg="on"] .opt-btn.on { box-shadow: 0 6px 16px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.42), 0 0 14px color-mix(in srgb, var(--accent) 55%, transparent) !important; }
+        html[data-bg="on"] .main-btn:not(#play-pause-btn):hover, html[data-bg="on"] .theme-tab:hover, html[data-bg="on"] .opt-btn:hover, html[data-bg="on"] .track-item:not(.active):hover { box-shadow: 0 6px 16px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 14px color-mix(in srgb, var(--accent) 55%, transparent) !important; }
+        html[data-bg="on"] #play-pause-btn { box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5), 0 0 24px color-mix(in srgb, var(--accent) 60%, transparent), inset 0 2px 0 rgba(255, 255, 255, 0.5), inset 0 -4px 8px rgba(0, 0, 0, 0.2) !important; }
+
+        /* 明るい絵の上でも読めるように：章タイトルは明るい色＋濃い影、音量の文字も明るく */
+        html[data-bg="on"] .player-title { color: var(--accent); color: color-mix(in srgb, var(--accent) 55%, white); text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 12px rgba(0, 0, 0, 0.7); }
+        html[data-bg="on"] .vol { color: #e2e8f0; }
+        /* 背景が動いている間は、毎フレームぼかし直しになる backdrop-filter を止めて軽くする */
+        html[data-bg="on"] .kagerou { backdrop-filter: none !important; }
+        #bg-gyro { display: none; position: fixed; right: 12px; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 20; width: 40px; height: 40px; border-radius: 50%;
+                   border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(10, 14, 22, 0.55); color: #cbd5e1; font-size: 18px; line-height: 1; cursor: pointer; backdrop-filter: blur(6px); }
+        #bg-gyro.on { color: var(--accent, #38bdf8); border-color: var(--accent, #38bdf8); }
+
+        /* =========================================
+           🖼 ギャラリーモード（絵を主役にして、曲はバーだけ）
+           ========================================= */
+        html[data-gallery="on"], html[data-gallery="on"] body { overflow: hidden; }
+        html[data-gallery="on"] .summer-daydream { display: none; }
+        html[data-gallery="on"] header, html[data-gallery="on"] .intro, html[data-gallery="on"] .search-box, html[data-gallery="on"] footer,
+        html[data-gallery="on"] .player-header, html[data-gallery="on"] .controls-box { display: none !important; }
+
+        /* 再生リスト：ふだんは隠れていて、☰や上スワイプで下から出る */
+        html[data-gallery="on"] .container {
+            position: fixed; left: 0; right: 0; top: auto; bottom: calc(128px + env(safe-area-inset-bottom)); z-index: 45;
+            max-height: 52vh; overflow-y: auto; -webkit-overflow-scrolling: touch; touch-action: pan-y;
+            margin: 0 auto; padding: 14px 14px 10px; border-radius: 18px;
+            background: rgba(8, 10, 18, 0.84) !important; border: 1px solid rgba(255, 255, 255, 0.12);
+            transform: translateY(26px); opacity: 0; pointer-events: none; transition: transform 0.3s ease, opacity 0.25s ease;
+        }
+        html[data-gallery="on"][data-sheet="open"] .container { transform: none; opacity: 1; pointer-events: auto; }
+        html[data-gallery="on"] .jukebox-container { margin-top: 0; padding: 0; }
+        html[data-gallery="on"] .theme-tabs { margin-bottom: 12px; }
+
+        #gal-ui { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; z-index: 40; display: none; touch-action: none; -webkit-user-select: none; user-select: none; }
+        html[data-gallery="on"] #gal-ui { display: block; }
+        #gal-top, #gal-bar { position: absolute; left: 0; right: 0; transition: opacity 0.3s ease, transform 0.3s ease; }
+        #gal-top { top: 0; display: flex; align-items: center; justify-content: space-between; padding: calc(10px + env(safe-area-inset-top)) 12px 30px; background: linear-gradient(180deg, rgba(0, 0, 0, 0.32), transparent); }
+        #gal-bar { bottom: 0; padding: 30px 16px calc(12px + env(safe-area-inset-bottom)); background: linear-gradient(0deg, rgba(4, 7, 14, 0.74), transparent); }
+        #gal-ui[data-hidden="1"] #gal-top { opacity: 0; transform: translateY(-8px); pointer-events: none; }
+        #gal-ui[data-hidden="1"] #gal-bar { opacity: 0; transform: translateY(8px); pointer-events: none; }
+
+        .gbtn { width: 44px; height: 44px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: inherit; font-size: 16px; color: #f1f5f9;
+                border: 1px solid rgba(255, 255, 255, 0.32);
+                background: linear-gradient(150deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.05) 55%, rgba(255, 255, 255, 0.10) 100%), rgba(12, 16, 26, 0.14);
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.42), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+                text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7); transition: transform 0.15s ease; }
+        .gbtn:active { transform: scale(0.92); }
+        .gbtn.sm { width: 38px; height: 38px; font-size: 13px; }
+        .gbtn.play { width: 62px; height: 62px; font-size: 24px; border: none; color: #04121c; text-shadow: none;
+                     background: var(--accent, #38bdf8);
+                     background: linear-gradient(135deg, color-mix(in srgb, var(--accent, #38bdf8) 78%, white) 0%, var(--accent, #38bdf8) 55%, color-mix(in srgb, var(--accent, #38bdf8) 68%, black) 100%);
+                     box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5), 0 0 24px var(--accent, #38bdf8), inset 0 2px 0 rgba(255, 255, 255, 0.5), inset 0 -4px 8px rgba(0, 0, 0, 0.2); }
+        .gspacer { width: 44px; height: 44px; }
+        #gal-nav { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 0.85rem; letter-spacing: 1.5px; font-weight: 600; text-shadow: 0 0 2px rgba(0, 0, 0, 0.95), 0 0 6px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.8); }
+        #gal-count { min-width: 3.4em; text-align: center; }
+        #gal-title { text-align: center; font-size: 0.88rem; color: #f1f5f9; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+                     text-shadow: 0 0 2px rgba(0, 0, 0, 0.95), 0 0 6px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.8); }
+        #gal-progress { position: relative; height: 4px; margin-bottom: 14px; border-radius: 2px; background: rgba(255, 255, 255, 0.28); cursor: pointer; touch-action: none; }
+        #gal-progress::before { content: ''; position: absolute; left: 0; right: 0; top: -12px; bottom: -12px; }
+        #gal-progress-bar { width: 0; height: 100%; border-radius: 2px; background: linear-gradient(90deg, #38bdf8, #ec4899); box-shadow: 0 0 8px var(--accent, #38bdf8); }
+        #gal-ctrl { display: flex; align-items: center; justify-content: space-between; }
+        #gal-main { display: flex; align-items: center; gap: 18px; }
+        html[data-gallery="on"] #bg-gyro { top: calc(10px + env(safe-area-inset-top)); bottom: auto; right: 12px; z-index: 41; }
     </style>
 </head>
 <body class="theme-summer">
+    <!-- 深度パララックス背景（章に絵があるときだけ表示） -->
+    <canvas id="bg-gl" aria-hidden="true"></canvas>
+    <canvas id="bg-fx" aria-hidden="true"></canvas>
+    <div id="bg-dim" aria-hidden="true"></div>
+    <button id="bg-gyro" type="button" aria-label="スマホの傾きで背景を動かす" title="傾きで動かす">⟳</button>
+
+    <!-- ギャラリーモード（絵を全画面で見せて、曲はバーだけ） -->
+    <div id="gal-ui" aria-label="ギャラリー">
+        <div id="gal-top">
+            <button class="gbtn" id="gal-exit" type="button" aria-label="ギャラリーを閉じる">✕</button>
+            <div id="gal-nav">
+                <button class="gbtn sm" id="gal-prev" type="button" aria-label="前の絵">◀</button>
+                <span id="gal-count">01/03</span>
+                <button class="gbtn sm" id="gal-next" type="button" aria-label="次の絵">▶</button>
+            </div>
+            <span class="gspacer"></span>
+        </div>
+        <div id="gal-bar">
+            <div id="gal-title">曲を選んでください</div>
+            <div id="gal-progress"><div id="gal-progress-bar"></div></div>
+            <div id="gal-ctrl">
+                <button class="gbtn" id="gal-list" type="button" aria-label="再生リスト">☰</button>
+                <div id="gal-main">
+                    <button class="gbtn" id="gal-pv" type="button" aria-label="前の曲">⏮</button>
+                    <button class="gbtn play" id="gal-play" type="button" aria-label="再生・一時停止">▶</button>
+                    <button class="gbtn" id="gal-nx" type="button" aria-label="次の曲">⏭</button>
+                </div>
+                <span class="gspacer"></span>
+            </div>
+        </div>
+    </div>
+
     <!-- 背景エフェクト -->
     <div class="summer-daydream">
         <div class="lens-flare"></div>
@@ -517,6 +681,7 @@
             <h1>Suno AI ジュークボックス</h1>
             <nav class="site-menu">
                 <a href="index.html">トップ</a>
+                <a href="#gallery" id="gal-open">ギャラリー</a>
             </nav>
         </header>
         
@@ -1039,6 +1204,518 @@
             loadTrack(queue.indexOf(found), true);
             pendingSeek = last.time || 0;
         })();
+    </script>
+
+    <!-- =========================================
+         🌌 深度パララックス背景 ＋ 🖼 ギャラリーモード
+         絵は「1枚絵＋白黒の深度マップ（白＝手前 / 黒＝奥）」のセットで登録します。
+         ※ サーバー上（http/https）で開いたときに動きます。ファイルを直接開くと画像が読めず、今までの背景のままになります。
+         ========================================= -->
+    <script>
+    (() => {
+        /* ---------- ★ここを書き換えれば絵を足せます ---------- */
+        const COMMON = {
+            strength: 0.50,   // 奥行きの強さ 0〜1
+            light: 0.08,      // カーソル光源の強さ 0〜1
+            bump: 0.50,       // 凹凸の強調 0〜1
+            particles: 0.13,  // 光の粒子の量 0〜1
+            focus: 0.96,      // 奥行きの基準面 0〜1
+            hues: [[198, 225], [38, 52]]   // 粒子の色（青白 / 暖色）
+        };
+        const ART = {
+            summer:    { ...COMMON, img: 'images/summer.webp',    depth: 'images/summer_depth.webp',    focusV: 0.70 },
+            knight:    { ...COMMON, strength:0.40, img: 'images/knight.webp',    depth: 'images/knight_depth.webp',    focusV: 0.75 },
+            knight_sq: { ...COMMON, img: 'images/knight_sq.webp', depth: 'images/knight_sq_depth.webp', focusV: 0.68, panBias: -0.1 },
+            girl1:     { ...COMMON, img: 'images/girl1.webp',     depth: 'images/girl1_depth.webp',     focusV: 0.74 },
+            girl2:     { ...COMMON, img: 'images/girl2.webp',     depth: 'images/girl2_depth.webp',     focusV: 0.74 },
+            girl3:     { ...COMMON, img: 'images/girl3.webp',     depth: 'images/girl3_depth.webp',     focusV: 0.72, panBias: -0.2 }
+            // focusV : 横長の画面で、絵のどの高さを中心に見せるか（0=下 / 1=上）。顔の高さに合わせる
+            // panBias: ギャラリーで、横に広い絵を最初にどちら寄りで見せるか（-1=左 / 1=右）
+        };
+        // ふだんの画面（章ごと）の背景。絵のない章は null のまま（今までのCSS背景）
+        const CHAPTER_ART = { summer: 'summer', space: null, relax: null, misc: null };
+        // ギャラリーで見せる順番
+        const GALLERY = ['summer', 'knight', 'knight_sq', 'girl1', 'girl2', 'girl3'];
+
+        const $ = id => document.getElementById(id);
+        const root = document.documentElement;
+        const glc = $('bg-gl'), fx = $('bg-fx'), dim = $('bg-dim'), gyroBtn = $('bg-gyro');
+        const fxc = fx.getContext('2d');
+        const coarse = matchMedia('(pointer: coarse)').matches;
+        const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const DPR_CAP = coarse ? 1.25 : 1.75;
+        const MIN_FRAME_MS = coarse ? 22 : 0;
+        const clamp1 = v => Math.max(-1, Math.min(1, v));
+
+        let gl = null, prog = null, U = {}, dead = false;
+        let cur = null;                    // 表示中の絵 { key, cfg, tImg, tDep, w, h }
+        const cache = {}, pending = {}, order = [];
+        let token = 0, running = false, lastDraw = 0, lastT = 0;
+        let galleryOn = false, artIdx = 0;
+
+        /* ---------- シェーダー ---------- */
+        const VS = 'attribute vec2 p; varying vec2 vUv; void main(){ vUv = p*0.5+0.5; gl_Position = vec4(p,0.,1.); }';
+        const FS = `
+precision highp float;
+varying vec2 vUv;
+uniform sampler2D uImg, uDep;
+uniform vec2 uRes, uImgSize, uMouse, uLight, uPan;
+uniform float uStrength, uLightAmt, uBump, uFocus, uFocusV;
+
+float D(vec2 p){ return texture2D(uDep, p).r; }
+
+vec2 cover(vec2 uv){
+  float sa = uRes.x/uRes.y, ia = uImgSize.x/uImgSize.y;
+  vec2 s = sa > ia ? vec2(1.0, ia/sa) : vec2(sa/ia, 1.0);
+  uv = (uv - 0.5) / 1.08 + 0.5;
+  float cx = 0.5 + uPan.x * (1.0 - s.x) * 0.5;                       // 横に広い絵：窓が左右にスライド
+  float cy = clamp(uFocusV + uPan.y * (1.0 - s.y) * 0.5, s.y*0.5, 1.0 - s.y*0.5);
+  return vec2((uv.x - 0.5) * s.x + cx, (uv.y - 0.5) * s.y + cy);
+}
+
+void main(){
+  vec2 uv = cover(vUv);
+  vec2 dir = uMouse * uStrength;
+  vec2 p = uv;
+  for(int i = 0; i < 5; i++){ p = uv + dir * (D(p) - uFocus); }
+  p = clamp(p, 0.001, 0.999);
+
+  float ca = length(uMouse) * 0.0014;
+  vec2 cd = normalize(vUv - 0.5 + 1e-4) * ca;
+  vec3 col = vec3(texture2D(uImg, p + cd).r, texture2D(uImg, p).g, texture2D(uImg, p - cd).b);
+
+  vec2 sl = texture2D(uDep, p).gb * 2.0 - 1.0;
+  vec3 n = normalize(vec3(-sl * (0.3 + uBump * 1.0), 1.0));
+
+  vec2 d = (uLight - vUv) * vec2(uRes.x/uRes.y, 1.0);
+  vec3 L = normalize(vec3(d, 0.32));
+  float att = exp(-dot(d,d) * 2.6);
+  float diff = max(dot(n, L), 0.0);
+  float base = L.z;
+  vec3 H = normalize(L + vec3(0.,0.,1.));
+  float spec = pow(max(dot(n, H), 0.0), 36.0);
+  float lum = dot(col, vec3(0.299, 0.587, 0.114));
+  float hiMask = 0.35 + 0.65 * smoothstep(0.35, 0.95, lum);
+
+  vec3 lightCol = vec3(1.0, 0.93, 0.84);
+  col *= clamp(1.0 + uLightAmt * att * (diff - base) * 1.2, 0.62, 1.55);
+  col += lightCol * uLightAmt * att * 0.16 * (0.4 + diff);
+  col += lightCol * uLightAmt * spec * att * 0.55 * hiMask;
+
+  float far = 1.0 - D(p);
+  col = mix(col, col + vec3(0.02, 0.05, 0.09), far * 0.35);
+
+  float v = smoothstep(1.15, 0.35, length((vUv - 0.5) * vec2(1.0, 1.1)));
+  col *= mix(0.93, 1.0, v);
+  gl_FragColor = vec4(col, 1.0);
+}`;
+
+        function sh(type, src) {
+            const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+            if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+            return s;
+        }
+        function initGL() {
+            gl = glc.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' });
+            if (!gl) throw new Error('WebGL not available');
+            prog = gl.createProgram();
+            gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
+            gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+            gl.linkProgram(prog);
+            if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+            gl.useProgram(prog);
+            const buf = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+            const loc = gl.getAttribLocation(prog, 'p');
+            gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+            ['uImg','uDep','uRes','uImgSize','uMouse','uLight','uPan','uStrength','uLightAmt','uBump','uFocus','uFocusV']
+                .forEach(n => U[n] = gl.getUniformLocation(prog, n));
+            gl.uniform1i(U.uImg, 0); gl.uniform1i(U.uDep, 1);
+        }
+        function makeTex(img, unit) {
+            const t = gl.createTexture();
+            gl.activeTexture(gl.TEXTURE0 + unit);
+            gl.bindTexture(gl.TEXTURE_2D, t);
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            return t;
+        }
+        const loadImage = src => new Promise((res, rej) => {
+            const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('load failed: ' + src)); i.src = src;
+        });
+
+        // ガウスぼかし（縦横に分けて計算）
+        function blur(src, W, H, sigma) {
+            const r = Math.ceil(sigma * 3), k = new Float32Array(2 * r + 1);
+            let s = 0;
+            for (let i = -r; i <= r; i++) { k[i + r] = Math.exp(-(i * i) / (2 * sigma * sigma)); s += k[i + r]; }
+            for (let i = 0; i < k.length; i++) k[i] /= s;
+            const tmp = new Float32Array(W * H), out = new Float32Array(W * H);
+            for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+                let a = 0;
+                for (let i = -r; i <= r; i++) { const xx = Math.min(W - 1, Math.max(0, x + i)); a += src[y * W + xx] * k[i + r]; }
+                tmp[y * W + x] = a;
+            }
+            for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+                let a = 0;
+                for (let i = -r; i <= r; i++) { const yy = Math.min(H - 1, Math.max(0, y + i)); a += tmp[yy * W + x] * k[i + r]; }
+                out[y * W + x] = a;
+            }
+            return out;
+        }
+        // 深度マップから「やわらかい深度（R）」と「傾き（G,B）」を1枚のテクスチャに作る
+        function buildMaps(depthImg) {
+            const W = 384, H = Math.max(2, Math.round(W * depthImg.naturalHeight / depthImg.naturalWidth));
+            const c = document.createElement('canvas'); c.width = W; c.height = H;
+            const g = c.getContext('2d', { willReadFrequently: true });
+            g.drawImage(depthImg, 0, 0, W, H);
+            const px = g.getImageData(0, 0, W, H).data;
+            const d = new Float32Array(W * H);
+            for (let i = 0; i < d.length; i++) d[i] = px[i * 4] / 255;
+            const soft = blur(d, W, H, 1.4);
+            const big = blur(d, W, H, 4.5);
+            const out = new Uint8Array(W * H * 4);
+            const K = 40;
+            for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+                const i = y * W + x;
+                const xl = Math.max(0, x - 1), xr = Math.min(W - 1, x + 1), yu = Math.max(0, y - 1), yd = Math.min(H - 1, y + 1);
+                const gx = (big[y * W + xr] - big[y * W + xl]) * 0.5;
+                const gy = (big[yd * W + x] - big[yu * W + x]) * 0.5;
+                const o = i * 4;
+                out[o] = Math.round(soft[i] * 255);
+                out[o + 1] = Math.round((clamp1(gx * K) * 0.5 + 0.5) * 255);
+                out[o + 2] = Math.round((clamp1(-gy * K) * 0.5 + 0.5) * 255);
+                out[o + 3] = 255;
+            }
+            return { data: out, w: W, h: H };
+        }
+        function makeTexData(m, unit) {
+            const t = gl.createTexture();
+            gl.activeTexture(gl.TEXTURE0 + unit);
+            gl.bindTexture(gl.TEXTURE_2D, t);
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, m.w, m.h, 0, gl.RGBA, gl.UNSIGNED_BYTE, m.data);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            return t;
+        }
+        function touchCache(key) {
+            const i = order.indexOf(key); if (i >= 0) order.splice(i, 1); order.push(key);
+            while (order.length > 4) {                 // 古い絵のテクスチャは捨てて、メモリを節約
+                const old = order.shift();
+                if (cur && cur.key === old) { order.push(old); break; }
+                const t = cache[old]; if (t) { gl.deleteTexture(t.tImg); gl.deleteTexture(t.tDep); }
+                delete cache[old];
+            }
+        }
+        function ensureTextures(key) {
+            if (cache[key]) { touchCache(key); return Promise.resolve(cache[key]); }
+            if (pending[key]) return pending[key];
+            const cfg = ART[key];
+            pending[key] = (async () => {
+                const [im, dp] = await Promise.all([loadImage(cfg.img), loadImage(cfg.depth)]);
+                if (!gl) initGL();
+                const maps = buildMaps(dp);
+                cache[key] = { tImg: makeTex(im, 0), tDep: makeTexData(maps, 1), w: im.naturalWidth, h: im.naturalHeight };
+                touchCache(key);
+                return cache[key];
+            })().finally(() => { delete pending[key]; });
+            return pending[key];
+        }
+
+        /* ---------- 入力（マウス・タッチ・傾き） ---------- */
+        const S = { tx: 0, ty: 0, mx: 0, my: 0, tlx: 0.5, tly: 0.55, lx: 0.5, ly: 0.55, lastInput: -1e9, gyro: false, gx: 0, gy: 0 };
+        addEventListener('pointermove', e => {
+            const w = innerWidth, h = innerHeight;
+            S.tx = (e.clientX / w) * 2 - 1; S.ty = -((e.clientY / h) * 2 - 1);
+            S.tlx = e.clientX / w; S.tly = 1 - e.clientY / h;
+            S.lastInput = performance.now();
+        }, { passive: true });
+
+        let gyroBase = null;
+        function onOrient(e) {
+            if (e.gamma == null) return;
+            if (!gyroBase) gyroBase = { b: e.beta, g: e.gamma };
+            S.gx = clamp1((e.gamma - gyroBase.g) / 22);
+            S.gy = clamp1(-(e.beta - gyroBase.b) / 22);
+            S.lastInput = performance.now();
+        }
+        async function toggleGyro() {
+            try {
+                if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    const r = await DeviceOrientationEvent.requestPermission();
+                    if (r !== 'granted') return;
+                }
+                S.gyro = !S.gyro; gyroBase = null;
+                if (S.gyro) addEventListener('deviceorientation', onOrient); else removeEventListener('deviceorientation', onOrient);
+                gyroBtn.classList.toggle('on', S.gyro);
+            } catch (e) {}
+        }
+        gyroBtn.addEventListener('click', toggleGyro);
+        const gyroAvail = coarse && 'DeviceOrientationEvent' in window;
+        const updateGyro = () => { gyroBtn.style.display = (gyroAvail && (cur || galleryOn)) ? 'block' : 'none'; };
+
+        /* ---------- 光の粒子（スプライトを使い回して軽く描く） ---------- */
+        function makeSprite(h) {
+            const c = document.createElement('canvas'); c.width = c.height = 64;
+            const g = c.getContext('2d'), r = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+            r.addColorStop(0, `hsla(${h},90%,90%,1)`); r.addColorStop(0.35, `hsla(${h},90%,76%,0.35)`); r.addColorStop(1, `hsla(${h},90%,70%,0)`);
+            g.fillStyle = r; g.fillRect(0, 0, 64, 64); return c;
+        }
+        let parts = [], sprites = [];
+        function seedParticles(cfg) {
+            sprites = cfg.hues.map(([a, b]) => makeSprite((a + b) / 2));
+            const n = coarse ? 42 : 70;
+            parts = Array.from({ length: n }, () => ({
+                x: Math.random(), y: Math.random(), z: Math.random(), r: 0.6 + Math.random() * 2.2,
+                vx: (Math.random() - 0.5) * 0.004, vy: 0.004 + Math.random() * 0.012, ph: Math.random() * 6.28,
+                s: Math.random() < 0.7 ? 0 : Math.min(1, sprites.length - 1)
+            }));
+        }
+        function drawParticles(t, dt, cfg, dpr) {
+            const W = fx.width, H = fx.height;
+            fxc.clearRect(0, 0, W, H);
+            const amt = cfg.particles; if (amt <= 0.01) return;
+            fxc.globalCompositeOperation = 'lighter';
+            const n = Math.min(parts.length, Math.floor(parts.length * amt * 2));
+            for (let i = 0; i < n; i++) {
+                const q = parts[i];
+                q.x += q.vx * dt; q.y -= q.vy * dt;
+                if (q.y < -0.05) { q.y = 1.05; q.x = Math.random(); }
+                if (q.x < -0.05) q.x = 1.05; else if (q.x > 1.05) q.x = -0.05;
+                const par = (q.z - 0.3) * 60 * dpr;
+                const x = q.x * W - S.mx * par, y = q.y * H + S.my * par;
+                const dx = q.x - S.lx, dy = (1 - q.y) - S.ly;
+                const near = Math.exp(-(dx * dx + dy * dy) * 14);
+                const tw = 0.5 + 0.5 * Math.sin(t * 1.3 + q.ph);
+                const a = Math.min(1, (0.10 + 0.35 * tw + 0.5 * near) * (0.4 + 0.6 * q.z));
+                const rad = (q.r * (0.6 + q.z) * 3.2 + near * 6) * dpr;
+                fxc.globalAlpha = a;
+                fxc.drawImage(sprites[q.s], x - rad, y - rad, rad * 2, rad * 2);
+            }
+            fxc.globalAlpha = 1;
+        }
+
+        /* ---------- 描画 ---------- */
+        let cw = 0, ch = 0, dprNow = 1;
+        function resize() {
+            dprNow = Math.min(devicePixelRatio || 1, DPR_CAP);
+            const w = Math.max(1, Math.floor(glc.clientWidth * dprNow)), h = Math.max(1, Math.floor(glc.clientHeight * dprNow));
+            if (w === cw && h === ch) return false;
+            cw = w; ch = h; glc.width = fx.width = w; glc.height = fx.height = h;
+            if (gl) gl.viewport(0, 0, w, h);
+            return true;
+        }
+        addEventListener('resize', () => { if (resize() && cur && (reduced || !running)) render(performance.now()); });
+
+        function render(now) {
+            if (!cur) return;
+            const t = now / 1000, dt = Math.min(0.05, Math.max(0, t - lastT)); lastT = t;
+            const cfg = cur.cfg;
+            const idle = (now - S.lastInput) > 2500;
+            let tx = S.tx, ty = S.ty, tlx = S.tlx, tly = S.tly;
+            if (S.gyro) { tx = S.gx; ty = S.gy; tlx = 0.5 + S.gx * 0.35; tly = 0.5 + S.gy * 0.35; }
+            if (idle && !reduced) {
+                // 指でゆっくり小さく円を描くような「呼吸」：周期およそ11秒、振れ幅は小さめ
+                const ph = t * 0.58;
+                tx = Math.cos(ph) * 0.26; ty = Math.sin(ph) * 0.20;
+                tlx = 0.5 + Math.cos(ph - 0.9) * 0.22; tly = 0.55 + Math.sin(ph - 0.9) * 0.16;
+            }
+            if (reduced && idle) { tx = 0; ty = 0; tlx = 0.5; tly = 0.55; }
+            const k = 1 - Math.pow(0.0008, dt || 0.016);
+            S.mx += (tx - S.mx) * k; S.my += (ty - S.my) * k;
+            S.lx += (tlx - S.lx) * k; S.ly += (tly - S.ly) * k;
+
+            gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, cur.tImg);
+            gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, cur.tDep);
+            gl.uniform2f(U.uRes, glc.width, glc.height);
+            gl.uniform2f(U.uImgSize, cur.w, cur.h);
+            gl.uniform2f(U.uMouse, S.mx, S.my);
+            gl.uniform2f(U.uLight, S.lx, S.ly);
+            // ギャラリーのときだけ、画面に収まらない方向（縦長の画面の左右／横長の画面の上下）へ窓がスライドする
+            gl.uniform2f(U.uPan, galleryOn ? clamp1((cfg.panBias || 0) + 0.9 * S.mx) : 0, galleryOn ? clamp1(0.8 * S.my) : 0);
+            gl.uniform1f(U.uStrength, cfg.strength * 0.07);
+            gl.uniform1f(U.uLightAmt, cfg.light * 1.6);
+            gl.uniform1f(U.uBump, cfg.bump);
+            gl.uniform1f(U.uFocus, cfg.focus);
+            gl.uniform1f(U.uFocusV, cfg.focusV);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            if (reduced) fxc.clearRect(0, 0, fx.width, fx.height); else drawParticles(t, dt * 60, cfg, dprNow);
+        }
+        function loop(now) {
+            if (!running) return;
+            if (document.hidden || !cur) { running = false; return; }
+            if (now - lastDraw >= MIN_FRAME_MS) { lastDraw = now; render(now); }
+            requestAnimationFrame(loop);
+        }
+        function startLoop() {
+            if (reduced) { render(performance.now()); return; }
+            if (running || document.hidden) return;
+            running = true; lastT = performance.now() / 1000; requestAnimationFrame(loop);
+        }
+        document.addEventListener('visibilitychange', () => { if (!document.hidden && cur) startLoop(); });
+
+        /* ---------- 絵の切り替え（クロスフェード） ---------- */
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+        function fadeTo(v) { glc.style.opacity = fx.style.opacity = v; dim.style.opacity = galleryOn ? 0 : v; }
+        async function setArt(key) {
+            if (dead) return;
+            const cfg = key ? ART[key] : null;
+            const my = ++token;
+            if (cur && (!cfg || cur.key !== key)) { fadeTo(0); await sleep(cfg ? 380 : 650); if (my !== token) return; }
+            if (!cfg) { cur = null; updateGyro(); root.removeAttribute('data-bg'); return; }
+            if (cur && cur.key === key) { fadeTo(1); return; }
+            try {
+                const tex = await ensureTextures(key);
+                if (my !== token) return;
+                resize();
+                cur = { key, cfg, ...tex };
+                seedParticles(cfg);
+                root.setAttribute('data-bg', 'on');
+                updateGyro();
+                render(performance.now());
+                fadeTo(1);
+                startLoop();
+                preloadNext();
+            } catch (e) {
+                // 画像が読めない・WebGLが使えないときは、今までのCSS背景のまま
+                console.warn('[bg-parallax] disabled:', e && e.message);
+                if (!gl) dead = true;
+                cur = null; fadeTo(0); updateGyro(); root.removeAttribute('data-bg');
+            }
+        }
+        function preloadNext() {
+            if (!galleryOn) return;
+            const k = GALLERY[(artIdx + 1) % GALLERY.length];
+            if (cache[k] || pending[k]) return;
+            setTimeout(() => { ensureTextures(k).catch(() => {}); }, 700);
+        }
+
+        /* ---------- ふだんの画面：章（タブ）に合わせて背景を切り替え ---------- */
+        const themeOf = () => { const m = document.body.className.match(/theme-(\w+)/); return m ? m[1] : null; };
+        let lastTheme = null;
+        const sync = () => {
+            const th = themeOf();
+            if (!th || th === lastTheme) return;
+            lastTheme = th;
+            if (galleryOn) return;                 // ギャラリー中は、章を変えても絵はそのまま
+            setArt(CHAPTER_ART[th] || null);
+        };
+        new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+        /* ---------- 🖼 ギャラリーモード ---------- */
+        const gal = $('gal-ui'), galCount = $('gal-count'), galTitle = $('gal-title'), galPlay = $('gal-play');
+        const galBar = $('gal-progress-bar'), galProg = $('gal-progress');
+        const pad = n => String(n).padStart(2, '0');
+        const updateCount = () => { galCount.textContent = pad(artIdx + 1) + '/' + pad(GALLERY.length); };
+        const setSheet = open => { if (open) root.setAttribute('data-sheet', 'open'); else root.removeAttribute('data-sheet'); };
+        const sheetOpen = () => root.getAttribute('data-sheet') === 'open';
+        const syncTitle = () => { let n = ''; try { n = currentName || ''; } catch (e) {} galTitle.textContent = n || '曲を選んでください（☰）'; };
+
+        function enterGallery() {
+            if (galleryOn) return;
+            galleryOn = true;
+            root.setAttribute('data-gallery', 'on');
+            gal.removeAttribute('data-hidden');
+            updateCount(); syncTitle(); updateGyro();
+            galPlay.textContent = audio.paused ? '▶' : '⏸';
+            setArt(GALLERY[artIdx]);
+            try { history.replaceState(null, '', '#gallery'); } catch (e) {}
+            try { localStorage.setItem('jb_mode', 'gallery'); } catch (e) {}
+        }
+        function exitGallery() {
+            if (!galleryOn) return;
+            galleryOn = false;
+            root.removeAttribute('data-gallery'); root.removeAttribute('data-sheet');
+            updateGyro();
+            setArt(CHAPTER_ART[themeOf()] || null);
+            try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+            try { localStorage.setItem('jb_mode', 'classic'); } catch (e) {}
+        }
+        function goArt(d) {
+            artIdx = (artIdx + d + GALLERY.length) % GALLERY.length;
+            updateCount(); setArt(GALLERY[artIdx]);
+        }
+
+        // ボタン
+        const openLink = $('gal-open');
+        if (openLink) openLink.addEventListener('click', e => { e.preventDefault(); enterGallery(); });
+        $('gal-exit').addEventListener('click', exitGallery);
+        $('gal-prev').addEventListener('click', () => goArt(-1));
+        $('gal-next').addEventListener('click', () => goArt(1));
+        $('gal-list').addEventListener('click', () => setSheet(!sheetOpen()));
+        galPlay.addEventListener('click', () => { togglePlay(); });
+        let nextDir = 1;
+        $('gal-pv').addEventListener('click', () => { nextDir = -1; goPrev(); setTimeout(() => { nextDir = 1; }, 400); });
+        $('gal-nx').addEventListener('click', () => { goNext(false); });
+        // 再生リストから曲を選んだら、リストを閉じて絵に戻る
+        document.addEventListener('click', e => {
+            if (galleryOn && e.target.closest && e.target.closest('.track-item')) setTimeout(() => setSheet(false), 350);
+        });
+
+        // 曲が変わるたびに、次の絵へ（最初の1曲目を選んだときは動かさない）
+        let hadTrack = false;
+        audio.addEventListener('loadstart', () => {
+            const s = audio.getAttribute('src') || '';
+            syncTitle();
+            if (galleryOn && hadTrack) goArt(nextDir);
+            hadTrack = !!s;
+        });
+        audio.addEventListener('play', () => { galPlay.textContent = '⏸'; });
+        audio.addEventListener('pause', () => { galPlay.textContent = '▶'; });
+        audio.addEventListener('timeupdate', () => {
+            if (audio.duration && isFinite(audio.duration)) galBar.style.width = (audio.currentTime / audio.duration * 100) + '%';
+        });
+
+        // 進行バーのシーク
+        let scrub = false;
+        const seekTo = e => {
+            const r = galProg.getBoundingClientRect();
+            if (audio.duration && isFinite(audio.duration)) audio.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * audio.duration;
+        };
+        galProg.addEventListener('pointerdown', e => { scrub = true; try { galProg.setPointerCapture(e.pointerId); } catch (x) {} seekTo(e); });
+        galProg.addEventListener('pointermove', e => { if (scrub) seekTo(e); });
+        ['pointerup', 'pointercancel'].forEach(ev => galProg.addEventListener(ev, () => { scrub = false; }));
+
+        // ジェスチャー：左右スワイプ＝絵を切り替え／上スワイプ＝再生リスト／下スワイプ＝閉じる／タップ＝UIを隠す・出す
+        let g = null;
+        gal.addEventListener('pointerdown', e => {
+            if (e.target.closest('button, #gal-progress')) { g = null; return; }
+            g = { x: e.clientX, y: e.clientY, t: performance.now() };
+        });
+        gal.addEventListener('pointerup', e => {
+            if (!g) return;
+            const dx = e.clientX - g.x, dy = e.clientY - g.y, dt = performance.now() - g.t;
+            g = null;
+            const ax = Math.abs(dx), ay = Math.abs(dy);
+            if (ax > 50 && ax > ay * 1.2) { goArt(dx < 0 ? 1 : -1); return; }
+            if (ay > 60 && ay > ax * 1.2) { setSheet(dy < 0); return; }
+            if (ax < 10 && ay < 10 && dt < 400) {
+                if (sheetOpen()) { setSheet(false); return; }
+                if (gal.getAttribute('data-hidden') === '1') gal.removeAttribute('data-hidden'); else gal.setAttribute('data-hidden', '1');
+            }
+        });
+        gal.addEventListener('pointercancel', () => { g = null; });
+        addEventListener('keydown', e => {
+            if (!galleryOn) return;
+            if (e.key === 'ArrowLeft') goArt(-1);
+            else if (e.key === 'ArrowRight') goArt(1);
+            else if (e.key === 'Escape') { if (sheetOpen()) setSheet(false); else exitGallery(); }
+        });
+
+        sync();
+        // 最初の画面はギャラリー。✕で通常画面に切り替えると、その選択を覚える（#classic でも通常画面）
+        let pref = ''; try { pref = localStorage.getItem('jb_mode') || ''; } catch (e) {}
+        let glOK = false; try { glOK = !!document.createElement('canvas').getContext('webgl'); } catch (e) {}
+        if (location.hash === '#gallery' || (glOK && location.hash !== '#classic' && pref !== 'classic')) enterGallery();
+    })();
     </script>
 </body>
 </html>
