@@ -1228,14 +1228,22 @@
             knight_sq: { ...COMMON, img: 'images/knight_sq.webp', depth: 'images/knight_sq_depth.webp', focusV: 0.68, panBias: -0.1 },
             girl1:     { ...COMMON, img: 'images/girl1.webp',     depth: 'images/girl1_depth.webp',     focusV: 0.74 },
             girl2:     { ...COMMON, img: 'images/girl2.webp',     depth: 'images/girl2_depth.webp',     focusV: 0.74 },
-            girl3:     { ...COMMON, img: 'images/girl3.webp',     depth: 'images/girl3_depth.webp',     focusV: 0.72, panBias: -0.2 }
+            girl3:     { ...COMMON, img: 'images/girl3.webp',     depth: 'images/girl3_depth.webp',     focusV: 0.72, panBias: -0.2 },
+            sv_casual:  { ...COMMON, img: 'images/sv_casual.webp',  depth: 'images/sv_casual_depth.webp',  focusV: 0.74 },
+            sv_deliver: { ...COMMON, img: 'images/sv_deliver.webp', depth: 'images/sv_deliver_depth.webp', focusV: 0.74 },
+            bk_casual:  { ...COMMON, img: 'images/bk_casual.webp',  depth: 'images/bk_casual_depth.webp',  focusV: 0.78 },
+            bk_battle:  { ...COMMON, img: 'images/bk_battle.webp',  depth: 'images/bk_battle_depth.webp',  focusV: 0.78 },
+            sv_drone:   { ...COMMON, img: 'images/sv_drone.webp',   depth: 'images/sv_drone_depth.webp',   focusV: 0.74 },
+            sv_dagger:  { ...COMMON, img: 'images/sv_dagger.webp',  depth: 'images/sv_dagger_depth.webp',  focusV: 0.72 },
+            sv_sq:      { ...COMMON, img: 'images/sv_sq.webp',      depth: 'images/sv_sq_depth.webp',      focusV: 0.85, panBias: -0.1 },
+            sv_gatling: { ...COMMON, img: 'images/sv_gatling.webp', depth: 'images/sv_gatling_depth.webp', focusV: 0.72 }
             // focusV : 横長の画面で、絵のどの高さを中心に見せるか（0=下 / 1=上）。顔の高さに合わせる
             // panBias: ギャラリーで、横に広い絵を最初にどちら寄りで見せるか（-1=左 / 1=右）
         };
         // ふだんの画面（章ごと）の背景。絵のない章は null のまま（今までのCSS背景）
         const CHAPTER_ART = { summer: 'summer', space: null, relax: null, misc: null };
         // ギャラリーで見せる順番
-        const GALLERY = ['summer', 'knight', 'knight_sq', 'girl1', 'girl2', 'girl3'];
+        const GALLERY = ['summer', 'knight', 'knight_sq', 'girl1', 'girl2', 'girl3', 'sv_casual', 'sv_dagger', 'sv_gatling', 'sv_sq', 'bk_battle', 'sv_drone'];
 
         const $ = id => document.getElementById(id);
         const root = document.documentElement;
