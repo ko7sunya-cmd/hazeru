@@ -623,6 +623,8 @@
                      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5), 0 0 24px var(--accent, #38bdf8), inset 0 2px 0 rgba(255, 255, 255, 0.5), inset 0 -4px 8px rgba(0, 0, 0, 0.2); }
         .gspacer { width: 44px; height: 44px; }
         #gal-nav { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 0.85rem; letter-spacing: 1.5px; font-weight: 600; text-shadow: 0 0 2px rgba(0, 0, 0, 0.95), 0 0 6px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.8); }
+        .gsw { min-width: 76px; justify-content: flex-end; display: flex; align-items: center; gap: 4px; color: #fff; font-size: 0.72rem; font-weight: 600; letter-spacing: 0; white-space: nowrap; text-shadow: 0 0 2px rgba(0,0,0,.95), 0 0 6px rgba(0,0,0,.8); }
+        #gal-top { gap: 6px; } #gal-nav { gap: 4px; }
         #gal-count { min-width: 3.4em; text-align: center; }
         #gal-title { text-align: center; font-size: 0.88rem; color: #f1f5f9; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
                      text-shadow: 0 0 2px rgba(0, 0, 0, 0.95), 0 0 6px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.8); }
@@ -650,7 +652,7 @@
                 <span id="gal-count">01/03</span>
                 <button class="gbtn sm" id="gal-next" type="button" aria-label="次の絵">▶</button>
             </div>
-            <span class="gspacer"></span>
+            <button class="gbtn" id="gal-gnext" type="button" aria-label="次のギャラリーの先頭へ">▷</button>
         </div>
         <div id="gal-bar">
             <div id="gal-title">曲を選んでください</div>
@@ -1234,6 +1236,19 @@
             bk_casual:  { ...COMMON, img: 'images/bk_casual.webp',  depth: 'images/bk_casual_depth.webp',  focusV: 0.78 },
             bk_battle:  { ...COMMON, img: 'images/bk_battle.webp',  depth: 'images/bk_battle_depth.webp',  focusV: 0.78 },
             sv_drone:   { ...COMMON, img: 'images/sv_drone.webp',   depth: 'images/sv_drone_depth.webp',   focusV: 0.74 },
+            hb_casual : { ...COMMON, img: 'images/hb_casual.webp', depth: 'images/hb_casual_depth.webp', focusV: 0.74 },
+            hb_battle1: { ...COMMON, img: 'images/hb_battle1.webp', depth: 'images/hb_battle1_depth.webp', focusV: 0.74 },
+            hb_battle2: { ...COMMON, img: 'images/hb_battle2.webp', depth: 'images/hb_battle2_depth.webp', focusV: 0.74 },
+            hb_fountain: { ...COMMON, img: 'images/hb_fountain.webp', depth: 'images/hb_fountain_depth.webp', focusV: 0.80 },
+            hb_rapier : { ...COMMON, img: 'images/hb_rapier.webp', depth: 'images/hb_rapier_depth.webp', focusV: 0.62 },
+            hb_blonde : { ...COMMON, img: 'images/hb_blonde.webp', depth: 'images/hb_blonde_depth.webp', focusV: 0.66 },
+            hb_shield : { ...COMMON, img: 'images/hb_shield.webp', depth: 'images/hb_shield_depth.webp', focusV: 0.62 },
+            hb_lemon  : { ...COMMON, img: 'images/hb_lemon.webp', depth: 'images/hb_lemon_depth.webp', focusV: 0.80 },
+            hb_archer : { ...COMMON, img: 'images/hb_archer.webp', depth: 'images/hb_archer_depth.webp', focusV: 0.80 },
+            hb_cafe   : { ...COMMON, img: 'images/hb_cafe.webp', depth: 'images/hb_cafe_depth.webp', focusV: 0.70 },
+            hb_corridor: { ...COMMON, img: 'images/hb_corridor.webp', depth: 'images/hb_corridor_depth.webp', focusV: 0.78 },
+            hb_wine   : { ...COMMON, img: 'images/hb_wine.webp', depth: 'images/hb_wine_depth.webp', focusV: 0.57 },
+            hb_knight : { ...COMMON, img: 'images/hb_knight.webp', depth: 'images/hb_knight_depth.webp', focusV: 0.74 },
             sv_dagger:  { ...COMMON, img: 'images/sv_dagger.webp',  depth: 'images/sv_dagger_depth.webp',  focusV: 0.72 },
             sv_sq:      { ...COMMON, img: 'images/sv_sq.webp',      depth: 'images/sv_sq_depth.webp',      focusV: 0.85, panBias: -0.1 },
             sv_gatling: { ...COMMON, img: 'images/sv_gatling.webp', depth: 'images/sv_gatling_depth.webp', focusV: 0.72 }
@@ -1243,7 +1258,12 @@
         // ふだんの画面（章ごと）の背景。絵のない章は null のまま（今までのCSS背景）
         const CHAPTER_ART = { summer: 'summer', space: null, relax: null, misc: null };
         // ギャラリーで見せる順番
-        const GALLERY = ['summer', 'knight', 'knight_sq', 'girl1', 'girl2', 'girl3', 'sv_casual', 'sv_dagger', 'sv_gatling', 'sv_sq', 'bk_battle', 'sv_drone'];
+        const GALLERIES = [
+            { name: 'ギャラリー1', list: ['summer', 'knight', 'knight_sq', 'girl1', 'girl2', 'girl3', 'sv_casual', 'sv_dagger', 'sv_gatling', 'sv_sq', 'bk_battle', 'sv_drone', 'hb_battle1'] },
+            { name: 'ギャラリー2', list: ['hb_fountain', 'hb_knight', 'hb_rapier', 'hb_lemon', 'hb_wine', 'hb_shield', 'hb_corridor', 'hb_cafe', 'hb_archer'] }
+        ];
+        const GALLERY = GALLERIES.flatMap(g => g.list);
+        const galOf = i => { let n = i; for (const g of GALLERIES) { if (n < g.list.length) return g.name; n -= g.list.length; } return ''; };
 
         const $ = id => document.getElementById(id);
         const root = document.documentElement;
@@ -1648,6 +1668,15 @@ void main(){
             try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
             try { localStorage.setItem('jb_mode', 'classic'); } catch (e) {}
         }
+        // ▷：次のギャラリーの先頭へジャンプ（最後のギャラリーからは1つ目に戻る）
+        function jumpGallery() {
+            let start = 0, starts = [];
+            GALLERIES.forEach(g => { starts.push(start); start += g.list.length; });
+            const next = starts.find(st => st > artIdx);
+            artIdx = next === undefined ? 0 : next;
+            updateCount(); setArt(GALLERY[artIdx]);
+        }
+        $('gal-gnext').addEventListener('click', jumpGallery);
         function goArt(d) {
             artIdx = (artIdx + d + GALLERY.length) % GALLERY.length;
             updateCount(); setArt(GALLERY[artIdx]);
