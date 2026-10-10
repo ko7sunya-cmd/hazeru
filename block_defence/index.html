@@ -177,6 +177,9 @@
   .pbtn.rot{ border-color:var(--magenta); color:var(--magenta); }
   .pbtn.rot.on{ background:rgba(192,77,255,.22); }
   .pgap{ flex:0 0 14px; }
+  .pbtn.drop{ flex:2 1 0; aspect-ratio:auto; height:84px; max-height:none; }
+  .rot-hint{ position:absolute; left:50%; bottom:14px; transform:translateX(-50%); padding:6px 14px; border-radius:20px; background:rgba(192,77,255,.18); border:1px solid var(--magenta); color:var(--magenta); font-size:14px; letter-spacing:1px; pointer-events:none; opacity:0; transition:opacity .4s; white-space:nowrap; }
+  .rot-hint.show{ opacity:1; }
 
   /* ---------------- overlays ---------------- */
   .overlay{
@@ -289,6 +292,7 @@
 
   <div class="stage">
     <canvas id="gameCanvas"></canvas>
+    <div class="rot-hint" id="rotHint"></div>
     <div class="flash" id="flashFx"></div>
 
     <!-- START MODAL -->
@@ -338,7 +342,7 @@
     <div class="overlay hidden" id="infoOverlay">
       <div class="modal">
         <h2 data-i18n="infoTitle">操作 / タワー適性</h2>
-        <p style="margin-bottom:10px;" data-i18n="infoControlsText">◀▶で移動、⟳で回転、▼ソフトドロップ、⤓ハードドロップ。</p>
+        <p style="margin-bottom:10px;" data-i18n="infoControlsText">◀▶で移動、⤓ハードドロップ、盤面エリアをタップで回転。</p>
         <div class="legend" id="legendBox"></div>
         <button class="btn wide" id="infoCloseBtn" data-i18n="closeBtn">閉じる</button>
       </div>
@@ -361,7 +365,6 @@
       <div class="pbtn mv" data-key="right">▶</div>
       <div class="pgap"></div>
       <div class="pbtn drop" data-key="b">⤓</div>
-      <div class="pbtn rot" data-key="a">⟳</div>
     </div>
   </div>
 
@@ -438,7 +441,7 @@
       levelUpDesc:'強化するアップグレードを1つ選択',
       gameOverTitle:'拠点陥落', gameOverDesc:'防衛線が突破されました。',
       restartBtn:'もう一度防衛する ▶',
-      infoTitle:'操作 / タワー適性', infoControlsText:'◀▶で移動(長押しでリピート)、⤓で直下(一気に落下)、⟳で回転。キーボード: ←→移動・X/↑回転・Z/Space直下・Pでポーズ。',
+      infoTitle:'操作 / タワー適性', infoControlsText:'◀▶で移動(長押しでリピート)、⤓で直下(一気に落下)、盤面エリアのタップで回転。キーボード: ←→移動・X/↑回転・Z/Space直下・Pでポーズ。',
       closeBtn:'閉じる',
       rankTitle:'🏆 ランキング', rankMyIdLabel:'あなたのID:',
       rankLoading:'読み込み中...', rankNoDb:'ランキング機能は準備中です(Firebase未設定)。',
@@ -482,7 +485,7 @@
       levelUpDesc:'Choose one upgrade',
       gameOverTitle:'BASE DESTROYED', gameOverDesc:'Your defenses were overrun.',
       restartBtn:'Defend Again ▶',
-      infoTitle:'Controls / Tower Guide', infoControlsText:'◀▶ move (hold to repeat), ⤓ hard drop, ⟳ rotate. Keyboard: ←→ move, X/↑ rotate, Z/Space hard drop, P to pause.',
+      infoTitle:'Controls / Tower Guide', infoControlsText:'◀▶ move (hold to repeat), ⤓ hard drop, tap the play area to rotate. Keyboard: ←→ move, X/↑ rotate, Z/Space hard drop, P to pause.',
       closeBtn:'Close',
       rankTitle:'🏆 Ranking', rankMyIdLabel:'Your ID:',
       rankLoading:'Loading...', rankNoDb:'Ranking is not set up yet (Firebase not configured).',
@@ -1032,6 +1035,7 @@
     S.started = true;
     S.paused = false;
     spawnNextPiece();
+    showRotHint();
     startOverlay.classList.add('hidden');
     gameOverOverlay.classList.add('hidden');
     levelUpOverlay.classList.add('hidden');
@@ -1087,7 +1091,7 @@
   const DAS_DELAY = 170, DAS_RATE = 55; // ms
   const padEl = document.getElementById('famipad');
   const padEls = {};
-  padEl.querySelectorAll('.pbtn').forEach(el=>{ padEls[el.dataset.key] = el; });
+  padEl.querySelectorAll('.pbtn').forEach(el=>{ if(!el.dataset.dup) padEls[el.dataset.key] = el; });
   const padState = { left:false, right:false, down:false };
   let dasTimer = null, dasDir = 0;
 
@@ -1153,6 +1157,19 @@
     el.addEventListener('pointercancel', end);
     el.addEventListener('lostpointercapture', end);
   });
+
+  // ---- 盤面エリアのタップ = 回転(ボタン類・オーバーレイは対象外) ----
+  document.querySelector('.stage').addEventListener('pointerdown', ev=>{
+    if(ev.target.closest('.overlay')) return;
+    ev.preventDefault();
+    pressAction('a');
+  });
+  const rotHint = document.getElementById('rotHint');
+  function showRotHint(){
+    rotHint.textContent = (LANG==='en') ? 'Tap here to rotate' : 'ここをタップで回転';
+    rotHint.classList.add('show');
+    setTimeout(()=>rotHint.classList.remove('show'), 4500);
+  }
   padEl.addEventListener('contextmenu', e=>e.preventDefault());
   // 長押しでの文字選択・拡大鏡・コールアウトを防止(iOS Safari対策)
   padEl.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
