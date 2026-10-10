@@ -1245,6 +1245,9 @@
             hb_shield : { ...COMMON, img: 'images/hb_shield.webp', depth: 'images/hb_shield_depth.webp', focusV: 0.62 },
             hb_lemon  : { ...COMMON, img: 'images/hb_lemon.webp', depth: 'images/hb_lemon_depth.webp', focusV: 0.80 },
             hb_archer : { ...COMMON, img: 'images/hb_archer.webp', depth: 'images/hb_archer_depth.webp', focusV: 0.80 },
+            hb_blue_casual: { ...COMMON, img: 'images/hb_blue_casual.webp', depth: 'images/hb_blue_casual_depth.webp', focusV: 0.78 },
+            hb_blue_close: { ...COMMON, img: 'images/hb_blue_close.webp', depth: 'images/hb_blue_close_depth.webp', focusV: 0.80 },
+            hb_blue   : { ...COMMON, img: 'images/hb_blue.webp', depth: 'images/hb_blue_depth.webp', focusV: 0.80 },
             hb_cafe   : { ...COMMON, img: 'images/hb_cafe.webp', depth: 'images/hb_cafe_depth.webp', focusV: 0.70 },
             hb_corridor: { ...COMMON, img: 'images/hb_corridor.webp', depth: 'images/hb_corridor_depth.webp', focusV: 0.78 },
             hb_bike   : { ...COMMON, img: 'images/hb_bike.webp', depth: 'images/hb_bike_depth.webp', focusV: 0.78 },
@@ -1262,7 +1265,7 @@
         // ギャラリーで見せる順番
         const GALLERIES = [
             { name: 'ギャラリー1', list: ['summer', 'knight', 'knight_sq', 'girl1', 'girl2', 'girl3', 'sv_casual', 'sv_dagger', 'sv_gatling', 'sv_sq', 'bk_battle', 'sv_drone', 'hb_battle1'] },
-            { name: 'ギャラリー2', list: ['hb_fountain', 'hb_knight', 'hb_rapier', 'hb_lemon', 'hb_wine', 'hb_shield', 'hb_bike', 'hb_corridor', 'hb_cafe', 'hb_scooter', 'hb_archer'] }
+            { name: 'ギャラリー2', list: ['hb_fountain', 'hb_knight', 'hb_rapier', 'hb_lemon', 'hb_wine', 'hb_shield', 'hb_bike', 'hb_corridor', 'hb_cafe', 'hb_scooter', 'hb_archer', 'hb_blue_casual', 'hb_blue_close', 'hb_blue'] }
         ];
         const GALLERY = GALLERIES.flatMap(g => g.list);
         const galOf = i => { let n = i; for (const g of GALLERIES) { if (n < g.list.length) return g.name; n -= g.list.length; } return ''; };
