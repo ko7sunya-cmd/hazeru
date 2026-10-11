@@ -5,23 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>音ゲープロトタイプ</title>
 <style>
-  @property --bg1{syntax:'<color>';inherits:true;initial-value:#1d1a2e;}
-  @property --bg2{syntax:'<color>';inherits:true;initial-value:#3a2a4a;}
   :root{
-    transition:--bg1 .9s ease,--bg2 .9s ease;
-    --acc:#f0c060; --bg1:#1d1a2e; --bg2:#3a2a4a; --ink:#f6efe0; --gold:#f0c060; --rose:#ef8fa5; --blue:#6fb5f0;
+    --acc:#f0c060; --ink:#f6efe0; --gold:#f0c060; --rose:#ef8fa5; --blue:#6fb5f0;
     --line:rgba(246,239,224,.18);
   }
+  /* 背景：曲とは無関係に、ゆっくり色が流れていく（transformだけ動かすので軽い） */
+  body::before{content:'';position:fixed;z-index:-1;left:-40%;top:-40%;width:180%;height:180%;pointer-events:none;
+    background:radial-gradient(closest-side at 28% 30%,rgba(150,105,225,.42),transparent),
+               radial-gradient(closest-side at 72% 38%,rgba(240,130,170,.30),transparent),
+               radial-gradient(closest-side at 40% 74%,rgba(100,170,240,.34),transparent),
+               radial-gradient(closest-side at 80% 80%,rgba(240,192,96,.20),transparent);
+    animation:bgdrift 46s ease-in-out infinite alternate;will-change:transform;}
+  @keyframes bgdrift{0%{transform:translate3d(-4%,-3%,0) rotate(0deg) scale(1);}50%{transform:translate3d(3%,4%,0) rotate(22deg) scale(1.08);}100%{transform:translate3d(5%,-4%,0) rotate(48deg) scale(1);}}
+  @media (prefers-reduced-motion:reduce){ body::before{animation:none;} }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;height:100%;}
   body{
     font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;
     color:var(--ink);
-    background:radial-gradient(circle at 20% 0%,var(--bg2),var(--bg1) 65%);
+    background:#16121f;
     overflow:hidden; touch-action:manipulation; user-select:none;-webkit-user-select:none;
   }
   .screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;}
-  .screen.on{display:flex;}
+  .screen.on{display:flex;animation:scrIn .32s ease backwards;}
+  #game.on{animation:scrFade .3s ease backwards;}
+  @keyframes scrIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  @keyframes scrFade{from{opacity:0;}to{opacity:1;}}
+  /* 押した手応え（共通） */
+  button{transition:transform .12s cubic-bezier(.3,1.6,.5,1),filter .12s,box-shadow .12s;-webkit-tap-highlight-color:transparent;}
+  button:active{transform:scale(.94);filter:brightness(1.06);}
+  .dbtn.sel{animation:pop .28s cubic-bezier(.3,1.6,.5,1);}
+  @keyframes pop{0%{transform:scale(.88);}100%{transform:scale(1);}}
+  .song.sel{animation:cardpop .34s cubic-bezier(.3,1.5,.5,1);}
+  @keyframes cardpop{0%{transform:scale(.985);}60%{transform:scale(1.012);}100%{transform:none;}}
   @keyframes shine{to{background-position:100% 0;}}
   h1{font-size:clamp(24px,7vw,34px);margin:0 0 8px;background:linear-gradient(90deg,#ffe3a3,var(--gold),var(--rose),#c9b2ff,#8cc8ff,#ffe3a3);background-size:220% 100%;animation:shine 9s ease-in-out infinite alternate;-webkit-background-clip:text;background-clip:text;color:transparent;}
   .sub{opacity:.7;font-size:13px;line-height:1.8;margin:0 0 22px;}
@@ -34,20 +50,23 @@
   .world{position:absolute;top:10px;left:14px;font-size:12px;opacity:.75;z-index:5;}
 
   /* song select */
-  #start{justify-content:flex-start;overflow-y:auto;padding:30px 16px 28px;}
+  #start{justify-content:flex-start;overflow:hidden;padding:30px 16px 18px;}
+  #start>*{flex-shrink:0;}
   details.howto{width:min(400px,calc(100% - 28px));text-align:left;font-size:12.5px;line-height:1.7;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.04);padding:8px 14px;margin:0 0 12px;}
   details.howto summary{cursor:pointer;font-size:12px;letter-spacing:.12em;color:var(--gold);}
   details.howto[open] summary{margin-bottom:4px;}
   .howto .ht2{opacity:.65;font-size:11.5px;margin-top:4px;}
   .howto b{color:var(--gold);font-weight:700;}
   #bnMute{position:absolute;top:14px;right:14px;z-index:5;width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;font-size:15px;cursor:pointer;}
-  #songList{width:min(400px,calc(100% - 28px));display:flex;flex-direction:column;gap:10px;margin:0 0 18px;}
+  #songList{flex:1 1 0;min-height:120px;flex-shrink:1!important;width:min(432px,100%);box-sizing:border-box;padding:8px 10px;position:relative;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;display:flex;flex-direction:column;gap:10px;margin:0 0 10px;}
+  #songList::-webkit-scrollbar{display:none;}
+  #songList{-webkit-mask-image:linear-gradient(transparent,#000 14px,#000 calc(100% - 14px),transparent);mask-image:linear-gradient(transparent,#000 14px,#000 calc(100% - 14px),transparent);}
   .song{width:100%;text-align:left;border-radius:5px 12px 12px 5px;background:linear-gradient(90deg,var(--c) 0,var(--c) 64px,#e9e3dd 64px,#f7f3ef 78px,#f7f3ef 100%);color:#3a2f3a;position:relative;box-shadow:0 5px 12px -7px rgba(0,0,0,.7);transition:transform .22s,box-shadow .22s;}
   .song .ico{position:absolute;left:0;top:0;width:64px;height:64px;border-radius:5px 0 0 5px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:26px;color:rgba(58,47,58,.45);}
   .song .ico img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
   .song-head{padding:12px 56px 12px 78px;min-height:64px;cursor:pointer;}
   .song-head:active{opacity:.85;}
-  .song.sel{transform:translateX(12px);box-shadow:0 10px 22px -8px rgba(0,0,0,.75),0 0 0 3px var(--c);}
+  .song.sel{box-shadow:0 10px 22px -8px rgba(0,0,0,.75),0 0 0 3px var(--c);}
   .song .ttl{font-size:16px;font-weight:700;}
   .song .meta{font-size:11px;color:#7a6c78;margin-top:4px;display:flex;gap:10px;flex-wrap:wrap;}
   .song .tag{color:#c0507a;}
@@ -69,16 +88,18 @@
   .song[data-rk=S] .ico::after,.song[data-rk=SS] .ico::after{content:'';position:absolute;inset:0;border:3px solid #ffd84d;pointer-events:none;}
   .song[data-rk=SS] .ico::after{border-image:linear-gradient(135deg,#ff6b6b,#ffd84d,#7dff9b,#6bd5ff,#b58cff) 1;}
   .song-panel{max-height:0;overflow:hidden;transition:max-height .32s ease;}
-  .song.sel .song-panel{max-height:120px;}
+  .song.sel .song-panel{max-height:170px;}
   .song-in{padding:0 14px 13px 78px;}
   .eqrow{display:flex;align-items:flex-end;gap:3px;height:20px;margin:0 0 10px;}
   .eqrow i{display:block;width:4px;height:100%;border-radius:2px;background:#3a2f3a;opacity:.55;transform-origin:bottom;transform:scaleY(.15);animation:eq .6s ease-in-out infinite alternate;animation-play-state:paused;}
   body.prevplay .song.sel .eqrow i{animation-play-state:running;}
   @keyframes eq{0%{transform:scaleY(.14);}100%{transform:scaleY(1);}}
-  .btnrow{display:flex;align-items:center;gap:8px;}
+  .btnrow{display:flex;align-items:center;gap:8px;margin-top:8px;}
+  .drow{display:flex;gap:6px;}
+  .drow .dbtn{flex:1;padding:8px 4px;}
   .dbtn{border:2px solid #d8cec6;background:transparent;color:#6a5a68;border-radius:100px;padding:8px 11px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap;}
   .dbtn.sel{border-color:var(--c);background:var(--c);color:#3a2f3a;}
-  .go{margin-left:auto;border:none;border-radius:100px;padding:10px 20px;white-space:nowrap;font-size:15px;font-weight:800;font-family:inherit;color:#fff;background:#3a2f3a;box-shadow:0 5px 12px -6px rgba(0,0,0,.6);cursor:pointer;}
+  .go{width:100%;border:none;border-radius:100px;padding:10px 20px;white-space:nowrap;font-size:15px;font-weight:800;font-family:inherit;color:#fff;background:#3a2f3a;box-shadow:0 5px 12px -6px rgba(0,0,0,.6);cursor:pointer;}
   .go:active{transform:scale(.95);}
   details.settings{margin-top:18px;}
   details.settings summary{cursor:pointer;opacity:.8;}
@@ -112,7 +133,8 @@
   .pad.clap{background:linear-gradient(180deg,#fff0b8,#ffdd78);}
   .pad.flower{background:linear-gradient(180deg,#c9f5dc,#97e2ba);}
   .pad.heart{background:linear-gradient(180deg,#e3d8ff,#bda6ff);}
-  .pad:active,.pad.hit{transform:scale(.95);filter:brightness(1.12) saturate(1.1);}
+  .pad{transition:transform .09s cubic-bezier(.3,1.6,.5,1),filter .09s;}
+  .pad:active,.pad.hit{transform:scale(.93);filter:brightness(1.15) saturate(1.15);}
 
   /* story */
   .avatar{width:96px;height:96px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff2cf,var(--gold) 70%);display:flex;align-items:center;justify-content:center;font-size:46px;margin-bottom:12px;box-shadow:0 0 30px -6px var(--gold);}
@@ -217,8 +239,9 @@
 /* ===== 設定 ===== */
 /* 難易度：ふつう／かんたん（setDiff で切り替え） */
 const DIFFS = {
-  normal:{label:'ふつう',  travel:1.5, window:0.28, pEarly:0.30, pLate:0.45},
-  easy:  {label:'やさしい',travel:2.1, window:0.40, pEarly:0.12, pLate:0.20}
+  normal:{label:'ふつう',  travel:1.5, window:0.28, pEarly:0.30, pLate:0.45, tp:0.06,  tg:0.14},
+  easy:  {label:'やさしい',travel:2.1, window:0.40, pEarly:0.12, pLate:0.20, tp:0.06,  tg:0.14},
+  hard:  {label:'むずかしい',travel:1.15,window:0.20, pEarly:0.45, pLate:0.60, tp:0.045, tg:0.10}   // 速い・判定がきびしい・ノーツ多め
 };
 let DIFF='normal';
 let TRAVEL = 1.5;            // 本番ノーツが落ちるのにかかる秒数
@@ -269,21 +292,21 @@ const SONGS = [
 let curSong = SONGS[0];
 function applyTheme(sg){
   const r=document.documentElement.style;
-  r.setProperty('--acc',sg.acc); r.setProperty('--bg1',sg.bg1); r.setProperty('--bg2',sg.bg2);
+  r.setProperty('--acc',sg.acc);
 }
 
 /* ===== 記録（曲ごとのベスト・保存） ===== */
 const BKEY='otoge_best_v2', SKEY='otoge_sel_v1', TKEY='otoge_off_v1', DKEY='otoge_diff_v1';
 function lsGet(k){ try{return localStorage.getItem(k);}catch(e){return null;} }
 function lsSet(k,v){ try{localStorage.setItem(k,v);}catch(e){} }
-const bestId = id=>DIFF==='easy'?id+':easy':id;   // かんたんは記録を分ける
+const bestId = id=>DIFF==='normal'?id:id+':'+DIFF;   // やさしい・むずかしいは記録を分ける
 function getBest(id){ try{return (JSON.parse(lsGet(BKEY)||'{}'))[id]||null;}catch(e){return null;} }
 function setBest(id,rec){ let o={}; try{o=JSON.parse(lsGet(BKEY)||'{}')||{};}catch(e){} o[id]=rec; lsSet(BKEY,JSON.stringify(o)); }
 
 
 /* ===== 画面切り替え ===== */
 const $ = id=>document.getElementById(id);
-function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $(id).classList.add('on'); }
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $(id).classList.add('on'); if(id==='start') requestAnimationFrame(()=>{ try{centerCur();}catch(e){} }); }
 
 /* ===== 効果音（WebAudioで仮の音を合成） ===== */
 let actx=null;
@@ -355,6 +378,14 @@ const PATTERNS_EASY = [
   [['don',0],['don',1],['ka',2]],
   [['don',0],['ka',1],['don',2],['ka',3]]
 ];
+const PATTERNS_HARD = [
+  [['don',0],['ka',0.5],['don',1],['ka',1.5],['don',2],['don',2.5],['ka',3],['ka',3.5]],
+  [['don',0],['don',0.5],['ka',1],['don',1.5],['ka',2],['ka',2.5],['don',3],['ka',3.5]],
+  [['don',0],['ka',1],['don',1.5],['don',2],['ka',2.5],['don',3],['ka',3.5]],
+  [['don',0],['don',0.5],['don',1],['ka',1.5],['ka',2],['ka',2.5],['ka',3],['don',3.5]],
+  [['don',0],['ka',0.5],['ka',1],['don',1.5],['don',2],['ka',2.5],['don',3],['don',3.5]],
+  [['ka',0],['don',0.5],['don',0.75],['ka',1],['don',1.5],['ka',2],['ka',2.25],['don',2.5],['ka',3],['don',3.5]]
+];
 const PATTERNS_NORMAL = [
   [['don',0],['don',1],['don',2],['don',3]],
   [['don',0],['ka',1],['don',2],['ka',3]],
@@ -364,7 +395,7 @@ const PATTERNS_NORMAL = [
   [['ka',0.5],['don',1],['ka',2.5],['don',3]]
 ];
 function buildChart(bpm,duration){
-  const PATTERNS = DIFF==='easy'?PATTERNS_EASY:PATTERNS_NORMAL, D=DIFFS[DIFF];
+  const PATTERNS = DIFF==='easy'?PATTERNS_EASY:DIFF==='hard'?PATTERNS_HARD:PATTERNS_NORMAL, D=DIFFS[DIFF];
   const beat=60/bpm, notes=[]; let m=0;
   // 最初のノーツが画面の一番上から出てくるまで、さらに1拍の間を置く
   const lead=Math.ceil(TRAVEL/beat)+1;
@@ -374,10 +405,13 @@ function buildChart(bpm,duration){
     p.forEach(([lane,off])=>notes.push({t:FIRST_BEAT+(b+off)*beat,lane,hit:false,done:false}));
     // スタンプ：真ん中のレーン。裏拍に置き、本番ノーツと同時にはしない
     if(m>=1){
-      const prob = m<4 ? D.pEarly : D.pLate;
-      [0.5,1.5,2.5,3.5].forEach(off=>{
-        if(p.some(([,o])=>o===off)) return;
-        if(Math.random()<prob){ const kind=STAMPS[Math.floor(Math.random()*3)]; notes.push({t:FIRST_BEAT+(b+off)*beat,lane:'stamp',kind,icon:STAMP_ICON[kind],hit:false,done:false}); }
+      const prob = m<4 ? D.pEarly : D.pLate, hard = DIFF==='hard';
+      // むずかしい：16分の隙間にも置く（本番ノーツから1/4拍以上はなす・1小節に最大2個）
+      const slots = hard ? [0.25,0.5,0.75,1.25,1.5,1.75,2.25,2.5,2.75,3.25,3.5,3.75] : [0.5,1.5,2.5,3.5], put=[];
+      slots.forEach(off=>{
+        if(p.some(([,o])=>Math.abs(o-off)<(hard?0.25:0.001))) return;
+        if(hard && (put.length>=2 || put.some(o=>Math.abs(o-off)<0.75))) return;
+        if(Math.random()<prob){ put.push(off); const kind=STAMPS[Math.floor(Math.random()*3)]; notes.push({t:FIRST_BEAT+(b+off)*beat,lane:'stamp',kind,icon:STAMP_ICON[kind],hit:false,done:false}); }
       });
     }
   }
@@ -385,6 +419,11 @@ function buildChart(bpm,duration){
 }
 
 /* ===== 曲選択画面（バナー＋試聴＋付箋） ===== */
+/* ミュージックセレクト音声（試聴オン時のみ。初回は最初のタップで、以降は曲選択に戻るたび） */
+const selVoice=new Audio('sfx/music_select.mp3'); selVoice.preload='auto';
+function playSelVoice(){ if(!lsGet || lsGet('otoge_prev_v1')==='0') return; try{ selVoice.currentTime=0; const pr=selVoice.play(); if(pr&&pr.catch) pr.catch(()=>{}); }catch(e){} }
+document.addEventListener('pointerdown',function once(){ document.removeEventListener('pointerdown',once,true); if($('start').classList.contains('on')) playSelVoice(); },true);
+
 const PREVIEW_LEN=24, PKEY='otoge_prev_v1';
 let prevOn = lsGet(PKEY)!=='0';
 const prev=$('prev'); let prevFade=0;
@@ -411,16 +450,16 @@ $('bnMute').addEventListener('click',()=>{
   if(prevOn) playPreview(curSong); else stopPreview();
 });
 
-const cards=[];
+const cards=[]; const LOOPS=5;   // 曲リストを5回ぶん並べて、ぐるぐる回って見せる
 // アイコン画像：ゲーム本体と同じフォルダの <曲ID>.webp。無ければ「♪」
 function iconPath(sg){ return sg.icon || (sg.id+'.webp'); }
 function buildSongs(){
   const box=$('songList'); box.innerHTML=''; cards.length=0;
-  SONGS.forEach(sg=>{
+  for(let rep=0;rep<LOOPS;rep++) SONGS.forEach(sg=>{
     const el=document.createElement('div'); el.className='song';
     el.style.setProperty('--c',sg.acc);
     el.innerHTML='<div class="ico">♪</div><div class="song-head"><div class="ttl"></div><div class="meta"></div></div>'+
-      '<div class="song-panel"><div class="song-in"><div class="eqrow"></div><div class="btnrow"><button class="dbtn" data-d="easy">やさしい</button><button class="dbtn" data-d="normal">ふつう</button><button class="go">開始</button></div></div></div>';
+      '<div class="song-panel"><div class="song-in"><div class="eqrow"></div><div class="drow"><button class="dbtn" data-d="easy">やさしい</button><button class="dbtn" data-d="normal">ふつう</button><button class="dbtn" data-d="hard">むずかしい</button></div><div class="btnrow"><button class="go">開始</button></div></div></div>';
     const img=new Image(); img.alt=''; img.onload=()=>{ el.querySelector('.ico').textContent=''; el.querySelector('.ico').appendChild(img); }; img.src=iconPath(sg);
     const eq=el.querySelector('.eqrow'); for(let i=0;i<16;i++){ const b=document.createElement('i'); const beat=60/sg.bpm; b.style.animationDuration=(beat*(0.45+Math.random()*0.9)).toFixed(2)+'s'; b.style.animationDelay=(-Math.random()*2).toFixed(2)+'s'; eq.appendChild(b); }
     el.querySelector('.ttl').textContent=sg.title;
@@ -447,8 +486,21 @@ function selectSong(sg){
   if(sg===curSong){ if(prev.paused) playPreview(sg); return; }
   curSong=sg; lsSet(SKEY,sg.id); applyTheme(sg);
   refreshSongs(); playPreview(sg);
-  const c=cards.find(x=>x.sg===sg); if(c) setTimeout(()=>c.el.scrollIntoView({block:'nearest',behavior:'smooth'}),340);
+  setTimeout(()=>{ const el=nearestCard(sg); if(!el) return; const L=$('songList'), top=el.offsetTop, bot=top+el.offsetHeight;
+    if(top<L.scrollTop+8) L.scrollTo({top:top-8,behavior:'smooth'}); else if(bot>L.scrollTop+L.clientHeight-8) L.scrollTo({top:bot-L.clientHeight+8,behavior:'smooth'}); },340);
 }
+/* ===== 曲リストを無限ループ（5回ぶん並べて、止まったところで真ん中に戻す） ===== */
+function nearestCard(sg){ const L=$('songList'), y=L.scrollTop+L.clientHeight/2; let best=null,bd=1e9;
+  cards.forEach(c=>{ if(c.sg!==sg) return; const d=Math.abs(c.el.offsetTop+32-y); if(d<bd){bd=d;best=c.el;} }); return best; }
+function loopH(){ const n=SONGS.length; return cards.length>n ? cards[n].el.offsetTop-cards[0].el.offsetTop : 0; }
+function recenter(){ const L=$('songList'), H=loopH(); if(!H || H<=L.clientHeight*1.1) return;
+  const top0=cards[0].el.offsetTop, rel=L.scrollTop-top0, m=((rel%H)+H)%H, t=top0+2*H+m; if(Math.abs(t-L.scrollTop)>1) L.scrollTop=t; }
+function centerCur(){ const L=$('songList'), n=SONGS.length; if(cards.length<=n) return; const i=SONGS.indexOf(curSong);
+  const el=cards[2*n+Math.max(0,i)].el; L.scrollTop=Math.max(0,el.offsetTop-L.clientHeight*0.22); }
+(function(){ const L=$('songList'); let tm=0;
+  L.addEventListener('scroll',()=>{ clearTimeout(tm); tm=setTimeout(recenter,140);
+    const H=loopH(); if(H && (L.scrollTop<H*0.3 || L.scrollTop+L.clientHeight>H*4.7)) recenter(); },{passive:true}); })();
+requestAnimationFrame(()=>{ try{centerCur();}catch(e){} });
 function setDiff(d){ DIFF=DIFFS[d]?d:'normal'; lsSet(DKEY,DIFF); refreshSongs(); }
 (function(){ const dd=lsGet(DKEY); if(DIFFS[dd]) DIFF=dd;
   const id=lsGet(SKEY); const f=SONGS.find(x=>x.id===id); if(f) curSong=f; applyTheme(curSong);
@@ -514,7 +566,7 @@ function press(pad){
     const st=isStamp(lane);
     const mult = 1 + Math.min(combo,40)/40;   // コンボで最大2倍
     const match = st && best.kind===pad;       // スタンプの絵柄が合っているか
-    const tier = st?null:(bd<0.06?'perfect':bd<0.14?'good':'ok');
+    const tier = st?null:(bd<DIFFS[DIFF].tp?'perfect':bd<DIFFS[DIFF].tg?'good':'ok');
     score += (st ? (match?STAMP_MATCH:STAMP_ANY) : (tier==='perfect'?PERFECT_PT:1))*mult;
     if(st){ stampHit++; if(match) stampMatch++; } else cnt[tier]++;
     combo++; if(combo>maxCombo) maxCombo=combo;
@@ -617,7 +669,14 @@ function loop(){
     ctx.fillStyle=tc||(e.match?'#fff2b0':'#fff'); ctx.textBaseline='middle';
     ctx.font = st?(e.match?'bold 20px sans-serif':'26px sans-serif'):(e.tier==='perfect'?'800 20px sans-serif':'bold 15px sans-serif');
     if(tc){ ctx.shadowColor=tc; ctx.shadowBlur=e.tier==='perfect'?14:8; }
-    ctx.fillText(e.text,x,hitY-48-(1-a)*24);
+    {
+      const age=nowMs-e.born, pk=big||e.tier==='perfect';
+      const sc=age<110?0.5+(pk?0.85:0.6)*(age/110):1+(pk?0.35:0.1)*Math.max(0,1-(age-110)/170);
+      const ty=hitY-48-(1-a)*24;
+      ctx.save(); ctx.translate(x,ty); ctx.scale(sc,sc); ctx.textAlign='center';
+      if(e.tier==='perfect'){ ctx.lineJoin='round'; ctx.lineWidth=4; ctx.strokeStyle='rgba(120,70,0,.55)'; ctx.strokeText(e.text,0,0); }
+      ctx.fillText(e.text,0,0); ctx.restore();
+    }
     ctx.shadowBlur=0; ctx.globalAlpha=1;
   }
   // コンボ演出：画面中央に「10 COMBO!」
@@ -699,7 +758,7 @@ function resumeGame(){
 function quitGame(){
   clearTimeout(cdTimer); gState='idle'; running=false; cancelAnimationFrame(raf); bgm.pause();
   $('pauseOv').classList.remove('on'); $('countOv').classList.remove('on'); $('pauseBtn').style.display='none';
-  renderSongs(); show('start'); playPreview(curSong);
+  renderSongs(); show('start'); playSelVoice(); playPreview(curSong);
 }
 $('pauseBtn').addEventListener('click',pauseGame);
 $('pResume').addEventListener('click',resumeGame);
@@ -709,7 +768,7 @@ document.addEventListener('visibilitychange',()=>{ if(document.hidden){ pauseGam
 
 /* ===== イベント ===== */
 $('btnAgain').addEventListener('click',startGame);
-$('btnBack').addEventListener('click',()=>{ renderSongs(); show('start'); playPreview(curSong); });
+$('btnBack').addEventListener('click',()=>{ renderSongs(); show('start'); playSelVoice(); playPreview(curSong); });
 Object.entries(PAD_ID).forEach(([pad,id])=>{
   $(id).addEventListener('pointerdown',e=>{ e.preventDefault(); press(pad); });
 });
