@@ -1606,6 +1606,8 @@ void main(){
             if (dead) return;
             const cfg = key ? ART[key] : null;
             const my = ++token;
+            // 絵が切り替わるときは、指の位置による傾きを中央に戻す（スワイプ後の歪みを引き継がない）
+            if (cfg && cur && cur.key !== key) { S.tx = 0; S.ty = 0; S.tlx = 0.5; S.tly = 0.55; S.lastInput = -1e9; }
             if (cur && (!cfg || cur.key !== key)) { fadeTo(0); await sleep(cfg ? 380 : 650); if (my !== token) return; }
             if (!cfg) { cur = null; updateGyro(); root.removeAttribute('data-bg'); return; }
             if (cur && cur.key === key) { fadeTo(1); return; }
