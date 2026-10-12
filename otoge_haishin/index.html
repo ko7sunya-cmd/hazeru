@@ -26,6 +26,8 @@
     background:#16121f;
     overflow:hidden; touch-action:manipulation; user-select:none;-webkit-user-select:none;
   }
+  #game,#game *{touch-action:none;-webkit-touch-callout:none;}
+  #pauseOv,#pauseOv *,#countOv{touch-action:manipulation;}
   .screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;}
   .screen.on{display:flex;animation:scrIn .32s ease backwards;}
   #game.on{animation:scrFade .3s ease backwards;}
@@ -772,6 +774,14 @@ $('btnBack').addEventListener('click',()=>{ renderSongs(); show('start'); playSe
 Object.entries(PAD_ID).forEach(([pad,id])=>{
   $(id).addEventListener('pointerdown',e=>{ e.preventDefault(); press(pad); });
 });
+/* 連打・同時押しで拡大されないように（iPhoneのSafariはviewportの指定を無視するので、ジェスチャー自体を止める） */
+['gesturestart','gesturechange','gestureend'].forEach(ev=>document.addEventListener(ev,e=>e.preventDefault()));
+document.addEventListener('dblclick',e=>e.preventDefault());
+(function(){ const g=$('game');
+  const stop=e=>{ if(e.target.closest('#pauseBtn,#pauseOv,#countOv')) return; e.preventDefault(); };
+  g.addEventListener('touchstart',stop,{passive:false});
+  g.addEventListener('touchmove',stop,{passive:false});
+  g.addEventListener('touchend',stop,{passive:false}); })();
 window.addEventListener('keydown',e=>{
   if(e.repeat) return;
   if(e.key==='Escape'||e.key==='p'||e.key==='P'){ gState==='play'?pauseGame():gState==='paused'&&resumeGame(); return; }
