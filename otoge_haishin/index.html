@@ -188,8 +188,8 @@ body.ingame #bubbles{display:none;}
 .tagline{font-size:12px;letter-spacing:.32em;opacity:.7;margin:0 0 14px;}
 
 /* 曲カード：選んだカードをキラッと光らせる */
-.song.sel::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.6) 50%,transparent 62%);background-size:260% 100%;animation:sweep 2.8s ease-in-out infinite;}
+/* 光が横切る演出は、文字が読みにくくなるのでやめた */
+.song.sel::after{display:none;}
 @keyframes sweep{0%{background-position:150% 0;}60%,100%{background-position:-60% 0;}}
 .go{position:relative;overflow:hidden;letter-spacing:.1em;background:linear-gradient(90deg,#3a2f3a,#6a3f68);animation:gopulse 1.5s ease-in-out infinite;}
 .go::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.4) 50%,transparent 65%);background-size:260% 100%;animation:sweep 2.2s ease-in-out infinite;}
@@ -544,10 +544,22 @@ function chime(level){ if(!actx) return; const f=[659,784,988,1319,1568], n=leve
   const fxc=$('fxTap'), fxg=fxc.getContext('2d'); let fxp=[], fxRaf=0, fxLast=0;
   function fxResize(){ const d=window.devicePixelRatio||1; fxc.width=innerWidth*d; fxc.height=innerHeight*d; fxg.setTransform(d,0,0,d,0,0); }
   fxResize(); window.addEventListener('resize',fxResize);
-  function fxLoop(now){ const dt=Math.min(.05,(now-fxLast)/1000); fxLast=now; fxg.clearRect(0,0,innerWidth,innerHeight); stepParts(fxp,dt); drawParts(fxg,fxp); fxRaf=fxp.length?requestAnimationFrame(fxLoop):0; }
+  /* タップした所に、プチ波紋（小さな輪が2つ、ひろがって消える） */
+  function fxLoop(now){
+    const dt=Math.min(.05,(now-fxLast)/1000); fxLast=now; fxg.clearRect(0,0,innerWidth,innerHeight);
+    let w=0;
+    for(const q of fxp){ q.age+=dt; if(q.age>=q.life) continue; fxp[w++]=q; if(q.age<0) continue;   // 遅れて出す輪は、時間が来るまで描かない
+      const k=q.age/q.life, e=1-(1-k)*(1-k);
+      fxg.globalAlpha=(1-k)*.85; fxg.strokeStyle=q.col; fxg.lineWidth=2.4*(1-k)+.6;
+      fxg.beginPath(); fxg.arc(q.x,q.y,q.r0+(q.r1-q.r0)*e,0,6.283); fxg.stroke(); }
+    fxp.length=w; fxg.globalAlpha=1;
+    fxRaf=fxp.length?requestAnimationFrame(fxLoop):0;
+  }
   document.addEventListener('pointerdown',e=>{
     if(document.body.classList.contains('ingame')||e.target.closest('input')) return;
-    emit(fxp,e.clientX,e.clientY,9,{sp:230,g:300,life:.7,s:4.5,kinds:['star','dot'],cols:[curSong.acc,'#fff','#ffd84d','#ffb7c9'],drag:1.5});
+    if(fxp.length>12) fxp.splice(0,fxp.length-12);
+    fxp.push({x:e.clientX,y:e.clientY,age:0,life:.55,r0:4,r1:30,col:curSong.acc});
+    fxp.push({x:e.clientX,y:e.clientY,age:-.09,life:.55,r0:3,r1:20,col:'#ffffff'});
     if(!fxRaf){ fxLast=performance.now(); fxRaf=requestAnimationFrame(fxLoop); }
   },true);
 })();
