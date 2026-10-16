@@ -302,6 +302,10 @@ body.stg4 #stgGold{opacity:1;animation:goldpulse 1.2s ease-in-out infinite alter
 body.stg3 #gaugeFill,body.stg4 #gaugeFill{animation:gstripe 1s linear infinite,edgehue 3s linear infinite;}
 @media (prefers-reduced-motion:reduce){ body.stg3 #stg,body.stg4 #stg,body.stg4 #stgGold,body.stg3 #stg::before,body.stg4 #stg::before,body.stg3 #gaugeFill,body.stg4 #gaugeFill{animation:none;} }
 
+/* ===== 曲選択を軽くする：選んでいない曲カードの「ずっと動く飾り」を止める（見た目はほぼ変わらない） ===== */
+.song:not(.sel) .rk,.song:not(.sel) .rk::before,.song:not(.sel) .rk::after,
+.song:not(.sel) .go,.song:not(.sel) .go::after{animation:none;}
+
 /* ===== モード切り替え（曲選択の上に固定） ===== */
 .modebar{display:flex;gap:6px;padding:4px;border-radius:100px;background:rgba(0,0,0,.28);border:1px solid var(--line);margin:0 0 6px;}
 .modebar button{border:none;border-radius:100px;padding:8px 16px;font-size:13px;font-weight:800;color:var(--ink);background:transparent;opacity:.7;cursor:pointer;}
