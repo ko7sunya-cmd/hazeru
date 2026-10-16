@@ -272,9 +272,9 @@ h2.big{margin:0;font:400 clamp(30px,7vw,52px)/1 var(--font-display);text-wrap:ba
       <img id="dFace" class="dface" alt="" hidden>
       <p class="rec" id="rec"></p>
       <div class="res">
-        <div><b id="rTime">0:00</b><span>救えた命</span></div>
-        <div><b id="rKills">0</b><span>救った村</span></div>
-        <div><b id="rLv">1</b><span>撃破数</span></div>
+        <div><b id="rRate">0%</b><span>救えた命</span></div>
+        <div><b id="rSaved">0</b><span>救った村</span></div>
+        <div><b id="rKilled">0</b><span>撃破数</span></div>
       </div>
       <ul class="logs" id="logs"></ul>
       <ul class="build" id="build"></ul>
@@ -312,6 +312,7 @@ h2.big{margin:0;font:400 clamp(30px,7vw,52px)/1 var(--font-display);text-wrap:ba
       <div class="hdots" id="hpDots"></div>
       <div class="actions">
         <button class="btn ghost" id="btnHpPrev" type="button">戻る</button>
+        <button class="btn ghost" id="btnHpClose" type="button">とじる</button>
         <button class="btn" id="btnHpNext" type="button">次へ</button>
       </div>
     </div>
@@ -938,7 +939,7 @@ function showHelp(){
   $('hpBody').innerHTML=h.rows.map(r=>'<div class="hrow2"><span class="em">'+r[0]+'</span><span>'+r[1]+'</span></div>').join('');
   $('hpDots').innerHTML=HELP.map((_,i)=>'<i class="'+(i===helpIdx?'on':'')+'"></i>').join('');
   $('btnHpPrev').style.visibility=helpIdx?'visible':'hidden';
-  $('btnHpNext').textContent=helpIdx<HELP.length-1?'次へ':'とじる';
+  $('btnHpNext').textContent=helpIdx<HELP.length-1?'次へ':'はじめる';$('btnHpClose').style.display=helpIdx<HELP.length-1?'':'none';
 }
 function openHelp(){helpIdx=0;showHelp();$('help').hidden=false;ptr.active=false}
 function closeHelp(){$('help').hidden=true;try{localStorage.setItem('hazeru-musou-help','1')}catch(e){}}
@@ -1300,7 +1301,7 @@ function showDead(){
   $('dTitle').style.color=win?A.col:'var(--pink)';
   const face=$('dFace'); face.src=faceOf(A.id,win); face.style.setProperty('--c',A.col); face.hidden=false;
   $('rec').textContent=(perfect?'完全防衛':'')+(after>before?'　RANK UP → '+RANK_L[after]:'');
-  $('rTime').textContent=rate+'%'; $('rKills').textContent=saved+'/'+tot; $('rLv').textContent=S.kills;
+  $('rRate').textContent=rate+'%'; $('rSaved').textContent=saved+'/'+tot; $('rKilled').textContent=S.kills;
   const logs=[];
   logs.push([A.emoji+' '+A.full+'　戦死（予定） → '+(win?'<b>生存</b>':'まだ、戦っている'),'']);
   logs.push([pickMsg(win?HERO_WIN[A.id]:HERO_LOSE[A.id]),'']);
@@ -1570,7 +1571,7 @@ renderHub(); resize();
 {const sv0=loadSave(); $('btnStart').textContent=(sv0.sorties>0||sv0.ended)?'つづきから':'はじめる'}
 $('btnStart').addEventListener('click',leaveTitle);
 $('btnHelpT').addEventListener('click',openHelp);$('btnHelpH').addEventListener('click',openHelp);$('btnHelpP').addEventListener('click',openHelp);
-$('btnHpNext').addEventListener('click',helpNext);$('btnHpPrev').addEventListener('click',()=>{if(helpIdx>0){helpIdx--;showHelp()}});
+$('btnHpNext').addEventListener('click',helpNext);$('btnHpClose').addEventListener('click',closeHelp);$('btnHpPrev').addEventListener('click',()=>{if(helpIdx>0){helpIdx--;showHelp()}});
 $('title').addEventListener('click',e=>{if(e.target.tagName==='IMG')leaveTitle()});
 function frame(ts){
   requestAnimationFrame(frame);
