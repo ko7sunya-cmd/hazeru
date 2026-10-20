@@ -21,8 +21,9 @@
   --font-num:'Chakra Petch','Zen Kaku Gothic New',monospace;
   color-scheme:dark;
 }
-*{box-sizing:border-box}
-html,body{height:100%}
+*{box-sizing:border-box;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;touch-action:manipulation}
+img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 #stage{position:relative;width:100%;height:100%;overflow:hidden;background:var(--bg)}
 #cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
@@ -144,6 +145,10 @@ h2.big{margin:0;font:400 clamp(30px,7vw,52px)/1 var(--font-display);text-wrap:ba
 .arank b{color:var(--c);font-size:14px}
 .go{width:100%;margin-top:4px;background:var(--c);color:#0a0a14;border:0;padding:9px;font:900 15px var(--font-body);letter-spacing:.3em}
 .hcard p{margin:0;font-size:12px;line-height:1.7}
+.hcard[data-talk]{cursor:pointer}
+.hcard .talkgo{margin-top:4px;color:var(--cyan);font-weight:700}
+.ndot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--pink);margin-right:6px;vertical-align:middle}
+.tab.new{position:relative}.tab.new::after{content:"";position:absolute;top:9px;right:calc(50% - 40px);width:8px;height:8px;border-radius:50%;background:var(--pink)}
 .hcard .dim,.dim{color:var(--ink-dim)}
 .srow{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--panel);border:1px solid var(--line);font-size:13px}
 .srow b{font-family:var(--font-num)}
@@ -338,6 +343,15 @@ const TAU=Math.PI*2, rand=Math.random;
 const clamp=(v,a,b)=>v<a?a:v>b?b:v;
 const cv=$('cv'), ctx=cv.getContext('2d'), stage=$('stage');
 const reduceMotion=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+/* 戦闘背景: assets/bg_a/b/c.webp (無ければ従来のグリッド背景のまま) */
+const BGIMG={};
+for(const k of ['a','b','c']){const im=new Image();im.onload=()=>{im._ok=true};im.src='assets/bg_'+k+'.webp';BGIMG[k]=im}
+function drawBG(){
+  const im=BGIMG[S.areaId];
+  if(!im||!im._ok)return;
+  const sc=Math.max(W/im.naturalWidth,H/im.naturalHeight),w=im.naturalWidth*sc,h=im.naturalHeight*sc;
+  ctx.globalAlpha=1; ctx.drawImage(im,(W-w)/2,(H-h)/2,w,h);
+}
 
 /* ---------- data ---------- */
 const ICON={
@@ -454,13 +468,18 @@ function initAudio(){
   }catch(e){AC=null}
 }
 /* ---------- BGM (assets/bgm_*.mp3 ・無ければ無音のまま) ---------- */
-const BGM_SRC={map:'assets/bgm_map.mp3',battle:'assets/bgm_battle.mp3',ending:'assets/bgm_ending.mp3'};
-const BGM_VOL={map:.55,battle:.5,ending:.55};
+const BGM_SRC={map:'assets/bgm_map.mp3',battle:'assets/bgm_battle.mp3',battle2:'assets/bgm_battle2.mp3',battle3:'assets/bgm_battle3.mp3',final:'assets/bgm_battle_final.mp3',ending:'assets/bgm_ending.mp3'};
+const BGM_VOL={map:.55,battle:.5,battle2:.5,battle3:.5,final:.5,ending:.55};
+/* 戦闘曲: 10回目=final / 各国の1回目=battle / 2回目=battle2 / 3回目以降=battle3 (visit は出撃前の訪問数) */
+function battleBgmKey(visit){
+  let fin=false;try{const sv=loadSave();fin=(sv.sorties|0)>=SORTIES_MAX-1&&!sv.ended}catch(e){}
+  return fin?'final':visit>=2?'battle3':visit===1?'battle2':'battle';
+}
 const bgmEl={}; let bgmCur=null,bgmHold=false,bgmDuck=1,bgmTimer=0;
 function bgmGet(n){
   if(!bgmEl[n]){
     const a=new Audio(); a.loop=(n!=='ending'); a.preload='auto'; a.volume=0;
-    a.addEventListener('error',()=>{a._bad=true});
+    a.addEventListener('error',()=>{a._bad=true;if((n==='battle2'||n==='battle3'||n==='final')&&bgmCur===n)bgm('battle',true)}); /* 曲ファイルが無ければ1回目の曲で代用 */
     a.src=BGM_SRC[n]; bgmEl[n]=a;
   }
   return bgmEl[n];
@@ -584,13 +603,14 @@ function recalc(p){
   S.slowK=(p.ch.w==='field'&&p.job===0)?Math.max(.3,.5-.04*p.jl-.07*u.n_hold):.55;
 }
 function startRun(ch,areaId){
-  initAudio(); bgmDuck=1; bgm('battle',true);
+  initAudio(); bgmDuck=1;
   S.areaId=areaId||S.areaId||'a'; S.area=AREAS[S.areaId]; S.finalNow=false; S.bar={on:false,left:0,k:0};
   S.ch=ch; S.mode='play'; S.t=0; S.kills=0; S.mc=0; S.combo=0; S.comboT=0; S.pulse=0; S.shake=0; S.spawnAcc=0; S.nextWave=30; S.deadT=0;
   S.enemies.length=0;S.bullets.length=0;S.gems.length=0;S.parts.length=0;S.fields.length=0;S.rings.length=0;S.bolts.length=0;
   {const sv=loadSave(), mi=CHARS.indexOf(ch);
    S.visit=(sv.vis&&sv.vis[S.areaId])||0; S.diff=1+DIFF_HP*S.visit; S.boss=null; S.bossAdd=6;
    S.player=newPlayer(ch); S.player.mlv=mlv(sv.xp[mi]); S.player.job=sv.job[mi]; S.evoNeed=S.player.mlv>=EVO_LV&&S.player.job<0; S.evoMode=false;}
+  bgm(battleBgmKey(S.visit),true);
   recalc(S.player); deadReady=false; ptr.active=false; S.win=false;
   S.base={x:W/2,y:H/2,hp:BASE_HP,max:BASE_HP,flash:0};
   S.hero={a:0,x:W/2,y:H/2,cd:S.areaId==='c'?5:0};
@@ -855,6 +875,9 @@ function moveVec(){
   return [0,0];
 }
 function rel(e){const r=stage.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]}
+/* iPhone Safari: 長押しの拡大鏡/選択/コールアウト/ピンチを止める */
+for(const ev of ['contextmenu','selectstart','gesturestart','gesturechange','dragstart'])document.addEventListener(ev,e=>e.preventDefault(),{passive:false});
+cv.addEventListener('touchstart',e=>e.preventDefault(),{passive:false});
 cv.addEventListener('pointerdown',e=>{
   const q=rel(e); ptr.type=e.pointerType; ptr.x=q[0]; ptr.y=q[1];
   if(e.pointerType==='mouse'){ptr.mouseSeen=true;if(e.button===0)fireWave();return}
@@ -909,8 +932,8 @@ function stShow(){
   $('stLines').insertAdjacentHTML('beforeend','<p class="'+(say?'say':'nar')+'">'+t+'</p>');
   $('btnStNext').textContent=stIdx<L.length-1?'次へ':(stSc.btn||'つづける');
 }
-function stNext(){if(!stSc)return; if(stIdx<stSc.lines.length-1){stIdx++;stShow()}else stEnd()}
-function stEnd(){$('story').hidden=true; const d=stDone; stSc=null; stDone=null; if(d)d()}
+function stNext(){if(talkId){talkShow();return} if(!stSc)return; if(stIdx<stSc.lines.length-1){stIdx++;stShow()}else stEnd()}
+function stEnd(){if(talkId){talkId=null;$('story').hidden=true;$('btnStSkip').textContent='スキップ';renderHub();return} $('story').hidden=true; const d=stDone; stSc=null; stDone=null; if(d)d()}
 $('btnStNext').addEventListener('click',stNext);
 $('btnStSkip').addEventListener('click',stEnd);
 $('story').addEventListener('click',e=>{if(!e.target.closest('button'))stNext()});
@@ -1138,7 +1161,7 @@ function update(dt){
 
 /* ---------- records / screens ---------- */
 const SAVE_KEY='hazeru-musou-save-v3';
-function defSave(){return {seen:{},xp:[0,0,0],job:[-1,-1,-1],vis:{a:0,b:0,c:0},sorties:0,pts:{a:0,b:0,c:0},clears:{a:0,b:0,c:0},best:{a:0,b:0,c:0},ended:false,trueEnd:false,machine:0}}
+function defSave(){return {seen:{},xp:[0,0,0],job:[-1,-1,-1],vis:{a:0,b:0,c:0},sorties:0,pts:{a:0,b:0,c:0},clears:{a:0,b:0,c:0},best:{a:0,b:0,c:0},ended:false,trueEnd:false,machine:0,kills:0,bestK:0,boss:0,perfect:0,talk:{}}}
 /* ---------- 記録（周回をまたいで残る） ---------- */
 const REC_KEY='hazeru-musou-rec-v1';
 function defRec(){return {runs:[],best:{a:{r:0,k:0},b:{r:0,k:0},c:{r:0,k:0}},tot:{sorties:0,wins:0,kills:0,boss:0,perfect:0},evo:{},rankS:{a:0,b:0,c:0},maxLv:[1,1,1],mc:0,allS:0,trueEnds:0,ended:0}}
@@ -1198,7 +1221,7 @@ const EPI={
   a:['城壁は半ば崩れ、エルネスタはなお一人で剣を振るっている。それでも、国は折れていない。',
      '剣聖は何度も立ち上がった。兵たちはその背に、ふたたび旗を掲げ始めている。',
      '城壁は修復され、兵士たちがエルネスタの名を呼ぶ。「まだ戦える」――その声が国中に広がった。',
-     '剣聖は初めて剣を下ろして、笑った。鍛冶屋の少年は、その剣を磨くのが夢になったという。'],
+     '剣聖は剣を下ろして、安心したように笑った。長いあいだ背負ってきた荷が、ようやく肩から降りたようだった。鍛冶屋の少年は、その剣を磨くのが夢になったという。'],
   b:['塔の灯りは消えかけている。それでもハイネは、夜通し書を開き続けている。',
      '図書館の窓に、ふたたび灯りが戻った。学徒たちが本を抱えて、ハイネのあとを走っていく。',
      '「まだ読み終わっていない本があるの」――ハイネは眼鏡を直して笑った。学徒たちは胸を張って、塔へ戻っていった。',
@@ -1206,13 +1229,99 @@ const EPI={
   c:['湖畔の聖堂は祈りで満ちている。ルミナの声はかすれ始めているけれど、祈りは途切れていない。',
      '聖女の祈りが、人々の背中を少しずつ支えている。避難した子どもが、その手を握り返した。',
      '聖堂の鐘が、ふたたび鳴った。ルミナは祈りを止めないまま、それでも微笑んだ。',
-     '湖は静まり、ルミナは初めて空を見上げて笑った。祈りは、確かに届いた。']};
+     '湖は静まり、ルミナは空を見上げて、ほっとしたように笑った。祈りは、確かに届いた。']};
 const MAIN={
   a:'剣聖は、あなたの背中を覚えている。「次は、私があなたの背中を守る番だ」――ヴァルガルドの城壁に、朝日が差した。',
   b:'賢者は、あなたの名を書に残した。「この記録は、誰にも消させない」――アウレリアの塔に、静かな灯りが戻った。',
   c:'聖女は、あなたのために祈った。「あなたに、どうか安らぎがありますように」――セラフィナの湖面に、朝の光が広がっていく。'};
 const pickMsg=a=>a[(rand()*a.length)|0];
 const faceOf=(id,smile)=>'assets/heroine_'+id+'_'+(smile?'smile':'normal')+'.webp';
+/* ---------- ヒロインとの会話 (ヒロインタブのカードをタップ。周回でリセット) ---------- */
+let talkId=null,talkLast='';
+const TALK_OTHER={a:'b',b:'a',c:'b'};
+const TALK_COND={
+  '01':s=>s.sorties===0,'02':s=>s.sorties>=1,'03':s=>s.bestK>=1000,'04':s=>s.kills>=5000,'05':s=>s.kills>=10000,
+  '06':(s,id)=>s.rk[id]>=1,'07':(s,id)=>s.rk[id]>=2,'08':s=>s.boss>=1,'09':s=>s.perfect>=1,'10':s=>s.lv>=MLV_MAX,
+  '11':(s,id)=>s.rk[TALK_OTHER[id]]>=2,'12':s=>s.sorties>=SORTIES_MAX-1&&!s.ended,'13':s=>s.ended};
+/* [番号, 表情(assets/heroine_<国>_<表情>.webp が無ければ normal/smile で代用), 台詞]  {best}=今周の1戦最高撃破 {total}=今周の累計撃破 */
+const TALK={
+a:[
+['01','normal','「あなたが、噂の……いや、まだ何も知らない。だが、その目は戦場の目だな。」'],
+['02','surprise','「先ほどの戦い、城壁の上から見ていた。……あんな戦い方は、初めて見る。」'],
+['03','surprise','「一度の戦いで、{best}体……？　兵たちが数え間違いだと言って、三回も数え直していた。」'],
+['04','respect','「あなたが倒した魔物は、これまでで{total}体になるそうだ。……私が一生で斬る数を、とうに超えている。」'],
+['05','respect','「{total}体。もはや数字というより、伝説だな。……その伝説の隣に立てることが、誇らしい。」'],
+['06','relief','「兵たちの間で、あなたの名前が合言葉になっている。『あの人が来る』と言えば、皆、顔を上げる。」'],
+['07','relief','「ヴァルガルドの城壁は、あなたに救われた。……この言葉は、何度言っても足りないな。」'],
+['08','surprise','「あの巨体を、一人で……。剣聖と呼ばれた私が、剣を握る手を止めて見入ってしまった。」'],
+['09','surprise','「城壁に、ひとつの傷もない。……夢でも見ているようだ。」'],
+['10','shy','「その機体、もう私の剣より、よほど相棒だな。……少し、妬けるぞ。」'],
+['11','shy','「ハイネが、あなたの話をするときだけ、珍しく早口になる。……無理もないがな。」'],
+['12','shy','「あと一度の出撃だと聞いた。……行かないで、と言えば、あなたは困るだろうな。」'],
+['13','smile','「肩の荷が、やっと降りた気がする。……こうして笑えるのは、あなたのおかげだ。ありがとう。」']],
+b:[
+['01','normal','「はじめまして。……いえ、記録にはない顔ね。観測させてもらうわ。」'],
+['02','surprise','「先ほどの戦闘、全部書き留めたわ。……計算がまるで合わなかった。」'],
+['03','surprise','「一度の戦闘で{best}体。学徒たちが、あなた専用の頁を作り始めたわ。初めてのことよ。」'],
+['04','respect','「累計{total}体。誤記かと三回検算したの。……合っていたわ。」'],
+['05','respect','「{total}体。書庫の新しい棚が、あなたの記録だけで埋まりそうよ。」'],
+['06','relief','「あなたが来る日は、塔の空気が違うの。学徒たちが、書を閉じて窓の外を見るのよ。」'],
+['07','relief','「この塔の記録の最終頁に、あなたの名前を書いたわ。……消えない墨で。」'],
+['08','surprise','「結界が悲鳴を上げていた相手を、あんなに簡単に……。観測した私が、一番驚いているわ。」'],
+['09','smile','「損害ゼロ。……統計に載せたら、外れ値で笑われるわね。誇っていいのよ。」'],
+['10','respect','「その機体、最適化の極みね。……あなたが、自分で育てたのよね。」'],
+['11','shy','「エルネスタが、あなたの話をするとき、剣を磨く手が止まるの。珍しいわ。」'],
+['12','shy','「次で最後なのね。……計算では、勝てる。でも、あなたのいない塔は、想像できない。」'],
+['13','smile','「私の書いた最後の頁は、あなたの名前で終わっているわ。……続きを、書かせてくれる？」']],
+c:[
+['01','normal','「はじめまして。祈りの中で、あなたのことを、お待ちしておりました。」'],
+['02','surprise','「あなたが戦う姿を、湖が映していました。……とても、まぶしかったです。」'],
+['03','surprise','「一度の戦いで{best}体……。子どもたちは、指折り数えようとして、途中で笑ってしまいました。」'],
+['04','respect','「これまでに{total}体。……数え切れない祈りが、あなたの背中に届いたのですね。」'],
+['05','respect','「{total}もの闇を払った方を、私は、人と呼んでよいのでしょうか。……いえ、あたたかい、人です。」'],
+['06','relief','「聖堂の鐘は、まだ鳴りません。けれど、皆の心の中では、毎日、あなたのために鳴っています。」'],
+['07','relief','「湖が、とても静かです。……あなたが来てから、ずっと。ありがとうございます。」'],
+['08','relief','「あの黒い影が消えた瞬間、私の結界が、ふっと軽くなりました。……泣いてしまいました。」'],
+['09','relief','「どの子も、無事です。ひとりも。……神さまより先に、あなたにお礼を言わせてください。」'],
+['10','respect','「その機体、祈りのように、澄んでいます。大切に育てられたのですね。」'],
+['11','shy','「ハイネさまが、あなたの記録を読み上げてくださいました。聴いているだけで、胸がいっぱいに。」'],
+['12','normal','「次が最後の出撃だと……。私は祈ります。あなたが、必ず、ここへ戻られますように。」'],
+['13','smile','「聖堂の鐘が、また鳴りました。……最初に聞かせたかったのは、あなたです。」']]};
+function talkStats(sv){
+  const rk={};AIDS.forEach(id=>{rk[id]=rankIdx((sv.pts&&sv.pts[id])||0)});
+  return {sorties:sv.sorties|0,kills:sv.kills|0,bestK:sv.bestK|0,boss:sv.boss|0,perfect:sv.perfect|0,ended:!!sv.ended,rk,lv:Math.max(1,...(sv.xp||[]).map(mlv))};
+}
+function talkAvail(sv,id){const st=talkStats(sv);return TALK[id].filter(l=>TALK_COND[l[0]](st,id))}
+function talkNew(sv,id){const h=sv.talk||{};return talkAvail(sv,id).some(l=>!h[id+l[0]])}
+function talkFill(sv,t){const f=n=>(n|0).toLocaleString('en-US');return t.replace('{best}',f(sv.bestK)).replace('{total}',f(sv.kills))}
+function talkPick(sv,id){
+  const L=talkAvail(sv,id),h=sv.talk||{},nw=L.filter(l=>!h[id+l[0]]);
+  if(nw.length)return nw[nw.length-1];
+  const pool=L.filter(l=>l[0]!==talkLast);
+  const P=pool.length?pool:L;
+  return P.length?P[Math.floor(Math.random()*P.length)]:null;
+}
+function talkImg(id,ex){
+  const im=$('stImg'),smile=(ex==='relief'||ex==='smile');
+  im.style.setProperty('--c',AREAS[id].col);
+  im.onerror=()=>{im.onerror=null;im.src=faceOf(id,smile)};
+  im.src='assets/heroine_'+id+'_'+ex+'.webp'; im.hidden=false;
+}
+function talkShow(){
+  const sv=loadSave(),id=talkId,l=talkPick(sv,id);
+  $('stTag').textContent='TALK　'+AREAS[id].full;
+  if(!l){$('stLines').innerHTML='<p class="nar">……</p>';return}
+  talkLast=l[0]; (sv.talk||(sv.talk={}))[id+l[0]]=1; saveSave(sv);
+  talkImg(id,l[1]);
+  $('stLines').innerHTML='<p class="say">'+talkFill(sv,l[2])+'</p>';
+  $('btnStNext').textContent='もっと話す';
+}
+function talkOpen(id){
+  talkId=id; stSc=null; talkLast='';
+  $('story').classList.remove('pro'); $('btnStSkip').textContent='とじる';
+  $('stLines').innerHTML=''; $('story').hidden=false; ptr.active=false;
+  talkShow();
+}
 const stillOf=id=>'assets/ending_'+id+'_s.webp';
 
 /* ----- hub (map + menu) ----- */
@@ -1253,10 +1362,11 @@ function renderHub(){
   }).join('');
   $('paneH').innerHTML=AIDS.map(id=>{
     const A=AREAS[id],r=rankIdx(sv.pts[id]),cl=sv.clears[id]>0;
-    return '<div class="hcard" style="--c:'+A.col+';--cr:'+A.cr+'"><img class="aface" src="'+faceOf(id,cl)+'" alt="" draggable="false">'+
+    return '<div class="hcard" data-talk="'+id+'" style="--c:'+A.col+';--cr:'+A.cr+'"><img class="aface" src="'+faceOf(id,cl)+'" alt="" draggable="false">'+
       '<div class="abody"><div class="atag">'+A.country+'</div><div class="aname">'+A.full+'</div><p>'+A.desc+'</p>'+
-      '<p class="dim">貢献度 '+RANK_L[r]+'　クリア '+sv.clears[id]+'回</p></div></div>';
+      '<p class="dim">貢献度 '+RANK_L[r]+'　クリア '+sv.clears[id]+'回</p><p class="talkgo">'+(talkNew(sv,id)?'<b class="ndot"></b>':'')+'話す ▶</p></div></div>';
   }).join('');
+  {const tb=document.querySelector('.tab[data-tab="H"]');if(tb)tb.classList.toggle('new',AIDS.some(id=>talkNew(sv,id)))}
   const rows=AIDS.map(id=>{const A=AREAS[id];return '<div class="srow" style="border-left:4px solid '+A.col+'"><span>'+A.full+'　'+A.country+'</span><b>'+RANK_L[rankIdx(sv.pts[id])]+'　'+sv.pts[id]+'</b></div>'}).join('');
   $('paneS').innerHTML='<div class="srow"><span>出撃回数</span><b>'+sv.sorties+' / '+SORTIES_MAX+'</b></div>'+rows+
     growAll(sv)+'<p class="hint">相性表（◎有利＝与ダメージ大 / △不利＝与ダメージ小）</p>'+matchTable()+
@@ -1267,8 +1377,9 @@ function renderHub(){
 $('mapbox').insertAdjacentHTML('beforeend',AIDS.map(id=>{const A=AREAS[id];
   return '<button class="pin" type="button" data-p="'+id+'" style="--c:'+A.col+';left:'+A.pin[0]+'%;top:'+A.pin[1]+'%">'+A.code+'<span class="pinlbl">'+A.country+'</span></button>'}).join(''));
 $('hub').addEventListener('click',e=>{
-  const t=e.target.closest('[data-tab],[data-go],[data-mach],[data-act],[data-p],[data-a]'); if(!t)return;
+  const t=e.target.closest('[data-tab],[data-go],[data-mach],[data-act],[data-p],[data-a],[data-talk]'); if(!t)return;
   if(t.dataset.tab){setTab(t.dataset.tab);return}
+  if(t.dataset.talk){talkOpen(t.dataset.talk);return}
   if(t.dataset.go){if(loadSave().ended){setTab('S');return} const sv=loadSave(), id=t.dataset.go, sc=pickStory(sv,id), go=()=>startRun(CHARS[loadSave().machine],id); if(sc)openStory(sc,go); else go(); return}
   if(t.dataset.mach!==undefined){const sv=loadSave();sv.machine=+t.dataset.mach;saveSave(sv);renderHub();return}
   if(t.dataset.act==='ending'){openEnding(true);return}
@@ -1288,7 +1399,7 @@ function showDead(){
   const perfect=win&&hpr>=.7&&saved===tot;
   const sv=loadSave(), before=rankIdx(sv.pts[A.id]);
   const mi=CHARS.indexOf(S.ch), lvB=mlv(sv.xp[mi]); sv.xp[mi]=(sv.xp[mi]||0)+mxpGain(rate); const lvA=mlv(sv.xp[mi]); sv.vis[A.id]=(sv.vis[A.id]||0)+1;
-  sv.pts[A.id]+=rate; sv.sorties++; if(win)sv.clears[A.id]++; sv.best[A.id]=Math.max(sv.best[A.id]||0,rate);
+  sv.pts[A.id]+=rate; sv.sorties++; sv.kills=(sv.kills|0)+S.kills; sv.bestK=Math.max(sv.bestK|0,S.kills); if(S.boss&&S.boss.dead)sv.boss=(sv.boss|0)+1; if(perfect)sv.perfect=(sv.perfect|0)+1; if(win)sv.clears[A.id]++; sv.best[A.id]=Math.max(sv.best[A.id]||0,rate);
   const after=rankIdx(sv.pts[A.id]);
   S.finalNow=sv.sorties>=SORTIES_MAX&&!sv.ended;
   saveSave(sv);
@@ -1448,6 +1559,7 @@ function drawWorld(){
   emo(S.area.emoji,S.hero.x,S.hero.y,22);
 }
 function drawGrid(){
+  if(S.mode!=='menu')drawBG();
   ctx.fillStyle=vig; ctx.globalAlpha=1; ctx.fillRect(0,0,W,H);
   ctx.strokeStyle='rgba(120,130,255,.08)'; ctx.lineWidth=1; ctx.beginPath();
   const off=(S.clock*8)%48;
