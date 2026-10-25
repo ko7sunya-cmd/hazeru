@@ -485,9 +485,7 @@
         .opts { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
         .opt-btn { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); color: #94a3b8; border-radius: 20px; padding: 6px 12px; font-size: 0.72rem; font-weight: 600; cursor: pointer; font-family: inherit; letter-spacing: 0.5px; }
         .opt-btn.on { color: var(--accent, #38bdf8); border-color: var(--accent, #38bdf8); }
-        .playall { display: flex; gap: 10px; justify-content: center; margin: 0 0 14px; }
-        .pa-btn { flex: 1; max-width: 190px; padding: 10px 8px; font-size: 0.8rem; color: #e2e8f0; border-color: rgba(255, 255, 255, 0.22); background: rgba(255, 255, 255, 0.08); }
-        .pa-btn.on { color: #04121c; background: var(--accent, #38bdf8); border-color: var(--accent, #38bdf8); }
+
         .vol { display: none; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; font-size: 0.75rem; color: #64748b; }
         .vol input { width: 150px; }
 
@@ -642,9 +640,10 @@
         html[data-gallery="on"] #bg-gyro { top: calc(10px + env(safe-area-inset-top)); bottom: auto; right: 12px; z-index: 41; }
 
         /* ♻️ 通常画面側：右下に浮かせる（ギャラリー中は隠す） */
-        #mode-fab { position: fixed; right: 14px; top: calc(14px + env(safe-area-inset-top)); z-index: 30; display: flex; }
+        #mode-fab { position: fixed; left: 12px; top: calc(10px + env(safe-area-inset-top)); z-index: 30; display: flex; }
+        html:not([data-gallery="on"]) body { padding-top: calc(54px + env(safe-area-inset-top)); }
+        .mode-ico { display: block; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)); }
         html[data-gallery="on"] #mode-fab { display: none; }
-        #gal-exit { font-size: 18px; }
     </style>
 </head>
 <body class="theme-summer">
@@ -657,7 +656,7 @@
     <!-- ギャラリーモード（絵を全画面で見せて、曲はバーだけ） -->
     <div id="gal-ui" aria-label="ギャラリー">
         <div id="gal-top">
-            <button class="gbtn" id="gal-exit" type="button" aria-label="通常画面（曲一覧）に切り替える">♻️</button>
+            <button class="gbtn" id="gal-exit" type="button" aria-label="通常画面（曲一覧）に切り替える"><svg class="mode-ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-13.7-4.9L4 8.5"/><path d="M4 3.5v5h5"/><path d="M4 13a8 8 0 0 0 13.7 4.9L20 15.5"/><path d="M20 20.5v-5h-5"/></svg></button>
             <div id="gal-nav">
                 <button class="gbtn sm" id="gal-prev" type="button" aria-label="前の絵">◀</button>
                 <span id="gal-count">01/03</span>
@@ -681,7 +680,7 @@
     </div>
 
     <!-- 通常画面からギャラリーへ戻るボタン -->
-    <button class="gbtn" id="mode-fab" type="button" aria-label="ギャラリーに切り替える">♻️</button>
+    <button class="gbtn" id="mode-fab" type="button" aria-label="ギャラリーに切り替える"><svg class="mode-ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-13.7-4.9L4 8.5"/><path d="M4 3.5v5h5"/><path d="M4 13a8 8 0 0 0 13.7 4.9L20 15.5"/><path d="M20 20.5v-5h-5"/></svg></button>
     <!-- 背景エフェクト -->
     <div class="summer-daydream">
         <div class="lens-flare"></div>
@@ -750,12 +749,6 @@
                     <div class="vol" id="vol-wrap"><span>音量</span><input type="range" id="vol" min="0" max="1" step="0.05" value="1"></div>
                 </div>
                 
-                <!-- 全曲再生・シャッフル再生 -->
-                <div class="playall">
-                    <button class="opt-btn pa-btn" id="playall-btn" type="button">▶ 全曲再生</button>
-                    <button class="opt-btn pa-btn" id="playshuf-btn" type="button">🔀 シャッフル再生</button>
-                </div>
-
                 <!-- ボタン式プレイリスト -->
                 <div id="playlist">
                     <!-- ♡ お気に入り・検索結果（JSで中身を作ります） -->
@@ -962,7 +955,6 @@
         let queue = [], qIndex = 0;   // 再生中の曲の並び（クリックした一覧がそのまま入る）
         let currentSrc = '', currentName = '';
         let isPlaying = false, pendingSeek = null;
-        let queueAll = false;         // true = 全曲再生（全章をひとつの並びにしている）
         let shuffle = false, repeatMode = 'all';   // 'all' = 章をぐるぐる / 'one' = 1曲 / 'off' = 最後で止まる
         let history = [];             // シャッフル中に「前の曲」で戻るための履歴
         let favs = lsJson(FAVKEY, []); if (!Array.isArray(favs)) favs = [];
@@ -1064,7 +1056,7 @@
                 const g = document.getElementById('group-' + viewGroup);
                 const tracks = g ? groupTracks(g) : [];
                 if (!tracks.length) return;
-                queue = tracks; history = []; queueAll = false; renderOpts(); loadTrack(0);
+                queue = tracks; history = []; loadTrack(0);
             }
             if (isPlaying) audio.pause(); else startPlay();
         }
@@ -1164,13 +1156,10 @@
 
         /* ---------- シャッフル・リピート・音量 ---------- */
         const REPEAT_LABEL = { all: 'リピート 章', one: 'リピート 1曲', off: 'リピート なし' };
-        const playAllBtn = $('playall-btn'), playShufBtn = $('playshuf-btn');
         function renderOpts() {
             shuffleBtn.textContent = 'シャッフル ' + (shuffle ? 'ON' : 'OFF');
             shuffleBtn.classList.toggle('on', shuffle);
-            repeatBtn.textContent = (repeatMode === 'all' && queueAll) ? 'リピート 全曲' : REPEAT_LABEL[repeatMode];
-            playAllBtn.classList.toggle('on', queueAll && !shuffle);
-            playShufBtn.classList.toggle('on', queueAll && shuffle);
+            repeatBtn.textContent = REPEAT_LABEL[repeatMode];
             repeatBtn.classList.toggle('on', repeatMode !== 'off');
         }
         function saveOpts() { lsSet(OPTKEY, JSON.stringify({ shuffle, repeatMode, volume: audio.volume })); }
@@ -1193,21 +1182,6 @@
         })();
         renderOpts();
 
-        /* ---------- 全曲再生・シャッフル再生（全章をひとつの並びにする） ---------- */
-        function allTracks() {
-            let all = [];
-            CHAPTERS.forEach(ch => { all = all.concat(groupTracks(document.getElementById('group-' + ch))); });
-            return all;
-        }
-        function playAll(shuf) {
-            const all = allTracks(); if (!all.length) return;
-            queue = all; history = []; pendingSeek = null; queueAll = true;
-            shuffle = shuf; if (repeatMode === 'off') repeatMode = 'all';
-            renderOpts(); saveOpts();
-            loadTrack(shuf ? Math.floor(Math.random() * all.length) : 0); startPlay();
-        }
-        playAllBtn.addEventListener('click', () => playAll(false));
-        playShufBtn.addEventListener('click', () => playAll(true));
 
         /* ---------- 曲を選ぶ（クリックした一覧が、そのまま再生の並びになる） ---------- */
         playlistEl.addEventListener('click', e => {
@@ -1226,7 +1200,7 @@
             const group = track.closest('.playlist-group');
             const tracks = groupTracks(group), index = tracks.indexOf(track);
             if (index === -1) return;
-            queue = tracks; history = []; pendingSeek = null; queueAll = false; renderOpts();
+            queue = tracks; history = []; pendingSeek = null;
             loadTrack(index); startPlay();
         });
 
@@ -1786,7 +1760,7 @@ void main(){
         $('gal-nx').addEventListener('click', () => { goNext(false); });
         // 再生リストから曲を選んだら、リストを閉じて絵に戻る
         document.addEventListener('click', e => {
-            if (galleryOn && e.target.closest && !e.target.closest('.tk-heart') && e.target.closest('.track-item, .pa-btn')) setTimeout(() => setSheet(false), 350);
+            if (galleryOn && e.target.closest && !e.target.closest('.tk-heart') && e.target.closest('.track-item')) setTimeout(() => setSheet(false), 350);
         });
 
         // 曲が変わるたびに、次の絵へ（最初の1曲目を選んだときは動かさない）
