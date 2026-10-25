@@ -312,3 +312,56 @@ body {
 @media (prefers-reduced-motion: reduce) {
     .work-thumb img, .feature, .feature-media img { transition: none; }
 }
+
+
+/* =========================================================
+   コンパクト表示：作品一覧をアイコンサイズに（作品が増えても見やすく）
+   ========================================================= */
+.work-list { gap: 0.6rem; }
+.work-item,
+.work-item.has-thumb {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+    grid-template-areas: "thumb text action";
+    grid-template-rows: auto;
+    column-gap: 0.9rem; row-gap: 0;
+    align-items: center;
+    padding: 0.7rem 0.9rem 0.7rem 0.7rem;
+}
+.work-item .work-thumb {
+    grid-area: thumb; align-self: center;
+    aspect-ratio: 1 / 1; border-radius: 10px;
+}
+.work-item .work-item-text { grid-area: text; }
+.work-item .work-action,
+.work-item.has-thumb .work-action { grid-area: action; justify-self: end; align-self: center; }
+.work-item h3 { font-size: 1rem; line-height: 1.4; margin-bottom: 0.15rem; }
+.work-item .work-tags { margin: 0.1rem 0 0.3rem; }
+.work-item .work-tag:nth-child(n+4) { display: none; }          /* タグは3つまで */
+.work-desc {
+    font-size: 0.85rem; line-height: 1.55;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+/* 画像がない作品：カテゴリ色のアイコンタイル */
+.work-thumb--ph {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--accent-pale);
+    color: var(--accent-ink);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, white);
+}
+.work-thumb--ph svg { width: 2rem; height: 2rem; }
+
+@media (max-width: 520px) {
+    .work-item,
+    .work-item.has-thumb {
+        grid-template-columns: 3.75rem minmax(0, 1fr) auto;
+        grid-template-areas: "thumb text action";
+        column-gap: 0.7rem; align-items: center;
+        padding: 0.6rem 0.7rem 0.6rem 0.6rem;
+    }
+    .work-thumb--ph svg { width: 1.6rem; height: 1.6rem; }
+    .work-item .work-tag:nth-child(n+3) { display: none; }        /* スマホは2つまで */
+    /* ボタンは矢印だけの丸に（カード全体がタップできる） */
+    .work-item .work-action { width: 2.2rem; height: 2.2rem; padding: 0; justify-content: center; font-size: 0; gap: 0; }
+    .work-item .work-arrow { width: 1.2rem; height: 1.2rem; }
+}
