@@ -602,7 +602,7 @@ button:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
     <div id="bossBar" hidden><div class="bn"><span id="bossNm">BOSS</span><span id="bossPct">100%</span></div><div class="bar"><u id="bossFill" style="width:100%"></u></div></div>
     <div id="warnTxt" hidden></div>
     <div id="hintTxt" hidden></div>
-    <div id="tutBox" hidden><div class="tf" id="tutFace"></div><div class="tbd"><b id="tutNm"></b><p id="tutTx"></p><i id="tutNx" hidden>▼ タップで次へ</i></div></div>
+    <div id="tutBox" hidden><div class="tf" id="tutFace"></div><div class="tbd"><b id="tutNm"></b><p id="tutTx"></p><i id="tutNx" hidden>▼ 画面のどこでもタップで次へ</i></div></div>
     <button id="tutSkip" type="button" hidden>スキップ</button>
     <div id="tutHand" hidden><i></i></div>
     <div class="hero" id="heroBox" style="--c:#ff6ec7">
@@ -665,7 +665,7 @@ button:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
 
   <!-- settings -->
   <div id="hgRing" hidden></div>
-  <div id="hubGuide" hidden><div class="tf" id="hgFace"></div><div class="tbd"><b id="hgNm"></b><p id="hgTx"></p><i id="hgNx" hidden>▼ タップで次へ</i></div><button id="hgEnd" type="button" aria-label="ガイドを終了">×</button></div>
+  <div id="hubGuide" hidden><div class="tf" id="hgFace"></div><div class="tbd"><b id="hgNm"></b><p id="hgTx"></p><i id="hgNx" hidden>▼ 画面のどこでもタップで次へ</i></div><button id="hgEnd" type="button" aria-label="ガイドを終了">×</button></div>
   <section id="tutPick" class="ov" hidden style="z-index:42"><div class="ovb tpb" id="tutPickBody"></div></section>
   <section id="set" class="ov" hidden style="z-index:41">
     <div class="ovb setb">
@@ -1915,10 +1915,13 @@ const HELP=[
   ['移動と射撃','画面のどこかを押してドラッグ。出てきたスティックで機体を動かします。弾は自動で出ます。',[['1','<b>押して動かす</b>。指を離すと止まります。'],['2','弾に <b>かする（グレイズ）</b> とARCゲージが溜まります。'],['3','被弾判定は機体の <b>中心の小さな点</b> だけです。']]],
   ['離してタップで特殊攻撃','ARCゲージが溜まったら、指を離してもう一度タップ。装備したコアの特殊攻撃が出ます。',[['↑','<b>離して、タップ。</b> 短く触れるだけで発動します。'],['↑','動かしている最中は、<b>もう一本の指でタップ</b>してもOK。'],['◎','ブレード=近接 / ノヴァ=全域 / ランス=突進。ゲージ消費も違います。']]],
   ['格納庫で組み替える','主砲・ポッド・コア・機体の4部位を付け替えられます。',[['G','<b>スクラップ</b>で強化（レベルアップ）できます。'],['◆','<b>チップ</b>を装着すると、貫通・追尾・爆裂・会心などを後付けできます。'],['↔','不要なパーツは分解してスクラップにできます。']]],
+  ['編成とMODE CHANGE','編成は「プリセット」に保存します。格納庫で、10個まで登録できます。',[['＋','<b>編成する</b>で専用の画面を開き、部品を選んで<b>保存して戻る</b>。<b>破棄して戻る</b>なら、元のままです。'],['A','<b>メインA / メインB</b> に登録すると、出撃のときの編成になります。出撃画面から選び直すこともできます。'],['⇄','AとBの両方を登録すると、戦闘中に<b>MODE CHANGE</b>で切り替えられます（相棒はそのまま・使うと数秒の待ち時間）。'],['✦','編成画面の<b>おすすめから作る</b>：タイプを選ぶと、2部位だけ提案します。残りは自分で選びます。']]],
+  ['所持数と分解','部品は '+PARTMAX+' 個まで持てます。いっぱいになったときの動きは次のとおりです。',[['!','<b>LEGEND・MYTHIC</b>は、上限を超えても持ち帰れます。分解されません。'],['↔','上限のとき、それ以外の部品は拾った時点で<b>自動でスクラップ</b>になります。'],['☑','<b>自動分解</b>（格納庫の分解の項目）をオンにすると、選んだレア度以下の部品を、拾った時に分解します。<b>属性つきの部品は対象外</b>です。'],['★','<b>★をつけた部品・装備中・プリセットに使っている部品</b>は、手動の分解もできません。'],['◆','各部品に「A / B / 編成×n」の印が出ます。どの編成で使っているか、確認できます。']]],
+  ['難易度','出撃画面で、ステージのカードの下にある ◁ ▷ で選びます。',[['E','<b>EASY</b>：敵が弱く、弾も遅くなります。スクラップは半分。クリアは通常どおり扱われます。詰まったときにも。'],['▷','<b>NORMAL</b>から先は、クリアすると次の難易度が解放されます。一番上まで行くと、EASYに戻ります。'],['H','難易度が上がるほど、敵は強く弾幕は濃く、ドロップは良くなります。']]],
   ['相棒と飛ぶ','ミオ・セラ・ルナの3人から1人を選んで同行。',[['M','<b>ミオ</b>は後方から援護。<b>セラ</b>は障壁で守り、<b>ルナ</b>は突撃。'],['L','特殊攻撃に連動して、相棒が<b>リンク技</b>を放ちます。'],['↑','戦うほど絆が上がり、新しい能力と物語が解放されます。']]],
   ['属性と相性','敵と武器には属性があります。有利な属性で撃つとダメージが増えます。',[['◆','<b>プラズマ → クライオ → ボルト → トキシン → プラズマ</b> の順に有利（1.5倍）。逆は0.7倍です。'],['◎','装備4部位のうち<b>同じ属性が2つ以上</b>そろうと、与ダメージが上がります。'],['↔','ステージ選択で<b>敵の傾向</b>と<b>推奨属性</b>を確認。プリセットで編成を切り替えましょう。']]],
   ['進化と合成','最大レベルのパーツは「進化」か「合成」ができます（パーツ詳細の下部）。',[['▲','<b>進化</b>：進化コア＋スクラップ。2つの分岐から選び、全性能+20%、上限Lv+3。ボス撃破で進化コアを入手。'],['✦','<b>合成</b>：同部位の最大レベル2個から、合成限定の二属性パーツを作成。失敗するとレベルが下がります。3連続失敗で次は確定成功。'],['◇','ボスが落とす<b>安定剤</b>で成功率+20%。']]],
-  ['拾って持ち帰る','敵が落とすパーツ・チップ・スクラップは、拾えば持ち帰れます。',[['◆','光るカプセルに触れて回収。ボスは必ず良いものを落とします。'],['H','<b>HARD</b>はクリア後に解放。敵は強く、ドロップは良くなります。'],['!','やられても撤退しても、拾ったものは持ち帰れます。']]]
+  ['拾って持ち帰る','敵が落とすパーツ・チップ・スクラップは、拾えば持ち帰れます。',[['◆','光るカプセルに触れて回収。ボスは必ず良いものを落とします。'],['!','やられても撤退しても、拾ったものは持ち帰れます。']]]
 ];
 let helpI=0,helpBack=null;
 function openHelp(from){helpI=0;helpBack=from;$('help').hidden=false;renderHelp()}
@@ -3558,6 +3561,11 @@ $('tutBox').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagat
 $('tutSkip').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();finishTutorial(true)});
 document.addEventListener('scroll',()=>{if(HGS)requestAnimationFrame(hgRing)},true);
 on('hgEnd',()=>{sfx('ok');hgEnd()});
+/* セリフ送りは、画面のどこをタップしてもOK（親指の届く位置で進められる） */
+document.addEventListener('pointerdown',e=>{
+  if(typeof G!=='undefined'&&G&&G.tut&&G.tut.tap&&!$('tutBox').hidden&&!e.target.closest('#tutSkip')){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();tutNext();return}
+  if(typeof HGS!=='undefined'&&HGS&&!$('hubGuide').hidden){const st=HGSTEPS[HGS.i];if(st&&st.tap&&!e.target.closest('#hgEnd')){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();hgNext()}}
+},true);
 $('hubGuide').addEventListener('pointerdown',e=>{if(e.target.closest('#hgEnd'))return;e.preventDefault();hgNext()});
 on('setHub',()=>{$('set').hidden=true;sfx('ok');UI.tab='sortie';UI.slotSel=null;UI.ed=null;renderHub();hgStart()});
 on('setTut',()=>{$('set').hidden=true;sfx('ok');initAudio();openTutPick()});
