@@ -106,11 +106,25 @@ button:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
 .rtd b{color:var(--txt)}.rtd b.up{color:var(--gr)}.rtd b.dn{color:var(--mg)}
 .rbtns{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .rcm{display:inline-block;font:700 9px var(--f-body);background:var(--am);color:#000;padding:1px 5px;margin-right:2px;letter-spacing:.04em}
+.dstep{display:grid;grid-template-columns:44px minmax(0,190px) 44px;gap:6px;align-items:stretch;height:44px;justify-content:center}
+.dar{border:1px solid var(--line);background:var(--panel);color:var(--txt);font:700 16px var(--f-body);cursor:pointer;touch-action:manipulation}
+.dar[disabled]{opacity:.3}
+.dnm{display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid var(--c,var(--line));box-shadow:inset 0 0 0 1px var(--c,transparent);color:var(--c,var(--txt));line-height:1.15;white-space:nowrap;overflow:hidden}
+.dnm b{font:700 15px var(--f-body);letter-spacing:.08em}
+.dnm small{font-size:9px;opacity:.8;margin-top:1px}
+.ezb{border:1px solid var(--line);background:transparent;color:var(--dim);font:700 11px var(--f-body);cursor:pointer;touch-action:manipulation;white-space:nowrap}
+.ezb.on{border-color:var(--am);color:var(--am);background:rgba(255,194,75,.08)}
+.ezb{justify-self:center;padding:5px 14px;min-width:120px;height:28px}
+.ezb.ph{border-color:transparent;pointer-events:none}
+.dinfo{margin:0;font-size:11px;color:var(--dim);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.warnb{color:var(--mg)}
+.stgdiff{margin:-6px 0 10px;padding:8px;background:rgba(8,12,34,.88);border:1px solid var(--line);border-top:0;display:grid;gap:6px}
+.dinfo2{margin:0;font-size:11px;color:var(--dim);line-height:1.6;text-align:center}
 .hmini{flex:none;width:34px;height:34px;padding:0;border-radius:50%;border:2px solid var(--c,var(--am));background:#0b0920;overflow:hidden;cursor:pointer;touch-action:manipulation;box-shadow:0 0 8px var(--c,transparent);margin-left:auto}
 .hmini .pimg,.hmini svg{width:100%;height:100%;display:block;object-fit:cover}
 .hmini+.scrap{margin-left:0}
 .top{display:flex;align-items:center;gap:12px;padding:12px var(--gx2) 10px var(--gx);border-bottom:1px solid var(--line);flex:none}
-.brand{font:400 16px var(--f-disp);letter-spacing:.04em;text-shadow:2px 0 var(--mg),-2px 0 var(--cy)}
+.brand{white-space:nowrap;font:400 16px var(--f-disp);letter-spacing:.04em;text-shadow:2px 0 var(--mg),-2px 0 var(--cy)}
 .scrap{margin-left:auto;font:700 16px var(--f-num);color:var(--am);display:flex;align-items:center;gap:6px}
 .scrap svg{width:14px;height:14px}
 .ib{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--line);background:var(--panel)}
@@ -137,7 +151,7 @@ button:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
 .easyb small{font-weight:400;font-size:10px;margin-left:8px}
 .easyb{height:34px;box-sizing:border-box;white-space:nowrap;overflow:hidden}
 .easyb.ro{display:flex;align-items:center;cursor:default;color:var(--txt)}
-.gnote{min-height:40px;display:grid;align-content:center}
+.gnote{min-height:20px;display:grid;align-content:center}
 .gobar .btn{white-space:nowrap;height:52px;box-sizing:border-box;padding-top:0;padding-bottom:0;font-size:16px!important;letter-spacing:.2em!important}
 .easyb.on{border-color:var(--am);color:var(--am);background:rgba(255,194,75,.08)}
 #goBar .diff{margin-bottom:6px}
@@ -1402,7 +1416,9 @@ function cleanDo(w){
   SV.scrap+=v;UI.confirm=null;save();sfx('up');uiToast(n+'個を分解  ◆+'+fmtN(v));renderHub();
 }
 const REC_DPS=[55,90,135,190,270];
-function curLv(){const n=UI.stage,u=unlOf(n),v=UI.lvSel[n];return v!=null?Math.min(v,u):u}
+function curLv(){const n=UI.stage,u=unlOf(n),v=UI.lvSel[n];return v!=null?Math.min(Math.max(v,0),u):u}
+function isEasy(){return UI.lvSel[UI.stage]===-1}
+function lvPos(){return isEasy()?-1:curLv()}
 function curBuild(){return calcBuild()}
 
 function rarTag(p){return '<span class="rar" style="--c:'+RAR[p.r].c+'">'+RAR[p.r].n+'</span>'}
@@ -1422,7 +1438,8 @@ function renderHub(){
   if(UI.tab==='sortie'){
     const Bd=curBuild(),rec=REC_DPS[UI.stage-1]*DIFF[curLv()].rec,low=Bd.dps<rec*.7;
     gb.hidden=false;const stg0=STAGES[UI.stage-1],mt=stageMatch(stg0,Bd),mtHtml='<p class="mt">属性相性 <b style="color:'+(mt>1.05?'var(--gr)':mt<.95?'var(--mg)':'var(--txt)')+'">×'+mt.toFixed(2)+'</b> ・ 推奨 '+recHtml(stg0)+'</p>';
-    gb.innerHTML=htmlDiffBar()+'<div class="gnote">'+mtHtml+(low?'<p class="warn">火力が推奨より低めです（'+Math.round(Bd.dps)+' / '+Math.round(rec)+'）。格納庫で強化を。</p>':'')+'</div><button class="btn" data-act="go" type="button">出撃 — STAGE '+UI.stage+(curLv()?' '+DIFF[curLv()].n:(SV.easy?' EASY':''))+'</button>';
+    const mtH2='<p class="mt">属性相性 <b style="color:'+(mt>1.05?'var(--gr)':mt<.95?'var(--mg)':'var(--txt)')+'">×'+mt.toFixed(2)+'</b> ・ 推奨 '+recHtml(stg0)+(low?' <b class="warnb">⚠ 火力 '+Math.round(Bd.dps)+'/'+Math.round(rec)+'</b>':'')+'</p>';
+    gb.innerHTML='<div class="gnote">'+mtH2+'</div><button class="btn" data-act="go" type="button">出撃 — STAGE '+UI.stage+(curLv()?' '+DIFF[curLv()].n:(isEasy()?' EASY':''))+'</button>';
   }else gb.hidden=true;
   if(UI.tab==='sortie')m.innerHTML=htmlSortie();
   else if(UI.tab==='hangar')m.innerHTML=htmlHangar();
@@ -1431,14 +1448,16 @@ function renderHub(){
 }
 
 function htmlDiffBar(){
-  const lvC=curLv(),unl=unlOf(UI.stage);
-  let h='<div class="diff">';
-  DIFF.forEach((d,i)=>{h+='<button type="button" data-act="hard" data-v="'+i+'" class="'+(i===lvC?'on':'')+'" style="--c:'+d.c+'"'+(i>unl?' disabled':'')+'>'+(i>unl?'🔒':'')+d.n.slice(0,4)+'<small class="num">'+(i>unl?'':'Lv'+(i+1))+'</small></button>'});
-  h+='</div>';
-  const dd=DIFF[lvC];
-  if(lvC>0)h+='<div class="easyb ro">'+dd.n+'<small>敵HP ×'+dd.hp+' ・ 弾威力 ×'+dd.dmg+' ・ 報酬 ×'+dd.coin+'</small></div>';
-  if(lvC===0)h+='<button class="easyb'+(SV.easy?' on':'')+'" data-act="easy" type="button">'+(SV.easy?'☑':'☐')+' EASY モード<small>敵が弱く・弾も遅く。スクラップ半分</small></button>';
-  return h;
+  const pos=lvPos(),unl=unlOf(UI.stage),ez=pos<0,d=ez?{n:'EASY',c:'#7dff9a'}:DIFF[pos];
+  return '<div class="dstep"><button class="dar" data-act="hardstep" data-d="-1" type="button"'+' aria-label="難易度を下げる">◁</button>'
+    +'<div class="dnm" style="--c:'+d.c+'"><b>'+d.n+'</b><small class="num">Lv'+(pos+2)+(pos>=unl&&unl<DIFF.length-1?' ・ クリアで次が解放':'')+'</small></div>'
+    +'<button class="dar" data-act="hardstep" data-d="1" type="button"'+' aria-label="難易度を上げる">▷</button></div>';
+}
+function htmlStgDiff(){
+  const lvC=curLv(),unl=unlOf(UI.stage),dd=DIFF[lvC];
+  let t=dd.n+'：敵HP ×'+dd.hp+' ・ 敵弾の威力 ×'+dd.dmg+(dd.bul>1?' ・ 弾幕 ×'+dd.bul.toFixed(1):'')+' ・ スクラップ ×'+dd.coin+' ・ 進化コア ×'+dd.core+(lvC>=1?' ・ 良いレア度が出やすい':'');
+  if(isEasy())t='EASY：敵HP・弾ダメージ・弾速が下がり、ボスも弱め。スクラップは半分。クリアは通常どおり扱われます。';
+  return '<div class="stgdiff">'+htmlDiffBar()+'<p class="dinfo2">'+t+(unl<4&&!isEasy()&&lvC===unl?'<br>クリアすると次の難易度が解放されます。':'')+'</p></div>';
 }
 function htmlSortie(){
   const B=curBuild(),H=HEROES[SV.hero],hl=hLevel(SV.hxp[SV.hero]);
@@ -1450,11 +1469,8 @@ function htmlSortie(){
       +'<div class="no">'+s.no+'</div><div class="nm">'+s.n+'</div>'
       +'<div class="sub">'+(open?s.desc:'前のステージをクリアで解放')+'</div>'
       +'<div class="meta"><span>'+s.en+'</span><span class="stel">敵 '+stageIcons(s)+' ・ 推奨 '+recHtml(s)+'</span><span>推奨DPS '+REC_DPS[i]+'</span>'+(best?'<span>BEST '+fmtN(best)+'</span>':'')+(cl?'<span class="pill" style="--c:var(--gr)">CLEAR</span>':'')+(dclrOf(s.no)>0?'<span class="pill" style="--c:'+DIFF[dclrOf(s.no)].c+'">'+DIFF[dclrOf(s.no)].n+'</span>':'')+'<span>特産 '+CHIPS['sp'+s.no].n.replace('特産：','')+'</span>'+'</div></button>';
+    if(sl)h+=htmlStgDiff();
   });
-  const lvC=curLv(),unl=unlOf(UI.stage),dd=DIFF[lvC];
-  h+='<div class="sec">DIFFICULTY — STAGE '+UI.stage+'</div>';
-  h+='<p class="lead" style="font-size:12px;margin:6px 0 0">'+dd.n+'：敵HP ×'+dd.hp+' ・ 敵弾の威力 ×'+dd.dmg+(dd.bul>1?' ・ 弾幕 ×'+dd.bul.toFixed(1):'')+' ・ スクラップ ×'+dd.coin+' ・ 進化コア ×'+dd.core+(lvC>=1?' ・ 良いレア度が出やすい':'')+(unl<4&&lvC===unl?'<br>クリアすると次の難易度が解放されます。':'')+'</p>';
-  if(lvC===0&&SV.easy)h+='<p class="lead" style="font-size:12px;margin:4px 0 0;color:var(--am)">EASY：敵HP・弾ダメージ・弾速が下がり、ボスも弱め。スクラップは半分。クリアは通常どおり扱われます。</p>';
   const sp=CHIPS['sp'+UI.stage];h+='<div class="syn" style="margin-top:8px"><span><b style="color:var(--am)">'+sp.n+'</b>：'+sp.d(1)+'（ボスは必ず落とす・敵からも出る）</span></div>';
   h+=htmlAB();
   h+='<div class="sec">PARTNER</div><button class="hcard br" style="--c:'+H.col+'" data-act="tab" data-t="partner" type="button"><div class="pt">'+portrait(H.id)+'</div><div><div class="role">'+H.role+'</div><div class="hn">'+H.name+'</div><div class="hlv"><span>BOND</span><b>Lv.'+hl+'</b></div><div class="xpb"><u style="width:'+Math.round(hProg(SV.hxp[H.id])*100)+'%"></u></div><div class="hs" style="margin-top:6px">タップで相棒を変更</div></div></button>';
@@ -1547,7 +1563,7 @@ function htmlRec(){
     const o=R.c[R.i%R.c.length],T=REC_TYPES[R.t],P=Object.assign(recCurParts(),{[T.cats[0]]:o.a,[T.cats[1]]:o.b});
     const open=CATS.filter(c=>!T.cats.includes(c));
     h+='<div class="rprop"><div class="rph">案 '+(R.i%R.c.length+1)+' / '+R.c.length+'</div>'+recPartRow(o.a)+recPartRow(o.b);
-    h+='<div class="rown">あなたの番：'+open.map(c=>CATN[c]).join('・')+'（今の装備のまま）</div>';
+    h+='<div class="rown">残りは自分で選ぶ：'+open.map(c=>CATN[c]).join('・')+'（今の装備のまま）</div>';
     h+='<div class="rtend">'+recTend(o.B)+'</div><p class="lead" style="font-size:11px;margin:4px 0 0">'+recWhy(R.t,P,o.B)+'</p>';
     h+='<div class="rbtns"><button class="btn sm" data-act="recapply" type="button">この2つを入れる</button><button class="btn gh sm" data-act="recn" type="button">別の案を見る</button></div></div>';
   }else if(R.c)h+='<p class="lead" style="font-size:11px">提案を作れませんでした。</p>';
@@ -1581,7 +1597,7 @@ function htmlHangarEdit(){
     const p=eqPart(c), k=KIND[c][p.k], r=RAR[p.r], slots=r.slots;
     let pips='';for(let i=0;i<slots;i++)pips+='<i class="cpip'+(p.chips[i]?' on':'')+'"></i>';
     h+='<button class="slot br" style="--c:'+r.c+'" data-act="slot" data-c="'+c+'" type="button"><div class="ic">'+icon(p.k,k.col)+'</div>'
-      +'<div><div class="cat">'+CATE[c]+((UI.recMark&&UI.recMark.cats.includes(c))?' <span class="rcm">あなたの番</span>':'')+'</div><div class="nm">'+k.n+' '+eIcon(partElem(p),14)+'</div><div class="ptags">'+tagHtml(p)+'</div></div><div class="lv">Lv.'+p.lv+'<br>'+rarTag(p)+'</div>'
+      +'<div><div class="cat">'+CATE[c]+((UI.recMark&&UI.recMark.cats.includes(c))?' <span class="rcm">自分で選ぶ</span>':'')+'</div><div class="nm">'+k.n+' '+eIcon(partElem(p),14)+'</div><div class="ptags">'+tagHtml(p)+'</div></div><div class="lv">Lv.'+p.lv+'<br>'+rarTag(p)+'</div>'
       +'<div class="chips" style="grid-column:2/4">'+pips+'</div></button>';
   }
   return h;
@@ -3382,7 +3398,7 @@ function toHub(){
   inp.joy=null;bgmDuck=1;bgm('hub');
   renderHub();
 }
-function startBattle(no,lv){
+function startBattle(no,lv,easy){
   initAudio();lv=lv|0;
   if(typeof HGS!=='undefined'&&HGS)hgEnd();
   const S=STAGES[no-1],B=calcBuild();
@@ -3393,7 +3409,7 @@ function startBattle(no,lv){
     gauge:45,gunT:0,podT:[0,0,0],orbA:0,arcDeny:0,boss:null,dirT:1.6,stageT:0,
     shake:0,flash:0,flashCol:'255,255,255',paused:false,over:false,hxp:0,mflip:false,hintDone:false,
     mode:{cd:0,tf:-1,from:B.hull.k,eq0:Object.assign({},SV.eq),n:0},pdm:{},seg:{g:0,p:0,sp:0,hurtD:0}};
-  G.easy=!!(SV.easy&&lv===0);
+  G.easy=!!(easy&&lv===0);
   if(G.easy){G.D=Object.assign({},DIFF[0],{fire:.78,boss:.7,coin:.5});G.mult.hp*=.6;G.mult.dmg*=.55}
   G.hero=mkHero();
   inp.joy=null;hudKey={};
@@ -3570,6 +3586,7 @@ function hubClick(e){
   const el=e.target.closest('[data-act]');if(!el)return;
   const a=el.dataset.act;
   if(a==='stage'){const n=+el.dataset.i;if(n-1<=SV.clear){UI.stage=n;sfx('ok');renderHub()}}
+  else if(a==='hardstep'){const u=unlOf(UI.stage),n=u+2;let v=lvPos()+(+el.dataset.d);if(v>u)v=-1;else if(v<-1)v=u;UI.lvSel[UI.stage]=v;sfx('ok');renderHub()}
   else if(a==='hard'){const v=+el.dataset.v;if(v<=unlOf(UI.stage)){UI.lvSel[UI.stage]=v;sfx('ok');renderHub()}}
   else if(a==='tab'){UI.tab=el.dataset.t;renderHub();$('hubMain').scrollTop=0}
   else if(a==='hero'){SV.hero=el.dataset.id;save();sfx('ok');renderHub()}
@@ -3599,8 +3616,7 @@ function hubClick(e){
   else if(a==='cleanr'){UI.cleanR=+el.dataset.v;if(SV.auto.on){SV.auto.r=UI.cleanR;save()}UI.confirm=null;renderHub()}
   else if(a==='clean'){cleanDo(el.dataset.w)}
   else if(a==='bk'){sfx('ok');openBk()}
-  else if(a==='easy'){SV.easy=!SV.easy;save();sfx('ok');renderHub()}
-  else if(a==='go'){startBattle(UI.stage,curLv())}
+  else if(a==='go'){startBattle(UI.stage,curLv(),isEasy())}
 }
 $('hubMain').addEventListener('click',hubClick);
 $('goBar').addEventListener('click',hubClick);
