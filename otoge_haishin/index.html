@@ -136,6 +136,7 @@
   .pad.flower{background:linear-gradient(180deg,#c9f5dc,#97e2ba);}
   .pad.heart{background:linear-gradient(180deg,#e3d8ff,#bda6ff);}
   .pad{transition:transform .09s cubic-bezier(.3,1.6,.5,1),filter .09s;}
+  body.easystamp .pad.clap,body.easystamp .pad.heart{opacity:.42;}   /* やさしい：スタンプは🌸だけ。ほかは薄く（押しても大丈夫） */
   .pad:active,.pad.hit{transform:scale(.93);filter:brightness(1.15) saturate(1.15);}
 
   /* story */
@@ -671,7 +672,7 @@ function buildChart(bpm,duration){
       slots.forEach(off=>{
         if(p.some(([,o])=>Math.abs(o-off)<(hard?0.25:0.001))) return;
         if(hard && (put.length>=2 || put.some(o=>Math.abs(o-off)<0.75))) return;
-        if(Math.random()<prob){ put.push(off); const kind=STAMPS[Math.floor(Math.random()*3)]; notes.push({t:FIRST_BEAT+(b+off)*beat,lane:'stamp',kind,icon:STAMP_ICON[kind],hit:false,done:false}); }
+        if(Math.random()<prob){ put.push(off); const kind=DIFF==='easy'?'flower':STAMPS[Math.floor(Math.random()*3)]; notes.push({t:FIRST_BEAT+(b+off)*beat,lane:'stamp',kind,icon:STAMP_ICON[kind],hit:false,done:false}); }
       });
     }
   }
@@ -881,7 +882,7 @@ window.addEventListener('resize',()=>{ if($('game').classList.contains('on')) re
 
 function startGame(){
   stopPreview(); lsSet(MKEY,MODE); $('modehint').classList.remove('on');   // 一度遊んだら、案内は出さない
-  ensureAudio();
+  ensureAudio(); document.body.classList.toggle('easystamp',DIFF==='easy');
   const bpm=curSong.bpm; FIRST_BEAT=curSong.first||0;
   TRAVEL=DIFFS[DIFF].travel; WINDOW=DIFFS[DIFF].window;
   if(!bgm.src.endsWith(curSong.file.replace('..',''))){ bgm.src=curSong.file; }
