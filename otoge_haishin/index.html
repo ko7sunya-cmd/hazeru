@@ -208,6 +208,8 @@ body.ingame #bubbles{display:none;}
 #hud .hp{font-size:11px;letter-spacing:.12em;opacity:.8;}
 #score{font-variant-numeric:tabular-nums;}
 #combo{font-size:34px;line-height:1.05;display:inline-block;transition:color .2s,text-shadow .2s;}
+#combo.cpop{animation:cpop .5s cubic-bezier(.2,1.6,.4,1);}
+@keyframes cpop{0%{transform:scale(1);}35%{transform:scale(1.55);}100%{transform:scale(1);}}
 #combo.t1{color:#fff;text-shadow:0 0 12px var(--acc);}
 #combo.t2{color:#ffe066;text-shadow:0 0 14px #ffb000,0 0 28px #ff7a00;}
 #combo.t3{color:transparent;background:linear-gradient(90deg,#ffe066,#ff9ad5,#9ad8ff,#a6ffb5,#ffe066);background-size:300% 100%;
@@ -467,7 +469,9 @@ const SONGS = [
   {id:'you_and_eternity_01', acc:'#b79cff', bg1:'#1a1a4a', bg2:'#5a4ad0', title:'You and Eternity', file:'songs/you_and_eternity_01.mp3', bpm:88.0, first:0.62, tentative:false},
   {id:'hikari_no_kanata_e_01', acc:'#7ae8ea', bg1:'#101a2a', bg2:'#7a4a8a', title:'光の彼方へ', file:'songs/hikari_no_kanata_e_01.mp3', bpm:150.0, first:0.16, tentative:true},
   {id:'maximum_score_01', acc:'#ff8ae6', bg1:'#120a22', bg2:'#7a2a8a', title:'Maximum Score', file:'songs/maximum_score_01.mp3', bpm:150.0, first:0.37, tentative:true},
-  {id:'fly_into_the_light_01', acc:'#ffb86e', bg1:'#14122a', bg2:'#5a4a8a', title:'Fly Into The Light', file:'songs/fly_into_the_light_01.mp3', bpm:95.6, first:0.23, tentative:true}
+  {id:'fly_into_the_light_01', acc:'#ffb86e', bg1:'#14122a', bg2:'#5a4a8a', title:'Fly Into The Light', file:'songs/fly_into_the_light_01.mp3', bpm:95.6, first:0.23, tentative:true},
+  {id:'gosenfu_no_sora_01', acc:'#ffb070', bg1:'#1a2350', bg2:'#e8884a', title:'五線譜の空', file:'../music/gosenfu_no_sora_01.mp3', bpm:101.0, first:0.34, tentative:false},
+  {id:'tsuru_no_mure_01', acc:'#9fd4ff', bg1:'#0b2038', bg2:'#2e6a9a', title:'鶴の群れが朝をつれてゆく', file:'../music/tsuru_no_mure_01.mp3', bpm:131.2, first:0.19, tentative:true}
 ];
 let curSong = SONGS[0];
 function applyTheme(sg){
@@ -718,7 +722,7 @@ function buildSongs(){
       '<div class="song-panel"><div class="song-in"><div class="eqrow"></div><div class="drow"><button class="dbtn" data-d="easy">🌱やさしい</button><button class="dbtn" data-d="normal">🌼ふつう</button><button class="dbtn" data-d="hard">🔥むずかしい</button></div><div class="btnrow"><button class="go">▶ スタート！</button></div></div></div>';
     const img=new Image(); img.alt=''; img.onload=()=>{ el.querySelector('.ico').textContent=''; el.querySelector('.ico').appendChild(img); }; img.src=iconPath(sg);
     const eq=el.querySelector('.eqrow'); for(let i=0;i<16;i++){ const b=document.createElement('i'); const beat=60/sg.bpm; b.style.animationDuration=(beat*(0.45+Math.random()*0.9)).toFixed(2)+'s'; b.style.animationDelay=(-Math.random()*2).toFixed(2)+'s'; eq.appendChild(b); }
-    el.querySelector('.ttl').textContent=sg.title;
+    const ttl=el.querySelector('.ttl'); ttl.textContent=sg.title; { const u=[...sg.title].reduce((n,c)=>n+(c.charCodeAt(0)<256?0.5:1),0), fs=Math.max(12,Math.floor(176/u)); if(fs<16) ttl.style.fontSize=fs+'px'; }   // 長い曲名は文字を少し小さくして1行に
     el.querySelector('.song-head').addEventListener('click',()=>selectSong(sg));
     el.querySelectorAll('.dbtn').forEach(b=>b.addEventListener('click',()=>setDiff(b.dataset.d)));
     el.querySelector('.go').addEventListener('click',()=>{ curSong=sg; stopPreview(); startGame(); });
@@ -776,6 +780,7 @@ function setDiff(d){ DIFF=DIFFS[d]?d:'normal'; lsSet(DKEY,DIFF); refreshSongs();
 /* ===== ゲーム本体 ===== */
 const bgm=$('bgm'), cv=$('cv'), ctx=cv.getContext('2d');
 let notes=[], score=0, maxScore=1, combo=0, maxCombo=0, stampHit=0, stampMatch=0, stampTotal=0;
+const COMBO_Y=46;   // コンボ演出の位置（HUDのコンボ数のすぐ下）
 let running=false, offsetSec=0, effects=[], raf=0, comboPop=null;
 let cnt={perfect:0,good:0,ok:0,miss:0};
 let gState='idle';   // idle / play / paused / counting
@@ -838,7 +843,7 @@ function firework(x,y,hue){
   try{ tone(480+Math.random()*320,.22,'triangle',.07,1300); }catch(e){}
 }
 function milestoneFx(n){
-  const rc=cv.getBoundingClientRect(), w=rc.width, h=rc.height, cx=w/2, cy=h*.34, cols=['#ffd84d','#ff9ad5','#9ad8ff','#a6ffb5',curSong.acc];
+  const rc=cv.getBoundingClientRect(), w=rc.width, h=rc.height, cx=w/2, cy=COMBO_Y, cols=['#ffd84d','#ff9ad5','#9ad8ff','#a6ffb5',curSong.acc];
   emit(parts,cx,cy,n>=100?36:22,{sp:400,g:300,drag:1.4,life:1.1,s:7,kinds:['square','star','dot'],cols:cols});
   ring(cx,cy,20,w*.55,.7,curSong.acc,6); ring(cx,cy,10,w*.4,.55,'#fff',3);
   if(n>=50){ for(let i=0;i<4;i++) emit(parts,w*(i+.5)/4,-10,8,{dir:Math.PI/2,spread:1,sp:140,g:260,life:2.2,s:5,jx:w/4,kinds:['square','star','dot'],cols:cols});
@@ -921,7 +926,7 @@ function press(pad){
     score += (st ? (match?STAMP_MATCH:STAMP_ANY) : (tier==='perfect'?PERFECT_PT:1))*mult;
     if(st){ stampHit++; if(match) stampMatch++; } else cnt[tier]++;
     combo++; if(combo>maxCombo) maxCombo=combo;
-    if(combo===10||combo===25||combo%50===0){ comboPop={n:combo,born:performance.now()}; if(MODE!=='focus') milestoneFx(combo); }
+    if(combo===10||combo===25||combo%50===0){ comboPop={n:combo,born:performance.now()}; { const ce=$('combo'); ce.classList.remove('cpop'); void ce.offsetWidth; ce.classList.add('cpop'); } if(MODE!=='focus') milestoneFx(combo); }
     updateHud();
     hitBurst(lane,pad,tier,match);
     if(!fever&&combo>=30&&MODE!=='focus') startFever();
@@ -1075,15 +1080,15 @@ function loop(){
     const age=nowMs-comboPop.born;
     if(age>=900) comboPop=null; else {
       const cn=comboPop.n, sc=age<160?0.6+0.4*(age/160)*1.15:1+0.05*Math.sin(age/90), al=age<650?1:1-(age-650)/250, txt=cn+' COMBO!';
-      ctx.save(); ctx.globalAlpha=Math.max(0,al); ctx.translate(w/2,h*0.34); ctx.scale(sc,sc);
+      ctx.save(); ctx.globalAlpha=Math.max(0,al); ctx.translate(w/2,COMBO_Y); ctx.scale(sc,sc);
       ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.font='800 '+(cn>=100?50:40)+'px -apple-system,"Hiragino Sans",sans-serif'; ctx.lineJoin='round';
+      ctx.font='800 '+(cn>=100?42:34)+'px -apple-system,"Hiragino Sans",sans-serif'; ctx.lineJoin='round';
       ctx.shadowColor=acc; ctx.shadowBlur=22; ctx.lineWidth=8; ctx.strokeStyle=hexA(acc,.85);
       ctx.strokeText(txt,0,0); ctx.shadowBlur=0;
       if(cn>=50){ const rg=ctx.createLinearGradient(-120,0,120,0); ['#ffe066','#ff9ad5','#9ad8ff','#a6ffb5','#ffe066'].forEach((c,i)=>rg.addColorStop(i/4,c)); ctx.fillStyle=rg; } else ctx.fillStyle='#fff';
       ctx.fillText(txt,0,0);
       const sub=cn>=100?'さいこう！！':cn>=50?'ノリノリ！':cn>=25?'すごい！':'いい感じ！';
-      ctx.font='800 17px -apple-system,"Hiragino Sans",sans-serif'; ctx.lineWidth=5; ctx.strokeStyle=hexA(acc,.8); ctx.strokeText(sub,0,40); ctx.fillStyle='#fff'; ctx.fillText(sub,0,40);
+      ctx.font='800 15px -apple-system,"Hiragino Sans",sans-serif'; ctx.lineWidth=5; ctx.strokeStyle=hexA(acc,.8); ctx.strokeText(sub,0,34); ctx.fillStyle='#fff'; ctx.fillText(sub,0,34);
       ctx.restore();
     }
   }
