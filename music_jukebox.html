@@ -634,6 +634,11 @@
         #gal-ctrl { display: flex; align-items: center; justify-content: space-between; }
         #gal-main { display: flex; align-items: center; gap: 18px; }
         html[data-gallery="on"] #bg-gyro { top: calc(10px + env(safe-area-inset-top)); bottom: auto; right: 12px; z-index: 41; }
+
+        /* ♻️ 通常画面側：右下に浮かせる（ギャラリー中は隠す） */
+        #mode-fab { position: fixed; right: 14px; top: calc(14px + env(safe-area-inset-top)); z-index: 30; display: flex; }
+        html[data-gallery="on"] #mode-fab { display: none; }
+        #gal-exit { font-size: 18px; }
     </style>
 </head>
 <body class="theme-summer">
@@ -646,7 +651,7 @@
     <!-- ギャラリーモード（絵を全画面で見せて、曲はバーだけ） -->
     <div id="gal-ui" aria-label="ギャラリー">
         <div id="gal-top">
-            <button class="gbtn" id="gal-exit" type="button" aria-label="ギャラリーを閉じる">✕</button>
+            <button class="gbtn" id="gal-exit" type="button" aria-label="通常画面（曲一覧）に切り替える">♻️</button>
             <div id="gal-nav">
                 <button class="gbtn sm" id="gal-prev" type="button" aria-label="前の絵">◀</button>
                 <span id="gal-count">01/03</span>
@@ -669,6 +674,8 @@
         </div>
     </div>
 
+    <!-- 通常画面からギャラリーへ戻るボタン -->
+    <button class="gbtn" id="mode-fab" type="button" aria-label="ギャラリーに切り替える">♻️</button>
     <!-- 背景エフェクト -->
     <div class="summer-daydream">
         <div class="lens-flare"></div>
@@ -1719,6 +1726,7 @@ void main(){
         const openLink = $('gal-open');
         if (openLink) openLink.addEventListener('click', e => { e.preventDefault(); enterGallery(); });
         $('gal-exit').addEventListener('click', exitGallery);
+        $('mode-fab').addEventListener('click', enterGallery);
         $('gal-prev').addEventListener('click', () => goArt(-1));
         $('gal-next').addEventListener('click', () => goArt(1));
         $('gal-list').addEventListener('click', () => setSheet(!sheetOpen()));
