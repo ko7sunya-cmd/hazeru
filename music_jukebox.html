@@ -485,6 +485,9 @@
         .opts { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
         .opt-btn { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); color: #94a3b8; border-radius: 20px; padding: 6px 12px; font-size: 0.72rem; font-weight: 600; cursor: pointer; font-family: inherit; letter-spacing: 0.5px; }
         .opt-btn.on { color: var(--accent, #38bdf8); border-color: var(--accent, #38bdf8); }
+        .playall { display: flex; gap: 10px; justify-content: center; margin: 0 0 14px; }
+        .pa-btn { flex: 1; max-width: 190px; padding: 10px 8px; font-size: 0.8rem; color: #e2e8f0; border-color: rgba(255, 255, 255, 0.22); background: rgba(255, 255, 255, 0.08); }
+        .pa-btn.on { color: #04121c; background: var(--accent, #38bdf8); border-color: var(--accent, #38bdf8); }
         .vol { display: none; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; font-size: 0.75rem; color: #64748b; }
         .vol input { width: 150px; }
 
@@ -495,6 +498,9 @@
 
         .fav-btn { margin-left: auto; background: none; border: none; color: #64748b; font-size: 1.2rem; cursor: pointer; line-height: 1; padding: 2px 4px; }
         .fav-btn.on { color: #f472b6; }
+        .track-item { position: relative; }
+        .track-item .tk-heart { display: inline-block; margin-left: 8px; padding: 2px 4px; margin-right: -6px; font-size: 0.95rem; line-height: 1; color: #64748b; }
+        .track-item .tk-heart.on { color: #f472b6; }
         .empty { color: #64748b; font-size: 0.85rem; padding: 20px 8px; text-align: center; line-height: 1.7; }
 
         @keyframes flare-breathe { 0% { transform: scale(1) translate(0, 0); opacity: 0.6; } 100% { transform: scale(1.05) translate(-10px, 15px); opacity: 1; } }
@@ -744,6 +750,12 @@
                     <div class="vol" id="vol-wrap"><span>音量</span><input type="range" id="vol" min="0" max="1" step="0.05" value="1"></div>
                 </div>
                 
+                <!-- 全曲再生・シャッフル再生 -->
+                <div class="playall">
+                    <button class="opt-btn pa-btn" id="playall-btn" type="button">▶ 全曲再生</button>
+                    <button class="opt-btn pa-btn" id="playshuf-btn" type="button">🔀 シャッフル再生</button>
+                </div>
+
                 <!-- ボタン式プレイリスト -->
                 <div id="playlist">
                     <!-- ♡ お気に入り・検索結果（JSで中身を作ります） -->
@@ -950,6 +962,7 @@
         let queue = [], qIndex = 0;   // 再生中の曲の並び（クリックした一覧がそのまま入る）
         let currentSrc = '', currentName = '';
         let isPlaying = false, pendingSeek = null;
+        let queueAll = false;         // true = 全曲再生（全章をひとつの並びにしている）
         let shuffle = false, repeatMode = 'all';   // 'all' = 章をぐるぐる / 'one' = 1曲 / 'off' = 最後で止まる
         let history = [];             // シャッフル中に「前の曲」で戻るための履歴
         let favs = lsJson(FAVKEY, []); if (!Array.isArray(favs)) favs = [];
@@ -959,6 +972,16 @@
         CHAPTERS.forEach(ch => {
             document.querySelectorAll('#group-' + ch + ' .song-group').forEach(sg => {
                 const t = sg.querySelector('.song-title'); if (!t) return;
+                const takes = sg.querySelectorAll('.track-item');
+                if (takes.length > 1) {
+                    // テイクが複数ある曲：テイクごとに♡（別々にお気に入りにできる）
+                    takes.forEach(tk => {
+                        const h = document.createElement('span');
+                        h.className = 'tk-heart'; h.setAttribute('role', 'button'); h.setAttribute('aria-label', 'このテイクをお気に入り');
+                        tk.appendChild(h);
+                    });
+                    return;
+                }
                 const b = document.createElement('button');
                 b.type = 'button'; b.className = 'fav-btn'; b.setAttribute('aria-label', 'お気に入り');
                 t.appendChild(b);
@@ -970,11 +993,18 @@
                 const on = favs.includes(songKey(sg));
                 b.classList.toggle('on', on); b.textContent = on ? '♥' : '♡';
             });
+            document.querySelectorAll('.tk-heart').forEach(h => {
+                const tk = h.closest('.track-item'); if (!tk) return;
+                const on = favs.includes(tk.getAttribute('data-src'));
+                h.classList.toggle('on', on); h.textContent = on ? '♥' : '♡';
+            });
         }
         function rebuildFav() {
             const box = $('group-fav'); box.innerHTML = ''; let n = 0;
             CHAPTERS.forEach(ch => document.querySelectorAll('#group-' + ch + ' .song-group').forEach(sg => {
-                if (favs.includes(songKey(sg))) { box.appendChild(sg.cloneNode(true)); n++; }
+                const c = sg.cloneNode(true);
+                c.querySelectorAll('.track-item').forEach(tk => { if (!favs.includes(tk.getAttribute('data-src'))) tk.remove(); });
+                if (c.querySelector('.track-item')) { box.appendChild(c); n++; }
             }));
             if (!n) box.innerHTML = '<div class="empty">曲名の右の ♡ を押すと、ここに集まります。</div>';
             syncHearts(); markActive();
@@ -1034,7 +1064,7 @@
                 const g = document.getElementById('group-' + viewGroup);
                 const tracks = g ? groupTracks(g) : [];
                 if (!tracks.length) return;
-                queue = tracks; history = []; loadTrack(0);
+                queue = tracks; history = []; queueAll = false; renderOpts(); loadTrack(0);
             }
             if (isPlaying) audio.pause(); else startPlay();
         }
@@ -1134,10 +1164,13 @@
 
         /* ---------- シャッフル・リピート・音量 ---------- */
         const REPEAT_LABEL = { all: 'リピート 章', one: 'リピート 1曲', off: 'リピート なし' };
+        const playAllBtn = $('playall-btn'), playShufBtn = $('playshuf-btn');
         function renderOpts() {
             shuffleBtn.textContent = 'シャッフル ' + (shuffle ? 'ON' : 'OFF');
             shuffleBtn.classList.toggle('on', shuffle);
-            repeatBtn.textContent = REPEAT_LABEL[repeatMode];
+            repeatBtn.textContent = (repeatMode === 'all' && queueAll) ? 'リピート 全曲' : REPEAT_LABEL[repeatMode];
+            playAllBtn.classList.toggle('on', queueAll && !shuffle);
+            playShufBtn.classList.toggle('on', queueAll && shuffle);
             repeatBtn.classList.toggle('on', repeatMode !== 'off');
         }
         function saveOpts() { lsSet(OPTKEY, JSON.stringify({ shuffle, repeatMode, volume: audio.volume })); }
@@ -1160,11 +1193,28 @@
         })();
         renderOpts();
 
+        /* ---------- 全曲再生・シャッフル再生（全章をひとつの並びにする） ---------- */
+        function allTracks() {
+            let all = [];
+            CHAPTERS.forEach(ch => { all = all.concat(groupTracks(document.getElementById('group-' + ch))); });
+            return all;
+        }
+        function playAll(shuf) {
+            const all = allTracks(); if (!all.length) return;
+            queue = all; history = []; pendingSeek = null; queueAll = true;
+            shuffle = shuf; if (repeatMode === 'off') repeatMode = 'all';
+            renderOpts(); saveOpts();
+            loadTrack(shuf ? Math.floor(Math.random() * all.length) : 0); startPlay();
+        }
+        playAllBtn.addEventListener('click', () => playAll(false));
+        playShufBtn.addEventListener('click', () => playAll(true));
+
         /* ---------- 曲を選ぶ（クリックした一覧が、そのまま再生の並びになる） ---------- */
         playlistEl.addEventListener('click', e => {
-            const heart = e.target.closest('.fav-btn');
+            const heart = e.target.closest('.fav-btn, .tk-heart');
             if (heart) {
-                const sg = heart.closest('.song-group'), key = songKey(sg);
+                const tkEl = heart.closest('.track-item');
+                const key = tkEl ? tkEl.getAttribute('data-src') : songKey(heart.closest('.song-group'));
                 favs = favs.includes(key) ? favs.filter(k => k !== key) : favs.concat(key);
                 lsSet(FAVKEY, JSON.stringify(favs));
                 syncHearts();
@@ -1176,7 +1226,7 @@
             const group = track.closest('.playlist-group');
             const tracks = groupTracks(group), index = tracks.indexOf(track);
             if (index === -1) return;
-            queue = tracks; history = []; pendingSeek = null;
+            queue = tracks; history = []; pendingSeek = null; queueAll = false; renderOpts();
             loadTrack(index); startPlay();
         });
 
@@ -1736,7 +1786,7 @@ void main(){
         $('gal-nx').addEventListener('click', () => { goNext(false); });
         // 再生リストから曲を選んだら、リストを閉じて絵に戻る
         document.addEventListener('click', e => {
-            if (galleryOn && e.target.closest && e.target.closest('.track-item')) setTimeout(() => setSheet(false), 350);
+            if (galleryOn && e.target.closest && !e.target.closest('.tk-heart') && e.target.closest('.track-item, .pa-btn')) setTimeout(() => setSheet(false), 350);
         });
 
         // 曲が変わるたびに、次の絵へ（最初の1曲目を選んだときは動かさない）
