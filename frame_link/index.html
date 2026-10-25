@@ -81,6 +81,31 @@ button:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
 #hub>.top,#hub>main,#hub>.gobar,#hub>.bnav{position:relative;z-index:1}
 .stg.hasbg{background-size:cover;background-position:center}
 .stg.hasbg .sub,.stg.hasbg .meta{color:#d3d0f0;text-shadow:0 1px 3px #000}
+.recopen{width:100%;text-align:center;margin:0 0 6px}
+.recbox{padding:10px;margin:0 0 8px;--c:var(--am)}
+.rechd{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:13px}
+.rechd .x{background:none;border:0;color:var(--dim);font-size:20px;cursor:pointer;padding:0 4px}
+.rtypes{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.rtypes button{padding:7px 4px;border:1px solid var(--line);background:var(--panel);color:var(--dim);font:700 12px var(--f-body);cursor:pointer;touch-action:manipulation}
+.rtypes button small{display:block;font-weight:400;font-size:9px;margin-top:2px;opacity:.8}
+.rtypes button.on{border-color:var(--am);color:var(--am);background:rgba(255,194,75,.08)}
+.rels{display:flex;gap:4px;align-items:center;margin-top:6px;font-size:11px;color:var(--dim)}
+.rels button{border:1px solid var(--line);background:var(--panel);color:var(--dim);padding:5px 8px;font:700 11px var(--f-body);cursor:pointer;display:inline-flex;align-items:center}
+.rels button.on{border-color:var(--c,var(--am));color:var(--c,var(--am));box-shadow:inset 0 0 0 1px var(--c,var(--am))}
+.rprop{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px;display:grid;gap:6px}
+.rph{font:700 10px var(--f-num);letter-spacing:.14em;color:var(--am)}
+.rrow{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:center;border:1px solid var(--c);padding:6px 8px;background:rgba(255,255,255,.03)}
+.rrow .ic{width:34px;height:34px}
+.rrow .cat{font:700 9px var(--f-num);letter-spacing:.12em;color:var(--dim)}
+.rrow .nm{font-size:13px;font-weight:700}
+.rrow .lv{font:700 10px var(--f-num);text-align:right;color:var(--dim)}
+.rown{font-size:11px;color:var(--am);padding:4px 8px;border:1px dashed var(--am)}
+.rtend{display:flex;gap:8px;flex-wrap:wrap}
+.rtd{font-size:11px;color:var(--dim)}
+.rtd i{font-style:normal;margin-right:3px}
+.rtd b{color:var(--txt)}.rtd b.up{color:var(--gr)}.rtd b.dn{color:var(--mg)}
+.rbtns{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.rcm{display:inline-block;font:700 9px var(--f-body);background:var(--am);color:#000;padding:1px 5px;margin-right:2px;letter-spacing:.04em}
 .hmini{flex:none;width:34px;height:34px;padding:0;border-radius:50%;border:2px solid var(--c,var(--am));background:#0b0920;overflow:hidden;cursor:pointer;touch-action:manipulation;box-shadow:0 0 8px var(--c,transparent);margin-left:auto}
 .hmini .pimg,.hmini svg{width:100%;height:100%;display:block;object-fit:cover}
 .hmini+.scrap{margin-left:0}
@@ -1231,7 +1256,7 @@ function uiToast(msg){
 }
 
 /* ================= hub UI ================= */
-const UI={st:'info',stPrev:null,open:{},pick:null,synMat:0,stab:false,synMsg:'',tab:'sortie',stage:1,lvSel:{},cat:null,sel:null,confirm:null,cleanR:0,ed:null,slotSel:null,pg:0,abPick:null,undo:null};
+const UI={st:'info',stPrev:null,open:{},pick:null,synMat:0,stab:false,synMsg:'',tab:'sortie',stage:1,lvSel:{},cat:null,sel:null,confirm:null,cleanR:0,ed:null,rec:null,recMark:null,slotSel:null,pg:0,abPick:null,undo:null};
 function stageIcons(s){return Object.keys(s.elems).filter(k=>k!=='none'&&s.elems[k]>=.2).map(k=>eIcon(k,14)).join('')}
 function stageRec(s){
   let best=null,bs=-1,mn=9;
@@ -1259,17 +1284,17 @@ function slotEdit(k){
   const q=SV.slots[k];
   UI.ed={k,snap:Object.assign({},SV.eq),name:q?q.name:''};
   if(q){const m=equipLoad(q);if(m)uiToast('一部の部品が見つかりません')}
-  UI.slotSel=null;UI.undo=null;UI.confirm=null;
+  UI.slotSel=null;UI.undo=null;UI.confirm=null;UI.rec=null;UI.recMark=null;
 }
 function edSave(){
   const e=UI.ed;if(!e)return;
   SV.slots[e.k]={name:e.name||'',eq:Object.assign({},SV.eq)};
-  UI.ed=null;UI.pg=Math.floor(e.k/PGN);save();uiToast('プリセット'+(e.k+1)+' を保存しました');
+  UI.ed=null;UI.rec=null;UI.recMark=null;UI.pg=Math.floor(e.k/PGN);save();uiToast('プリセット'+(e.k+1)+' を保存しました');
 }
 function edCancel(){
   const e=UI.ed;if(!e)return;
   for(const c of CATS)SV.eq[c]=e.snap[c];
-  UI.ed=null;save();
+  UI.ed=null;UI.rec=null;UI.recMark=null;save();
 }
 function edRename(){
   const e=UI.ed;if(!e)return;
@@ -1446,6 +1471,101 @@ function htmlHangarList(){
   h+='<p class="lead" style="font-size:12px">所持: パーツ <b style="color:'+(SV.parts.length>=PARTMAX*.9?'var(--mg)':SV.parts.length>=PARTMAX*.75?'var(--am)':'inherit')+'">'+SV.parts.length+' / '+PARTMAX+'</b> 個 / チップ '+SV.chips.length+' 個。出撃で敵が落とすものを拾って持ち帰ろう。</p>';
   return h;
 }
+
+/* ================= おすすめ編成（出発点を示すだけ。2部位だけ入れ、残りは自分で） ================= */
+const REC_TYPES={
+  fire:{n:'火力',d:'敵を素早く倒す',cats:['gun','pod']},
+  tank:{n:'耐久',d:'被弾に強く、事故を減らす',cats:['hull','core']},
+  boss:{n:'ボス向け',d:'ボスに重い一撃',cats:['core','pod']},
+  sweep:{n:'殲滅',d:'群れをまとめて一掃',cats:['gun','core']},
+  bal:{n:'バランス',d:'攻守のバランス型',cats:['hull','gun']}
+};
+const REC_ORDER=['fire','tank','boss','sweep','bal'];
+function recHpE(B){return B.hull.hp/(1-B.hull.arm)+B.hull.regen*30}
+function recArea(B){const g=B.gun,c=B.core;return g.ways*.07+(g.pierce>0?.25:0)+(g.splash>0?.15:0)+(c.k==='nova'?1:c.k==='blade'?c.rad/105*.45:.3)}
+function recCore(B){return B.core.dmg/B.core.cost}
+function recBuildParts(parts){return calcBuild(parts)}
+function recScore(t,B,el){
+  const dN=B.dps/200,hN=recHpE(B)/150;let sc;
+  if(t==='fire')sc=dN;
+  else if(t==='tank')sc=hN+dN*.35;
+  else if(t==='boss')sc=dN*.5+recCore(B)/1.3*.8;
+  else if(t==='sweep')sc=dN*.5+recArea(B)*.8;
+  else sc=Math.sqrt(dN*hN)*1.5;
+  if(t!=='fire')sc*=1+(B.syn-1)*.5;
+  if(el&&el!=='any'){
+    const ks=[B.gun.el,B.gun.el2,B.pod.el,B.pod.el2,B.core.el,B.core.el2,B.hull.e].filter(Boolean);
+    sc*=1+.12*ks.filter(k=>k===el).length;
+  }
+  return sc;
+}
+function recPool(c){
+  return SV.parts.filter(q=>q.c===c).sort((a,b)=>(b.r-a.r)||(b.lv-a.lv)).slice(0,8);
+}
+function recCurParts(){const o={};for(const c of CATS)o[c]=eqPart(c);return o}
+function recMake(t,el){
+  const T=REC_TYPES[t],[c1,c2]=T.cats,cur=recCurParts(),out=[];
+  for(const a of recPool(c1))for(const b of recPool(c2)){
+    const P=Object.assign({},cur);P[c1]=a;P[c2]=b;
+    const B=recBuildParts(P);out.push({a,b,B,sc:recScore(t,B,el)});
+  }
+  out.sort((x,y)=>y.sc-x.sc);
+  const pick=[];
+  for(const o of out){
+    if(pick.length>=3)break;
+    if(pick.some(q=>(q.a.id===o.a.id)||(q.b.id===o.b.id)||(q.a.k===o.a.k&&q.b.k===o.b.k)))continue;
+    pick.push(o);
+  }
+  for(const o of out){if(pick.length>=3)break;if(!pick.includes(o))pick.push(o)}
+  return pick;
+}
+function recLbl(r){return r>=1.3?'↑↑':r>=1.08?'↑':r>=.93?'→':r>=.75?'↓':'↓↓'}
+function recTend(B){
+  const C=calcBuild();
+  return [['火力',B.dps/Math.max(1,C.dps)],['耐久',recHpE(B)/Math.max(1,recHpE(C))],['範囲',(recArea(B)+.2)/(recArea(C)+.2)],['必殺',recCore(B)/Math.max(.01,recCore(C))]]
+    .map(x=>'<span class="rtd"><i>'+x[0]+'</i><b class="'+(x[1]>=1.08?'up':x[1]<.93?'dn':'')+'">'+recLbl(x[1])+'</b></span>').join('');
+}
+function recWhy(t,P,B){
+  const T=REC_TYPES[t],nm=c=>KIND[c][P[c].k].n;
+  let s=nm(T.cats[0])+'と'+nm(T.cats[1])+'で、'+({fire:'火力を伸ばす',tank:'打たれ強くする',boss:'ボスへの一撃を重くする',sweep:'広い範囲を巻き込む',bal:'攻守をそろえる'})[t]+'。';
+  if(B.synN>=2)s+=' '+ELEM[B.synE].n+'同調×'+B.synN+'（+'+Math.round((B.syn-1)*100)+'%）。';
+  return s;
+}
+function recPartRow(p){
+  const k=KIND[p.c][p.k],r=RAR[p.r];
+  return '<div class="rrow" style="--c:'+r.c+'"><div class="ic">'+icon(p.k,k.col)+'</div><div><div class="cat">'+CATN[p.c]+'</div><div class="nm">'+partName(p)+' '+eIcon(partElem(p),13)+'</div></div><div class="lv">Lv.'+p.lv+'<br>'+rarTag(p)+'</div></div>';
+}
+function htmlRec(){
+  const R=UI.rec;
+  if(!R)return '<button class="btn gh sm recopen" data-act="rec" type="button">✦ おすすめから作る</button>';
+  let h='<div class="recbox br"><div class="rechd"><b>おすすめから作る</b><button class="x" data-act="recx" type="button" aria-label="閉じる">×</button></div>';
+  h+='<p class="lead" style="font-size:11px;margin:0 0 6px">タイプを選ぶと、そのタイプを決める部位の2つだけを提案します。残りの2つは自分で選んでください。</p>';
+  h+='<div class="rtypes">'+REC_ORDER.map(k=>'<button type="button" class="'+(R.t===k?'on':'')+'" data-act="rect" data-k="'+k+'"><b>'+REC_TYPES[k].n+'</b><small>'+REC_TYPES[k].d+'</small></button>').join('')+'</div>';
+  h+='<div class="rels"><span>属性</span><button type="button" class="'+(R.el==='any'?'on':'')+'" data-act="rece" data-k="any">おまかせ</button>'+ELEM_KEYS.map(k=>'<button type="button" class="'+(R.el===k?'on':'')+'" data-act="rece" data-k="'+k+'" style="--c:'+ELEM[k].col+'">'+eIcon(k,16)+'</button>').join('')+'</div>';
+  h+='<button class="btn sm" data-act="recgo" type="button"'+(R.t?'':' disabled')+' style="width:100%;text-align:center;margin-top:8px">提案を見る</button>';
+  if(R.c&&R.c.length){
+    const o=R.c[R.i%R.c.length],T=REC_TYPES[R.t],P=Object.assign(recCurParts(),{[T.cats[0]]:o.a,[T.cats[1]]:o.b});
+    const open=CATS.filter(c=>!T.cats.includes(c));
+    h+='<div class="rprop"><div class="rph">案 '+(R.i%R.c.length+1)+' / '+R.c.length+'</div>'+recPartRow(o.a)+recPartRow(o.b);
+    h+='<div class="rown">あなたの番：'+open.map(c=>CATN[c]).join('・')+'（今の装備のまま）</div>';
+    h+='<div class="rtend">'+recTend(o.B)+'</div><p class="lead" style="font-size:11px;margin:4px 0 0">'+recWhy(R.t,P,o.B)+'</p>';
+    h+='<div class="rbtns"><button class="btn sm" data-act="recapply" type="button">この2つを入れる</button><button class="btn gh sm" data-act="recn" type="button">別の案を見る</button></div></div>';
+  }else if(R.c)h+='<p class="lead" style="font-size:11px">提案を作れませんでした。</p>';
+  return h+'</div>';
+}
+function recApply(){
+  const R=UI.rec;if(!R||!R.c||!R.c.length)return;
+  const o=R.c[R.i%R.c.length],T=REC_TYPES[R.t];
+  SV.eq[T.cats[0]]=o.a.id;SV.eq[T.cats[1]]=o.b.id;save();
+  UI.recMark={t:R.t,el:R.el,cats:CATS.filter(c=>!T.cats.includes(c))};
+  UI.rec=null;
+}
+function recTop(cat){
+  const M=UI.recMark;if(!M||!M.cats.includes(cat))return [];
+  const cur=recCurParts();
+  return SV.parts.filter(q=>q.c===cat).map(q=>{const P=Object.assign({},cur,{[cat]:q});return {id:q.id,sc:recScore(M.t,calcBuild(P),M.el)}}).sort((a,b)=>b.sc-a.sc).slice(0,2).map(x=>x.id);
+}
+
 function htmlHangarEdit(){
   const B=curBuild();
   const e=UI.ed;
@@ -1455,12 +1575,13 @@ function htmlHangarEdit(){
     +'</div></div>';
   const synTxt=B.synN>=2?'<b style="color:'+ELEM[B.synE].col+'">'+eIcon(B.synE,14)+' '+ELEM[B.synE].n+'同調 ×'+B.synN+'</b> 与ダメージ +'+Math.round((B.syn-1)*100)+'%':'同じ属性を2つ以上そろえると同調ボーナス（+8% / +18% / +30%）';
   h+='<div class="syn">'+[B.gun.el,B.pod.el,B.core.el,B.hull.e].map(k=>eIcon(k,16)).join('')+'<span>'+synTxt+'</span></div>';
+  h+=htmlRec();
   h+='<div class="sec">EQUIPMENT — タップで付け替え・強化・改造</div>';
   for(const c of CATS){
     const p=eqPart(c), k=KIND[c][p.k], r=RAR[p.r], slots=r.slots;
     let pips='';for(let i=0;i<slots;i++)pips+='<i class="cpip'+(p.chips[i]?' on':'')+'"></i>';
     h+='<button class="slot br" style="--c:'+r.c+'" data-act="slot" data-c="'+c+'" type="button"><div class="ic">'+icon(p.k,k.col)+'</div>'
-      +'<div><div class="cat">'+CATE[c]+'</div><div class="nm">'+k.n+' '+eIcon(partElem(p),14)+'</div><div class="ptags">'+tagHtml(p)+'</div></div><div class="lv">Lv.'+p.lv+'<br>'+rarTag(p)+'</div>'
+      +'<div><div class="cat">'+CATE[c]+((UI.recMark&&UI.recMark.cats.includes(c))?' <span class="rcm">あなたの番</span>':'')+'</div><div class="nm">'+k.n+' '+eIcon(partElem(p),14)+'</div><div class="ptags">'+tagHtml(p)+'</div></div><div class="lv">Lv.'+p.lv+'<br>'+rarTag(p)+'</div>'
       +'<div class="chips" style="grid-column:2/4">'+pips+'</div></button>';
   }
   return h;
@@ -1630,9 +1751,10 @@ function renderSheet(){
     h+='<p class="lead" style="font-size:11px;margin:0">この部位に付けられる手持ち '+free+' 個'+(others?' ・ 他の部位向け '+others+' 個':'')+'</p>';
   }else{
     h+='<div class="inv">';
+    const rtop=recTop(cat);
     inv.forEach(q=>{
       const kk=KIND[cat][q.k];
-      h+='<button class="irow'+(q.r===4?' myth':'')+(q.id===p.id?' sel':'')+'" style="--c:'+RAR[q.r].c+'" data-act="selp" data-id="'+q.id+'" type="button"><div class="ic">'+icon(q.k,kk.col)+'</div><div><div class="nm">'+(q.fav?'★ ':'')+partName(q)+' '+eIcon(partElem(q),13)+(q.e2?eIcon(q.e2,13):'')+'</div><div class="sm">'+RAR[q.r].n+' ・ Lv.'+q.lv+' ・ CHIP '+q.chips.length+'/'+RAR[q.r].slots+'</div></div><div class="eq">'+(SV.eq[cat]===q.id?'EQUIPPED<br>':'')+tagHtml(q)+'</div></button>';
+      h+='<button class="irow'+(q.r===4?' myth':'')+(q.id===p.id?' sel':'')+'" style="--c:'+RAR[q.r].c+'" data-act="selp" data-id="'+q.id+'" type="button"><div class="ic">'+icon(q.k,kk.col)+'</div><div><div class="nm">'+(rtop.includes(q.id)?'<span class="rcm">おすすめ</span> ':'')+(q.fav?'★ ':'')+partName(q)+' '+eIcon(partElem(q),13)+(q.e2?eIcon(q.e2,13):'')+'</div><div class="sm">'+RAR[q.r].n+' ・ Lv.'+q.lv+' ・ CHIP '+q.chips.length+'/'+RAR[q.r].slots+'</div></div><div class="eq">'+(SV.eq[cat]===q.id?'EQUIPPED<br>':'')+tagHtml(q)+'</div></button>';
     });
     h+='</div>';
   }
@@ -3462,6 +3584,13 @@ function hubClick(e){
   else if(a==='pg'){UI.pg=(UI.pg+1)%(SV.slots.length/PGN);UI.slotSel=null;UI.confirm=null;sfx('ok');renderHub()}
   else if(a==='edsave'){edSave();sfx('up');renderHub();$('hubMain').scrollTop=0}
   else if(a==='edcancel'){edCancel();sfx('ok');renderHub();$('hubMain').scrollTop=0}
+  else if(a==='rec'){UI.rec={t:null,el:'any',i:0,c:null};sfx('ok');renderHub()}
+  else if(a==='recx'){UI.rec=null;sfx('ok');renderHub()}
+  else if(a==='rect'){UI.rec.t=el.dataset.k;UI.rec.c=null;sfx('ok');renderHub()}
+  else if(a==='rece'){UI.rec.el=el.dataset.k;UI.rec.c=null;sfx('ok');renderHub()}
+  else if(a==='recgo'){UI.rec.c=recMake(UI.rec.t,UI.rec.el);UI.rec.i=0;sfx('up');renderHub()}
+  else if(a==='recn'){UI.rec.i++;sfx('ok');renderHub()}
+  else if(a==='recapply'){recApply();sfx('up');uiToast('2つを入れました。残りは自分で選んでください');renderHub()}
   else if(a==='edren'){edRename();renderHub()}
   else if(a==='abpick'){const i=+el.dataset.i;UI.abPick=UI.abPick===i?null:i;sfx('ok');renderHub();const L=document.querySelector('.abl');if(L&&L.scrollIntoView)L.scrollIntoView({block:'nearest'})}
   else if(a==='abgo'){const q=PRE(+el.dataset.i);if(q){equipLoad(q);save();sfx('ok');uiToast('出撃編成を メイン'+'AB'[+el.dataset.i]+' にしました');renderHub()}}
