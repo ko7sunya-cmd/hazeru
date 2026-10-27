@@ -1461,7 +1461,7 @@ function htmlStgDiff(){
 }
 function htmlSortie(){
   const B=curBuild(),H=HEROES[SV.hero],hl=hLevel(SV.hxp[SV.hero]);
-  let h=(bkNeeded()?'<div class="bknag">セーブのバックアップを取っていません。消えると戻せません。<button class="btn sm" type="button" data-act="bk">バックアップ</button></div>':'')+'<div class="sec">MISSION SELECT</div>';
+  let h='<div class="sec">MISSION SELECT</div>';
   STAGES.forEach((s,i)=>{
     const open=i<=SV.clear, best=SV.best[s.no]||0, cl=SV.clear>=s.no;
     const bgi=(typeof BG!=='undefined'&&BG[s.no])?BG[s.no].card:null,sl=UI.stage===s.no;
@@ -1967,9 +1967,8 @@ function bkRestore(txt){
 }
 
 function openSet(){
-  $('set').hidden=false;$('setBgbSub').textContent=(SV.bgOn!==false?'ON':'OFF')+'（見づらければOFF）';const n=bkNeeded();
-  $('setBk').classList.toggle('warn',n);
-  $('setBkSub').textContent=n?'バックアップを取っていません':(SV.lastBk?'最終：'+new Date(SV.lastBk).toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'}):'セーブの控えを作る');
+  $('set').hidden=false;$('setBgbSub').textContent=(SV.bgOn!==false?'ON':'OFF')+'（見づらければOFF）';$('setBk').classList.remove('warn');
+  $('setBkSub').textContent=(SV.lastBk?'最終：'+new Date(SV.lastBk).toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'}):'セーブの控えを作る');
 }
 
 /* ================= HUB GUIDE (heroine) ================= */
