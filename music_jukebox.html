@@ -630,6 +630,8 @@
         .gsw { min-width: 76px; justify-content: flex-end; display: flex; align-items: center; gap: 4px; color: #fff; font-size: 0.72rem; font-weight: 600; letter-spacing: 0; white-space: nowrap; text-shadow: 0 0 2px rgba(0,0,0,.95), 0 0 6px rgba(0,0,0,.8); }
         #gal-top { gap: 6px; } #gal-nav { gap: 4px; }
         #gal-count { min-width: 3.4em; text-align: center; }
+        #gal-title { cursor: pointer; -webkit-tap-highlight-color: transparent; padding: 8px 12px; margin: -8px 0 2px; border-radius: 8px; transition: background 0.15s; }
+        #gal-title:active { background: rgba(255, 255, 255, 0.14); }
         #gal-title { text-align: center; font-size: 0.88rem; color: #f1f5f9; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
                      text-shadow: 0 0 2px rgba(0, 0, 0, 0.95), 0 0 6px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.8); }
         #gal-progress { position: relative; height: 4px; margin-bottom: 14px; border-radius: 2px; background: rgba(255, 255, 255, 0.28); cursor: pointer; touch-action: none; }
@@ -665,7 +667,7 @@
             <button class="gbtn" id="gal-gnext" type="button" aria-label="次のギャラリーの先頭へ">▷</button>
         </div>
         <div id="gal-bar">
-            <div id="gal-title">曲を選んでください</div>
+            <div id="gal-title" role="button" tabindex="0" aria-label="再生リストを開く">曲を選んでください</div>
             <div id="gal-progress"><div id="gal-progress-bar"></div></div>
             <div id="gal-ctrl">
                 <button class="gbtn" id="gal-list" type="button" aria-label="再生リスト">☰</button>
@@ -915,6 +917,12 @@
                             <div class="song-title">星散る夜に。</div>
                             <div class="take-btn-container">
                                 <div class="track-item" data-src="music/hoshi_chiru_yoru_01.mp3" data-name="星散る夜に。 01">01</div>
+                            </div>
+                        </div>
+                        <div class="song-group">
+                            <div class="song-title">星を追いかけて</div>
+                            <div class="take-btn-container">
+                                <div class="track-item" data-src="music/hoshi_o_oikakete_01.mp3" data-name="星を追いかけて 01">01</div>
                             </div>
                         </div>
                     </div>
@@ -1760,6 +1768,9 @@ void main(){
         $('gal-prev').addEventListener('click', () => goArt(-1));
         $('gal-next').addEventListener('click', () => goArt(1));
         $('gal-list').addEventListener('click', () => setSheet(!sheetOpen()));
+        // 「曲を選んでください」（曲名）の文字をタップしても、☰と同じようにリストを開閉する
+        galTitle.addEventListener('click', () => setSheet(!sheetOpen()));
+        galTitle.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSheet(!sheetOpen()); } });
         galPlay.addEventListener('click', () => { togglePlay(); });
         let nextDir = 1;
         $('gal-pv').addEventListener('click', () => { nextDir = -1; goPrev(); setTimeout(() => { nextDir = 1; }, 400); });
@@ -1796,7 +1807,7 @@ void main(){
         // ジェスチャー：左右スワイプ＝絵を切り替え／上スワイプ＝再生リスト／下スワイプ＝閉じる／タップ＝UIを隠す・出す
         let g = null;
         gal.addEventListener('pointerdown', e => {
-            if (e.target.closest('button, #gal-progress')) { g = null; return; }
+            if (e.target.closest('button, #gal-progress, #gal-title')) { g = null; return; }
             g = { x: e.clientX, y: e.clientY, t: performance.now() };
         });
         gal.addEventListener('pointerup', e => {
