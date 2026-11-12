@@ -9,7 +9,8 @@
    "dur": 188.47,
    "img": "jk_01.webp",
    "bpm_old": 126.04,
-   "first_old": 0.173
+   "first_old": 0.173,
+   "title_en": "Epic of the Starfall"
   },
   {
    "id": "02",
@@ -20,7 +21,8 @@
    "dur": 145.39,
    "img": "jk_02.webp",
    "bpm_old": 93.77,
-   "first_old": 0.056
+   "first_old": 0.056,
+   "title_en": "Crystal Signal"
   },
   {
    "id": "03",
@@ -31,7 +33,8 @@
    "dur": 207.19,
    "img": "jk_03.webp",
    "bpm_old": 124.19,
-   "first_old": 0.481
+   "first_old": 0.481,
+   "title_en": "Chorus of the Heavens"
   },
   {
    "id": "04",
@@ -42,7 +45,8 @@
    "dur": 177.98,
    "img": "jk_04.webp",
    "bpm_old": 97.67,
-   "first_old": 0.529
+   "first_old": 0.529,
+   "title_en": "Clover Reel"
   },
   {
    "id": "06",
@@ -53,7 +57,8 @@
    "dur": 172.44,
    "img": "jk_06.webp",
    "bpm_old": 97.26,
-   "first_old": 0.459
+   "first_old": 0.459,
+   "title_en": "Crystal of the White Night"
   },
   {
    "id": "07",
@@ -64,7 +69,8 @@
    "dur": 177.62,
    "img": "jk_07.webp",
    "bpm_old": 125.29,
-   "first_old": 0.371
+   "first_old": 0.371,
+   "title_en": "Fugue of the Glass Bells"
   },
   {
    "id": "08",
@@ -75,7 +81,8 @@
    "dur": 192.02,
    "img": "jk_08.webp",
    "bpm_old": 174.14,
-   "first_old": 0.07
+   "first_old": 0.07,
+   "title_en": "Stardust Arpeggio ~Far Away~"
   },
   {
    "id": "09",
@@ -86,7 +93,8 @@
    "dur": 162.8,
    "img": "jk_09.webp",
    "bpm_old": 119.15,
-   "first_old": 0.396
+   "first_old": 0.396,
+   "title_en": "Stardust Arpeggio ~Beyond~"
   }
  ]
 }
