@@ -57,6 +57,7 @@ h2.ttl{margin:0;font-size:17px;letter-spacing:.2em;font-weight:800;color:var(--g
 
 /* LIB */
 #lib,#off{gap:10px;}
+.lang-btn{background:none;border:0;font-family:inherit;cursor:pointer;display:block;width:100%;}
 .home-link{margin-top:6px;text-align:center;color:var(--sub);font-size:12.5px;text-decoration:none;letter-spacing:.06em;padding:8px;}
 .home-link:hover{color:#fff;}
 .lib-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:10px;}
@@ -205,6 +206,7 @@ input[type=range]{flex:1;min-width:0;width:100%;accent-color:#8cc8ff;}
     <button class="btn" id="goLib"><img class="emb" src="assets/ui/emb_my.webp" alt="">MY SOUND</button>
     <button class="btn" id="goOpt">⚙ OPTION</button>
     <a class="home-link" href="index.html">← 作品ページへ</a>
+    <button type="button" class="home-link lang-btn" id="langBtn">English</button>
   </div>
 </section>
 
@@ -317,7 +319,8 @@ input[type=range]{flex:1;min-width:0;width:100%;accent-color:#8cc8ff;}
   <div class="opt"><div class="top"><span>ノーツスピード</span><b id="oSpeedV">6.0</b></div><input type="range" id="oSpeed" min="1" max="10" step="0.5"></div>
   <div class="opt"><div class="top"><span>判定ラインの高さ</span><b id="oJudgeV">74%</b></div><input type="range" id="oJudge" min="58" max="86" step="1"><div class="help">高いほど、指でノーツが隠れにくくなります。</div></div>
   <div class="opt"><div class="top"><span>タイミング調整</span><b id="oOffV">0ms</b></div><input type="range" id="oOff" min="-250" max="250" step="5"><div class="help">ノーツが曲より遅く感じたら＋、早く感じたら−に動かしてください。</div></div>
-  <label class="chk"><input type="checkbox" id="oSe"> ヒット音（タッチ時の「カチッ」）</label>
+  <label class="chk"><input type="checkbox" id="oSe"> ヒット音（タッチ時の「チッ」）</label>
+  <div class="opt"><div class="top"><span>Language / 言語</span><button type="button" class="mbtn lang-btn" id="langBtn2" style="min-width:110px">English</button></div></div>
   <button class="btn gold" id="optClose">とじる</button>
 </div></div>
 
@@ -332,6 +335,88 @@ input[type=range]{flex:1;min-width:0;width:100%;accent-color:#8cc8ff;}
    ============================================================ */
 const $=id=>document.getElementById(id);
 const LS={get(k){try{return localStorage.getItem(k);}catch(e){return null;}},set(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
+const EN={
+"公式曲で遊ぶ": "Play Official Songs",
+"← 作品ページへ": "← About this game",
+"← 戻る": "← Back",
+"📂 mp3をえらぶ": "📂 Choose an mp3",
+"自分のmp3（SunoやDAWで作った曲など）で遊べます。": "Play with your own mp3 (a song made with Suno or a DAW, for example).",
+"曲はこの端末の中だけで使われ、サイトには送信されません。権利のある曲だけ使ってください。": "Your songs stay on this device and are never uploaded to the site. Please use only songs you have the rights to.",
+"おすすめ曲": "Recommended",
+"この端末におぼえている曲": "Saved on this device",
+"曲を解析中…": "Analyzing the song…",
+"はぜる のオリジナル曲です。曲をえらぶと、音を解析して譜面を作ります。": "Original songs by Hazeru. Pick a song and the game analyzes the audio to build the chart.",
+"← 曲えらび": "← Songs",
+"⚙ オプション": "⚙ Options",
+"ジャケットをタップで画像を変更": "Tap the cover to change the image",
+"調整": "Adjust",
+"👆 タップ": "👆 Tap",
+"拍のずれ": "Beat offset",
+"ためし聴きで「ピッ」が曲の拍に合っているか確かめてね。倍や半分のテンポなら ÷2・×2。曲に合わせて「タップ」を5回以上押しても合わせられます。": "Use the preview to check that the “beep” matches the beat. If the tempo is double or half, use ÷2 / ×2. You can also press “Tap” 5 or more times along with the song.",
+"▶ ためし聴き": "▶ Preview",
+"ピッ": "Beep",
+"この端末におぼえておく（次回から選びなおし不要）": "Remember on this device (no need to pick it again)",
+"▶ 続ける": "▶ Resume",
+"↻ リトライ": "↻ Retry",
+"曲えらびへ戻る": "Back to songs",
+"曲えらび ▶": "Songs ▶",
+"ノーツスピード": "Note speed",
+"判定ラインの高さ": "Judgment line height",
+"高いほど、指でノーツが隠れにくくなります。": "The higher it is, the less your finger hides the notes.",
+"タイミング調整": "Timing adjustment",
+"ノーツが曲より遅く感じたら＋、早く感じたら−に動かしてください。": "If the notes feel late compared to the music, move toward +. If they feel early, move toward −.",
+"ヒット音（タッチ時の「チッ」）": "Hit sound (a soft “tick” on touch)",
+"とじる": "Close",
+"ジャケット画像をえらぶ": "Choose a cover image",
+"再生位置": "Playback position",
+"一時停止": "Pause",
+"ホーム": "Home",
+"最高 ": "Best ",
+"総合評価": "Overall rating",
+"{0} / {1}曲 プレイ済み": "{0} / {1} songs played",
+"この難易度は、まだ遊んでいません": "Not played on this difficulty yet",
+"公式曲を読み込めませんでした。サイト上のページから開いてください（ファイルを直接開くと読めないことがあります）。": "Couldn't load the official songs. Please open the game from the website (it may not work when the file is opened directly).",
+"けす": "Delete",
+"消す？": "Delete?",
+"ベスト ": "Best ",
+"曲を読み込み中…": "Loading the song…",
+"曲を読み込めませんでした。（{0}）": "Couldn't load the song. ({0})",
+"解析モジュール（chart-analysis.js）が読み込めていません。": "The analysis module (chart-analysis.js) failed to load.",
+"ファイルが大きすぎます（{0}MBまで）。": "The file is too large (up to {0} MB).",
+"曲が短すぎます（8秒以上の曲をえらんでね）。": "The song is too short (please choose one that is 8 seconds or longer).",
+"この曲は読み込めませんでした（{0}）。mp3か、ほかの形式（m4a・wav）でためしてね。": "This song couldn't be loaded ({0}). Try an mp3, or another format (m4a, wav).",
+"長さ ": "Length ",
+"　ずれ ": "　Offset ",
+"⚠ 曲の途中でテンポがゆれているみたい（拍の位置が最大 {0}ms ずれます）。ノーツがズレて感じたら「拍のずれ」を調整するか、ほかの曲をためしてね。": "⚠ The tempo seems to drift during the song (beats shift by up to {0} ms). If the notes feel off, adjust “Beat offset” or try another song.",
+"この難易度のベスト：{0}（{1}）": "Best on this difficulty: {0} ({1})",
+"👆 {0}回": "👆 {0}",
+"⏸ とめる": "⏸ Stop",
+"ノーツを作れませんでした。BPMを確かめてください。": "Couldn't build a chart. Please check the BPM.",
+"曲を再生できませんでした。": "The song couldn't be played."
+};
+let LANG=(function(){try{const q=new URLSearchParams(location.search).get('lang');if(q==='ja'||q==='en'){LS.set('otoge4_lang',q);return q;}}catch(e){}const s=LS.get('otoge4_lang');if(s==='ja'||s==='en')return s;try{return/^ja/i.test(navigator.language||'')?'ja':'en';}catch(e){return'ja';}})();
+function T(k){let s=(LANG==='en'&&EN[k])||k;for(let i=1;i<arguments.length;i++)s=s.split('{'+(i-1)+'}').join(arguments[i]);return s;}
+const ttl=b=>(LANG==='en'&&b&&b.title_en)?b.title_en:(b&&b.title);
+const I18N=new Map(),I18A=new Map();
+function applyLang(){
+  document.documentElement.lang=LANG;
+  const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;const nodes=[];while(n=w.nextNode())nodes.push(n);
+  nodes.forEach(n=>{if(n.parentElement&&n.parentElement.closest('script,style'))return;
+    const raw=n.textContent,m=raw.match(/^(\s*)([\s\S]*?)(\s*)$/),core=m[2];if(!core)return;
+    const rec=I18N.get(n);
+    if(LANG==='en'){if(EN[core]){I18N.set(n,{ja:core,en:EN[core]});n.textContent=m[1]+EN[core]+m[3];}}
+    else if(rec&&core===rec.en){n.textContent=m[1]+rec.ja+m[3];}
+  });
+  document.querySelectorAll('[title],[aria-label]').forEach(e=>['title','aria-label'].forEach(a=>{const v=e.getAttribute(a);if(v===null)return;const key=e.tagName+a+(e.id||v);const rec=I18A.get(e)||{};
+    if(LANG==='en'){if(EN[v]){rec[a]={ja:v,en:EN[v]};I18A.set(e,rec);e.setAttribute(a,EN[v]);}}
+    else if(rec[a]&&v===rec[a].en)e.setAttribute(a,rec[a].ja);}));
+  document.querySelectorAll('.lang-btn').forEach(b=>b.textContent=LANG==='en'?'日本語':'English');
+}
+function setLang(l){LANG=l;LS.set('otoge4_lang',l);applyLang();
+  try{const on=id=>{const e=document.getElementById(id);return e&&e.classList.contains('on');};
+    if(on('setup')&&typeof syncMy==='function')syncMy();
+    if(on('off')&&typeof paintOff==='function')paintOff();
+    if(on('lib')&&typeof renderLib==='function')renderLib();}catch(e){}}
 const mmss=t=>{t=Math.max(0,Math.floor(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
 const pad=(n,w)=>String(Math.max(0,Math.round(n))).padStart(w,'0');
 function myHash(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h;}
@@ -349,6 +434,7 @@ const travelSec=()=>2.5-0.17*SET.speed;
 
 /* ---------- 画面 ---------- */
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');}
+$('langBtn').onclick=$('langBtn2').onclick=()=>setLang(LANG==='en'?'ja':'en');
 $('goLib').onclick=()=>{ensureAudio();FROM='lib';openLib();};
 $('goOff').onclick=()=>{ensureAudio();openOff();};
 $('offBack').onclick=()=>show('home');
@@ -433,7 +519,7 @@ function backToList(){stopPv();if(FROM==='off')openOff();else openLib();}
 let OFFICIAL=null;
 function loadOfficial(){
   return fetch('songs/songs.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error('http '+r.status);return r.json();})
-    .then(j=>{OFFICIAL=(j.songs||[]).map(x=>({id:'off_'+x.id,title:x.title,file:'songs/'+x.file,bpm:x.bpm,first:x.first,dur:x.dur,img:x.img?'songs/'+x.img:null}));})
+    .then(j=>{OFFICIAL=(j.songs||[]).map(x=>({id:'off_'+x.id,title:x.title,title_en:x.title_en||null,file:'songs/'+x.file,bpm:x.bpm,first:x.first,dur:x.dur,img:x.img?'songs/'+x.img:null}));})
     .catch(()=>{OFFICIAL=false;});
 }
 function offErr(t){const e=$('offErr');e.textContent=t||'';e.classList.toggle('on',!!t);}
@@ -441,11 +527,11 @@ function paintOff(){
   const box=$('offList'),el=$('offRate');if(!box||!el||!OFFICIAL)return;
   const n=OFFICIAL.length;let total=0,played=0;box.innerHTML='';
   OFFICIAL.forEach(b=>{const r=getBest(b.id,RATE_D),ok=r&&r.score>0;if(ok){total+=r.score;played++;}
-    box.appendChild(itemRow(b.title,ok?'最高 '+r.score.toLocaleString()+'　'+r.rank:'',()=>loadBundled(b),null,b.img));});
+    box.appendChild(itemRow(ttl(b),ok?T('最高 ')+r.score.toLocaleString()+'　'+r.rank:'',()=>loadBundled(b),null,b.img));});
   const rk=played?rankOf(total/n):null;
   el.innerHTML='<div class="rate-tabs">'+BEST_D.map(d=>'<button type="button" class="rt'+(d===RATE_D?' sel':'')+'" data-d="'+d+'">'+d.toUpperCase()+'</button>').join('')+'</div>'
     +'<div class="rate-main">'+(rk?'<img class="rate-rk" src="assets/rank/rank_'+rk.toLowerCase()+'.webp" alt="'+rk+'">':'<div class="rate-rk none">–</div>')
-    +'<div class="rate-info"><small>総合評価　'+RATE_D.toUpperCase()+'</small><b>'+total.toLocaleString()+'<i> / '+(n*1000000).toLocaleString()+'</i></b><span>'+(played?played+' / '+n+'曲を プレイ済み':'この難易度は、まだ遊んでいません')+'</span></div></div>';
+    +'<div class="rate-info"><small>'+T('総合評価')+'　'+RATE_D.toUpperCase()+'</small><b>'+total.toLocaleString()+'<i> / '+(n*1000000).toLocaleString()+'</i></b><span>'+(played?T('{0} / {1}曲 プレイ済み',played,n):T('この難易度は、まだ遊んでいません'))+'</span></div></div>';
   el.querySelectorAll('.rt').forEach(b=>b.onclick=()=>{RATE_D=b.dataset.d;LS.set('otoge4_rate',RATE_D);paintOff();});
 }
 function openOff(){
@@ -453,7 +539,7 @@ function openOff(){
   const box=$('offList');box.innerHTML='';
   (OFFICIAL===null?loadOfficial():Promise.resolve()).then(()=>{
     box.innerHTML='';
-    if(OFFICIAL===false){offErr('公式曲を読み込めませんでした。サイト上のページから開いてください（ファイルを直接開くと読めないことがあります）。');return;}
+    if(OFFICIAL===false){offErr(T('公式曲を読み込めませんでした。サイト上のページから開いてください（ファイルを直接開くと読めないことがあります）。'));return;}
     paintOff();
   });
 }
@@ -461,15 +547,15 @@ function openLib(){FROM='lib';stopPv();libPane(false);libErr('');renderLib();sho
 
 function itemRow(title,sub,onPick,onDel,img){
   const row=document.createElement('div');row.className='item';
-  row.innerHTML='<button type="button" class="item-main"><b></b><span></span></button>'+(onDel?'<button type="button" class="item-del" aria-label="けす">🗑</button>':'');
+  row.innerHTML='<button type="button" class="item-main"><b></b><span></span></button>'+(onDel?'<button type="button" class="item-del" aria-label="'+T('けす')+'">🗑</button>':'');
   row.querySelector('b').textContent=title;row.querySelector('span').textContent=sub;
   row.querySelector('.item-main').onclick=onPick;
   if(img){const m=row.querySelector('.item-main');m.classList.add('has-th');const t=document.createElement('i');t.className='item-thumb';t.style.backgroundImage='url('+img+')';m.appendChild(t);}
   if(onDel){const del=row.querySelector('.item-del');let armed=false;
-    del.onclick=()=>{if(!armed){armed=true;del.textContent='消す？';setTimeout(()=>{armed=false;del.textContent='🗑';},3000);}else onDel();};}
+    del.onclick=()=>{if(!armed){armed=true;del.textContent=T('消す？');setTimeout(()=>{armed=false;del.textContent='🗑';},3000);}else onDel();};}
   return row;
 }
-function bestLine(id){const b=BEST_D.map(d=>getBest(id,d)).filter(x=>x&&x.score>0);if(!b.length)return '';return '　ベスト '+Math.max.apply(null,b.map(x=>x.score)).toLocaleString();}
+function bestLine(id){const b=BEST_D.map(d=>getBest(id,d)).filter(x=>x&&x.score>0);if(!b.length)return '';return '　'+T('ベスト ')+Math.max.apply(null,b.map(x=>x.score)).toLocaleString();}
 const BEST_D=['beginner','easy','normal','hard','expert'];
 let RATE_D=LS.get('otoge4_rate')||'normal';if(BEST_D.indexOf(RATE_D)<0)RATE_D='normal';
 function bestOf(id){let r=null;BEST_D.forEach(d=>{const x=getBest(id,d);if(x&&x.score>0&&(!r||x.score>r.score))r=x;});return r;}
@@ -485,10 +571,10 @@ function renderLib(){
 }
 $('file').onchange=e=>{const f=e.target.files&&e.target.files[0];e.target.value='';if(f)loadMy(f,{});};
 function loadBundled(b){
-  FROM='off';libErr('');show('lib');libPane(true);$('busyTxt').textContent='曲を読み込み中…';
+  FROM='off';libErr('');show('lib');libPane(true);$('busyTxt').textContent=T('曲を読み込み中…');
   fetch(b.file).then(r=>{if(!r.ok)throw new Error('fetch '+r.status);return r.blob();})
-    .then(bl=>loadMy(bl,{id:b.id,name:b.title,bpm:b.bpm,first:b.first,bundled:true,img:b.img}))
-    .catch(()=>{libPane(false);openOff();offErr('曲を読み込めませんでした。（'+b.file+'）');});
+    .then(bl=>loadMy(bl,{id:b.id,name:ttl(b),bpm:b.bpm,first:b.first,bundled:true,img:b.img}))
+    .catch(()=>{libPane(false);openOff();offErr(T('曲を読み込めませんでした。（{0}）',b.file));});
 }
 function paintJk(){
   const a=$('jkArt');if(!MY)return;
@@ -511,11 +597,11 @@ $('jkfile').onchange=e=>{
   im.onerror=()=>URL.revokeObjectURL(u);im.src=u;
 };
 function loadMy(blob,saved){
-  if(!window.ChartAnalysis){libErr('解析モジュール（chart-analysis.js）が読み込めていません。');return;}
-  if(blob.size>MY_MAX_BYTES){libErr('ファイルが大きすぎます（'+Math.floor(MY_MAX_BYTES/1048576)+'MBまで）。');return;}
+  if(!window.ChartAnalysis){libErr(T('解析モジュール（chart-analysis.js）が読み込めていません。'));return;}
+  if(blob.size>MY_MAX_BYTES){libErr(T('ファイルが大きすぎます（{0}MBまで）。',Math.floor(MY_MAX_BYTES/1048576)));return;}
   const name=saved.name||String(blob.name||'my song').replace(/\.[^.]+$/,'');
   track('select_song',{mode:saved.bundled?'official':'my',song:saved.bundled?name:'(my sound)'});
-  stopPv();libErr('');libPane(true);$('busyTxt').textContent='曲を読み込み中…';
+  stopPv();libErr('');libPane(true);$('busyTxt').textContent=T('曲を読み込み中…');
   ChartAnalysis.analyzeFileFull(blob,m=>{$('busyTxt').textContent=m;}).then(r=>{
     if(!r.tempo)throw new Error('short');
     if(MY&&MY.url)URL.revokeObjectURL(MY.url);
@@ -529,7 +615,7 @@ function loadMy(blob,saved){
     libPane(false);show('setup');syncMy();
   }).catch(err=>{
     libPane(false);
-    libErr(String(err&&err.message)==='short'?'曲が短すぎます（8秒以上の曲をえらんでね）。':'この曲は読み込めませんでした（'+String(err&&err.message||err).slice(0,40)+'）。mp3か、ほかの形式（m4a・wav）でためしてね。');
+    libErr(String(err&&err.message)==='short'?T('曲が短すぎます（8秒以上の曲をえらんでね）。'):T('この曲は読み込めませんでした（{0}）。mp3か、ほかの形式（m4a・wav）でためしてね。',String(err&&err.message||err).slice(0,40)));
   });
 }
 $('setBack').onclick=backToList;
@@ -550,17 +636,17 @@ function setBpm(b){
 document.addEventListener('DOMContentLoaded',()=>{const ab=document.getElementById('adjBox');if(ab)ab.addEventListener('toggle',()=>{if(!ab.open)stopPv();});});
 function syncMy(){
   if(!MY)return;const T=60/MY.bpm,rg=Math.round(T*500/5)*5;
-  $('sName').textContent=MY.name;paintJk();$('sName').textContent=MY.name;$('sMeta').textContent='長さ '+mmss(MY.dur)+'　／　BPM '+MY.bpm.toFixed(1);
+  $('sName').textContent=MY.name;paintJk();$('sName').textContent=MY.name;$('sMeta').textContent=T('長さ ')+mmss(MY.dur)+'　／　BPM '+MY.bpm.toFixed(1);
   $('bpm').value=MY.bpm.toFixed(1);
-  $('adjSum').textContent='BPM '+MY.bpm.toFixed(1)+(MY.adj?'　ずれ '+(MY.adj>0?'+':'')+MY.adj+'ms':'');
+  $('adjSum').textContent='BPM '+MY.bpm.toFixed(1)+(MY.adj?T('　ずれ ')+(MY.adj>0?'+':'')+MY.adj+'ms':'');
   const adj=$('adj');adj.min=-rg;adj.max=rg;adj.value=MY.adj;$('adjV').textContent=(MY.adj>0?'+':'')+MY.adj+'ms';
-  const d=MY.drift;$('sWarn').textContent=(d&&d.spread>40&&!MY.bundled)?'⚠ 曲の途中でテンポがゆれているみたい（拍の位置が最大 '+d.spread+'ms ずれます）。ノーツがズレて感じたら「拍のずれ」を調整するか、ほかの曲をためしてね。':'';
+  const d=MY.drift;$('sWarn').textContent=(d&&d.spread>40&&!MY.bundled)?T('⚠ 曲の途中でテンポがゆれているみたい（拍の位置が最大 {0}ms ずれます）。ノーツがズレて感じたら「拍のずれ」を調整するか、ほかの曲をためしてね。',d.spread):'';
   $('seek').max=Math.max(1,MY.dur);
   document.querySelectorAll('#diffs .diff').forEach(b=>{
     const d=b.dataset.d;b.classList.toggle('sel',d===DIFF);
     const n=MY.profile?buildChart(MY.profile,MY.dur,d,MY.id).length:0;b.querySelector('small').textContent=n+' notes';
   });
-  const bst=getBest(MY.id,DIFF);$('best').textContent=bst?'この難易度のベスト：'+bst.score.toLocaleString()+'（'+bst.rank+'）':'';
+  const bst=getBest(MY.id,DIFF);$('best').textContent=bst?T('この難易度のベスト：{0}（{1}）',bst.score.toLocaleString(),bst.rank):'';
 }
 document.querySelectorAll('[data-bpm]').forEach(b=>b.onclick=()=>{if(MY)setBpm(MY.bpm+parseFloat(b.dataset.bpm));});
 $('half').onclick=()=>{if(MY)setBpm(MY.bpm/2);};
@@ -572,8 +658,8 @@ let taps=[],tapTimer=0;
 $('tap').addEventListener('pointerdown',e=>{
   e.preventDefault();if(!MY)return;const now=performance.now(),btn=$('tap');
   if(taps.length&&now-taps[taps.length-1]>2000)taps=[];
-  taps.push(now);if(taps.length>9)taps.shift();btn.textContent='👆 '+taps.length+'回';
-  clearTimeout(tapTimer);tapTimer=setTimeout(()=>{taps=[];btn.textContent='👆 タップ';},2200);
+  taps.push(now);if(taps.length>9)taps.shift();btn.textContent=T('👆 {0}回',taps.length);
+  clearTimeout(tapTimer);tapTimer=setTimeout(()=>{taps=[];btn.textContent=T('👆 タップ');},2200);
   if(taps.length>=5){const iv=[];for(let i=1;i<taps.length;i++)iv.push(taps[i]-taps[i-1]);iv.sort((a,b)=>a-b);const med=iv[iv.length>>1];
     if(med>230&&med<1500){const r=ChartAnalysis.refineTempo(MY.env,60000/med);if(r){MY.bpm=Math.max(40,Math.min(260,r.bpm));myRecalc(true);syncMy();}}}
 });
@@ -581,7 +667,7 @@ $('tap').addEventListener('pointerdown',e=>{
 /* ---------- ためし聴き（メトロノーム付き） ---------- */
 const pvA=new Audio();pvA.preload='auto';
 let pvUrl='',pvRaf=0,pvSched=-1,pvDrag=false;
-function stopPv(){cancelAnimationFrame(pvRaf);pvRaf=0;try{pvA.pause();}catch(e){}$('pv').textContent='▶ ためし聴き';}
+function stopPv(){cancelAnimationFrame(pvRaf);pvRaf=0;try{pvA.pause();}catch(e){}$('pv').textContent=T('▶ ためし聴き');}
 function pvLoop(){
   if(!MY||pvA.paused||pvA.ended){stopPv();return;}
   const t=pvA.currentTime,beat=60/MY.bpm,nk=Math.floor((t-MY.first)/beat)+1,dt=MY.first+nk*beat-t;
@@ -594,7 +680,7 @@ $('pv').onclick=()=>{
   if(!MY)return;if(!pvA.paused){stopPv();return;}
   ensureAudio();if(pvUrl!==MY.url){pvA.src=MY.url;pvUrl=MY.url;}
   try{pvA.currentTime=parseFloat($('seek').value)||0;}catch(e){}
-  pvSched=-1;const go=()=>{$('pv').textContent='⏸ とめる';pvLoop();};
+  pvSched=-1;const go=()=>{$('pv').textContent=T('⏸ とめる');pvLoop();};
   const pr=pvA.play();if(pr&&pr.then)pr.then(go).catch(()=>{});else go();
 };
 (function(){const sk=$('seek');
@@ -669,7 +755,7 @@ function trk(){return{mode:MY&&MY.bundled?'official':'my',song:MY&&MY.bundled?MY
 function startGame(){
   if(!MY)return;stopPv();ensureAudio();
   const chart=buildChart(MY.profile,MY.dur,DIFF,MY.id);
-  if(!chart.length){alert('ノーツを作れませんでした。BPMを確かめてください。');return;}
+  if(!chart.length){alert(T('ノーツを作れませんでした。BPMを確かめてください。'));return;}
   track('game_start',trk());
   if($('save').checked&&!$('save').disabled&&!MY.bundled){
     try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
@@ -687,7 +773,7 @@ function startGame(){
   $('pauseOv').classList.remove('on');
   cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);
   countdown(()=>{try{bgm.currentTime=0;}catch(e){}G.lastCt=0;G.lastPerf=performance.now();
-    bgm.play().then(()=>{G.state='play';}).catch(()=>{alert('曲を再生できませんでした。');toSetup();});});
+    bgm.play().then(()=>{G.state='play';}).catch(()=>{alert(T('曲を再生できませんでした。'));toSetup();});});
 }
 function countdown(done,ready){
   const ov=$('count');ov.classList.add('on');let n=3;clearTimeout(G.cdTimer);
@@ -993,6 +1079,7 @@ $('start').onclick=startGame;
 window.__k4={buildChart,DIFFS,get G(){return G;},get MY(){return MY;},set MY(v){MY=v;},startGame,pressLane,releaseLane,syncMy,finish};
 
 /* 作品ページからの入口：play.html#off（公式曲） / play.html#lib（MY SOUND） */
+applyLang();
 (function(){const h=location.hash;if(h==='#off')openOff();else if(h==='#lib'){FROM='lib';openLib();}})();
 </script>
 </body>
