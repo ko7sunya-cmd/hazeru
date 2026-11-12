@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-16H70SRKMV"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','G-16H70SRKMV');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Starfall Horizon | A 4-lane rhythm game you play with your own mp3</title>
+<meta name="description" content="Starfall Horizon is a free browser rhythm game with 4 lanes and hold notes. Load your own mp3 (Suno tracks welcome) and the chart is generated automatically. Works on phones and PCs, no sign-up.">
+<link rel="canonical" href="https://hazerusenkou.stream/starfall_k4/en/">
+<link rel="alternate" hreflang="ja" href="https://hazerusenkou.stream/starfall_k4/">
+<link rel="alternate" hreflang="en" href="https://hazerusenkou.stream/starfall_k4/en/">
+<link rel="alternate" hreflang="x-default" href="https://hazerusenkou.stream/starfall_k4/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Starfall Horizon | Play your own mp3 as a rhythm game">
+<meta property="og:description" content="Load your own mp3 and the chart is generated automatically. Free, in your browser.">
+<meta property="og:url" content="https://hazerusenkou.stream/starfall_k4/en/">
+<meta property="og:image" content="https://hazerusenkou.stream/starfall_k4/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://hazerusenkou.stream/starfall_k4/assets/og.jpg">
+<link rel="icon" href="data:,">
+<style>
+:root{--ink:#eaf4ff;--sub:#a9c4e8;--blue:#7cc4ff;--gold:#f4dc92;--panel:rgba(12,28,68,.62);--line:rgba(190,222,255,.3);--bg:#060b1a;}
+*{box-sizing:border-box;}
+html{background:var(--bg);}
+body{margin:0;color:var(--ink);background:linear-gradient(180deg,rgba(6,11,26,.45) 0,rgba(6,11,26,.94) 520px,var(--bg) 760px),url(../assets/bg_home.webp) center top/100% auto no-repeat,var(--bg);font-family:-apple-system,"Hiragino Sans","Segoe UI",Roboto,system-ui,sans-serif;line-height:1.9;font-size:15.5px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));}
+.wrap{max-width:720px;margin:0 auto;padding-block:20px 56px;}
+.top{font-size:13px;}
+.top a{color:var(--sub);text-decoration:none;}
+.top a:hover{color:#fff;}
+.hero{text-align:center;padding:64px 0 28px;}
+.hero .eyebrow{font-size:12px;letter-spacing:.3em;color:var(--sub);}
+.hero h1{margin:10px 0 6px;font-size:clamp(30px,8.6vw,48px);line-height:1.2;letter-spacing:.06em;font-weight:700;font-family:Georgia,"Times New Roman","Hiragino Mincho ProN",serif;color:#fff;text-shadow:0 0 22px rgba(140,200,255,.85),0 0 4px rgba(120,180,255,.7);}
+.hero p.lead{margin:14px auto 0;max-width:30em;color:#dcecff;font-size:15px;}
+.cta{display:flex;flex-direction:column;align-items:center;gap:10px;margin:30px 0 8px;}
+.cta a{display:block;width:min(300px,86%);text-align:center;text-decoration:none;color:#fff;font-weight:700;letter-spacing:.08em;text-shadow:0 0 10px rgba(10,50,150,1),0 1px 2px rgba(10,30,100,.9);background:url(../assets/ui/btn_secondary.webp) center/100% 100% no-repeat;padding:18px 44px;}
+.cta a.main{background-image:url(../assets/ui/btn_primary.webp);padding:22px 48px;font-size:17px;}
+.cta small{color:var(--sub);font-size:12px;}
+section{margin-top:40px;}
+h2{margin:0 0 12px;font-size:19px;letter-spacing:.08em;color:var(--gold);text-shadow:0 0 12px rgba(244,220,146,.4);font-weight:700;padding-bottom:8px;border-bottom:1px solid var(--line);}
+h3{margin:22px 0 4px;font-size:16px;color:#fff;letter-spacing:.04em;}
+p{margin:8px 0;}
+ul,ol{margin:8px 0;padding-left:1.4em;}
+li{margin:3px 0;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:6px 18px 12px;margin-top:12px;}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px;}
+th,td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:top;}
+th{color:var(--sub);font-weight:600;white-space:nowrap;}
+.tablebox{overflow-x:auto;}
+.ad{margin:36px 0 0;min-height:0;}
+.ad:empty{display:none;}
+kbd{display:inline-block;min-width:1.7em;text-align:center;padding:1px 7px;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;background:rgba(20,40,90,.6);font-family:inherit;font-size:.92em;}
+details{border-bottom:1px solid var(--line);padding:10px 0;}
+summary{cursor:pointer;font-weight:600;color:#fff;}
+details p{margin:8px 0 2px;color:#d6e6fb;}
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--sub);text-align:center;}
+footer a{color:var(--sub);}
+.songgrid{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:1fr;gap:10px;}
+.songgrid li{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;}
+.songgrid img{width:72px;height:72px;border-radius:10px;flex:none;object-fit:cover;box-shadow:0 0 0 1px rgba(220,236,255,.5),0 0 12px rgba(120,190,255,.35);}
+.songgrid b{display:block;font-size:14.5px;color:#fff;}
+.songgrid span{display:block;font-size:12.5px;color:var(--sub);margin-top:2px;line-height:1.55;}
+@media(min-width:640px){.songgrid{grid-template-columns:1fr 1fr;}}
+.top{display:flex;justify-content:space-between;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="../../index.html">← Site top (日本語)</a><a href="../index.html" hreflang="ja">日本語 | <b>English</b></a></div>
+
+  <header class="hero">
+    <div class="eyebrow">MY SOUND RHYTHM GAME</div>
+    <h1><img src="../assets/ui/logo.webp" alt="Starfall Horizon" style="width:min(420px,88%);height:auto;filter:drop-shadow(0 0 14px rgba(90,160,255,.5))"></h1>
+    <p class="lead">A 4-lane rhythm game that builds the chart from your own mp3. It runs in your browser, with no install and no sign-up.</p>
+    <div class="cta">
+      <a class="main" href="../play.html?lang=en#off">★ Play Official Songs</a>
+      <a href="../play.html?lang=en#lib">♪ Play Your Own mp3</a>
+      <small>Hold notes supported / Works in phone and PC browsers</small>
+    </div>
+  </header>
+
+  <section id="about">
+    <h2>About the game</h2>
+    <p>Starfall Horizon is a 4-lane rhythm game set in a ruined city under falling stars. Notes travel down four lanes, and you tap when they reach the judgment line. Long hold notes must be held down for as long as they stretch.</p>
+    <p>What sets it apart is that you bring the music. Load an mp3 and the game analyzes the audio, detects the tempo (BPM), and generates a chart that follows it. Tracks made with AI music tools such as Suno, songs you composed yourself, or any audio you own can be played right away.</p>
+    <p>If you don't have an mp3 handy, 8 original tracks by the creator are included as official songs. They are all instrumentals with no lyrics (some have light backing chorus) and are easy to follow rhythmically.</p>
+  </section>
+
+  <section id="howto">
+    <h2>How to play</h2>
+    <div class="card">
+      <h3>Controls</h3>
+      <ul>
+        <li><b>PC:</b> the keys <kbd>D</kbd> <kbd>F</kbd> <kbd>J</kbd> <kbd>K</kbd> map to the four lanes from left to right.</li>
+        <li><b>Phones and tablets:</b> tap the lanes at the bottom of the screen directly. Multi-touch works for chords.</li>
+        <li><b>Hold notes:</b> tap at the start of a long note and keep your finger (or key) down until it ends.</li>
+      </ul>
+      <p>The judgment line sits a little higher on the screen so your fingers don't cover the notes. You can change its position in Options.</p>
+    </div>
+    <div class="card">
+      <h3>Judgment</h3>
+      <p>Your timing is judged on five levels: PERFECT, GREAT, GOOD, BAD and MISS. The smaller the timing error, the more points you get, and MISS and BAD break your combo. On higher difficulties the timing windows become a little stricter.</p>
+    </div>
+    <div class="card">
+      <h3>Score and rank</h3>
+      <p>The maximum score is 1,000,000. A hold note is worth two regular notes. Your score earns one of the following ranks.</p>
+      <div class="tablebox"><table>
+        <tr><th>Rank</th><th>Score</th></tr>
+        <tr><td>SS</td><td>970,000 or more</td></tr>
+        <tr><td>S</td><td>900,000 or more</td></tr>
+        <tr><td>A</td><td>800,000 or more</td></tr>
+        <tr><td>B</td><td>650,000 or more</td></tr>
+        <tr><td>C</td><td>Below 650,000</td></tr>
+      </table></div>
+      <p>Best scores for each difficulty are saved on your device. For official songs you can also see an "overall rating" per difficulty, which adds up your best score on each song (MY SOUND tracks are not included).</p>
+    </div>
+  </section>
+
+  <section id="levels">
+    <h2>Difficulty</h2>
+    <p>There are five difficulties: BEGINNER, EASY, NORMAL, HARD and EXPERT. The same song gets a finer or coarser chart depending on the level.</p>
+    <div class="tablebox"><table>
+      <tr><th>Level</th><th>How notes are placed</th></tr>
+      <tr><td>BEGINNER</td><td>One note every two beats, only on clear sounds. No chords or holds, and the timing is forgiving. For people new to rhythm games.</td></tr>
+      <tr><td>EASY</td><td>Relaxed placement centered on the beats. No chords. For first-timers.</td></tr>
+      <tr><td>NORMAL</td><td>Beats plus eighth-note sounds. No chords.</td></tr>
+      <tr><td>HARD</td><td>Picks up fine sixteenth-note sounds, with a few chords.</td></tr>
+      <tr><td>EXPERT</td><td>Follows almost every small movement in the music, with many chords and holds. The timing is the strictest.</td></tr>
+    </table></div>
+    <p>Where low sounds (kick and bass) stand out, notes tend to land in the two inner lanes; where high sounds (hi-hat and melody) stand out, they tend to land in the two outer lanes. The movement of the music becomes the movement of your fingers.</p>
+  </section>
+
+  <section id="mysound">
+    <h2>Play your own mp3</h2>
+    <ol>
+      <li>Open "MY SOUND" in the game and choose a track with the file picker.</li>
+      <li>The game analyzes the track and detects the BPM and the position of the first beat automatically.</li>
+      <li>On the setup screen you can fine-tune the BPM and timing while listening. When the metronome clicks match the music, you're done.</li>
+      <li>Pick a difficulty and start playing.</li>
+    </ol>
+    <p>If you tick "Remember on this device", the track is saved on your device and next time you only need to pick it from the list. You can save up to 12 tracks, 40 MB each. You can also replace the cover image with one of your own.</p>
+    <p>Your audio files are processed only on your device and are never sent to a server. Please use only music you have the rights to.</p>
+  </section>
+
+  <section id="songs">
+    <h2>Official songs</h2>
+    <p>The game includes 8 original BGM tracks by the creator, はぜる (Hazeru), made with Suno. Official songs can be played by simply choosing one; their BPM is already set. More songs are planned.</p>
+    <ul class="songgrid">
+      <li><img src="../songs/jk_01.webp" alt="Cover of Epic of the Starfall" width="96" height="96" loading="lazy"><div><b>Epic of the Starfall <small>(星降る叙事詩)</small></b><span>Grand and cinematic, with piano and violin soaring across the sky.</span></div></li>
+      <li><img src="../songs/jk_02.webp" alt="Cover of Crystal Signal" width="96" height="96" loading="lazy"><div><b>Crystal Signal <small>(クリスタル・シグナル)</small></b><span>Starts with electronic sounds and builds toward a triumphant scene.</span></div></li>
+      <li><img src="../songs/jk_03.webp" alt="Cover of Chorus of the Heavens" width="96" height="96" loading="lazy"><div><b>Chorus of the Heavens <small>(天上の合唱)</small></b><span>Angelic chorus layers make this one solemn and gentle.</span></div></li>
+      <li><img src="../songs/jk_04.webp" alt="Cover of Clover Reel" width="96" height="96" loading="lazy"><div><b>Clover Reel <small>(クローバー・リール)</small></b><span>A light, cheerful Celtic-style tune with a dancing fiddle.</span></div></li>
+      <li><img src="../songs/jk_06.webp" alt="Cover of Crystal of the White Night" width="96" height="96" loading="lazy"><div><b>Crystal of the White Night <small>(白夜の水晶)</small></b><span>Quiet and transparent, like a lake in a Nordic forest.</span></div></li>
+      <li><img src="../songs/jk_07.webp" alt="Cover of Fugue of the Glass Bells" width="96" height="96" loading="lazy"><div><b>Fugue of the Glass Bells <small>(ガラスの鐘のフーガ)</small></b><span>Elegant Baroque-style piece with layering harpsichord.</span></div></li>
+      <li><img src="../songs/jk_08.webp" alt="Cover of Stardust Arpeggio ~Far Away~" width="96" height="96" loading="lazy"><div><b>Stardust Arpeggio ~Far Away~ <small>(星屑のアルペジオ ～遥か～)</small></b><span>A gentle, hopeful tune flowing into the dawn sky.</span></div></li>
+      <li><img src="../songs/jk_09.webp" alt="Cover of Stardust Arpeggio ~Beyond~" width="96" height="96" loading="lazy"><div><b>Stardust Arpeggio ~Beyond~ <small>(星屑のアルペジオ ～彼方へ～)</small></b><span>The companion to "Far Away", opening wide toward the starry sky.</span></div></li>
+    </ul>
+  </section>
+
+  <div class="ad" id="ad-b"></div>
+
+  <section id="faq">
+    <h2>FAQ</h2>
+    <details><summary>I can't hear any sound.</summary><p>Mobile browsers can't play audio until you tap the screen, so sound starts after you pick a song. If it still doesn't play, check your device's silent mode and volume.</p></details>
+    <details><summary>The metronome doesn't match the music.</summary><p>The automatically detected BPM can be off for some tracks, especially ones whose tempo drifts partway through. On the setup screen, nudge the BPM little by little until it matches.</p></details>
+    <details><summary>My file won't load.</summary><p>Choose an audio file such as mp3, m4a, wav or ogg. Tracks shorter than 8 seconds or larger than 40 MB can't be loaded.</p></details>
+    <details><summary>My saved songs or best scores disappeared.</summary><p>Songs and scores are stored inside your browser. Clearing site data or using private browsing can erase them, and they don't carry over to other devices or browsers.</p></details>
+    <details><summary>The notes feel out of sync with the sound.</summary><p>Use "Timing adjustment" in Options to compensate for notes feeling early or late. Wireless earphones delay the sound, so adjust for that.</p></details>
+    <details><summary>Does it cost anything?</summary><p>No, it's free, and no sign-up is needed.</p></details>
+  </section>
+
+  <section id="log">
+    <h2>Update log</h2>
+    <div class="tablebox"><table>
+      <tr><td style="white-space:nowrap">Nov 12, 2026</td><td>Added 8 official songs and the official songs mode. Added English language support.</td></tr>
+    </table></div>
+  </section>
+
+  <footer>
+    <p>© はぜる (Hazeru) 2026 / <a href="../../privacy.html">Privacy Policy (Japanese)</a> / <a href="../../index.html">Site top</a> / <a href="../index.html">日本語</a></p>
+  </footer>
+</div>
+</body>
+</html>
