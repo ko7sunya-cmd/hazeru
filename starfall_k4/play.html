@@ -622,9 +622,9 @@ $('setBack').onclick=backToList;
 
 /* ---------- BPM・拍の調整 ---------- */
 function myRecalc(redetect){
-  const T=60/MY.bpm;
+  const BT=60/MY.bpm;
   if(redetect){const t=ChartAnalysis.detectTempo(MY.env,{bpm:MY.bpm});if(t)MY.det.first=t.first;MY.adj=0;}
-  MY.first=(((MY.det.first+MY.adj/1000)%T)+T)%T;
+  MY.first=(((MY.det.first+MY.adj/1000)%BT)+BT)%BT;
   MY.profile=ChartAnalysis.buildProfile(MY.env,MY.bpm,MY.first);
   MY.drift=ChartAnalysis.checkDrift(MY.env,MY.bpm,MY.first);
 }
@@ -635,7 +635,7 @@ function setBpm(b){
 }
 document.addEventListener('DOMContentLoaded',()=>{const ab=document.getElementById('adjBox');if(ab)ab.addEventListener('toggle',()=>{if(!ab.open)stopPv();});});
 function syncMy(){
-  if(!MY)return;const T=60/MY.bpm,rg=Math.round(T*500/5)*5;
+  if(!MY)return;const BT=60/MY.bpm,rg=Math.round(BT*500/5)*5;
   $('sName').textContent=MY.name;paintJk();$('sName').textContent=MY.name;$('sMeta').textContent=T('長さ ')+mmss(MY.dur)+'　／　BPM '+MY.bpm.toFixed(1);
   $('bpm').value=MY.bpm.toFixed(1);
   $('adjSum').textContent='BPM '+MY.bpm.toFixed(1)+(MY.adj?T('　ずれ ')+(MY.adj>0?'+':'')+MY.adj+'ms':'');
