@@ -536,7 +536,8 @@ function setBest(id,d,rec){let o={};try{o=JSON.parse(LS.get(BKEY)||'{}')||{};}ca
 function libErr(t){const e=$('libErr');e.textContent=t||'';e.classList.toggle('on',!!t);}
 function libPane(busy){$('busy').classList.toggle('on',busy);$('libBody').style.display=busy?'none':'';}
 let FROM='lib';
-function backToList(){stopPv();if(FROM==='off'){if(RECB)openRec(RECB);else openOff();}else openLib();}
+function backToList(){stopPv();if(FROM==='off')openOff();else openLib();}
+function backOne(){stopPv();if(FROM==='off'&&RECB)openRec(RECB);else backToList();}
 /* 公式曲：songs/songs.json から読む（曲を足すときはこのファイルだけ書き換える） */
 let OFFICIAL=null;
 function loadOfficial(){
@@ -657,7 +658,7 @@ function loadMy(blob,saved){
     libErr(String(err&&err.message)==='short'?T('曲が短すぎます（8秒以上の曲をえらんでね）。'):T('この曲は読み込めませんでした（{0}）。mp3か、ほかの形式（m4a・wav）でためしてね。',String(err&&err.message||err).slice(0,40)));
   });
 }
-$('setBack').onclick=backToList;
+$('setBack').onclick=backOne;
 
 /* ---------- BPM・拍の調整 ---------- */
 function myRecalc(redetect){
