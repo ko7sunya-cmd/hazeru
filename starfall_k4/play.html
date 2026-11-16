@@ -289,6 +289,7 @@ input[type=range]{flex:1;min-width:0;width:100%;accent-color:#8cc8ff;}
   <div class="err" id="offErr" role="alert"></div>
   <div class="lib-body" id="offBody">
     <div class="note">はぜる のオリジナル曲です。曲をえらぶと、音を解析して譜面を作ります。</div>
+    <button class="btn" id="offAtk" type="button" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:46px;padding:10px 16px;font-size:14px"><img class="emb" src="assets/ui/emb_attack.webp" alt="" style="width:26px;height:26px">SCORE ATTACK <span style="opacity:.8;font-weight:500;font-size:12px;letter-spacing:.02em">▶</span></button>
     <div class="panel rate" id="offRate"></div>
     <div id="offList" style="display:flex;flex-direction:column;gap:8px"></div>
   </div>
@@ -1374,8 +1375,10 @@ function paintAtkRec(){
 function openAtkRec(){atkPvStop();
   (OFFICIAL===null?loadOfficial():Promise.resolve()).then(()=>{paintAtkRec();show('atkrec');});
 }
-$('goAtk').onclick=()=>{ensureAudio();openAtk();};
-$('atkBack').onclick=()=>{atkPvStop();show('home');};
+var ATKFROM='home';
+$('offAtk').onclick=()=>{ensureAudio();ATKFROM='off';openAtk();};
+$('goAtk').onclick=()=>{ensureAudio();ATKFROM='home';openAtk();};
+$('atkBack').onclick=()=>{atkPvStop();if(ATKFROM==='off')openOff();else show('home');};
 $('atkGo').onclick=atkStart;
 $('atkRec').onclick=openAtkRec;
 $('arcBack').onclick=()=>openAtk();
@@ -1389,7 +1392,7 @@ window.__k4={buildChart,DIFFS,get G(){return G;},get MY(){return MY;},set MY(v){
 
 /* 作品ページからの入口：play.html#off（公式曲） / play.html#lib（MY SOUND） */
 applyLang();
-(function(){const h=location.hash;if(h==='#off')openOff();else if(h==='#lib'){FROM='lib';openLib();}})();
+(function(){const h=location.hash;if(h==='#off')openOff();else if(h==='#atk'){openAtk();}else if(h==='#lib'){FROM='lib';openLib();}})();
 </script>
 </body>
 </html>
