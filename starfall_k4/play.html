@@ -774,6 +774,7 @@ Object.assign(EN,{"通信中…": "Connecting…", "通信できませんでし�
 Object.assign(EN,{"各国の上位100人の合計スコアです。国を変えると、記録は新しい国の合計に移ります。":"Each nation's total score of its top 100 players. If you change nations, your record moves to the new nation's total.",
 "国は3つ。ランキングは、全体と国ごとに見られます。「国別」では、各国の上位100人の合計で、国どうしを比べます。国は自由に変えられます。変えると、記録は新しい国の合計に移ります。":"There are 3 nations. You can see the overall ranking and each nation's ranking. The \"Nations\" tab compares nations by the total of their top 100 players. You can change nations freely; your record then moves to the new nation's total.",
 "名前や国を変えても、自分で記録を更新するまでは、前の表示が残ります。更新すると、記録は新しい国の合計に移ります。":"If you change your name or nation, the old display stays until you update your record yourself. Once updated, your record moves to the new nation's total."});
+Object.assign(EN,{"いま、ランキングが混み合っています。1日に使える通信量の上限に届いたようです。{0}ごろに、また見られます。記録はこの端末に残っているので、あとで送れます。":"The ranking is busy right now. It looks like the daily usage limit has been reached. It should be back around {0} (your local time). Your record is kept on this device, so you can send it later."});
 function setLang(l){LANG=l;LS.set('otoge4_lang',l);applyLang();
   try{const on=id=>{const e=document.getElementById(id);return e&&e.classList.contains('on');};
     if(on('setup')&&typeof syncMy==='function')syncMy();
@@ -1798,6 +1799,9 @@ function trNote(pos){const t=trGet();t.part=1;if(pos>0&&(!t.best||pos<t.best))t.
 function trHas(x,t){return x.k==='p'?!!t.part:(t.best>0&&t.best<=x.m);}
 function pad4(n){return String(n).padStart(4,'0');}
 
+function rkResetLocal(){try{const f=new Intl.DateTimeFormat('en-US',{timeZone:'America/Los_Angeles',hour:'numeric',hour12:false});let t=new Date();t.setMinutes(0,0,0);for(let i=0;i<26;i++){t=new Date(t.getTime()+3600000);if(parseInt(f.format(t),10)%24===0)break;}return new Intl.DateTimeFormat(LANG==='ja'?'ja-JP':'en-US',{hour:'numeric',minute:'2-digit',hour12:LANG!=='ja'}).format(t);}catch(e){return '';}}
+function rkIsBusy(e){return !!(e&&(e.code==='resource-exhausted'||e.code==='quota-exceeded'));}
+function rkBusyMsg(){return T('いま、ランキングが混み合っています。1日に使える通信量の上限に届いたようです。{0}ごろに、また見られます。記録はこの端末に残っているので、あとで送れます。',rkResetLocal());}
 function rkProf(){try{const p=JSON.parse(LS.get(RKP)||'null');if(p&&p.tag&&NATS[p.nat]&&p.uid&&p.seq){p.num=pad4(p.seq);return p;}return null;}catch(e){return null;}}
 function rkLabel(p){return p.nat+' '+p.tag+'-'+p.num;}
 async function rkAdopt(){ // 端末のデータが消えても、同じ匿名アカウントなら、プロフィールを取りもどす
@@ -1809,8 +1813,8 @@ function openRk(){
   stopPv();atkPvStop();rkErr('');
   if(rkProf()){paintRk();show('rk');return;}
   show('rk');$('rkBody').style.display='none';$('rkLoad').classList.add('on');
-  rkAdopt().then(p=>{$('rkLoad').classList.remove('on');$('rkBody').style.display='';if(p){paintRk();}else openRkReg(false);}).catch(()=>{
-    $('rkLoad').classList.remove('on');$('rkBody').style.display='none';rkErr(T('通信できませんでした。電波のよいところで、もう一度ためしてね。'));
+  rkAdopt().then(p=>{$('rkLoad').classList.remove('on');$('rkBody').style.display='';if(p){paintRk();}else openRkReg(false);}).catch(e=>{
+    $('rkLoad').classList.remove('on');$('rkBody').style.display='none';rkErr(rkIsBusy(e)?rkBusyMsg():T('通信できませんでした。電波のよいところで、もう一度ためしてね。'));
   });
 }
 function paintRk(){
@@ -1847,7 +1851,7 @@ async function rkRegSave(){
     er('');btn.disabled=false;paintRk();show('rk');
   }catch(e){
     console.warn(e);btn.disabled=false;
-    er(e&&e.code==='permission-denied'?T('登録できませんでした。もう一度ためしてね。'):T('通信できませんでした。電波のよいところで、もう一度ためしてね。'));
+    er(rkIsBusy(e)?rkBusyMsg():e&&e.code==='permission-denied'?T('登録できませんでした。もう一度ためしてね。'):T('通信できませんでした。電波のよいところで、もう一度ためしてね。'));
   }
 }
 async function rkSubmit(en){
@@ -1873,7 +1877,7 @@ async function rkSubmitAndShow(en){
   }catch(e){
     console.warn(e);
     if(e&&e.code==='permission-denied'){LS.set(RKPEND,'null');sub.className='ar-sub bad';sub.textContent=T('この記録は、ランキングに反映されませんでした。');track('rk_denied',{score:en.score});}
-    else{LS.set(RKPEND,JSON.stringify(en));sub.className='ar-sub bad';sub.textContent=T('送信できませんでした。ランキングの画面から、もう一度送れます。');}
+    else{LS.set(RKPEND,JSON.stringify(en));sub.className='ar-sub bad';sub.textContent=rkIsBusy(e)?rkBusyMsg():T('送信できませんでした。ランキングの画面から、もう一度送れます。');}
   }
 }
 async function rkSendPending(){
@@ -1881,7 +1885,7 @@ async function rkSendPending(){
   if(!en){try{en=JSON.parse(LS.get(RKB)||'null');}catch(e){}}if(!en||!en.el)return;
   const b=$('rkPend');b.disabled=true;rkErr('');
   try{const r=await rkSubmit(en);LS.set(RKPEND,'null');rkErr(r.updated?T('ランキングに登録しました。現在 {0}位',r.pos):T('自己ベストを更新できなかったので、ランキングはそのままです。現在 {0}位',r.pos));}
-  catch(e){if(e&&e.code==='permission-denied'){LS.set(RKPEND,'null');rkErr(T('この記録は、ランキングに反映されませんでした。'));}else rkErr(T('送信できませんでした。電波のよいところで、もう一度ためしてね。'));}
+  catch(e){if(e&&e.code==='permission-denied'){LS.set(RKPEND,'null');rkErr(T('この記録は、ランキングに反映されませんでした。'));}else rkErr(rkIsBusy(e)?rkBusyMsg():T('送信できませんでした。電波のよいところで、もう一度ためしてね。'));}
   b.disabled=false;paintRk();
 }
 async function rkSyncLabel(){
@@ -1925,7 +1929,7 @@ async function paintRkBoard(){
     });
   }catch(err){
     console.warn(err);$('rkBoardBusy').classList.remove('on');
-    $('rkBoardErr').textContent=(err&&err.code==='failed-precondition')?T('この国のランキングは、準備中です。'):T('通信できませんでした。電波のよいところで、もう一度ためしてね。');
+    $('rkBoardErr').textContent=(err&&err.code==='failed-precondition')?T('この国のランキングは、準備中です。'):rkIsBusy(err)?rkBusyMsg():T('通信できませんでした。電波のよいところで、もう一度ためしてね。');
   }
   try{const p=rkProf();if(p){const f=await fbInit(),s=await f.F.getDoc(f.F.doc(f.db,'scores',f.uid));
     if(s.exists()){const cnt=await f.F.getCountFromServer(f.F.query(f.F.collection(f.db,'scores'),f.F.where('score','>',s.data().score)));trNote(cnt.data().count+1);$('rkBoardMe').textContent=rkLabel(p)+'　'+(cnt.data().count+1)+'位';$('rkBoardBest').textContent=Number(s.data().score).toLocaleString();}
