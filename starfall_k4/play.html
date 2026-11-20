@@ -50,7 +50,8 @@ h2.ttl{margin:0;font-size:17px;letter-spacing:.2em;font-weight:800;color:var(--g
 .logo{font-family:Georgia,"Hiragino Mincho ProN",serif;font-style:italic;font-size:clamp(34px,11vw,52px);line-height:1.05;margin:0 0 2px 4px;color:#fff;text-shadow:0 0 22px rgba(120,190,255,.9),0 2px 0 rgba(20,50,120,.6);letter-spacing:.02em;}
 .logo-img{display:block;width:min(340px,92%);height:auto;margin:0 0 0 -6px;filter:drop-shadow(0 0 14px rgba(90,160,255,.55));}
 .logo-sub{margin:0 0 26px 6px;font-size:11px;letter-spacing:.42em;color:var(--sub);}
-.menu{display:flex;flex-direction:column;gap:10px;width:min(270px,76%);}
+.menu{display:flex;flex-direction:column;gap:10px;width:min(290px,84%);}
+.menu .btn{white-space:nowrap;}
 .menu .btn{display:flex;align-items:center;justify-content:center;gap:9px;}
 .menu .btn .emb{width:30px;height:30px;flex:none;filter:drop-shadow(0 0 4px rgba(120,190,255,.8));}
 .menu .btn.gold .emb{width:34px;height:34px;}
@@ -58,6 +59,53 @@ h2.ttl{margin:0;font-size:17px;letter-spacing:.2em;font-weight:800;color:var(--g
 
 /* LIB */
 #lib,#off{gap:10px;}
+.rk-prof{display:flex;align-items:center;gap:14px;}
+.btn.round.rk-q{width:44px;height:46px;font-size:18px;}
+.tg-slots{display:flex;justify-content:center;gap:12px;margin-bottom:12px;}
+.tg-slot{width:62px;height:72px;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:800;color:#fff;border-radius:14px;border:1px solid rgba(160,200,255,.5);background:rgba(10,20,50,.55);cursor:pointer;padding:0;font-family:inherit;}
+.tg-slot.cur{border-color:#ffe08a;box-shadow:0 0 0 2px rgba(255,224,138,.9),0 0 16px rgba(255,214,110,.5);}
+.tg-pad{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;}
+.tg-key{height:40px;padding:0;border-radius:10px;border:1px solid rgba(160,200,255,.4);background:rgba(10,24,60,.5);color:#fff;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;touch-action:manipulation;}
+.tg-key:active{background:rgba(120,170,255,.55);border-color:#ffe08a;}
+#rkRegErr:empty{display:none;}
+.tg-key.del{grid-column:span 2;font-size:15px;}
+.nat-emb.nat-img{border-radius:0;box-shadow:none;filter:drop-shadow(0 2px 6px rgba(0,0,30,.6));}
+.nat-emb{flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;letter-spacing:.04em;font-size:13px;color:#fff;text-shadow:0 1px 4px #0008;box-shadow:0 0 14px rgba(255,255,255,.35),inset 0 0 0 2px rgba(255,255,255,.55);}
+.rk-pi{display:flex;flex-direction:column;gap:2px;min-width:0;}.rk-pi b{font-size:26px;letter-spacing:.12em;}.rk-pi span{font-size:13px;opacity:.9;}.rk-bs{font-size:11px;letter-spacing:.2em;opacity:.8;}
+.nat{display:flex;align-items:center;gap:12px;text-align:left;padding:10px 12px;border-radius:14px;border:1px solid rgba(160,200,255,.4);background:rgba(10,24,60,.5);color:#fff;}
+.nat.sel{border-color:#ffe08a;box-shadow:0 0 0 2px rgba(255,224,138,.9),0 0 16px rgba(255,214,110,.5);background:rgba(40,60,110,.6);}
+.nat-t b{display:block;font-size:15px;}.nat-t span{font-size:12px;opacity:.85;line-height:1.4;display:block;}
+.rk-slots{display:flex;flex-direction:column;gap:8px;}
+.rk-slot{display:flex;align-items:center;gap:10px;padding:8px;border-radius:14px;border:1px solid rgba(160,200,255,.3);background:rgba(10,24,60,.45);}
+.rk-slot.filled{border-color:rgba(255,224,138,.8);background:rgba(40,60,110,.55);}
+.rk-jk{position:relative;flex:none;width:64px;height:64px;border-radius:10px;border:2px solid rgba(255,224,138,.7);background:rgba(20,40,90,.6) center/cover no-repeat;padding:0;}
+.rk-jk img{position:absolute;left:-6px;top:-6px;width:26px;height:26px;}
+.rk-mid{flex:1;min-width:0;}.rk-t{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rk-ds{display:flex;gap:4px;margin:5px 0 2px;}
+.rk-d{flex:1;padding:6px 0;border-radius:8px;border:1px solid rgba(255,255,255,.25);background:rgba(10,20,50,.6);color:#cfe0ff;font-size:11px;font-weight:700;letter-spacing:.03em;}
+.rk-d.sel{color:#06122c;border-color:#fff;}
+.rk-d.sel.d-beginner{background:#7fe0b0;}.rk-d.sel.d-easy{background:#8fd0ff;}.rk-d.sel.d-normal{background:#ffe08a;}.rk-d.sel.d-hard{background:#ff9f7a;}.rk-d.sel.d-expert{background:#e08aff;}
+.rk-i{font-size:11px;opacity:.75;}
+.dtag{font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;color:#06122c;letter-spacing:.03em;margin-right:6px;}
+.dtag.d-beginner{background:#7fe0b0;}.dtag.d-easy{background:#8fd0ff;}.dtag.d-normal{background:#ffe08a;}.dtag.d-hard{background:#ff9f7a;}.dtag.d-expert{background:#e08aff;}
+.ar-sub{text-align:center;font-size:11px;opacity:.9;margin:4px 0 0;line-height:1.3;}.ar-sub.bad{color:#ffb3a8;opacity:1;}
+#rk h2.ttl,#rkreg h2.ttl,#rksel h2.ttl,#rkboard h2.ttl,#rktr h2.ttl,#md h2.ttl{background:url(assets/ui/titlebar.webp) center/100% 100% no-repeat;padding:13px 30px;color:#fff;text-shadow:0 0 12px rgba(140,200,255,.9);}
+#rk,#rkreg,#rksel,#rkboard,#rktr{gap:10px;}
+#rk .busy,#rkboard .busy{margin:8px auto;}
+.lb-tabs{display:flex;gap:6px;}.lb-tabs button{flex:1;padding:9px 0;border-radius:10px;border:1px solid rgba(255,255,255,.3);background:rgba(10,20,50,.6);color:#cfe0ff;font-weight:700;font-size:13px;letter-spacing:.06em;}.lb-tabs button.sel{background:#ffe08a;color:#06122c;border-color:#fff;}
+.lb-me{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;}
+.lb-row{border-radius:12px;background:rgba(10,24,60,.5);border:1px solid rgba(160,200,255,.25);padding:6px 8px;}.lb-row.me{border-color:#ffe08a;background:rgba(60,70,110,.6);}.lb-row.top{border-color:rgba(255,224,138,.6);}
+.lb-top{display:flex;align-items:center;gap:8px;}.lb-main{flex:1;display:grid;grid-template-columns:28px 1fr 28px auto;gap:6px;align-items:center;background:none;border:0;color:#fff;text-align:left;padding:4px 0;font-size:14px;}
+.lb-n{font-weight:800;opacity:.9;text-align:center;}.lb-r{font-weight:800;font-size:12px;opacity:.85;}.lb-s{font-weight:700;letter-spacing:.02em;}
+.lb-d{margin:6px 4px 2px 38px;font-size:12px;opacity:.95;display:flex;flex-direction:column;gap:3px;}.lb-d>div{display:flex;align-items:center;}.lb-d .t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.lb-d .p{margin-left:6px;}
+.tr-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.tr{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;padding:12px 8px;border-radius:14px;border:1px solid rgba(160,200,255,.25);background:rgba(10,24,60,.5);opacity:.5;filter:grayscale(.9);}
+.tr.got{opacity:1;filter:none;border-color:rgba(255,224,138,.8);background:rgba(50,65,110,.6);}
+.tr-i{position:relative;width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 30%,#fff6,#7d93d6 60%,#0006);}.tr-i img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;}.tr-i span{font-weight:800;font-size:18px;}
+.tr b{font-size:14px;}.tr small{font-size:11px;opacity:.85;line-height:1.3;}
+
+#rk h2.ttl,#rkreg h2.ttl,#rksel h2.ttl,#rkboard h2.ttl,#rktr h2.ttl,#md h2.ttl{white-space:nowrap;padding-left:12px;padding-right:12px;min-width:0;font-size:clamp(16px,5vw,22px);}
+
 .lang-btn{background:none;border:0;font-family:inherit;cursor:pointer;display:block;width:100%;}
 .home-link{margin-top:6px;text-align:center;color:var(--sub);font-size:12.5px;text-decoration:none;letter-spacing:.06em;padding:8px;}
 .home-link:hover{color:#fff;}
@@ -248,6 +296,69 @@ input[type=range]{flex:1;min-width:0;width:100%;accent-color:#8cc8ff;}
 .opt{display:flex;flex-direction:column;gap:4px;font-size:13px;}
 .opt .top{display:flex;justify-content:space-between;}
 .opt b{color:var(--gold);font-weight:700;}
+/* --- 画像フレーム版 --- */
+.tg-slot{width:64px;height:77px;border:0;background:url(assets/ui/tg_slot.webp) center/100% 100% no-repeat;color:#1b2f66;text-shadow:0 1px 0 rgba(255,255,255,.6);}
+.tg-slot.cur{background-image:url(assets/ui/tg_slot_cur.webp);box-shadow:none;}
+.tg-key{height:44px;border:0;background:url(assets/ui/tg_key.webp) center/100% 100% no-repeat;color:#1b2f66;text-shadow:0 1px 0 rgba(255,255,255,.6);}
+.tg-key:active{background:url(assets/ui/tg_key_on.webp) center/100% 100% no-repeat;border:0;transform:scale(.94);}
+.tg-pad{gap:4px;}
+.rk-slot.fr{display:block;position:relative;aspect-ratio:900/275;padding:0;border:0;border-radius:0;background:var(--fr) center/100% 100% no-repeat;}
+.rk-slot.fr:not(.filled){filter:saturate(.75) brightness(.92);}
+.rk-slot.fr .rk-jk{position:absolute;left:77%;top:24.5%;width:15.8%;height:53%;border:0;border-radius:6px;background-size:cover;}
+.rk-slot.fr .rk-jk img{left:-9px;top:-9px;width:24px;height:24px;}
+.rk-slot.fr .rk-mid{position:absolute;left:21%;right:25%;top:25%;bottom:21%;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr;align-content:center;gap:3px 6px;}
+.rk-slot.fr .rk-t{grid-area:1/1;font-size:13px;color:#10204e;text-shadow:0 1px 0 rgba(255,255,255,.55);}
+.rk-slot.fr .rk-i{grid-area:1/2;font-size:10px;color:#10204e;opacity:.85;align-self:center;}
+.rk-slot.fr .rk-ds{grid-area:2/1/3/3;margin:0;gap:3px;}
+.rk-slot.fr .rk-d{padding:3px 0;font-size:9px;letter-spacing:0;border-radius:6px;}
+.lb-row,.lb-row.me,.lb-row.top{background:none;border:0;padding:0;}
+.lb-row .lb-top{aspect-ratio:900/186;padding:0 7% 0 17%;background:url(assets/ui/lb_row.webp) center/100% 100% no-repeat;}
+.lb-row.top .lb-top{aspect-ratio:900/260;background-image:url(assets/ui/lb_row_top.webp);}
+.lb-row.me .lb-top{background-image:url(assets/ui/lb_row_me.webp);}
+.lb-row.top .lb-main,.lb-row.me .lb-main{color:#2a2150;text-shadow:0 1px 0 rgba(255,255,255,.6);}
+.lb-row .lb-main{text-shadow:0 1px 3px rgba(0,20,70,.85);}
+.lb-row .lb-d{background:rgba(10,24,60,.6);border-radius:10px;padding:8px 10px;margin:2px 6px 6px;}
+
+.md-got{text-align:center;font-weight:800;font-size:14px;color:#ffe08a;text-shadow:0 1px 6px rgba(0,0,30,.8);margin-top:6px;display:flex;flex-direction:column;gap:2px;}
+.md-hero{display:flex;gap:14px;align-items:center;padding:14px;border-radius:16px;border:1px solid rgba(255,224,138,.6);background:rgba(40,60,110,.55);margin-bottom:10px;}
+.md-ht{flex:1;min-width:0;}.md-ht b{font-size:20px;display:block;margin-bottom:4px;}.md-sub{font-size:12px;opacity:.9;line-height:1.5;}
+.md-em{position:relative;flex:none;display:flex;align-items:center;justify-content:center;}
+.md-em .fb{position:absolute;inset:8%;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;color:#10204e;background:radial-gradient(circle at 35% 30%,#fff,#ffe08a 60%,#b9892a);box-shadow:0 0 12px rgba(255,224,138,.6);}
+.md-em img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,30,.6));}
+.md-em.off .fb{background:rgba(20,30,70,.7);color:#7d8fc0;box-shadow:none;}.md-em.off img{filter:brightness(0) opacity(.35);}
+.md-titles{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:8px 0;}
+.md-t{display:flex;flex-direction:column;align-items:center;gap:2px;}.md-t small{font-size:10px;opacity:.85;text-align:center;line-height:1.2;}.md-t .md-em{width:100%!important;height:auto!important;aspect-ratio:1;}
+.md-legend{font-size:11px;opacity:.85;text-align:center;margin:6px 0;}
+.md-song{padding:8px 10px;border-radius:12px;background:rgba(10,24,60,.5);border:1px solid rgba(160,200,255,.25);margin-bottom:6px;}
+.md-st{font-weight:700;font-size:14px;margin-bottom:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.md-cs{display:flex;gap:4px;}
+.md-c{flex:1;text-align:center;padding:5px 0;border-radius:8px;font-size:10px;font-weight:800;letter-spacing:.02em;border:1px solid rgba(255,255,255,.18);background:rgba(10,20,50,.55);color:#7d8fc0;white-space:nowrap;}
+.md-c.m1.d-beginner{border-color:#7fe0b0;color:#7fe0b0;}.md-c.m1.d-easy{border-color:#8fd0ff;color:#8fd0ff;}.md-c.m1.d-normal{border-color:#ffe08a;color:#ffe08a;}.md-c.m1.d-hard{border-color:#ff9f7a;color:#ff9f7a;}.md-c.m1.d-expert{border-color:#e08aff;color:#e08aff;}
+.md-c.m2,.md-c.m3{color:#06122c;border-color:#fff;}
+.md-c.m2.d-beginner,.md-c.m3.d-beginner{background:#7fe0b0;}.md-c.m2.d-easy,.md-c.m3.d-easy{background:#8fd0ff;}.md-c.m2.d-normal,.md-c.m3.d-normal{background:#ffe08a;}.md-c.m2.d-hard,.md-c.m3.d-hard{background:#ff9f7a;}.md-c.m2.d-expert,.md-c.m3.d-expert{background:#e08aff;}
+.md-c.m3{box-shadow:0 0 10px rgba(255,255,255,.85),0 0 0 1px #ffe08a;}
+.nat-card{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(10,24,60,.5);border:1px solid rgba(160,200,255,.25);margin-bottom:8px;}
+.nat-card.mine{border-color:#ffe08a;background:rgba(60,70,110,.6);}
+.nat-m{flex:1;min-width:0;}.nat-m b{font-size:14px;}.nat-m small{font-size:11px;opacity:.85;}
+.nat-bar{height:8px;border-radius:6px;background:rgba(255,255,255,.15);margin:5px 0 4px;overflow:hidden;}.nat-bar i{display:block;height:100%;border-radius:6px;}
+
+#rkHelpS .panel,#mdHelpS .panel{max-height:86vh;overflow-y:auto;}
+#mdHelpBody{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+
+/* --- ヘッダー幅調整（タイトル枠にRANKING/LEADERBOARDが収まるように） --- */
+#rk>.row:first-child,#rkreg>.row:first-child,#rkboard>.row:first-child,#rktr>.row:first-child,#md>.row:first-child,#rksel>.row:first-child{gap:4px;}
+#rk>.row:first-child>.btn.sm,#rkreg>.row:first-child>.btn.sm,#rkboard>.row:first-child>.btn.sm,#rktr>.row:first-child>.btn.sm,#md>.row:first-child>.btn.sm,#rksel>.row:first-child>.btn.sm{padding:0 8px 0 30px;min-width:0;width:88px;font-size:12px;}
+#rk>.row:first-child>span,#rkreg>.row:first-child>span,#rkboard>.row:first-child>span,#rktr>.row:first-child>span,#md>.row:first-child>span,#rksel>.row:first-child>span{width:50px!important;flex:none;}
+#rk h2.ttl,#rkreg h2.ttl,#rksel h2.ttl,#rkboard h2.ttl,#rktr h2.ttl,#md h2.ttl{letter-spacing:.1em;font-size:clamp(14px,4.4vw,20px);padding-left:8px;padding-right:8px;}
+
+/* --- 折り返し対策 --- */
+.lb-l{white-space:nowrap;}
+.lb-row .lb-main{white-space:nowrap;}
+.rate-info b{white-space:nowrap;font-size:clamp(18px,5.6vw,24px);}.rate-info b i{font-size:10px;}
+#goRkSub{white-space:nowrap;margin-left:6px!important;font-size:10px!important;}
+#goRk{padding-right:26px;}
+.md-t small{font-size:9px;letter-spacing:-.02em;word-break:keep-all;}
+#atk h2.ttl{white-space:nowrap;font-size:clamp(14px,4.4vw,20px);letter-spacing:.1em;padding-left:8px;padding-right:8px;}
 </style>
 </head>
 <body>
@@ -259,7 +370,9 @@ input[type=range]{flex:1;min-width:0;width:100%;accent-color:#8cc8ff;}
   <div class="logo-sub">MY SOUND RHYTHM GAME</div>
   <div class="menu">
     <button class="btn gold" id="goOff"><img class="emb" src="assets/ui/emb_off.webp" alt="">公式曲で遊ぶ</button>
+    <button class="btn" id="goMd"><img class="emb" src="assets/medal/emblem_star.webp" alt="">MEDALS</button>
     <button class="btn" id="goAtk"><img class="emb" src="assets/ui/emb_attack.webp" alt="">SCORE ATTACK</button>
+    <button class="btn" id="goRk"><img class="emb" src="assets/ui/emb_attack.webp" alt="">RANKING <small style="opacity:.75;font-size:11px">β</small><span id="goRkSub" style="margin-left:8px;font-size:11px;opacity:.8;letter-spacing:.04em"></span></button>
     <button class="btn" id="goLib"><img class="emb" src="assets/ui/emb_my.webp" alt="">MY SOUND</button>
     <button class="btn" id="goOpt">⚙ OPTION</button>
     <a class="home-link" href="index.html">← 作品ページへ</a>
@@ -289,10 +402,73 @@ input[type=range]{flex:1;min-width:0;width:100%;accent-color:#8cc8ff;}
   <div class="err" id="offErr" role="alert"></div>
   <div class="lib-body" id="offBody">
     <div class="note">はぜる のオリジナル曲です。曲をえらぶと、音を解析して譜面を作ります。</div>
-    <button class="btn" id="offAtk" type="button" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:46px;padding:10px 16px;font-size:14px"><img class="emb" src="assets/ui/emb_attack.webp" alt="" style="width:26px;height:26px">SCORE ATTACK <span style="opacity:.8;font-weight:500;font-size:12px;letter-spacing:.02em">▶</span></button>
+    <div style="display:flex;gap:8px">
+      <button class="btn" id="offAtk" type="button" style="display:flex;align-items:center;justify-content:center;gap:6px;flex:1;min-height:46px;padding:10px 8px;font-size:13px"><img class="emb" src="assets/ui/emb_attack.webp" alt="" style="width:22px;height:22px">SCORE ATTACK</button>
+      <button class="btn" id="offRk" type="button" style="display:flex;align-items:center;justify-content:center;gap:6px;flex:1;min-height:46px;padding:10px 8px;font-size:13px"><img class="emb" src="assets/ui/emb_attack.webp" alt="" style="width:22px;height:22px">RANKING <small style="opacity:.75;font-size:10px">β</small></button>
+    </div>
     <div class="panel rate" id="offRate"></div>
     <div id="offList" style="display:flex;flex-direction:column;gap:8px"></div>
   </div>
+</section>
+
+
+<!-- RANKING (beta) -->
+<section class="screen bg-atk" id="rk">
+  <div class="row"><button class="btn sm ghost" id="rkBack">← 戻る</button><h2 class="ttl grow" style="text-align:center">RANKING</h2><span style="width:84px;display:flex;justify-content:flex-end"><button class="btn round rk-q" id="rkHelp" type="button" aria-label="ランキングの説明">?</button></span></div>
+  <div class="busy" id="rkLoad"><div class="spin"></div><div>通信中…</div></div>
+  <div class="err" id="rkErrH" role="alert"></div>
+  <div class="lib-body" id="rkBody">
+    <div class="note">βテスト中のランキングです。不正が続いた場合は、ランキングをやめることがあります。ランキングは1人1枠で、自分で記録を更新すると反映されます。名前やIDを変えても、更新しないかぎり、前の表示は残ります。</div>
+    <div class="panel rk-prof"><div id="rkEmb"></div><div class="rk-pi"><b id="rkName"></b><span id="rkNat"></span><span id="rkBest" class="rk-bs"></span></div></div>
+    <button class="btn gold" id="rkPlay">▶ ランキング戦</button>
+    <button class="btn" id="rkPend" style="display:none">未送信の記録を送る</button>
+    <button class="btn" id="rkSyncBtn" style="display:none">ランキングの表示名を更新</button>
+    <button class="btn" id="rkBoardBtn">ランキングを見る</button>
+    <button class="btn" id="rkTrBtn">トロフィー</button>
+    <button class="btn ghost" id="rkEditBtn">名前・国を変える</button>
+  </div>
+</section>
+
+<section class="screen bg-atk" id="rkreg">
+  <div class="row"><button class="btn sm ghost" id="rkRegBack">← 戻る</button><h2 class="ttl grow" style="text-align:center">PROFILE</h2><span style="width:84px;display:flex;justify-content:flex-end"><button class="btn round rk-q" id="rkHelp2" type="button" aria-label="ランキングの説明">?</button></span></div>
+  <div class="lib-body">
+    <div class="note">ランキングに出る名前と、所属する国をえらびます。名前は、下の文字盤から3文字えらびます（例：HZR、K.S）。IDは、自動でつきます。</div>
+    <div class="panel"><input type="hidden" id="rkTag"><div class="tg-slots" id="rkSlotsT"></div><div class="tg-pad" id="rkPad"></div></div>
+    <div id="rkNats" style="display:flex;flex-direction:column;gap:8px"></div>
+    <div class="err on" id="rkRegErr" role="alert" style="min-height:1.2em"></div>
+    <button class="btn gold" id="rkRegSave">けってい</button>
+  </div>
+</section>
+
+<section class="screen bg-atk" id="rksel">
+  <div class="row"><button class="btn sm ghost" id="rkSelBack">← 戻る</button><h2 class="ttl grow" style="text-align:center">RANKED</h2><span style="width:84px"></span></div>
+  <div class="err" id="rkErr" role="alert"></div>
+  <div class="busy" id="rkBusy"><div class="spin"></div><div id="rkBusyTxt">コースを準備中…</div></div>
+  <div class="lib-body" id="rkSelBody">
+    <div class="note">公式曲から3曲を選んで、曲ごとに難易度を決めます。コンボは3曲のあいだ続きます。</div>
+    <div id="rkSlots" class="rk-slots"></div>
+    <div id="rkList" style="display:flex;flex-direction:column;gap:8px"></div>
+    <button class="btn gold" id="rkGo" disabled>START</button>
+  </div>
+</section>
+
+<section class="screen bg-atk" id="rkboard">
+  <div class="row"><button class="btn sm ghost" id="rkBoardBack">← 戻る</button><h2 class="ttl grow" style="text-align:center">BOARD</h2><span style="width:84px"></span></div>
+  <div id="rkTabs" class="lb-tabs"><button data-t="ALL" class="sel">ALL</button><button data-t="EMB">EMB</button><button data-t="CEL">CEL</button><button data-t="SOL">SOL</button><button data-t="NAT">国別</button></div>
+  <div class="panel lb-me"><div><div class="rk-bs">YOU</div><b id="rkBoardMe" style="font-size:16px"></b></div><div style="text-align:right"><div class="rk-bs">BEST</div><b id="rkBoardBest" style="font-size:20px"></b></div></div>
+  <div class="err" id="rkBoardErr" role="alert"></div>
+  <div class="busy" id="rkBoardBusy"><div class="spin"></div><div>読み込み中…</div></div>
+  <div class="lib-body" id="rkRows"></div>
+</section>
+
+<section class="screen bg-atk" id="md">
+  <div class="row"><button class="btn sm ghost" id="mdBack">← 戻る</button><h2 class="ttl grow" style="text-align:center">MEDALS</h2><span style="width:84px;display:flex;justify-content:flex-end"><button class="btn round rk-q" id="mdHelp" type="button" aria-label="勲章の説明">?</button></span></div>
+  <div class="lib-body" id="mdBody"></div>
+</section>
+
+<section class="screen bg-atk" id="rktr">
+  <div class="row"><button class="btn sm ghost" id="rkTrBack">← 戻る</button><h2 class="ttl grow" style="text-align:center">TROPHY</h2><span style="width:84px"></span></div>
+  <div class="lib-body"><div id="rkTrGrid" class="tr-grid"></div></div>
 </section>
 
 <!-- SCORE ATTACK -->
@@ -329,6 +505,7 @@ input[type=range]{flex:1;min-width:0;width:100%;accent-color:#8cc8ff;}
     <div class="res-lv" style="text-align:center"><span class="tag" id="arTag"></span></div>
     <div class="ar-rank"><img id="arRankImg" src="assets/rank/rank_s.webp" alt="S" style="width:100%;height:auto"></div>
     <div class="ar-rows" id="arRows"></div>
+    <div class="ar-sub" id="arSub" style="display:none"></div>
     <div class="res-score"><small>TOTAL<span class="newtag" id="arNew">NEW!</span></small><span id="arScore">0</span></div>
   </div>
   <div class="row"><button class="btn grow" id="arRetry">↻ RETRY</button><button class="btn gold grow" id="arNext">コース選び ▶</button><button class="btn round" id="arHome" aria-label="ホーム">⌂</button></div>
@@ -424,10 +601,33 @@ input[type=range]{flex:1;min-width:0;width:100%;accent-color:#8cc8ff;}
       </div>
     </div>
     <div class="badge" id="badge" style="margin-top:8px"></div>
+    <div class="md-got" id="mdGot"></div>
     <div class="res-score"><small>SCORE<span class="newtag" id="newtag">NEW!</span></small><span id="resScore">0</span></div>
   </div>
   <div class="row"><button class="btn grow" id="rRetry">↻ RETRY</button><button class="btn gold grow" id="rNext">曲えらび ▶</button><button class="btn round" id="rHome" aria-label="ホーム">⌂</button></div>
+  <div style="text-align:center"><button type="button" class="home-link" id="rRk" style="background:none;border:0;cursor:pointer;font-family:inherit">⚔ ランキング戦に挑戦 β</button></div>
 </section>
+
+<!-- RANKING HELP -->
+<div class="sheet" id="rkHelpS"><div class="panel">
+  <h2 class="ttl">ランキングとは</h2>
+  <div class="help">3曲をつなげて遊ぶ、ランキング専用のモードです。</div>
+  <div class="help">コンボがつながるほど点数が伸びて、1000コンボで5倍になります。</div>
+  <div class="help">曲ごとに難易度をえらべます。難しいほど、点数が高くなります。</div>
+  <div class="help">国は3つ。ランキングは、全体と国ごとに見られます。「国別」では、各国の上位10人の合計で、国どうしを比べます。</div>
+  <div class="help">1人1枠で、100位まで表示されます。自己ベストを更新すると、反映されます。</div>
+  <div class="help">記録は、サーバーでチェックされます。βテスト中です。</div>
+  <div class="help">名前や国を変えても、自分で記録を更新するまでは、前の表示が残ります。</div>
+  <div class="help">順位がすべてではありません。腕前は、ホームの「MEDALS」で、勲章として残ります。</div>
+  <button class="btn gold" id="rkHelpClose">とじる</button>
+</div></div>
+
+<!-- MEDAL HELP -->
+<div class="sheet" id="mdHelpS"><div class="panel">
+  <h2 class="ttl">勲章とは</h2>
+  <div id="mdHelpBody"></div>
+  <button class="btn gold" id="mdHelpClose">とじる</button>
+</div></div>
 
 <!-- OPTION -->
 <div class="sheet" id="opt"><div class="panel">
@@ -511,6 +711,31 @@ const EN={
 "曲を再生できませんでした。": "The song couldn't be played."
 };
 Object.assign(EN,{
+"勲章とは":"About medals",
+"勲章の説明":"About medals",
+"公式曲で遊ぶと、曲と難易度ごとに、勲章が付きます。":"When you play official songs, a medal is awarded for each song and difficulty.",
+"勲章をもとに、6つの称号が決まります。":"Your medals decide one of six titles.",
+"勲章は、この端末の中に保存されます。ランキングの順位は関係ありません。":"Medals are stored inside your device. Your ranking position has no effect.",
+"国は3つ。ランキングは、全体と国ごとに見られます。「国別」では、各国の上位10人の合計で、国どうしを比べます。":"There are 3 nations. You can see the overall ranking and each nation's ranking. The \"Nations\" tab compares nations by the total of their top 10 players.",
+"名前や国を変えても、自分で記録を更新するまでは、前の表示が残ります。":"If you change your name or nation, the old display stays until you update your record yourself.",
+"順位がすべてではありません。腕前は、ホームの「MEDALS」で、勲章として残ります。":"Rank is not everything. Your skill is kept as medals in \"MEDALS\" on the home screen.",
+"見習い":"Apprentice","旅人":"Traveler","上級者":"Adept","達人":"Master","星の覇者":"Star Sovereign","極":"Zenith",
+"公式曲を1曲クリアした":"Cleared one official song","EASY以上でフルコンボした":"Full Combo on EASY or higher","NORMAL以上でフルコンボした":"Full Combo on NORMAL or higher","HARD以上でフルコンボした":"Full Combo on HARD or higher","EXPERTでフルコンボした":"Full Combo on EXPERT","EXPERTでオールパーフェクトした":"All Perfect on EXPERT",
+"クリア":"Clear","フルコンボ":"Full Combo","オールパーフェクト":"All Perfect",
+"まだ称号がありません":"No title yet","公式曲を1曲クリアすると、最初の称号がもらえます。":"Clear one official song to earn your first title.",
+"獲得した勲章　{0}個":"Medals earned: {0}","つぎの称号：{0}":"Next title: {0}","すべての称号を獲得しました。":"You have earned every title.",
+"ランキングとは別に、フリープレイで集める勲章です。順位は関係ありません。":"Medals you collect in free play. Ranking has nothing to do with them.",
+"🏅 {0}の勲章を獲得！":"🏅 Earned the {0} medal!","称号「{0}」を獲得！":"Title earned: {0}!",
+"国別":"NATIONS","各国の上位10人の合計スコアです。":"Each nation's total score of its top 10 players.","参加 {0}人":"{0} players","合計 {0}":"Total {0}",
+"ランキングの説明":"About the ranking",
+"ランキングとは":"About the ranking",
+"3曲をつなげて遊ぶ、ランキング専用のモードです。":"A mode just for the ranking, where you play 3 songs back to back.",
+"コンボがつながるほど点数が伸びて、1000コンボで5倍になります。":"The longer your combo, the more points you earn, up to x5 at 1000 combo.",
+"曲ごとに難易度をえらべます。難しいほど、点数が高くなります。":"You choose a difficulty for each song. Harder ones give more points.",
+"国は3つ。ランキングは、全体と国ごとに見られます。":"There are 3 nations. You can see the overall ranking and each nation's ranking.",
+"1人1枠で、100位まで表示されます。自己ベストを更新すると、反映されます。":"One entry per player, and the top 100 are shown. Beating your best updates it.",
+"記録は、サーバーでチェックされます。βテスト中です。":"Records are checked on the server. This is a beta test.",
+"⚔ ランキング戦に挑戦 β":"⚔ Try the ranked mode β",
 "3曲をえらんで、コンボをつなげて高得点をねらおう。":"Pick 3 songs and chain your combo for a high score.",
 "コースを準備中…":"Preparing the course…",
 "コースを準備中… {0} / 3":"Preparing the course… {0} / 3",
@@ -544,13 +769,20 @@ function applyLang(){
     else if(rec[a]&&v===rec[a].en)e.setAttribute(a,rec[a].ja);}));
   document.querySelectorAll('.lang-btn').forEach(b=>b.textContent=LANG==='en'?'日本語':'English');
 }
+Object.assign(EN,{"βテスト中のランキングです。不正が続いた場合は、ランキングをやめることがあります。ランキングは1人1枠で、自分で記録を更新すると反映されます。名前やIDを変えても、更新しないかぎり、前の表示は残ります。": "This is a beta ranking. If cheating continues, the ranking may be discontinued. Each player has one entry, which updates when you set a new record yourself. If you change your name or ID, your old entry stays until you update it.", "▶ ランキング戦": "▶ Ranked Match", "ランキングを見る": "View Leaderboard", "名前・国を変える": "Change Name / Nation", "けってい": "Confirm", "ランキングに出る名前と、所属する国をえらびます。名前は、下の文字盤から3文字えらびます（例：HZR、K.S）。IDは、自動でつきます。": "Choose the name shown on the leaderboard and the nation you belong to. Pick 3 characters for your name from the pad below (e.g. HZR, K.S). An ID is added automatically.", "公式曲から3曲を選んで、曲ごとに難易度を決めます。コンボは3曲のあいだ続きます。": "Pick 3 official songs and choose a difficulty for each. Your combo carries across all 3 songs.", "全体と、国ごとのランキング（100位まで）は、準備中です。": "The overall and per-nation leaderboards (top 100) are coming soon.", "焔の公国 エンバー": "Ember Principality", "蒼の連邦 セレスタ": "Celesta Federation", "金の王朝 ソラリス": "Solaris Dynasty", "星の欠片を、炎で鍛える。鍛冶と歌の国。情熱の国。": "They forge fallen star shards in flame. A land of smiths and song, and of passion.", "空と水から、星を見守る。観測者たちの国。冷静な国。": "Watchers of the stars from sky and water. A land of observers, calm and precise.", "鐘と麦の国。夜明けを告げる役目を持つ。粘り強い国。": "A land of bells and wheat, charged with announcing the dawn. Patient and enduring.", "自己ベスト": "Personal best", "名前を、3文字えらんでね。": "Please pick 3 characters for your name.", "この名前は使えません。": "This name can't be used.", "所属する国をえらんでね。": "Please choose a nation.", "曲をえらんでね": "Pick a song", "ノーツ {0}": "Notes {0}", "ランキングの設定を読み込めませんでした。": "Couldn't load the ranking settings.", "ランキング登録は、準備中です（βテスト）。": "Leaderboard submission is coming soon (beta).", "この記録は、ランキングに反映されません。": "This run won't count for the ranking."});
+Object.assign(EN,{"通信中…": "Connecting…", "通信できませんでした。電波のよいところで、もう一度ためしてね。": "Couldn't connect. Please try again with a better signal.", "登録できませんでした。もう一度ためしてね。": "Couldn't register. Please try again.", "ランキングに送信中…": "Sending to the leaderboard…", "ランキングに登録しました。現在 {0}位": "Added to the leaderboard. Current rank: #{0}", "自己ベストを更新できなかったので、ランキングはそのままです。現在 {0}位": "This didn't beat your best, so the leaderboard is unchanged. Current rank: #{0}", "この記録は、ランキングに反映されませんでした。": "This run wasn't accepted by the leaderboard.", "送信できませんでした。ランキングの画面から、もう一度送れます。": "Couldn't send. You can try again from the ranking screen.", "送信できませんでした。電波のよいところで、もう一度ためしてね。": "Couldn't send. Please try again with a better signal.", "ランキングの表示を更新しました。": "Leaderboard name updated.", "更新できませんでした。": "Couldn't update.", "この国のランキングは、準備中です。": "This nation's leaderboard isn't ready yet.", "未送信の記録を送る": "Send unsent record", "ランキングの表示名を更新": "Update leaderboard name", "トロフィー": "Trophies", "読み込み中…": "Loading…", "獲得ずみ": "Earned", "参加賞": "Participation", "100位以内": "Top 100", "50位以内": "Top 50", "40位以内": "Top 40", "30位以内": "Top 30", "20位以内": "Top 20", "10位以内": "Top 10", "3位": "3rd place", "2位": "2nd place", "1位": "1st place", "ランキングに参加した": "Joined the ranking", "100位以内に入った": "Reached the top 100", "50位以内に入った": "Reached the top 50", "40位以内に入った": "Reached the top 40", "30位以内に入った": "Reached the top 30", "20位以内に入った": "Reached the top 20", "10位以内に入った": "Reached the top 10", "3位以内に入った": "Reached the top 3", "2位以内に入った": "Reached the top 2", "1位になった": "Reached #1", "参加": "JOIN"});
 function setLang(l){LANG=l;LS.set('otoge4_lang',l);applyLang();
   try{const on=id=>{const e=document.getElementById(id);return e&&e.classList.contains('on');};
     if(on('setup')&&typeof syncMy==='function')syncMy();
     if(on('off')&&typeof paintOff==='function')paintOff();
     if(on('lib')&&typeof renderLib==='function')renderLib();
     if(on('atk')&&typeof paintAtk==='function')paintAtk();
-    if(on('atkrec')&&typeof paintAtkRec==='function')paintAtkRec();}catch(e){}}
+    if(on('atkrec')&&typeof paintAtkRec==='function')paintAtkRec();
+    if(on('rk')&&typeof paintRk==='function')paintRk();
+    if(on('rkreg')&&typeof paintRkReg==='function')paintRkReg();
+    if(on('rksel')&&typeof paintRkSel==='function')paintRkSel();
+    if(on('md')&&typeof paintMd==='function')paintMd();
+    if(on('rkboard')&&typeof paintRkBoard==='function')paintRkBoard();}catch(e){}}
 const mmss=t=>{t=Math.max(0,Math.floor(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
 const pad=(n,w)=>String(Math.max(0,Math.round(n))).padStart(w,'0');
 function myHash(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h;}
@@ -568,7 +800,7 @@ const travelSec=()=>2.5-0.17*SET.speed;
 
 /* ---------- 画面 ---------- */
 var OFFPV='';
-function show(id){if(id!=='off'&&id!=='atk'){try{atkPvStop();}catch(e){}}if(id!=='off')OFFPV='';document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');}
+function show(id){if(id!=='off'&&id!=='atk'){try{atkPvStop();}catch(e){}}if(id!=='off')OFFPV='';document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');if(id==='home'&&typeof paintHomeRk==='function')paintHomeRk();}
 $('langBtn').onclick=$('langBtn2').onclick=()=>setLang(LANG==='en'?'ja':'en');
 $('goLib').onclick=()=>{ensureAudio();FROM='lib';openLib();};
 $('goOff').onclick=()=>{ensureAudio();openOff();};
@@ -927,7 +1159,7 @@ function startGame(){
   $('pauseOv').classList.remove('on');
   cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);
   countdown(()=>{try{bgm.currentTime=0;}catch(e){}G.lastCt=0;G.lastPerf=performance.now();
-    bgm.play().then(()=>{G.state='play';}).catch(()=>{alert(T('曲を再生できませんでした。'));toSetup();});});
+    bgm.play().then(()=>{G.state='play';G.tStart=performance.now();}).catch(()=>{alert(T('曲を再生できませんでした。'));toSetup();});});
 }
 function countdown(done,ready){
   const ov=$('count');ov.classList.add('on');let n=3;clearTimeout(G.cdTimer);
@@ -959,7 +1191,7 @@ function updClock(){
 function apply(j,lane,isTail){
   G.cnt[j]++;G.sum+=JWEIGHT[j];
   if(j==='p'||j==='g'||j==='o'){G.combo++;if(G.combo>G.maxCombo)G.maxCombo=G.combo;}else G.combo=0;
-  if(G.atk){G.pts+=Math.round(ATK_PTS[j]*atkMult(G.combo));G.score=ATK.base+G.pts;}else G.score=Math.round(1e6*G.sum/G.units);
+  if(G.atk){G.pts+=Math.round(ATK_PTS[j]*atkMultNow(G.combo));G.score=ATK.base+G.pts;}else G.score=Math.round(1e6*G.sum/G.units);
   G.judge={j,t0:performance.now()};
   const rc=laneCenter(lane,G.hitY);
   if(j!=='m'){burst(rc,G.hitY,j,lane);G.flash[lane]=1;}
@@ -1040,7 +1272,7 @@ function resumeGame(){
 $('pauseBtn').onclick=pauseGame;
 $('pResume').onclick=resumeGame;
 $('pRetry').onclick=()=>{clearTimeout(G&&G.cdTimer);bgm.pause();if(ATK){$('pauseOv').classList.remove('on');atkReset();atkPlay();}else startGame();};
-$('pQuit').onclick=()=>{if(ATK)track('atk_quit',{difficulty:ATK.diff,song_no:ATK.idx+1});else track('game_quit',trk());clearTimeout(G&&G.cdTimer);if(G)G.state='idle';cancelAnimationFrame(raf);bgm.pause();$('pauseOv').classList.remove('on');$('count').classList.remove('on');if(ATK){atkExit();openAtk();}else backToList();};
+$('pQuit').onclick=()=>{if(ATK)track(ATK.rk?'rk_quit':'atk_quit',{difficulty:ATK.diff,song_no:ATK.idx+1});else track('game_quit',trk());clearTimeout(G&&G.cdTimer);if(G)G.state='idle';cancelAnimationFrame(raf);bgm.pause();$('pauseOv').classList.remove('on');$('count').classList.remove('on');if(ATK){const rk=ATK.rk;atkExit();rk?openRkSel():openAtk();}else backToList();};
 document.addEventListener('visibilitychange',()=>{if(document.hidden){pauseGame();stopPv();}});
 bgm.addEventListener('ended',()=>{if(G&&G.state==='play')finish();});
 
@@ -1203,9 +1435,9 @@ function drawHold(n,t){
 }
 
 /* ---------- HUD ---------- */
-function hudReset(){$('score').textContent=pad(G.score,8);$('combo').textContent=G.combo;$('gaugeFill').style.width='0%';$('gaugeWrap').style.display=G.atk?'none':'';$('multD').textContent=G.atk?'×'+atkMult(G.combo).toFixed(1):'';G.lit=-1;document.querySelectorAll('.gm').forEach(e=>e.classList.remove('lit'));}
+function hudReset(){$('score').textContent=pad(G.score,8);$('combo').textContent=G.combo;$('gaugeFill').style.width='0%';$('gaugeWrap').style.display=G.atk?'none':'';$('multD').textContent=G.atk?'×'+atkMultNow(G.combo).toFixed(1):'';G.lit=-1;document.querySelectorAll('.gm').forEach(e=>e.classList.remove('lit'));}
 function hudUpdate(pop){
-  if(G.atk)$('multD').textContent='×'+atkMult(G.combo).toFixed(1);
+  if(G.atk)$('multD').textContent='×'+atkMultNow(G.combo).toFixed(1);
   $('score').textContent=pad(G.score,8);$('gaugeFill').style.width=Math.min(100,G.score/1e4)+'%';
   const c=$('combo');c.textContent=G.combo;if(pop&&G.combo>0){c.classList.remove('pop');void c.offsetWidth;c.classList.add('pop');}
   document.querySelectorAll('.gm[data-th]').forEach(e=>e.classList.toggle('lit',G.score>=+e.dataset.th));
@@ -1215,9 +1447,10 @@ function hudUpdate(pop){
 function finish(){
   if(!G||G.state==='done')return;G.state='done';cancelAnimationFrame(raf);bgm.pause();
   if(G.atk){atkSongDone();return;}
-  const sc=G.score,rk=rankOf(sc),prev=getBest(G.id,G.diff),isNew=!prev||sc>prev.score;
+  const sc=G.score,rk=rankOf(sc),prev=getBest(G.id,G.diff),isNew=!prev||sc>prev.score;const md0=mdSnap(G.id,G.diff);
   const fcNow=!G.cnt.m&&!G.cnt.b&&(G.cnt.p+G.cnt.g+G.cnt.o)>0,bNow=fcNow?((G.cnt.g||G.cnt.o)?1:2):0,bOld=(prev&&prev.b)||0;
   if(isNew||bNow>bOld)setBest(G.id,G.diff,isNew?{score:sc,rank:rk,b:Math.max(bNow,bOld)}:{score:prev.score,rank:prev.rank,b:bNow});
+  mdAnnounce(md0,mdSnap(G.id,G.diff));
   track('game_finish',Object.assign(trk(),{rank:rk,score:sc,full_combo:(!G.cnt.m&&!G.cnt.b&&(G.cnt.p+G.cnt.g+G.cnt.o)>0)?1:0}));
   $('rSong').textContent=G.title;const tg=$('rTag');tg.textContent=G.diff.toUpperCase();tg.className='tag tag-'+G.diff;$('rLv').textContent='BPM '+MY.bpm.toFixed(1);
   const r=$('rank'),ri=$('rankImg');ri.src='assets/rank/rank_'+rk.toLowerCase()+'.webp';ri.alt=rk;r.style.animation='none';void r.offsetWidth;r.style.animation='';
@@ -1314,12 +1547,12 @@ function atkStart(){
     atkPlay();
   })().catch(e=>{$('atkBusy').classList.remove('on');$('atkBody').style.display='';atkErr(T('コースを準備できませんでした。もう一度ためしてね。'));});
 }
-function atkReset(){Object.assign(ATK,{idx:0,base:0,combo:0,maxCombo:0,units:0,cnt:{p:0,g:0,o:0,b:0,m:0},results:[]});}
-function atkPlay(){MY=ATK.prep[ATK.idx];DIFF=ATK.diff;startGame();}
+function atkReset(){Object.assign(ATK,{us:[],el:[],idx:0,base:0,combo:0,maxCombo:0,units:0,cnt:{p:0,g:0,o:0,b:0,m:0},results:[]});}
+function atkPlay(){MY=ATK.prep[ATK.idx];DIFF=ATK.rk?ATK.diffs[ATK.idx]:ATK.diff;startGame();}
 function atkExit(){if(ATK)DIFF=ATK.prevDiff;ATK=null;MY=null;}
 function atkSongDone(){
   const g=G,b=ATK.songs[ATK.idx];
-  ATK.results.push({id:b.id,pts:g.pts});
+  ATK.results.push({id:b.id,pts:g.pts});ATK.us.push(g.units);ATK.el.push(performance.now()-(g.tStart||performance.now()));
   ['p','g','o','b','m'].forEach(k=>{ATK.cnt[k]+=g.cnt[k];});
   ATK.units+=g.units;ATK.base+=g.pts;ATK.combo=g.combo;ATK.maxCombo=Math.max(ATK.maxCombo,g.maxCombo);
   if(ATK.idx<2){ATK.idx++;atkMid();}else atkEnd();
@@ -1333,6 +1566,8 @@ function atkMid(){
   show('atkmid');
 }
 function atkEnd(){
+  if(ATK.rk){rkEnd();return;}
+  $('arSub').style.display='none';
   const mx=atkMax(ATK.units),ratio=mx>0?ATK.base/mx:0,rk=rankOf(Math.round(1e6*ratio));
   const rec=atkRecs(),arr=Array.isArray(rec[ATK.diff])?rec[ATK.diff]:[];
   const entry={score:ATK.base,rank:rk,songs:ATK.results.map(r=>({id:r.id,pts:r.pts})),at:Date.now()};
@@ -1384,15 +1619,452 @@ $('atkRec').onclick=openAtkRec;
 $('arcBack').onclick=()=>openAtk();
 $('amGo').onclick=atkPlay;
 $('arRetry').onclick=()=>{atkReset();atkPlay();};
-$('arNext').onclick=()=>{atkExit();openAtk();};
-$('arHome').onclick=()=>{atkExit();show('home');};
+$('arNext').onclick=()=>{const rk=ATK&&ATK.rk;atkExit();rk?openRkSel():openAtk();};
+$('arHome').onclick=()=>{const rk=ATK&&ATK.rk;atkExit();rk?openRk():show('home');};
+
+/* ===== RANKING MODE (β) ===== */
+const RKC={beginner:1,easy:1.2,normal:1.5,hard:1.9,expert:2.4};
+const rkMult=c=>1+4*Math.min(c,1000)/1000;                      // 1000コンボで ×5
+const atkMultNow=c=>ATK&&ATK.rk?rkMult(c)*RKC[ATK.diffs[ATK.idx]]:atkMult(c);
+const NATS={
+  EMB:{n:'焔の公国 エンバー',col:'#e0553d',d:'星の欠片を、炎で鍛える。鍛冶と歌の国。情熱の国。'},
+  CEL:{n:'蒼の連邦 セレスタ',col:'#3d8fe0',d:'空と水から、星を見守る。観測者たちの国。冷静な国。'},
+  SOL:{n:'金の王朝 ソラリス',col:'#e0b43d',d:'鐘と麦の国。夜明けを告げる役目を持つ。粘り強い国。'}
+};
+const NATK=Object.keys(NATS);
+const BADTAG=['SEX','FUK','FCK','ASS','DIE','KKK','NZI','GAY','TIT','CUM','WTF','SHT'];
+const RKP='otoge4_rk',RKB='otoge4_rk_best',RKDL='otoge4_rkd';
+let RKT=null,RKSEL=[],RKD=[];
+try{RKD=JSON.parse(LS.get(RKDL)||'[]')||[];}catch(e){RKD=[];}
+const rkId=id=>String(id).replace(/^off_/,'');
+function rkLoadTable(){return RKT?Promise.resolve(RKT):fetch('songs/ranking_table.json').then(r=>{if(!r.ok)throw new Error('table');return r.json();}).then(j=>{RKT=j;return j;});}
+function rkMaxOf(list){let c=0,s=0;list.forEach(x=>{for(let k=0;k<x.u;k++){c++;s+=100*rkMult(c)*RKC[x.d];}});return s;}
+var FROK=false;{let n=0;BEST_D.forEach(k=>{const i=new Image();i.onload=()=>{if(++n===5)FROK=true;};i.src='assets/ui/frame_'+k+'.webp';});}
+const NATOK={};['EMB','CEL','SOL'].forEach(k=>{const i=new Image();i.onload=()=>{NATOK[k]=1;};i.src='assets/nat/nat_'+k.toLowerCase()+'.webp';});
+function rkEmb(el,nat,sz){
+  if(NATOK[nat]){el.className='nat-emb nat-img';el.style.cssText='width:'+sz+'px;height:'+sz+'px;background:url(assets/nat/nat_'+nat.toLowerCase()+'.webp) center/contain no-repeat';el.textContent='';el.setAttribute('aria-label',nat);return;}
+  el.className='nat-emb';el.style.cssText='width:'+sz+'px;height:'+sz+'px;background:radial-gradient(circle at 35% 30%,#fff8,'+NATS[nat].col+' 55%,#0006)';el.textContent=nat;
+}
+function rkErr(t){const e=$('rkErr'),h=$('rkErrH');if(h){h.textContent=t||'';h.classList.toggle('on',!!t);}e.textContent=t||'';e.classList.toggle('on',!!t);}
+
+function openRkReg(edit){
+  const p=rkProf();$('rkRegBack').style.display=p?'':'none';
+  $('rkTag').value=p?p.tag:'';RKNAT=p?p.nat:'';
+  $('rkRegErr').textContent='';paintRkReg();show('rkreg');
+}
+let RKNAT='';
+const TGCH='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.@!?*+_♥★♪';
+function tagPaint(){
+  const v=$('rkTag').value,box=$('rkSlotsT');box.innerHTML='';
+  for(let i=0;i<3;i++){
+    const b=document.createElement('button');b.type='button';b.className='tg-slot'+(i===Math.min(v.length,2)?' cur':'');
+    b.textContent=v[i]||'';b.setAttribute('aria-label',(i+1)+'/3');
+    b.onclick=()=>{$('rkTag').value=v.slice(0,i);tagPaint();};box.appendChild(b);
+  }
+}
+function tagPut(c){let v=$('rkTag').value;if(v.length>=3)return;$('rkTag').value=v+c;$('rkRegErr').textContent='';tagPaint();}
+function tagDel(){$('rkTag').value=$('rkTag').value.slice(0,-1);tagPaint();}
+function tagPad(){
+  const pad=$('rkPad');if(pad.children.length)return;
+  TGCH.split('').forEach(c=>{const b=document.createElement('button');b.type='button';b.className='tg-key';b.textContent=c;b.onclick=()=>tagPut(c);pad.appendChild(b);});
+  const d=document.createElement('button');d.type='button';d.className='tg-key del';d.textContent='←';d.setAttribute('aria-label','1文字消す');d.onclick=tagDel;pad.appendChild(d);
+}
+document.addEventListener('keydown',e=>{
+  if(!$('rkreg').classList.contains('on')||e.ctrlKey||e.metaKey||e.altKey)return;
+  if(e.key==='Backspace'){tagDel();e.preventDefault();return;}
+  if(e.key.length===1){const c=e.key.toUpperCase();if(TGCH.indexOf(c)>=0){tagPut(c);e.preventDefault();}}
+});
+function paintRkReg(){
+  tagPad();tagPaint();
+  const box=$('rkNats');box.innerHTML='';
+  NATK.forEach(k=>{
+    const b=document.createElement('button');b.type='button';b.className='nat'+(RKNAT===k?' sel':'');
+    const e=document.createElement('div');rkEmb(e,k,52);b.appendChild(e);
+    const t=document.createElement('div');t.className='nat-t';t.innerHTML='<b></b><span></span>';t.querySelector('b').textContent=T(NATS[k].n);t.querySelector('span').textContent=T(NATS[k].d);b.appendChild(t);
+    b.onclick=()=>{RKNAT=k;paintRkReg();};box.appendChild(b);
+  });
+}
+function openRkSel(){
+  atkPvStop();rkErr('');RKSEL=RKSEL.filter(id=>atkSong(id));
+  $('atkBusy').classList.remove('on');$('atkBody').style.display='';
+  $('rkBusy').classList.remove('on');$('rkSelBody').style.display='';
+  show('rksel');
+  Promise.all([OFFICIAL===null?loadOfficial():Promise.resolve(),rkLoadTable()]).then(()=>{
+    if(OFFICIAL===false){rkErr(T('公式曲を読み込めませんでした。サイト上のページから開いてください（ファイルを直接開くと読めないことがあります）。'));return;}
+    paintRkSel();
+  }).catch(()=>rkErr(T('ランキングの設定を読み込めませんでした。')));
+}
+function rkDiffOf(i){const d=RKD[i];return BEST_D.indexOf(d)>=0?d:'normal';}
+function paintRkSel(){
+  if(!OFFICIAL||!RKT)return;
+  const sl=$('rkSlots');sl.innerHTML='';
+  let sum=0;
+  for(let i=0;i<3;i++){
+    const b=atkSong(RKSEL[i]),d=rkDiffOf(i);
+    const row=document.createElement('div');row.className='rk-slot'+(b?' filled':'')+(FROK?' fr':'');if(FROK)row.style.setProperty('--fr','url(assets/ui/frame_'+d+'.webp)');
+    const jk=document.createElement('button');jk.type='button';jk.className='rk-jk';
+    if(b&&b.img)jk.style.backgroundImage='url('+b.img+')';
+    const nm=document.createElement('img');nm.src='assets/ui/slot_num_'+(i+1)+'.webp';nm.alt=String(i+1);jk.appendChild(nm);
+    jk.onclick=()=>{if(RKSEL[i]){RKSEL.splice(i,1);atkPvStop();paintRkSel();}};
+    row.appendChild(jk);
+    const mid=document.createElement('div');mid.className='rk-mid';
+    const t=document.createElement('div');t.className='rk-t';t.textContent=b?ttl(b):T('曲をえらんでね');mid.appendChild(t);
+    const ds=document.createElement('div');ds.className='rk-ds';
+    BEST_D.forEach(x=>{const q=document.createElement('button');q.type='button';q.className='rk-d d-'+x+(x===d?' sel':'');q.textContent=x.slice(0,3).toUpperCase();q.title=x.toUpperCase();
+      q.onclick=()=>{RKD[i]=x;LS.set(RKDL,JSON.stringify(RKD));paintRkSel();};ds.appendChild(q);});
+    mid.appendChild(ds);
+    const u=b&&RKT.units[rkId(b.id)]?RKT.units[rkId(b.id)][d]:0;
+    const inf=document.createElement('div');inf.className='rk-i';inf.textContent=b?T('ノーツ {0}',u):'';mid.appendChild(inf);
+    row.appendChild(mid);sl.appendChild(row);
+  }
+  const box=$('rkList');box.innerHTML='';
+  OFFICIAL.forEach(b=>{
+    const k=RKSEL.indexOf(b.id);
+    const row=itemRow(ttl(b),k>=0?'#'+(k+1)+' '+T('えらんだ'):'',()=>{
+      const i=RKSEL.indexOf(b.id);
+      if(i>=0){RKSEL.splice(i,1);rkErr('');atkPvStop();}
+      else if(RKSEL.length<3){RKSEL.push(b.id);rkErr('');atkPvPlay(b);}
+      else{rkErr(T('3曲えらびました。入れかえるときは、上の枠をタップして外してね。'));return;}
+      paintRkSel();
+    },null,b.img);
+    if(k>=0)row.classList.add('picked');box.appendChild(row);
+  });
+  const go=$('rkGo');go.disabled=RKSEL.length<3;go.style.opacity=RKSEL.length<3?.45:1;
+}
+function rkStart(){
+  if(RKSEL.length<3||!RKT)return;atkPvStop();ensureAudio();
+  const songs=RKSEL.map(atkSong),diffs=[0,1,2].map(rkDiffOf);
+  $('rkSelBody').style.display='none';$('rkBusy').classList.add('on');rkErr('');
+  (async()=>{
+    for(let i=0;i<3;i++){
+      $('rkBusyTxt').textContent=T('コースを準備中… {0} / 3',i+1);
+      if(!ATKC.has(songs[i].id))ATKC.set(songs[i].id,await atkPrepare(songs[i]));
+    }
+    ATK={rk:true,diff:diffs[0],diffs,songs,prep:songs.map(b=>ATKC.get(b.id)),prevDiff:DIFF};
+    atkReset();
+    track('rk_start',{d1:diffs[0],d2:diffs[1],d3:diffs[2]});
+    $('rkBusy').classList.remove('on');$('rkSelBody').style.display='';
+    atkPlay();
+  })().catch(e=>{$('rkBusy').classList.remove('on');$('rkSelBody').style.display='';rkErr(T('コースを準備できませんでした。もう一度ためしてね。'));});
+}
+function rkEnd(){
+  const sel=ATK.songs.map((b,i)=>({id:b.id,d:ATK.diffs[i],u:ATK.us[i],tu:(RKT&&RKT.units[rkId(b.id)]||{})[ATK.diffs[i]]||0,dur:(RKT&&RKT.dur[rkId(b.id)])||b.dur||0,el:ATK.el[i]}));
+  const mx=rkMaxOf(sel),ratio=mx>0?ATK.base/mx:0,rk=rankOf(Math.round(1e6*ratio));
+  const why=[];
+  sel.forEach(x=>{if(!x.tu||Math.abs(x.u-x.tu)>Math.max(3,Math.round(x.tu*.01)))why.push('units');if(x.el<x.dur*900)why.push('time');});
+  if(ATK.base>mx*1.002+ATK.us.reduce((a,b)=>a+b,0))why.push('score');
+  const valid=why.length===0;
+  let pos=-1,prev=null;
+  try{prev=JSON.parse(LS.get(RKB)||'null');}catch(e){}
+  const entry={score:ATK.base,rank:rk,songs:sel.map((x,i)=>({id:rkId(x.id),d:x.d,pts:ATK.results[i].pts})),el:Math.round(sel.reduce((a,x)=>a+x.el,0)),at:Date.now()};
+  if(valid&&(!prev||ATK.base>prev.score)){LS.set(RKB,JSON.stringify(entry));pos=0;}
+  track('rk_finish',{score:ATK.base,rank:rk,valid:valid?1:0,why:why.join('+')||'ok',max_combo:ATK.maxCombo});window.__rkWhy=why;window.__rkSel=sel;
+  const tg=$('arTag');tg.textContent='RANKING';tg.className='tag tag-expert';
+  const ri=$('arRankImg');ri.src='assets/rank/rank_'+rk.toLowerCase()+'.webp';ri.alt=rk;
+  const rows=$('arRows');rows.innerHTML='';
+  sel.forEach((x,i)=>{const b=atkSong(x.id),d=document.createElement('div');d.className='ar-row';
+    d.innerHTML='<img src="assets/ui/slot_num_'+(i+1)+'.webp" alt="'+(i+1)+'"><span class="t"></span><span class="dtag d-'+x.d+'">'+x.d.slice(0,3).toUpperCase()+'</span><span class="p"></span>';
+    d.querySelector('.t').textContent=b?ttl(b):x.id;d.querySelector('.p').textContent=ATK.results[i].pts.toLocaleString();rows.appendChild(d);});
+  const nt=$('arNew');nt.textContent='BEST!';nt.style.display=pos===0?'inline-block':'none';
+  const sub=$('arSub');sub.style.display='block';
+  sub.textContent=valid?'':T('この記録は、ランキングに反映されません。');
+  sub.className='ar-sub'+(valid?'':' bad');
+  show('atkres');
+  if(valid)rkSubmitAndShow(entry);
+  const sc=ATK.base,t0=performance.now();(function cu(now){const k=Math.min(1,(now-t0)/1200);$('arScore').textContent=Math.round(sc*(1-Math.pow(1-k,3))).toLocaleString();if(k<1&&$('atkres').classList.contains('on'))requestAnimationFrame(cu);})(t0);
+}
+/* ===== FIREBASE (ranking β) ===== */
+const FBCFG={apiKey:"AIzaSyDeGEZW6uwMDjANtAdyI1u_Nf5hjwDIuuA",authDomain:"starfall-horizon.firebaseapp.com",projectId:"starfall-horizon",storageBucket:"starfall-horizon.firebasestorage.app",messagingSenderId:"292153953848",appId:"1:292153953848:web:afa83f1aebdffdedd1e0cd"};
+const FBU='https://www.gstatic.com/firebasejs/13.4.0/';
+let FBP=null;
+function fbInit(){
+  if(FBP)return FBP;
+  FBP=(async()=>{
+    const [A,Au,F]=await Promise.all([import(FBU+'firebase-app.js'),import(FBU+'firebase-auth.js'),import(FBU+'firebase-firestore.js')]);
+    const app=A.initializeApp(FBCFG),auth=Au.getAuth(app),db=F.getFirestore(app);
+    if(typeof auth.authStateReady==='function')await auth.authStateReady();
+    if(!auth.currentUser)await Au.signInAnonymously(auth);
+    return {auth,db,F,uid:auth.currentUser.uid};
+  })().catch(e=>{FBP=null;throw e;});
+  return FBP;
+}
+const RKS='otoge4_rk_sync',RKPEND='otoge4_rk_pending',RKTR='otoge4_rk_tr';
+const TROPHIES=[{k:'p',n:'参加賞',d:'ランキングに参加した',t:'参加'},{k:'r100',n:'100位以内',d:'100位以内に入った',t:'100',m:100},{k:'r50',n:'50位以内',d:'50位以内に入った',t:'50',m:50},{k:'r40',n:'40位以内',d:'40位以内に入った',t:'40',m:40},{k:'r30',n:'30位以内',d:'30位以内に入った',t:'30',m:30},{k:'r20',n:'20位以内',d:'20位以内に入った',t:'20',m:20},{k:'r10',n:'10位以内',d:'10位以内に入った',t:'10',m:10},{k:'r3',n:'3位',d:'3位以内に入った',t:'3',m:3},{k:'r2',n:'2位',d:'2位以内に入った',t:'2',m:2},{k:'r1',n:'1位',d:'1位になった',t:'1',m:1}];
+function trGet(){try{return JSON.parse(LS.get(RKTR)||'{}')||{};}catch(e){return {};}}
+function trNote(pos){const t=trGet();t.part=1;if(pos>0&&(!t.best||pos<t.best))t.best=pos;LS.set(RKTR,JSON.stringify(t));}
+function trHas(x,t){return x.k==='p'?!!t.part:(t.best>0&&t.best<=x.m);}
+function pad4(n){return String(n).padStart(4,'0');}
+
+function rkProf(){try{const p=JSON.parse(LS.get(RKP)||'null');if(p&&p.tag&&NATS[p.nat]&&p.uid&&p.seq){p.num=pad4(p.seq);return p;}return null;}catch(e){return null;}}
+function rkLabel(p){return p.nat+' '+p.tag+'-'+p.num;}
+async function rkAdopt(){ // 端末のデータが消えても、同じ匿名アカウントなら、プロフィールを取りもどす
+  const f=await fbInit(),s=await f.F.getDoc(f.F.doc(f.db,'players',f.uid));
+  if(!s.exists())return null;const d=s.data();
+  LS.set(RKP,JSON.stringify({tag:d.tag,nat:d.nat,seq:d.seq,uid:f.uid}));return rkProf();
+}
+function openRk(){
+  stopPv();atkPvStop();rkErr('');
+  if(rkProf()){paintRk();show('rk');return;}
+  show('rk');$('rkBody').style.display='none';$('rkLoad').classList.add('on');
+  rkAdopt().then(p=>{$('rkLoad').classList.remove('on');$('rkBody').style.display='';if(p){paintRk();}else openRkReg(false);}).catch(()=>{
+    $('rkLoad').classList.remove('on');$('rkBody').style.display='none';rkErr(T('通信できませんでした。電波のよいところで、もう一度ためしてね。'));
+  });
+}
+function paintRk(){
+  const p=rkProf();if(!p)return;$('rkBody').style.display='';
+  const b=(()=>{try{return JSON.parse(LS.get(RKB)||'null');}catch(e){return null;}})();
+  rkEmb($('rkEmb'),p.nat,76);
+  $('rkName').textContent=p.tag+'-'+p.num;$('rkNat').textContent=T(NATS[p.nat].n);
+  $('rkBest').textContent=b?T('自己ベスト')+'　'+b.score.toLocaleString():T('まだ記録がありません');
+  let pend=null;try{pend=JSON.parse(LS.get(RKPEND)||'null');}catch(e){}
+  const sent=Number(LS.get('otoge4_rk_sent')||0);
+  $('rkPend').style.display=(pend||(b&&b.score>sent))?'':'none';
+  const sync=LS.get(RKS);$('rkSyncBtn').style.display=(sync&&sync!==rkLabel(p))?'':'none';
+}
+async function rkRegSave(){
+  const tag=($('rkTag').value||'').toUpperCase().replace(/[^A-Z0-9.@!?*+_♥★♪]/g,'');
+  const er=m=>{$('rkRegErr').textContent=m;};
+  if(tag.length!==3){er(T('名前を、3文字えらんでね。'));return;}
+  if(BADTAG.indexOf(tag.replace(/\./g,''))>=0){er(T('この名前は使えません。'));return;}
+  if(!RKNAT){er(T('所属する国をえらんでね。'));return;}
+  const btn=$('rkRegSave');btn.disabled=true;er(T('通信中…'));
+  try{
+    const f=await fbInit(),F=f.F,pref=F.doc(f.db,'players',f.uid);
+    const old=await F.getDoc(pref);let seq,isNew=0;
+    if(old.exists()){seq=old.data().seq;if(old.data().tag!==tag||old.data().nat!==RKNAT)await F.updateDoc(pref,{tag,nat:RKNAT});}
+    else{
+      const cref=F.doc(f.db,'meta','counter');isNew=1;
+      seq=await F.runTransaction(f.db,async tr=>{
+        const c=await tr.get(cref),n=(c.exists()?c.data().n:0)+1;
+        tr.set(cref,{n});tr.set(pref,{tag,nat:RKNAT,seq:n,at:F.serverTimestamp()});return n;
+      });
+    }
+    LS.set(RKP,JSON.stringify({tag,nat:RKNAT,seq,uid:f.uid}));
+    track('rk_profile',{nation:RKNAT,is_new:isNew});
+    er('');btn.disabled=false;paintRk();show('rk');
+  }catch(e){
+    console.warn(e);btn.disabled=false;
+    er(e&&e.code==='permission-denied'?T('登録できませんでした。もう一度ためしてね。'):T('通信できませんでした。電波のよいところで、もう一度ためしてね。'));
+  }
+}
+async function rkSubmit(en){
+  const f=await fbInit(),F=f.F,p=rkProf();
+  if(!p||p.uid!==f.uid)throw Object.assign(new Error('profile'),{code:'profile'});
+  const ref=F.doc(f.db,'scores',f.uid),cur=await F.getDoc(ref);
+  let updated=false;
+  if(!cur.exists()||en.score>cur.data().score){
+    await F.setDoc(ref,{score:en.score,rank:en.rank,tag:p.tag,nat:p.nat,seq:p.seq,songs:en.songs,el:en.el,at:F.serverTimestamp()});
+    updated=true;LS.set(RKS,rkLabel(p));
+  }
+  const best=updated?en.score:cur.data().score;
+  const cnt=await F.getCountFromServer(F.query(F.collection(f.db,'scores'),F.where('score','>',best)));
+  const pos=cnt.data().count+1;trNote(pos);LS.set('otoge4_rk_sent',String(best));
+  return {updated,pos,best};
+}
+async function rkSubmitAndShow(en){
+  const sub=$('arSub');sub.className='ar-sub';sub.textContent=T('ランキングに送信中…');
+  try{
+    const r=await rkSubmit(en);LS.set(RKPEND,'null');
+    sub.textContent=r.updated?T('ランキングに登録しました。現在 {0}位',r.pos):T('自己ベストを更新できなかったので、ランキングはそのままです。現在 {0}位',r.pos);
+    track('rk_submit',{score:en.score,pos:r.pos,updated:r.updated?1:0});
+  }catch(e){
+    console.warn(e);
+    if(e&&e.code==='permission-denied'){LS.set(RKPEND,'null');sub.className='ar-sub bad';sub.textContent=T('この記録は、ランキングに反映されませんでした。');track('rk_denied',{score:en.score});}
+    else{LS.set(RKPEND,JSON.stringify(en));sub.className='ar-sub bad';sub.textContent=T('送信できませんでした。ランキングの画面から、もう一度送れます。');}
+  }
+}
+async function rkSendPending(){
+  let en=null;try{en=JSON.parse(LS.get(RKPEND)||'null');}catch(e){}
+  if(!en){try{en=JSON.parse(LS.get(RKB)||'null');}catch(e){}}if(!en||!en.el)return;
+  const b=$('rkPend');b.disabled=true;rkErr('');
+  try{const r=await rkSubmit(en);LS.set(RKPEND,'null');rkErr(r.updated?T('ランキングに登録しました。現在 {0}位',r.pos):T('自己ベストを更新できなかったので、ランキングはそのままです。現在 {0}位',r.pos));}
+  catch(e){if(e&&e.code==='permission-denied'){LS.set(RKPEND,'null');rkErr(T('この記録は、ランキングに反映されませんでした。'));}else rkErr(T('送信できませんでした。電波のよいところで、もう一度ためしてね。'));}
+  b.disabled=false;paintRk();
+}
+async function rkSyncLabel(){
+  const p=rkProf();if(!p)return;rkErr('');
+  try{const f=await fbInit();await f.F.updateDoc(f.F.doc(f.db,'scores',f.uid),{tag:p.tag,nat:p.nat});LS.set(RKS,rkLabel(p));rkErr(T('ランキングの表示を更新しました。'));}
+  catch(e){rkErr(T('更新できませんでした。'));}
+  paintRk();
+}
+
+/* ---- leaderboard ---- */
+let RKTAB='ALL',RKCACHE={};
+async function rkLoadBoard(tab){
+  const c=RKCACHE[tab];if(c&&Date.now()-c.t<30000)return c.rows;
+  const f=await fbInit(),F=f.F,col=F.collection(f.db,'scores');
+  const q=tab==='ALL'?F.query(col,F.orderBy('score','desc'),F.limit(100)):F.query(col,F.where('nat','==',tab),F.orderBy('score','desc'),F.limit(100));
+  const s=await F.getDocs(q),rows=s.docs.map(d=>Object.assign({id:d.id},d.data()));
+  RKCACHE[tab]={t:Date.now(),rows,uid:f.uid};return rows;
+}
+function openRkBoard(){$('rkBoardErr').textContent='';show('rkboard');paintRkBoard();}
+async function paintRkBoard(){
+  const box=$('rkRows');box.innerHTML='';$('rkBoardErr').textContent='';
+  document.querySelectorAll('#rkTabs button').forEach(b=>b.classList.toggle('sel',b.dataset.t===RKTAB));
+  document.querySelector('#rkboard .lb-me').style.display=RKTAB==='NAT'?'none':'';
+  $('rkBoardBusy').classList.add('on');
+  try{
+    if(RKTAB==='NAT'){const nr=await rkLoadNat();$('rkBoardBusy').classList.remove('on');paintNat(nr);return;}
+    const rows=await rkLoadBoard(RKTAB),uid=(RKCACHE[RKTAB]||{}).uid;
+    $('rkBoardBusy').classList.remove('on');
+    if(!rows.length){box.innerHTML='<div class="note">'+T('まだ記録がありません')+'</div>';return;}
+    rows.forEach((r,i)=>{
+      const row=document.createElement('div');row.className='lb-row'+(r.id===uid?' me':'')+(i<3?' top':'');
+      const e=document.createElement('div');rkEmb(e,r.nat,30);e.style.fontSize='8px';
+      const h=document.createElement('button');h.type='button';h.className='lb-main';
+      h.innerHTML='<span class="lb-n"></span><span class="lb-l"></span><span class="lb-r"></span><span class="lb-s"></span>';
+      h.querySelector('.lb-n').textContent=i+1;h.querySelector('.lb-l').textContent=r.tag+'-'+pad4(r.seq);
+      h.querySelector('.lb-r').textContent=r.rank;h.querySelector('.lb-s').textContent=Number(r.score).toLocaleString();
+      const dt=document.createElement('div');dt.className='lb-d';dt.style.display='none';
+      (r.songs||[]).forEach(x=>{const b=atkSong('off_'+x.id)||atkSong(x.id),d=document.createElement('div');d.innerHTML='<span class="dtag d-'+x.d+'">'+String(x.d).slice(0,3).toUpperCase()+'</span><span class="t"></span><span class="p"></span>';d.querySelector('.t').textContent=b?ttl(b):x.id;d.querySelector('.p').textContent=Number(x.pts).toLocaleString();dt.appendChild(d);});
+      h.onclick=()=>{dt.style.display=dt.style.display==='none'?'':'none';};
+      const top=document.createElement('div');top.className='lb-top';top.appendChild(e);top.appendChild(h);row.appendChild(top);row.appendChild(dt);box.appendChild(row);
+    });
+  }catch(err){
+    console.warn(err);$('rkBoardBusy').classList.remove('on');
+    $('rkBoardErr').textContent=(err&&err.code==='failed-precondition')?T('この国のランキングは、準備中です。'):T('通信できませんでした。電波のよいところで、もう一度ためしてね。');
+  }
+  try{const p=rkProf();if(p){const f=await fbInit(),s=await f.F.getDoc(f.F.doc(f.db,'scores',f.uid));
+    if(s.exists()){const cnt=await f.F.getCountFromServer(f.F.query(f.F.collection(f.db,'scores'),f.F.where('score','>',s.data().score)));trNote(cnt.data().count+1);$('rkBoardMe').textContent=rkLabel(p)+'　'+(cnt.data().count+1)+'位';$('rkBoardBest').textContent=Number(s.data().score).toLocaleString();}
+    else{$('rkBoardMe').textContent=rkLabel(p);$('rkBoardBest').textContent='――';}}}catch(e){}
+}
+function openRkTr(){
+  const t=trGet(),box=$('rkTrGrid');box.innerHTML='';
+  TROPHIES.forEach(x=>{
+    const has=trHas(x,t),d=document.createElement('div');d.className='tr'+(has?' got':'');
+    d.innerHTML='<div class="tr-i"><img alt="" onerror="this.style.display=\'none\'"><span></span></div><b></b><small></small>';
+    d.querySelector('img').src='assets/trophy/tr_'+x.k+'.webp';d.querySelector('span').textContent=x.t;
+    d.querySelector('b').textContent=T(x.n);d.querySelector('small').textContent=has?T('獲得ずみ'):T(x.d);box.appendChild(d);
+  });
+  show('rktr');
+}
+
+/* =====================================================================
+   勲章（フリープレイ）：公式曲 × 難易度 の記録から、そのつど計算する。ランキングとは関係なし。
+   ===================================================================== */
+const MD_TITLES=[
+  {n:'見習い',d:'公式曲を1曲クリアした',im:'emblem_book',g:'見'},
+  {n:'旅人',d:'EASY以上でフルコンボした',im:'emblem_star',g:'旅'},
+  {n:'上級者',d:'NORMAL以上でフルコンボした',im:'emblem_hourglass',g:'上'},
+  {n:'達人',d:'HARD以上でフルコンボした',im:'emblem_wing',g:'達'},
+  {n:'星の覇者',d:'EXPERTでフルコンボした',im:'emblem_sov',g:'覇'},
+  {n:'極',d:'EXPERTでオールパーフェクトした',im:'emblem_zen',g:'極'}];
+const MD_LV=['','クリア','フルコンボ','オールパーフェクト'];
+function mdLevel(id,d){const r=getBest(id,d);return(!r||!(r.score>0))?0:(r.b===2?3:r.b===1?2:1);}
+function mdTier(){
+  let t=0;if(!OFFICIAL)return 0;
+  OFFICIAL.forEach(b=>BEST_D.forEach((d,di)=>{const v=mdLevel(b.id,d);if(!v)return;
+    t=Math.max(t,1);if(v>=2&&di>=1)t=Math.max(t,2);if(v>=2&&di>=2)t=Math.max(t,3);if(v>=2&&di>=3)t=Math.max(t,4);if(v>=2&&di>=4)t=Math.max(t,5);if(v>=3&&di>=4)t=Math.max(t,6);}));
+  return t;
+}
+function mdSnap(id,d){return{lv:/^off_/.test(id)?mdLevel(id,d):0,tier:mdTier(),on:/^off_/.test(id)};}
+function mdAnnounce(a,b){
+  const box=$('mdGot');if(!box)return;box.innerHTML='';if(!a.on||!b.on)return;
+  const add=t=>{const d=document.createElement('div');d.textContent=t;box.appendChild(d);};
+  if(b.lv>a.lv)add(T('🏅 {0}の勲章を獲得！',G.diff.toUpperCase()+' '+T(MD_LV[b.lv])));
+  if(b.tier>a.tier)add(T('称号「{0}」を獲得！',T(MD_TITLES[b.tier-1].n)));
+}
+function mdEmb(t,got,sz){
+  const e=document.createElement('div');e.className='md-em'+(got?'':' off');e.style.width=e.style.height=sz+'px';
+  const g=document.createElement('span');g.className='fb';g.textContent=got?t.g:'?';e.appendChild(g);
+  const i=document.createElement('img');i.alt='';i.onerror=()=>{i.style.display='none';};i.src='assets/medal/'+t.im+'.webp';e.appendChild(i);return e;
+}
+function paintMd(){
+  const box=$('mdBody');box.innerHTML='';
+  if(OFFICIAL===false){box.innerHTML='<div class="note">'+T('公式曲を読み込めませんでした。サイト上のページから開いてください（ファイルを直接開くと読めないことがあります）。')+'</div>';return;}
+  if(!OFFICIAL)return;
+  const tier=mdTier();let cnt=0;OFFICIAL.forEach(b=>BEST_D.forEach(d=>{if(mdLevel(b.id,d))cnt++;}));
+  const hero=document.createElement('div');hero.className='md-hero';
+  hero.appendChild(tier?mdEmb(MD_TITLES[tier-1],true,88):mdEmb(MD_TITLES[0],false,88));
+  const ht=document.createElement('div');ht.className='md-ht';
+  const nm=document.createElement('b');nm.textContent=tier?T(MD_TITLES[tier-1].n):T('まだ称号がありません');ht.appendChild(nm);
+  const sub=document.createElement('div');sub.className='md-sub';
+  sub.textContent=tier?T('獲得した勲章　{0}個',cnt):T('公式曲を1曲クリアすると、最初の称号がもらえます。');ht.appendChild(sub);
+  const nx=document.createElement('div');nx.className='md-sub';
+  nx.textContent=tier<6?T('つぎの称号：{0}',T(MD_TITLES[tier].n)+'（'+T(MD_TITLES[tier].d)+'）'):T('すべての称号を獲得しました。');ht.appendChild(nx);
+  hero.appendChild(ht);box.appendChild(hero);
+  const note=document.createElement('div');note.className='note';note.textContent=T('ランキングとは別に、フリープレイで集める勲章です。順位は関係ありません。');box.appendChild(note);
+  const tl=document.createElement('div');tl.className='md-titles';
+  MD_TITLES.forEach((t,i)=>{const c=document.createElement('div');c.className='md-t'+(i<tier?' got':'');c.appendChild(mdEmb(t,i<tier,52));
+    const l=document.createElement('small');l.textContent=i<tier?T(t.n):'？';c.appendChild(l);tl.appendChild(c);});
+  box.appendChild(tl);
+  const lg=document.createElement('div');lg.className='md-legend';lg.textContent='○ '+T('クリア')+'　★ '+T('フルコンボ')+'　✦ '+T('オールパーフェクト');box.appendChild(lg);
+  OFFICIAL.forEach(b=>{
+    const r=document.createElement('div');r.className='md-song';
+    const t=document.createElement('div');t.className='md-st';t.textContent=ttl(b);r.appendChild(t);
+    const cs=document.createElement('div');cs.className='md-cs';
+    BEST_D.forEach(d=>{const v=mdLevel(b.id,d),c=document.createElement('div');c.className='md-c d-'+d+' m'+v;c.textContent=d.slice(0,3).toUpperCase()+(v===1?' ○':v===2?' ★':v===3?' ✦':'');cs.appendChild(c);});
+    r.appendChild(cs);box.appendChild(r);
+  });
+}
+function openMd(){show('md');(OFFICIAL===null?loadOfficial():Promise.resolve()).then(paintMd);}
+$('goMd').onclick=()=>{ensureAudio();openMd();};
+$('mdBack').onclick=()=>show('home');
+function openMdHelp(){
+  const b=$('mdHelpBody');b.innerHTML='';
+  const add=t=>{const d=document.createElement('div');d.className='help';d.textContent=t;b.appendChild(d);};
+  add(T('公式曲で遊ぶと、曲と難易度ごとに、勲章が付きます。'));
+  add('○ '+T('クリア')+'　★ '+T('フルコンボ')+'　✦ '+T('オールパーフェクト'));
+  add(T('勲章をもとに、6つの称号が決まります。'));
+  MD_TITLES.forEach(t=>add('・'+T(t.n)+'：'+T(t.d)));
+  add(T('勲章は、この端末の中に保存されます。ランキングの順位は関係ありません。'));
+  $('mdHelpS').classList.add('on');
+}
+$('mdHelp').onclick=openMdHelp;$('mdHelpClose').onclick=()=>$('mdHelpS').classList.remove('on');
+$('mdHelpS').onclick=e=>{if(e.target===$('mdHelpS'))$('mdHelpS').classList.remove('on');};
+
+/* ---------- 国別の成績 ---------- */
+async function rkLoadNat(){
+  const c=RKCACHE.NAT;if(c&&Date.now()-c.t<30000)return c.rows;
+  const f=await fbInit(),F=f.F,col=F.collection(f.db,'scores');
+  const rows=await Promise.all(NATK.map(async k=>{
+    const [cn,tp]=await Promise.all([F.getCountFromServer(F.query(col,F.where('nat','==',k))),F.getDocs(F.query(col,F.where('nat','==',k),F.orderBy('score','desc'),F.limit(10)))]);
+    let sum=0;tp.docs.forEach(d=>{sum+=(d.data().score||0);});return{k,n:cn.data().count,sum};}));
+  RKCACHE.NAT={t:Date.now(),rows};return rows;
+}
+function paintNat(rows){
+  const box=$('rkRows');box.innerHTML='';
+  const n=document.createElement('div');n.className='note';n.textContent=T('各国の上位10人の合計スコアです。');box.appendChild(n);
+  const mx=Math.max(1,...rows.map(r=>r.sum)),me=rkProf();
+  rows.slice().sort((a,b)=>b.sum-a.sum).forEach(r=>{
+    const c=document.createElement('div');c.className='nat-card'+(me&&me.nat===r.k?' mine':'');
+    const e=document.createElement('div');rkEmb(e,r.k,56);c.appendChild(e);
+    const m=document.createElement('div');m.className='nat-m';
+    m.innerHTML='<b></b><div class="nat-bar"><i></i></div><small></small>';
+    m.querySelector('b').textContent=T(NATS[r.k].n);m.querySelector('i').style.width=Math.max(2,Math.round(100*r.sum/mx))+'%';m.querySelector('i').style.background=NATS[r.k].col;
+    m.querySelector('small').textContent=T('参加 {0}人',r.n)+'　'+T('合計 {0}',r.sum.toLocaleString());
+    c.appendChild(m);box.appendChild(c);
+  });
+}
+
+var RKFROM='home';
+function paintHomeRk(){const p=rkProf(),e=$('goRkSub');if(e)e.textContent=p?p.tag+'-'+p.num:'';}
+$('goRk').onclick=()=>{ensureAudio();RKFROM='home';openRk();};
+$('offRk').onclick=()=>{ensureAudio();RKFROM='off';openRk();};
+$('rRk').onclick=()=>{ensureAudio();RKFROM='result';openRk();};
+$('rkBack').onclick=()=>{if(RKFROM==='off')openOff();else if(RKFROM==='result')show('result');else show('home');};
+const rkHelpOpen=()=>$('rkHelpS').classList.add('on');
+$('rkHelp').onclick=rkHelpOpen;$('rkHelp2').onclick=rkHelpOpen;
+$('rkHelpClose').onclick=()=>$('rkHelpS').classList.remove('on');
+$('rkHelpS').onclick=e=>{if(e.target===$('rkHelpS'))$('rkHelpS').classList.remove('on');};
+paintHomeRk();
+$('rkPlay').onclick=openRkSel;
+$('rkBoardBtn').onclick=openRkBoard;
+$('rkPend').onclick=rkSendPending;$('rkSyncBtn').onclick=rkSyncLabel;$('rkTrBtn').onclick=openRkTr;$('rkTrBack').onclick=()=>openRk();
+document.querySelectorAll('#rkTabs button').forEach(b=>b.onclick=()=>{RKTAB=b.dataset.t;paintRkBoard();});
+$('rkEditBtn').onclick=()=>openRkReg(true);
+$('rkRegBack').onclick=()=>{paintRk();show('rk');};
+$('rkRegSave').onclick=rkRegSave;
+$('rkSelBack').onclick=()=>{atkPvStop();openRk();};
+$('rkGo').onclick=rkStart;
+$('rkBoardBack').onclick=()=>openRk();
 
 /* テスト用に公開（画面操作には使わない） */
 window.__k4={buildChart,DIFFS,get G(){return G;},get MY(){return MY;},set MY(v){MY=v;},startGame,pressLane,releaseLane,syncMy,finish};
 
 /* 作品ページからの入口：play.html#off（公式曲） / play.html#lib（MY SOUND） */
 applyLang();
-(function(){const h=location.hash;if(h==='#off')openOff();else if(h==='#atk'){openAtk();}else if(h==='#lib'){FROM='lib';openLib();}})();
+(function(){const h=location.hash;if(h==='#off')openOff();else if(h==='#atk'){openAtk();}else if(h==='#rk'){openRk();}else if(h==='#lib'){FROM='lib';openLib();}})();
 </script>
 </body>
 </html>
