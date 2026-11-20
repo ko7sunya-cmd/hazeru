@@ -82,6 +82,7 @@ footer a{color:var(--sub);}
     <div class="cta">
       <a class="main" href="../play.html?lang=en#off">★ Play Official Songs</a>
       <a href="../play.html?lang=en#atk">⚔ Score Attack</a>
+      <a href="../play.html?lang=en#rk">🏆 Ranking β</a>
       <a href="../play.html?lang=en#lib">♪ Play Your Own mp3</a>
       <small>Hold notes supported / Works in phone and PC browsers</small>
     </div>
@@ -127,6 +128,49 @@ footer a{color:var(--sub);}
       <h3>Score Attack</h3>
       <p>Pick 3 official songs, choose a difficulty, and play them in a row. A short screen appears between songs, and your combo carries over to the next one. There is no fail condition.</p>
       <p>Score Attack uses its own scoring. Each judgment gives points, multiplied by a combo bonus (+0.1 for every 10 combo, up to x2.0), so keeping your combo alive pays off. Your total across the 3 songs earns a rank, and the top 3 runs for each difficulty are saved with the 3 songs and the points for each.</p>
+    </div>
+  </section>
+
+  <section id="ranking">
+    <h2>Ranking and medals</h2>
+    <p>Competing and recording your own skill are kept in separate places. The ranking is for competing with other players. Medals are about what you have built up yourself, regardless of rank.</p>
+    <div class="card">
+      <h3>Ranked mode (beta)</h3>
+      <p>Pick 3 official songs, choose a difficulty for each, and play them back to back. Your combo carries across songs, and your score is multiplied up to x5 at 1000 combo. Harder difficulties give more points. The maximum score is not published.</p>
+      <p>The ranking has one entry per player and shows the top 100, overall and by nation. Beating your best updates your entry. If you change your name or ID, the old display stays until you update your record yourself.</p>
+      <p>Records are checked on the server, and records with an impossible number of songs, play time or score are not counted. Because this is a beta test, the ranking may be discontinued if cheating continues.</p>
+      <p>To play, choose a name (3 characters: letters, numbers and symbols) and a nation. An ID is assigned automatically. No email address is needed.</p>
+    </div>
+    <div class="card">
+      <h3>Nations</h3>
+      <p>In the ranking you belong to one of three nations. The "Nations" tab on the ranking screen shows each nation's total score of its top 10 players, and how many players it has.</p>
+      <div class="tablebox"><table>
+        <tr><td style="white-space:nowrap">EMB</td><td><b>Ember Principality</b> - Forges star shards in fire. A land of smiths and song. A passionate nation.</td></tr>
+        <tr><td style="white-space:nowrap">CEL</td><td><b>Celesta Federation</b> - Watches over the stars from sky and water. A land of observers. A calm nation.</td></tr>
+        <tr><td style="white-space:nowrap">SOL</td><td><b>Solaris Dynasty</b> - A land of bells and wheat, tasked with announcing the dawn. A persistent nation.</td></tr>
+      </table></div>
+    </div>
+    <div class="card">
+      <h3>Trophies</h3>
+      <p>Trophies are earned according to your rank: Participation, Top 100, Top 50, Top 40, Top 30, Top 20, Top 10, 3rd, 2nd and 1st place (10 in total).</p>
+    </div>
+    <div class="card">
+      <h3>Medals and titles (free play)</h3>
+      <p>When you play official songs, a medal is awarded for each song and difficulty: "O" for a clear, a star for a full combo, and a sparkle for an all perfect. Your ranking position has no effect.</p>
+      <p>Your medals decide one of six titles, which you can see from "MEDALS" on the home screen.</p>
+      <div class="tablebox"><table>
+        <tr><td style="white-space:nowrap">Apprentice</td><td>Cleared one official song</td></tr>
+        <tr><td style="white-space:nowrap">Traveler</td><td>Full Combo on EASY or higher</td></tr>
+        <tr><td style="white-space:nowrap">Adept</td><td>Full Combo on NORMAL or higher</td></tr>
+        <tr><td style="white-space:nowrap">Master</td><td>Full Combo on HARD or higher</td></tr>
+        <tr><td style="white-space:nowrap">Star Sovereign</td><td>Full Combo on EXPERT</td></tr>
+        <tr><td style="white-space:nowrap">Zenith</td><td>All Perfect on EXPERT</td></tr>
+      </table></div>
+      <p>Medals and trophies are stored inside your device.</p>
+    </div>
+    <div class="card">
+      <h3>What is stored for the ranking</h3>
+      <p>When you use the ranking, the following is stored on a server (Google Firebase): your name (3 characters), nation, ID number, score, the breakdown of your 3 songs (song, difficulty, points), total play time and date. Your name, ID number, nation, score and per-song points are visible to other players. Real names, email addresses and location are not collected. See the <a href="../../privacy.html">Privacy Policy</a> (Japanese) for details.</p>
     </div>
   </section>
 
@@ -180,12 +224,16 @@ footer a{color:var(--sub);}
     <details><summary>My file won't load.</summary><p>Choose an audio file such as mp3, m4a, wav or ogg. Tracks shorter than 8 seconds or larger than 40 MB can't be loaded.</p></details>
     <details><summary>My saved songs or best scores disappeared.</summary><p>Songs and scores are stored inside your browser. Clearing site data or using private browsing can erase them, and they don't carry over to other devices or browsers.</p></details>
     <details><summary>The notes feel out of sync with the sound.</summary><p>Use "Timing adjustment" in Options to compensate for notes feeling early or late. Wireless earphones delay the sound, so adjust for that.</p></details>
-    <details><summary>Does it cost anything?</summary><p>No, it's free, and no sign-up is needed.</p></details>
+    <details><summary>My record doesn't show up in the ranking.</summary><p>If the connection failed, you can send it later from "Send unsent record" on the ranking screen. Even with a connection, records that fail the server's checks, such as an impossibly short play time or an impossible score, are not counted.</p></details>
+    <details><summary>I want to change my name or nation.</summary><p>Use "Change name / nation" on the ranking screen. After changing, the ranking keeps showing the old display until you update your record yourself.</p></details>
+    <details><summary>Can I be recognized even if I can't win the ranking?</summary><p>Yes. "MEDALS" on the home screen keeps your clears, full combos and all perfects of official songs as medals and titles, regardless of rank.</p></details>
+    <details><summary>Does it cost anything?</summary><p>No, it's free, and no sign-up is needed. Only when you use the ranking do you choose a name (3 characters) and a nation. No email address is needed.</p></details>
   </section>
 
   <section id="log">
     <h2>Update log</h2>
     <div class="tablebox"><table>
+      <tr><td style="white-space:nowrap">Nov 19, 2026</td><td>Added ranked mode (beta), nation standings and trophies. Added medals and titles to free play.</td></tr>
       <tr><td style="white-space:nowrap">Nov 16, 2026</td><td>Added Score Attack. Tapping a song in the song list now plays a preview.</td></tr>
       <tr><td style="white-space:nowrap">Nov 12, 2026</td><td>Added 8 official songs and the official songs mode. Added English language support.</td></tr>
     </table></div>
