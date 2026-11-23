@@ -1,18 +1,25 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<!-- ▼ 注意: このページには {{...}} のプレースホルダーが残っています。本文を入れ終わるまで main にマージ・公開しないこと ▼ -->
 <meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-16H70SRKMV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-16H70SRKMV');
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>崩れゆく世界で無双する｜無双×タワーディフェンス｜はぜるの作品</title>
-<meta name="description" content="魔物に呑まれていく3つの国へ駆けつける、10出撃の無双サバイバル。機体を育てて進化させ、タップの「波動」で群れを吹き飛ばす、ブラウザで遊べる無双×タワーディフェンス。">
+<meta name="description" content="魔物に呑まれていく3つの国を守る、スマホで遊べる無双×タワーディフェンス。10回の出撃で機体を育てて進化させ、戦死（予定）のヒロインたちを生存へ書き換える。ブラウザですぐ遊べます。">
 <link rel="canonical" href="https://hazerusenkou.stream/musou/">
 <meta name="theme-color" content="#07061a">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="hazeru">
 <meta property="og:title" content="崩れゆく世界で無双する｜無双×タワーディフェンス">
-<meta property="og:description" content="魔物に呑まれていく3つの国へ駆けつける、10出撃の無双サバイバル。ブラウザで遊べる無双×タワーディフェンス。">
+<meta property="og:description" content="魔物に呑まれていく3つの国を守る、スマホで遊べる無双×タワーディフェンス。10回の出撃で機体を育てて進化させ、戦死（予定）のヒロインたちを生存へ書き換える。ブラウザですぐ遊べます。">
 <meta property="og:url" content="https://hazerusenkou.stream/musou/">
 <meta property="og:image" content="https://hazerusenkou.stream/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -42,8 +49,14 @@ body{margin:0;color:var(--ink);background:linear-gradient(180deg,rgba(7,6,26,.55
 section{margin-top:40px;}
 h2{margin:0 0 12px;font-size:19px;letter-spacing:.08em;color:var(--amber);font-weight:700;padding-bottom:8px;border-bottom:1px solid var(--line);}
 p{margin:8px 0;}
+ul{margin:8px 0;padding-left:1.4em;}
+li{margin:3px 0;}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 18px 14px;margin-top:12px;}
-.ph{color:var(--sub);}
+figure{margin:18px 0 0;}
+figure img{display:block;width:100%;height:auto;border-radius:12px;box-shadow:0 0 0 1px var(--line);}
+.heroine{display:flex;gap:16px;align-items:flex-start;}
+.heroine img{width:96px;height:auto;flex:none;border-radius:10px;box-shadow:0 0 0 1px var(--line);}
+.heroine p{margin:0;}
 footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--sub);text-align:center;}
 footer a{color:var(--sub);}
 footer .footer-nav a+a::before{content:"／";margin:0 .6em;color:var(--sub);}
@@ -57,7 +70,7 @@ footer .footer-nav a+a::before{content:"／";margin:0 .6em;color:var(--sub);}
     <div class="eyebrow">無双 × タワーディフェンス</div>
     <img src="../top_images/hero_musou.webp" alt="崩れゆく世界で無双する" width="554" height="450">
     <h1>崩れゆく世界で無双する</h1>
-    <p class="lead">{{キャッチコピー}}</p>
+    <p class="lead">運命の外から駆けつけて、戦死（予定）のヒロインを生存へ書き換える。</p>
     <div class="cta">
       <a href="play.html">▶ プレイする</a>
       <small>スマホ・PCのブラウザでそのまま遊べます</small>
@@ -66,31 +79,93 @@ footer .footer-nav a+a::before{content:"／";margin:0 .6em;color:var(--sub);}
 
   <section id="about">
     <h2>あらすじ・概要</h2>
-    <p class="ph">{{あらすじ}}</p>
+    <p>空が裂けて魔物があふれ、最初の夜に七つの街が消えた。軍勢は止まらず、城壁も塔も祈りも、波のように呑まれていく。それでも三つの国は、たった三人の傷だらけの手で、まだ落ちていない。</p>
+    <p>運命の記録では、彼女たちはみな「戦死（予定）」。記録に名前のないあなたは、運命の外から駆けつける援軍として戦場に立ちます。</p>
+    <p>『崩れゆく世界で無双する』は、自動で攻撃する機体を動かして魔物の群れを引きつけ、拠点と村を守る、スマホ向けの無双×タワーディフェンスです。1回の出撃は約3分。出撃は最大10回までで、3つの国を巡りながら機体を育て、ヒロインたちの貢献度を高めていきます。10回目の出撃で魔物の波はおさまり、エンディングを迎えます。</p>
+    <figure>
+      <img src="assets/map.webp" alt="3つの国が描かれた世界地図" width="1200" height="800" loading="lazy">
+    </figure>
   </section>
 
   <section id="howto">
     <h2>遊び方</h2>
     <div class="card">
-      <p class="ph">{{遊び方}}</p>
+      <p><b>【目的】</b></p>
+      <p>中央の拠点を3分間守りきればクリアです。途中で村が2か所襲われるので、敵を倒して救えば貢献度にボーナスが入ります。守りきれなくても「撤退戦」として貢献度は貯まるので、何度でも出撃できます。各国の3回目の出撃からはボスが現れ、倒さないと拠点が落ちます。</p>
+      <p><b>【操作】</b></p>
+      <ul>
+        <li>スマホ: 画面のどこでもドラッグして移動します(指を置いた位置が中心になります)。攻撃は自動です。指を離して素早くタップすると「波動」が出ます。</li>
+        <li>PC: WASDまたは矢印キー、マウスの方向で移動します。波動はクリックまたはスペースキーです。</li>
+        <li>右上のボタンで、一時停止とサウンドの切り替えができます。</li>
+      </ul>
+      <p><b>【波動】</b></p>
+      <p>左上のゲージが1本たまるごとに1回使えます。最大3回ぶんまでためられ、約11秒で1本たまります。敵を倒すと少し早くたまります。波動の中身は機体ごと、進化先ごとに違います。</p>
+      <p><b>【レベルアップ】</b></p>
+      <p>敵が落とす経験値を集めるとレベルが上がり、3つの強化から1つを選びます。弾数、火力、高速化は特に頼りになります。</p>
+      <p><b>【エンディング】</b></p>
+      <p>出撃は10回までです。貢献度はC・B・A・Sのランクで表され、3つの国すべてでA以上にするとTRUE ENDになります。セーブデータは、出撃のたびにブラウザへ自動で保存されます。</p>
     </div>
   </section>
 
   <section id="features">
     <h2>特徴</h2>
     <div class="card">
-      <p class="ph">{{特徴}}</p>
+      <ul>
+        <li>3つの機体と、6つの進化先。使うほど育ち、Lv.5で進化、Lv.10で極意に届く</li>
+        <li>3つの国ごとに敵の傾向と機体の相性(◎有利・○普通・△不利)が違う</li>
+        <li>国を回るたびに脅威度が上がる。10回の出撃が終わると、新しい周回を始められる</li>
+        <li>20種類以上の強化から選ぶビルド構築</li>
+        <li>三人のヒロインとの会話。出撃の成果に応じて、話せる内容が増える</li>
+        <li>貢献度がSの国では、特別なエンディングスチルが見られる</li>
+        <li>記録、称号(9種)、進化の体験表、クリア履歴が、周回をリセットしても残る</li>
+        <li>マップ画面、戦闘、ボス戦、最終戦、エンディングで流れるBGM</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="machines">
+    <h2>機体</h2>
+    <div class="card">
+      <p><b>ブレイカー(近接・高耐久):</b> 自機の周りに衝撃波を広げて、敵を押し返します。足は遅めですが、HPが高く、範囲攻撃で押し切れます。進化先は、拠点を守り回復する「ガーディアン」と、衝撃波が巨大になる「ジャガーノート」です。</p>
+    </div>
+    <div class="card">
+      <p><b>レイザー(遠距離・連射):</b> 最寄りの敵にレーザーを連射し、着弾で小爆発します。足が速く、引き撃ちが得意です。進化先は、貫通する高威力弾の「スナイパー」と、大爆発の「バースト」です。</p>
+    </div>
+    <div class="card">
+      <p><b>ウィーバー(設置・範囲):</b> 通った道に、敵を足止めしてダメージを与える領域を残します。敵を誘導して一網打尽にします。進化先は、足止めに特化した「スネア」と、領域が消える時に爆発する「ブルーム」です。</p>
+    </div>
+  </section>
+
+  <section id="heroines">
+    <h2>ヒロインと3つの国</h2>
+    <div class="card heroine">
+      <img src="assets/heroine_a_normal.webp" alt="剣聖 エルネスタ" width="411" height="621" loading="lazy">
+      <p><b>ヴァルガルド王国 / 剣聖 エルネスタ:</b> 武の国。重装の魔物が多く、エルネスタは剣で拠点に近づく敵を斬り払います。レイザーが◎有利、ウィーバーが△不利です。</p>
+    </div>
+    <div class="card heroine">
+      <img src="assets/heroine_b_normal.webp" alt="賢者 ハイネ" width="413" height="621" loading="lazy">
+      <p><b>アウレリア学術国 / 賢者 ハイネ:</b> 知の国。素早い魔物が多く、ハイネは魔法で、拠点に近い敵から順に撃ち抜きます。ウィーバーが◎有利、ブレイカーが△不利です。</p>
+    </div>
+    <div class="card heroine">
+      <img src="assets/heroine_c_normal.webp" alt="聖女 ルミナ" width="410" height="621" loading="lazy">
+      <p><b>セラフィナ聖国 / 聖女 ルミナ:</b> 祈りの国。魔物の数が多く、ルミナは定期的に結界を張って拠点を守り、敵の足を止めます。ブレイカーが◎有利、レイザーが△不利です。</p>
     </div>
   </section>
 
   <section id="notes">
     <h2>制作メモ</h2>
-    <p class="ph">{{制作メモ}}</p>
+    <ul>
+      <li>ダウンロードやインストールは不要で、ブラウザだけで遊べます。スマホ(iPhone/Android)とPCに対応しています。表示は日本語のみです。</li>
+      <li>設定やセーブデータは、お使いの端末のブラウザ(ローカルストレージ)に保存されます。サーバーには送信しません。ブラウザのサイトデータを削除すると、セーブデータも消えるのでご注意ください。</li>
+      <li>このゲームには、オンラインランキングはありません。</li>
+    </ul>
   </section>
 
   <section id="changelog">
     <h2>更新履歴</h2>
-    <p class="ph">{{更新履歴}}</p>
+    <ul>
+      <li>2026年10月　公開</li>
+    </ul>
   </section>
 
   <div class="cta">
