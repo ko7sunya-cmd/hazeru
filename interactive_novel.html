@@ -302,6 +302,8 @@
             font-size: 12px;
             margin-top: 40px;
         }
+        footer.site-footer .footer-nav{ margin-bottom: 8px; }
+        footer.site-footer .divider{ margin: 0 0.5em; }
         footer.site-footer a{ color: var(--ink-light); }
     </style>
 </head>
@@ -458,7 +460,13 @@
         </section>
 
         <footer class="site-footer">
-            <p>&copy; 2026 はぜる</p>
+          <div class="footer-nav">
+            <a href="/index.html">トップ</a><span class="divider">|</span>
+            <a href="/about.html">About</a><span class="divider">|</span>
+            <a href="/privacy.html">プライバシーポリシー</a><span class="divider">|</span>
+            <a href="/about.html#contact">お問い合わせ</a>
+          </div>
+          <p class="copyright">&copy; 2026 はぜる</p>
         </footer>
     </div>
 
