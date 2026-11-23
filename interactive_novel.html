@@ -2,8 +2,18 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-16H70SRKMV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-16H70SRKMV');
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>インタラクティブノベル｜はぜるの作品</title>
+    <meta name="description" content="BGMと共に物語が進む、選択式のインタラクティブノベル全6作品の一覧。選択によって物語の行方と結末が変わります。全作品のBGMをまとめて聴けるプレイヤーつき。">
+    <link rel="canonical" href="https://hazerusenkou.stream/interactive_novel.html">
     <style>
         :root{
             --ink:#28323d;
@@ -292,6 +302,8 @@
             font-size: 12px;
             margin-top: 40px;
         }
+        footer.site-footer .footer-nav{ margin-bottom: 8px; }
+        footer.site-footer .divider{ margin: 0 0.5em; }
         footer.site-footer a{ color: var(--ink-light); }
     </style>
 </head>
@@ -448,7 +460,13 @@
         </section>
 
         <footer class="site-footer">
-            <p>&copy; 2026 はぜる</p>
+          <div class="footer-nav">
+            <a href="/index.html">トップ</a><span class="divider">|</span>
+            <a href="/about.html">About</a><span class="divider">|</span>
+            <a href="/privacy.html">プライバシーポリシー</a><span class="divider">|</span>
+            <a href="/about.html#contact">お問い合わせ</a>
+          </div>
+          <p class="copyright">&copy; 2026 はぜる</p>
         </footer>
     </div>
 

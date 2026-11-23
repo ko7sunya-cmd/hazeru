@@ -2,8 +2,18 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-16H70SRKMV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-16H70SRKMV');
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ジュークボックス｜はぜるの作品</title>
+    <meta name="description" content="Suno AIで作った曲を、テーマごとにまとめた音楽プレイヤー。他のタブを開いても音楽が途切れないので、作業用BGMにも使えます。">
+    <link rel="canonical" href="https://hazerusenkou.stream/music_jukebox.html">
 
     <style>
         /* =========================================
@@ -646,6 +656,9 @@
         html:not([data-gallery="on"]) body { padding-top: calc(54px + env(safe-area-inset-top)); }
         .mode-ico { display: block; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)); }
         html[data-gallery="on"] #mode-fab { display: none; }
+        footer.site-footer .footer-nav{ margin-bottom: 8px; }
+        footer.site-footer a{ color: inherit; }
+        footer.site-footer .divider{ margin: 0 0.5em; }
     </style>
 </head>
 <body class="theme-summer">
@@ -930,8 +943,14 @@
             </div>
         </main>
 
-        <footer style="margin-top: 50px; text-align: center; color: #777;">
-            <p>&copy; 2026 はぜる</p>
+        <footer class="site-footer">
+          <div class="footer-nav">
+            <a href="/index.html">トップ</a><span class="divider">|</span>
+            <a href="/about.html">About</a><span class="divider">|</span>
+            <a href="/privacy.html">プライバシーポリシー</a><span class="divider">|</span>
+            <a href="/about.html#contact">お問い合わせ</a>
+          </div>
+          <p class="copyright">&copy; 2026 はぜる</p>
         </footer>
     </div>
 
