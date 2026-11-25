@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-16H70SRKMV"></script>
     <script>
@@ -10,10 +9,23 @@
       gtag('js', new Date());
       gtag('config', 'G-16H70SRKMV');
     </script>
+
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>インタラクティブノベル｜はぜるの作品</title>
-    <meta name="description" content="BGMと共に物語が進む、選択式のインタラクティブノベル全6作品の一覧。選択によって物語の行方と結末が変わります。全作品のBGMをまとめて聴けるプレイヤーつき。">
+    <title>インタラクティブノベル一覧（全6作品・選択式・BGM付き）｜はぜるの作品</title>
+    <meta name="description" content="選択肢で結末が変わる、BGM付きのインタラクティブノベル全6作品。癒し系からコメディ、シリアス、大人の恋愛まで。スマホでそのまま遊べます。">
     <link rel="canonical" href="https://hazerusenkou.stream/interactive_novel.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="hazeru">
+    <meta property="og:title" content="インタラクティブノベル一覧｜はぜるの作品">
+    <meta property="og:description" content="選択肢で結末が変わる、BGM付きのインタラクティブノベル全6作品。スマホでそのまま遊べます。">
+    <meta property="og:url" content="https://hazerusenkou.stream/interactive_novel.html">
+    <meta property="og:image" content="https://hazerusenkou.stream/og.jpg">
+    <meta property="og:locale" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6184646083017768"
+         crossorigin="anonymous"></script>
     <style>
         :root{
             --ink:#28323d;
@@ -158,6 +170,23 @@
             100%{ left:130%; opacity:0; }
         }
 
+        .work-thumb{
+            margin: -22px -20px 16px;
+            aspect-ratio: 16 / 9;
+            overflow:hidden;
+            background:#0e1424;
+        }
+        .work-thumb img{ display:block; width:100%; height:100%; object-fit:cover; transition: transform .4s ease; }
+        @media (hover:hover) and (pointer:fine){
+            .work-card-link:hover .work-thumb img{ transform: scale(1.04); }
+        }
+        .guide{ margin-bottom: 40px; color: var(--ink-light); font-size: 13.5px; }
+        .guide p{ margin: 0 0 12px; opacity:0.85; }
+        .guide dl{ margin:0; }
+        .guide dt{ font-family:'Shippori Mincho', serif; font-weight:700; margin-top:12px; color: var(--gold); }
+        .guide dd{ margin: 2px 0 0; opacity:0.82; }
+        footer.site-footer .footer-nav{ margin-bottom: 8px; }
+        footer.site-footer .footer-nav a{ margin: 0 8px; }
         .emblem{
             width:52px; height:52px; border-radius:50%;
             margin-bottom: 14px;
@@ -302,8 +331,6 @@
             font-size: 12px;
             margin-top: 40px;
         }
-        footer.site-footer .footer-nav{ margin-bottom: 8px; }
-        footer.site-footer .divider{ margin: 0 0.5em; }
         footer.site-footer a{ color: var(--ink-light); }
     </style>
 </head>
@@ -321,6 +348,7 @@
         <section class="intro">
             <p>BGMと共に物語が展開する、選択式のインタラクティブノベル。<br>
             あなたの選択によって、ストーリーの行方と結末が変化します。</p>
+            <p style="margin-top:10px;">作品はすべてブラウザだけで遊べて、ダウンロードや登録は不要です。進行状況は自動でこの端末に保存されるので、途中でやめても続きから再開できます。BGMはSuno AIで制作したオリジナル曲で、音を出さずに読むこともできます。</p>
         </section>
 
         <section class="work-list">
@@ -384,7 +412,7 @@
 
                 <a href="isekai_dame_ningen/index.html" target="_blank" rel="noopener noreferrer" class="work-card-link">
                     <div class="work-card">
-                        <div class="emblem">🍹</div>
+                        <div class="work-thumb"><img src="top_images/novel_dame_ningen.webp" alt="異世界ダメ人間計画：ソファでくつろぐ王女たち" width="640" height="360" loading="lazy" decoding="async"></div>
                         <h3>異世界ダメ人間計画</h3>
                         <div class="work-tags">
                             <span class="work-tag">コメディ</span>
@@ -439,6 +467,20 @@
             </div>
         </section>
 
+        <section class="guide">
+            <h2 class="section-title">どれから遊ぶ？</h2>
+            <p>どの作品も、ヒロイン（ゲスト）ごとに選択肢が分かれていて、ルートによって結末が変わります。気分に合わせて選んでみてください。</p>
+            <dl>
+                <dt>とにかく笑いたい・甘やかしたい</dt>
+                <dd>『異世界ダメ人間計画』。異世界の重鎮を、現代の快適グッズでとことんダメにするコメディです。全11組で、イラストギャラリーもあります。</dd>
+                <dt>やさしく癒されたい</dt>
+                <dd>『異世界パラダイス幸福度クロニクル』は、短く読める素朴な癒し系。『灰の国で、恋を知る』は、静かで切ない、ほのぼの寄りの恋物語です。</dd>
+                <dt>じっくり読みたい</dt>
+                <dd>『崩れゆく国で、明日を灯す』はシリアスな再建もの。『高嶺の星、見つけに行こう』『高嶺の鳥、見つけに行こう』は、趣味をきっかけに距離が縮まる大人の恋愛ものです。</dd>
+            </dl>
+            <p style="margin-top:12px;">各作品の詳しい紹介ページから、遊び方やあらすじを確認できます。</p>
+        </section>
+
         <section class="soundtrack-player">
             <h2 class="section-title">🎧 全作品サウンドトラック</h2>
             <p class="soundtrack-intro">各作品のBGMをまとめて聴ける作業用プレイヤー。作品を選んで通しで聴くか、全作品シャッフルで流しっぱなしにできます。<br>（このページの作品を開くと、再生は自動で一時停止します）</p>
@@ -460,13 +502,12 @@
         </section>
 
         <footer class="site-footer">
-          <div class="footer-nav">
-            <a href="/index.html">トップ</a><span class="divider">|</span>
-            <a href="/about.html">About</a><span class="divider">|</span>
-            <a href="/privacy.html">プライバシーポリシー</a><span class="divider">|</span>
-            <a href="/about.html#contact">お問い合わせ</a>
-          </div>
-          <p class="copyright">&copy; 2026 はぜる</p>
+            <div class="footer-nav">
+                <a href="index.html">トップ</a>
+                <a href="about.html">About</a>
+                <a href="privacy.html">プライバシーポリシー</a>
+            </div>
+            <p>&copy; 2026 はぜる</p>
         </footer>
     </div>
 
