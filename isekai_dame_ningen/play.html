@@ -2751,7 +2751,7 @@ function updatePortrait(){
   const key = state.charKey;
   if(!key) return;
   const aff = state.affection[key];
-  const happy = isHappyAff(aff);
+  const happy = false; /* プレイ中は通常絵のまま。差分はエンディングで登場 */
   const dot = document.getElementById('who-dot');
   const dsrc = guestImgPath(key, happy);
   if(dot.dataset.cur !== dsrc){ dot.dataset.cur = dsrc; dot.style.backgroundImage = "url('" + dsrc + "')"; }
@@ -2870,7 +2870,7 @@ function showGallery(){
     const tiles = document.createElement('div');
     tiles.className = 'g-tiles';
     tiles.appendChild(mk(guestImgPath(key,false), c.name + '(警戒中)', '警戒中', unlocked, 'ゲストが現れると開放'));
-    tiles.appendChild(mk(guestImgPath(key,true), c.name + '(骨抜き後)', '骨抜き後', unlocked && seen, '「骨抜き」まで堕落させると開放'));
+    tiles.appendChild(mk(guestImgPath(key,true), c.name + '(骨抜き後)', '骨抜き後', unlocked && seen, 'エンディングまで見ると開放'));
     row.appendChild(tiles);
     box.appendChild(row);
   });
@@ -3233,7 +3233,6 @@ function pickChoice(ev, ch){
   state.affection[key] = before + ch.delta;
   const after = state.affection[key];
   const afterRank = rankFor(after);
-  if(afterRank.idx >= 2 && !state.seenHappy[key]){ state.seenHappy[key] = true; saveGame(); }
 
   document.getElementById('scene-text').textContent = ch.result;
   const box = document.getElementById('choices');
@@ -3291,6 +3290,7 @@ function showEnding(){
   const ep = document.getElementById('end-portrait');
   ep.style.display = '';
   ep.src = guestImgPath(key, isHappyAff(aff));
+  if(isHappyAff(aff) && !state.seenHappy[key]){ state.seenHappy[key] = true; saveGame(); }
   ep.alt = c.name;
   track('route_clear', { guest: key, route: routeKeyFor(key), rank: rk.idx, max: isMax ? 1 : 0 });
   const box = document.getElementById('screen-ending');
